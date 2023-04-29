@@ -8,26 +8,28 @@ namespace LudumDare.Scripts.Components
         private const float buttonOffset = 35f;
 
         [Inject] private InstructionButton instructionButtonPrefab;
-        public Transform parent;
-        public Transform addNewButton;
+
+        [SerializeField] private RectTransform instructionsListParent;
+        [SerializeField] private RectTransform addNewButtonTransform;
 
         public void AddInstruction(string text)
         {
-            var newHeight = parent.GetChild(parent.childCount - 1).transform.position.y - buttonOffset;
-            var newPrefab = Instantiate(instructionButtonPrefab, parent);
+            var newHeight = instructionsListParent.GetChild(instructionsListParent.childCount - 1)
+                .transform.position.y - buttonOffset;
+            var newPrefab = Instantiate(instructionButtonPrefab, instructionsListParent);
             newPrefab.ChangeLabel(text);
-            newPrefab.transform.position = new Vector3(newPrefab.transform.position.x, newHeight, newPrefab.transform.position.z);
+            newPrefab.transform.position = new (newPrefab.transform.position.x, newHeight, newPrefab.transform.position.z);
             RefreshAddNewButton();
+        }
+
+        public void RemoveInstruction()
+        {
+
         }
 
         private void RefreshAddNewButton()
         {
-
-            addNewButton.transform.position = new Vector3(addNewButton.transform.position.x, addNewButton.transform.position.y - 35, addNewButton.transform.position.z);
-        }
-        public void RemoveInstruction()
-        {
-
+            addNewButtonTransform.transform.position = new(addNewButtonTransform.transform.position.x, addNewButtonTransform.transform.position.y - 35, addNewButtonTransform.transform.position.z);
         }
     }
 }
