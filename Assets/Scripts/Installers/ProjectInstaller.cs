@@ -1,3 +1,4 @@
+using LudumDare.Scripts.Components;
 using LudumDare.Scripts.ScriptableObjects;
 using UnityEngine;
 using Zenject;
@@ -15,6 +16,7 @@ namespace LudumDare.Scripts
         private void InstallSettings()
         {
             Container.Bind<GameSettings>().FromInstance(gameSettings).AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<GameLoop>().FromNewComponentOn(this.gameObject).AsSingle().NonLazy();
         }
     }
 }

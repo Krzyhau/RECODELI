@@ -7,7 +7,7 @@ namespace LudumDare.Scripts.Components
     {
         private const float buttonOffset = 35f;
 
-        [Inject] private InstructionButton instructionButtonPrefab;
+        [Inject] private readonly InstructionButton instructionButtonPrefab;
 
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
@@ -17,8 +17,10 @@ namespace LudumDare.Scripts.Components
             var newHeight = instructionsListParent.GetChild(instructionsListParent.childCount - 1)
                 .transform.position.y - buttonOffset;
             var newPrefab = Instantiate(instructionButtonPrefab, instructionsListParent);
+            
             newPrefab.ChangeLabel(text);
             newPrefab.transform.position = new (newPrefab.transform.position.x, newHeight, newPrefab.transform.position.z);
+            
             RefreshAddNewButton();
         }
 
