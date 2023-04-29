@@ -31,10 +31,14 @@ namespace LudumDare.Scripts.Components
             // dla testu
             ExecuteCommands(new List<RobotAction>()
             {
+                new WaitAction(1.0f),
                 new ForwardAction(1.0f),
-                new BackAction(3.0f),
-                new TurnLeftAction(0.5f),
-                new WaitAction(2.0f),
+                new WaitAction(1.0f),
+                new BackAction(1.0f),
+                new WaitAction(1.0f),
+                new TurnLeftAction(1.0f),
+                new WaitAction(1.0f),
+                new TurnRightAction(1.0f),
             });
 
 

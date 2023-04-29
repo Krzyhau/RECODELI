@@ -42,24 +42,26 @@ namespace LudumDare.Scripts.Components
                 Recenter();
             }
 
+            const float cameraSnap = 45.0f;
+
             if (Input.GetKeyDown(KeyCode.Keypad4))
             {
-                Snap(new (0.0f, 45.0f));
+                Snap(new (0.0f, cameraSnap));
             }
 
             if (Input.GetKeyDown(KeyCode.Keypad6))
             {
-                Snap(new (0.0f, -45.0f));
+                Snap(new (0.0f, -cameraSnap));
             }
 
             if (Input.GetKeyDown(KeyCode.Keypad8))
             {
-                Snap(new (45.0f, 0.0f));
+                Snap(new (cameraSnap, 0.0f));
             }
 
             if (Input.GetKeyDown(KeyCode.Keypad2))
             {
-                Snap(new (-45.0f, 0.0f));
+                Snap(new (-cameraSnap, 0.0f));
             }
         }
 
@@ -209,7 +211,7 @@ namespace LudumDare.Scripts.Components
             eulerAngles.x = Mathf.Clamp((eulerAngles.x + 180.0f) % 360.0f - 180.0f, -89f, 89f);
 
             // round them up to the nearest increment
-            var increment = 45.0f;
+            const float increment = 90.0f;
             eulerAngles.x = Mathf.Round(eulerAngles.x / increment) * increment;
             eulerAngles.y = Mathf.Round(eulerAngles.y / increment) * increment;
 
