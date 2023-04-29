@@ -1,18 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using System.Collections;
 
-public class RobotAction : MonoBehaviour
+public interface RobotAction
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public string Name { get; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    public IEnumerator Execute(RobotController controller, float value);
 }
