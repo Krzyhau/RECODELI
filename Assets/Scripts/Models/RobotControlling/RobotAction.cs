@@ -1,14 +1,19 @@
-﻿using System.Collections;
+﻿using LudumDare.Scripts.Components;
+using System.Collections;
 
-public abstract class RobotAction
+namespace LudumDare.Scripts.Models
 {
-    protected float parameter;
-
-    public abstract string Name { get; }
-    public abstract IEnumerator Execute(RobotController controller);
-
-    public RobotAction(float param)
+    public abstract class RobotAction
     {
-        parameter = param;
+        protected float parameter;
+
+        public abstract string Name { get; }
+        public abstract IEnumerator Execute(RobotController controller);
+
+        public RobotAction(float param)
+        {
+            parameter = param;
+        }
     }
 }
+

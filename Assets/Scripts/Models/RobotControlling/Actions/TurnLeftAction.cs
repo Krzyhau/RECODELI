@@ -1,17 +1,20 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using LudumDare.Scripts.Components;
 
-public class TurnLeftAction : RobotAction
+namespace LudumDare.Scripts.Models
 {
-    public override string Name => "TURN LEFT";
-
-    public TurnLeftAction(float param) : base(param) { }
-
-    public override IEnumerator Execute(RobotController controller)
+    public class TurnLeftAction : RobotAction
     {
-        controller.YawVelocity = controller.RotationSpeed;
-        yield return new WaitForSeconds(parameter);
-        controller.YawVelocity = 0.0f;
+        public override string Name => "TURN LEFT";
+
+        public TurnLeftAction(float param) : base(param) { }
+
+        public override IEnumerator Execute(RobotController controller)
+        {
+            controller.YawVelocity = controller.RotationSpeed;
+            yield return new WaitForSeconds(parameter);
+            controller.YawVelocity = 0.0f;
+        }
     }
 }

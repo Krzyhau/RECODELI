@@ -1,15 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InstructionButton : MonoBehaviour
+namespace LudumDare.Scripts.Components
 {
-    public Text TextLabel;
-    public Text TextInput;
-    public void ChangeLabel(string label)
+    public class InstructionButton : MonoBehaviour
     {
-        TextLabel.text = label;
-    }
+        [SerializeField] private Text textLabel;
+        [SerializeField] private Text textInput;
 
+        public void ChangeLabel(string label)
+        {
+            textLabel.text = label;
+        }
+    }
 }

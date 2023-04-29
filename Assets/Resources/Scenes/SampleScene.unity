@@ -551,6 +551,8 @@ GameObject:
   m_Component:
   - component: {fileID: 394834870}
   - component: {fileID: 394834871}
+  - component: {fileID: 394834872}
+  - component: {fileID: 394834873}
   m_Layer: 5
   m_Name: Instructions
   m_TagString: Untagged
@@ -592,9 +594,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59eb456c6715d204d87ced89974ed22a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9, type: 3}
   parent: {fileID: 1051104433}
   addNewButton: {fileID: 196051640}
+--- !u!114 &394834872
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394834869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _scriptableObjectInstallers: []
+  _monoInstallers:
+  - {fileID: 394834873}
+  _installerPrefabs: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
+--- !u!114 &394834873
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 394834869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17eee6aa568ae284fab8de7dc4f7c1f7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  instructionButtonPrefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
+    type: 3}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0

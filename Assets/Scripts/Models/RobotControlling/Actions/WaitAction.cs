@@ -1,15 +1,18 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using LudumDare.Scripts.Components;
 
-public class WaitAction : RobotAction
+namespace LudumDare.Scripts.Models
 {
-    public override string Name => "WAIT";
-
-    public WaitAction(float param) : base(param) { }
-
-    public override IEnumerator Execute(RobotController controller)
+    public class WaitAction : RobotAction
     {
-        yield return new WaitForSeconds(parameter);
+        public override string Name => "WAIT";
+
+        public WaitAction(float param) : base(param) { }
+
+        public override IEnumerator Execute(RobotController controller)
+        {
+            yield return new WaitForSeconds(parameter);
+        }
     }
 }

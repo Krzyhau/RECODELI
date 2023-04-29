@@ -1,27 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class Instructions : MonoBehaviour
+namespace LudumDare.Scripts.Components
 {
-    public InstructionButton prefab;
-    public Transform parent;
-    public Transform addNewButton;
-    public void AddInstruction(string text)
+    public class Instructions : MonoBehaviour
     {
-        var newHeight = parent.GetChild(parent.childCount-1).transform.position.y-35;
-        var newPrefab = Instantiate(prefab,parent) ;
-        newPrefab.ChangeLabel(text);
-        newPrefab.transform.position = new Vector3(newPrefab.transform.position.x, newHeight, newPrefab.transform.position.z);
-        RefreshAddNewButton();
-    }
-    private void RefreshAddNewButton()
-    {
+        [Inject] private InstructionButton instructionButtonPrefab;
+        public Transform parent;
+        public Transform addNewButton;
 
-        addNewButton.transform.position = new Vector3(addNewButton.transform.position.x, addNewButton.transform.position.y-35, addNewButton.transform.position.z);
-    }
-    public void RemoveInstruction()
-    {
+        public void AddInstruction(string text)
+        {
+            var newHeight = parent.GetChild(parent.childCount - 1).transform.position.y - 35;
+            var newPrefab = Instantiate(instructionButtonPrefab, parent);
+            newPrefab.ChangeLabel(text);
+            newPrefab.transform.position = new Vector3(newPrefab.transform.position.x, newHeight, newPrefab.transform.position.z);
+            RefreshAddNewButton();
+        }
+        private void RefreshAddNewButton()
+        {
 
+            addNewButton.transform.position = new Vector3(addNewButton.transform.position.x, addNewButton.transform.position.y - 35, addNewButton.transform.position.z);
+        }
+        public void RemoveInstruction()
+        {
+
+        }
     }
 }

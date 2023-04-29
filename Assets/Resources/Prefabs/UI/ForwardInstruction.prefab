@@ -319,8 +319,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f991ea1649f1cc4fb57f80760f39f1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TextLabel: {fileID: 8158375827770987879}
-  TextInput: {fileID: 8774933953237428711}
+  textLabel: {fileID: 8158375827770987879}
+  textInput: {fileID: 8774933953237428711}
 --- !u!1 &1962975239916498903
 GameObject:
   m_ObjectHideFlags: 0
@@ -333,7 +333,7 @@ GameObject:
   - component: {fileID: 2143574082469931364}
   - component: {fileID: 8774933953237428711}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: ForwardInputText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -413,7 +413,7 @@ GameObject:
   - component: {fileID: 8741251649874379979}
   - component: {fileID: 5574074690767473763}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: ForwardDeleteText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
