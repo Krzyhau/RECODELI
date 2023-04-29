@@ -8,12 +8,16 @@ namespace LudumDare.Scripts.Models
     {
         public override string Name => "TURN LEFT";
 
-        public TurnLeftAction(float param) : base(param) { }
+        public TurnLeftAction(float param) : base(param)
+        { 
+        }
 
         public override IEnumerator Execute(RobotController controller)
         {
             controller.YawVelocity = controller.RotationSpeed;
+
             yield return new WaitForSeconds(parameter);
+
             controller.YawVelocity = 0.0f;
         }
     }

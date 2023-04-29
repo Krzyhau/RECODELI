@@ -8,7 +8,9 @@ namespace LudumDare.Scripts.Models
     {
         public override string Name => "WAIT";
 
-        public WaitAction(float param) : base(param) { }
+        public WaitAction(float param) : base(param) 
+        { 
+        }
 
         public override IEnumerator Execute(RobotController controller)
         {

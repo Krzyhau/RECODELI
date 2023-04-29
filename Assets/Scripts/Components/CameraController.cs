@@ -1,8 +1,7 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace TrixelArt
+namespace LudumDare.Scripts.Components
 {
     public class CameraController : MonoBehaviour
     {
@@ -15,11 +14,12 @@ namespace TrixelArt
         [SerializeField] private float orbitingScale;
         [SerializeField] private float transitionTime;
 
-
         private float zoomDistance;
+
         private bool orbiting;
         private bool panning;
         private bool transitioning;
+
         private Vector3 panningInitialMouse;
         private Vector3 orbitingInitialMouse;
         private Vector3 orbitingInitialEuler;
@@ -37,31 +37,53 @@ namespace TrixelArt
             HandleOrbiting();
             HandlePanning();
 
-            if (Input.GetKeyDown(KeyCode.Keypad0)) Recenter();
+            if (Input.GetKeyDown(KeyCode.Keypad0))
+            {
+                Recenter();
+            }
 
-            if (Input.GetKeyDown(KeyCode.Keypad4)) Snap(new Vector3(0.0f, 45.0f));
-            if (Input.GetKeyDown(KeyCode.Keypad6)) Snap(new Vector3(0.0f, -45.0f));
-            if (Input.GetKeyDown(KeyCode.Keypad8)) Snap(new Vector3(45.0f, 0.0f));
-            if (Input.GetKeyDown(KeyCode.Keypad2)) Snap(new Vector3(-45.0f, 0.0f));
+            if (Input.GetKeyDown(KeyCode.Keypad4))
+            {
+                Snap(new (0.0f, 45.0f));
+            }
+
+            if (Input.GetKeyDown(KeyCode.Keypad6))
+            {
+                Snap(new (0.0f, -45.0f));
+            }
+
+            if (Input.GetKeyDown(KeyCode.Keypad8))
+            {
+                Snap(new (45.0f, 0.0f));
+            }
+
+            if (Input.GetKeyDown(KeyCode.Keypad2))
+            {
+                Snap(new (-45.0f, 0.0f));
+            }
         }
 
         private void HandleZooming()
         {
             var scroll = Input.mouseScrollDelta.y;
+
             while (scroll > 0)
             {
                 scroll--;
                 zoomDistance /= scrollZoomScale;
+
                 if (zoomDistance < minimumZoomDistance)
                 {
                     zoomDistance = minimumZoomDistance;
                     scroll = 0;
                 }
             }
+
             while (scroll < 0)
             {
                 scroll++;
                 zoomDistance *= scrollZoomScale;
+
                 if (zoomDistance > maximumZoomDistance)
                 {
                     zoomDistance = maximumZoomDistance;
@@ -69,12 +91,13 @@ namespace TrixelArt
                 }
             }
 
-            var zPos = Mathf.Lerp(
+            var zPosition = Mathf.Lerp(
                 controlledCamera.transform.localPosition.z,
                 zoomDistance * -1.0f,
                 zoomDistanceInterpolation * Time.deltaTime
             );
-            controlledCamera.transform.localPosition = new Vector3(0, 0, zPos);
+
+            controlledCamera.transform.localPosition = new (0, 0, zPosition);
         }
 
 
@@ -86,12 +109,16 @@ namespace TrixelArt
                 orbitingInitialMouse = Input.mousePosition;
                 orbitingInitialEuler = transform.localEulerAngles;
             }
+
             if (!Input.GetMouseButton(2) || transitioning)
             {
                 orbiting = false;
             }
 
-            if (!orbiting) return;
+            if (!orbiting)
+            {
+                return;
+            }
 
             var mouseDifference = (Input.mousePosition - orbitingInitialMouse) * orbitingScale;
             var newRotation = orbitingInitialEuler + new Vector3(-mouseDifference.y, mouseDifference.x, 0);
@@ -112,12 +139,16 @@ namespace TrixelArt
                 firstMousePosition.z = zoomDistance;
                 panningInitialMouse = controlledCamera.ScreenToWorldPoint(firstMousePosition);
             }
+
             if (!Input.GetMouseButton(0) || transitioning)
             {
                 panning = false;
             }
 
-            if (!panning) return;
+            if (!panning)
+            {
+                return;
+            }
 
             var checkedMousePosition = Input.mousePosition;
             checkedMousePosition.z = zoomDistance;
@@ -139,10 +170,11 @@ namespace TrixelArt
                 {
                     float t = (1.0f - Mathf.Cos(time * Mathf.PI)) * 0.5f;
 
-                    transform.position = Vector3.Lerp(initialPosition, targetPosition, t);
-                    transform.rotation = Quaternion.Lerp(initialRotation, targetRotation, t);
+                    transform.SetPositionAndRotation
+                        (Vector3.Lerp(initialPosition, targetPosition, t),
+                        Quaternion.Lerp(initialRotation, targetRotation, t));
 
-                    yield return 0;
+                    yield return 0f;
                 }
 
                 transitioning = false;
@@ -153,11 +185,13 @@ namespace TrixelArt
         {
             orbiting = false;
             panning = false;
+
             if (transitioning)
             {
                 StopCoroutine(lastTransitionCoroutine);
                 transitioning = false;
             }
+
             lastTransitionCoroutine = TransitionCoroutine(position, eulerAngles);
             StartCoroutine(lastTransitionCoroutine);
         }
@@ -171,7 +205,7 @@ namespace TrixelArt
         public void Snap(Vector3 eulerOffset)
         {
             // create new euler angles with pitch clamped
-            Vector3 eulerAngles = transform.localEulerAngles + eulerOffset;
+            var eulerAngles = transform.localEulerAngles + eulerOffset;
             eulerAngles.x = Mathf.Clamp((eulerAngles.x + 180.0f) % 360.0f - 180.0f, -89f, 89f);
 
             // round them up to the nearest increment

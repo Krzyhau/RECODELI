@@ -8,6 +8,7 @@ namespace LudumDare.Scripts
     public class ProjectInstaller : MonoInstaller
     {
         [SerializeField] private GameSettings gameSettings;
+
         public override void InstallBindings()
         {
             InstallSettings();
