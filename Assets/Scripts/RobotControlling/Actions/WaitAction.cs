@@ -4,10 +4,12 @@ using UnityEngine;
 
 public class WaitAction : RobotAction
 {
-    public string Name => "WAIT";
+    public override string Name => "WAIT";
 
-    public IEnumerator Execute(RobotController controller, float value)
+    public WaitAction(float param) : base(param) { }
+
+    public override IEnumerator Execute(RobotController controller)
     {
-        yield return new WaitForSeconds(value);
+        yield return new WaitForSeconds(parameter);
     }
 }

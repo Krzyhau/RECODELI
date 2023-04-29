@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class BackAction : RobotAction
 {
-    public string Name => "BACK";
+    public override string Name => "BACK";
 
-    public IEnumerator Execute(RobotController controller, float value)
+    public BackAction(float param) : base(param) { }
+
+    public override IEnumerator Execute(RobotController controller)
     {
-        yield return 0;
+        controller.CurrentPropellingForce = -controller.PropulsionForce;
+        yield return new WaitForSeconds(parameter);
+        controller.CurrentPropellingForce = 0.0f;
     }
 }

@@ -4,10 +4,14 @@ using UnityEngine;
 
 public class ForwardAction : RobotAction
 {
-    public string Name => "FORWARD";
+    public override string Name => "FORWARD";
 
-    public IEnumerator Execute(RobotController controller, float value)
+    public ForwardAction(float param) : base(param) { }
+
+    public override IEnumerator Execute(RobotController controller)
     {
-        yield return 0;
+        controller.CurrentPropellingForce = controller.PropulsionForce;
+        yield return new WaitForSeconds(parameter);
+        controller.CurrentPropellingForce = 0.0f;
     }
 }

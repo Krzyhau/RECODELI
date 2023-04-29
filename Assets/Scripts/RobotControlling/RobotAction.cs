@@ -1,8 +1,14 @@
 ﻿using System.Collections;
 
-public interface RobotAction
+public abstract class RobotAction
 {
-    public string Name { get; }
+    protected float parameter;
 
-    public IEnumerator Execute(RobotController controller, float value);
+    public abstract string Name { get; }
+    public abstract IEnumerator Execute(RobotController controller);
+
+    public RobotAction(float param)
+    {
+        parameter = param;
+    }
 }

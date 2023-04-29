@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class TurnDownAction : RobotAction
 {
-    public string Name => "TURN DOWN";
+    public override string Name => "TURN DOWN";
 
-    public IEnumerator Execute(RobotController controller, float value)
+    public TurnDownAction(float param) : base(param) { }
+
+    public override IEnumerator Execute(RobotController controller)
     {
         controller.PitchVelocity = -controller.RotationSpeed;
-        yield return new WaitForSeconds(value);
+        yield return new WaitForSeconds(parameter);
         controller.PitchVelocity = 0.0f;
     }
 }

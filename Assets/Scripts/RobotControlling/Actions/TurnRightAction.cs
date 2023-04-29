@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class TurnRightAction : RobotAction
 {
-    public string Name => "TURN RIGHT";
+    public override string Name => "TURN RIGHT";
 
-    public IEnumerator Execute(RobotController controller, float value)
+    public TurnRightAction(float param) : base(param) { }
+
+    public override IEnumerator Execute(RobotController controller)
     {
         controller.YawVelocity = -controller.RotationSpeed;
-        yield return new WaitForSeconds(value);
+        yield return new WaitForSeconds(parameter);
         controller.YawVelocity = 0.0f;
     }
 }
