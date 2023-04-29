@@ -1,24 +1,13 @@
-using System.Collections;
-using UnityEngine;
-using LudumDare.Scripts.Components;
-
 namespace LudumDare.Scripts.Models
 {
-    public class TurnLeftAction : RobotAction
+    public class TurnLeftAction : RotationAction
     {
         public override string Name => "TURN LEFT";
 
-        public TurnLeftAction(float param) : base(param)
+        public override RobotThrusterFlag Thrusters => RobotThrusterFlag.FrontRight | RobotThrusterFlag.BackLeft;
+
+        public TurnLeftAction(float param) : base(param, 1.0f) 
         { 
-        }
-
-        public override IEnumerator Execute(RobotController controller)
-        {
-            controller.YawVelocity = controller.RotationSpeed;
-
-            yield return new WaitForSeconds(parameter);
-
-            controller.YawVelocity = 0.0f;
         }
     }
 }

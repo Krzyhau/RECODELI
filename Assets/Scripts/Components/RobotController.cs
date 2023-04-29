@@ -8,19 +8,18 @@ namespace LudumDare.Scripts.Components
     public class RobotController : MonoBehaviour
     {
         [SerializeField] private float rotationSpeed;
+        [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float propulsionForce;
-
-        public float CurrentPropellingForce { get; set; }
-        public float PitchVelocity { get; set; }
-        public float YawVelocity { get; set; }
 
         public int CurrentCommandIndex { get; private set; }
         public bool ExecutingCommands { get; private set; }
+        public RobotAction CurrentCommand => ExecutingCommands ? CurrentCommands[CurrentCommandIndex] : null;
 
         public List<RobotAction> CurrentCommands { get; set; }
 
         public float RotationSpeed => rotationSpeed;
         public float PropulsionForce => propulsionForce;
+        public AnimationCurve RotationCurve => rotationCurve;
 
         public Rigidbody Rigidbody { get; private set; }
 
@@ -34,44 +33,23 @@ namespace LudumDare.Scripts.Components
                 new WaitAction(1.0f),
                 new ForwardAction(1.0f),
                 new WaitAction(1.0f),
-                new BackAction(1.0f),
+                new BackwardAction(1.0f),
                 new WaitAction(1.0f),
                 new TurnLeftAction(1.0f),
                 new WaitAction(1.0f),
                 new TurnRightAction(1.0f),
             });
-
-
-            CurrentPropellingForce = 0;
         }
 
-        private void FixedUpdate()
-        {
-            HandleRotation();
-            HandlePropelling();
-        }
-
-        private void HandleRotation()
-        {
-            Rigidbody.angularVelocity = new Vector3(PitchVelocity, YawVelocity, 0.0f) * Time.fixedDeltaTime;
-        }
-
-        private void HandlePropelling()
-        {
-            Rigidbody.AddForce(transform.forward * CurrentPropellingForce, ForceMode.Acceleration);
-        }
-
-        private IEnumerator CommandExecutionCoroutine(List<RobotAction> commands)
+        private IEnumerator CommandExecutionCoroutine()
         {
             ExecutingCommands = true;
             CurrentCommandIndex = 0;
-            while (CurrentCommandIndex < commands.Count)
+            while (CurrentCommandIndex < CurrentCommands.Count)
             {
-                var command = commands[CurrentCommandIndex];
-                yield return command.Execute(this);
+                yield return CurrentCommand.Execute(this);
                 CurrentCommandIndex++;
             }
-            yield return null;
             ExecutingCommands = false;
         }
 
@@ -86,9 +64,9 @@ namespace LudumDare.Scripts.Components
 
         public bool ExecuteCommands()
         {
-            if (ExecutingCommands) return false;
+            if (ExecutingCommands || CurrentCommands.Count < 0) return false;
 
-            StartCoroutine(CommandExecutionCoroutine(CurrentCommands));
+            StartCoroutine(CommandExecutionCoroutine());
 
             return true;
         }

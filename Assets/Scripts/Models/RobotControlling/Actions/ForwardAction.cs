@@ -1,24 +1,13 @@
-using System.Collections;
-using UnityEngine;
-using LudumDare.Scripts.Components;
-
 namespace LudumDare.Scripts.Models
 {
-    public class ForwardAction : RobotAction
+    public class ForwardAction : MovementAction
     {
         public override string Name => "FORWARD";
 
-        public ForwardAction(float param) : base(param) 
-        { 
-        }
+        public override RobotThrusterFlag Thrusters => RobotThrusterFlag.BackRight | RobotThrusterFlag.BackLeft;
 
-        public override IEnumerator Execute(RobotController controller)
+        public ForwardAction(float param) : base(param, 1.0f)
         {
-            controller.CurrentPropellingForce = controller.PropulsionForce;
-
-            yield return new WaitForSeconds(parameter);
-
-            controller.CurrentPropellingForce = 0.0f;
         }
     }
 }

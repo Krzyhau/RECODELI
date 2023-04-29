@@ -8,6 +8,7 @@ namespace LudumDare.Scripts.Models
         protected float parameter;
 
         public abstract string Name { get; }
+        public abstract RobotThrusterFlag Thrusters { get; }
         public abstract IEnumerator Execute(RobotController controller);
 
         public RobotAction(float param)

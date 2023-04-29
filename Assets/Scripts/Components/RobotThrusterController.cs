@@ -1,3 +1,4 @@
+using LudumDare.Scripts.Models;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,21 +11,6 @@ namespace LudumDare.Scripts.Components
 {
     public class RobotThrusterController : MonoBehaviour
     {
-        [Flags]
-        private enum RobotThrusterFlag
-        {
-            None = 0,
-            FrontLeft = 1,
-            FrontRight = 2,
-            BackLeft = 4,
-            BackRight = 8,
-        }
-
-        private const RobotThrusterFlag ForwardThrust = RobotThrusterFlag.FrontLeft | RobotThrusterFlag.FrontRight;
-        private const RobotThrusterFlag BackwardThrust = RobotThrusterFlag.BackLeft | RobotThrusterFlag.BackRight;
-        private const RobotThrusterFlag LeftRotationThrust = RobotThrusterFlag.FrontLeft | RobotThrusterFlag.BackRight;
-        private const RobotThrusterFlag RightRotationThrust = RobotThrusterFlag.BackLeft | RobotThrusterFlag.FrontRight;
-
 
         [SerializeField] private ParticleSystem frontLeftThruster;
         [SerializeField] private ParticleSystem frontRightThruster;
@@ -68,16 +54,9 @@ namespace LudumDare.Scripts.Components
 
         private RobotThrusterFlag GetThrusterFlags()
         {
-            switch (controller.CurrentPropellingForce)
+            if (controller.ExecutingCommands)
             {
-                case < 0: return ForwardThrust;
-                case > 0: return BackwardThrust;
-            }
-
-            switch (controller.YawVelocity)
-            {
-                case < 0: return LeftRotationThrust;
-                case > 0: return RightRotationThrust;
+                return controller.CurrentCommand.Thrusters;
             }
 
             return RobotThrusterFlag.None;
