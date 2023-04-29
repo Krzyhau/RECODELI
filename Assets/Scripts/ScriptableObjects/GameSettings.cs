@@ -1,17 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class GameSettings : MonoBehaviour
+namespace LudumDare.Scripts.ScriptableObjects
 {
-    // Start is called before the first frame update
-    void Start()
+    [CreateAssetMenu(fileName = "GameSettings", menuName = "Settings/Game Settings", order = 1)]
+    public class GameSettings : ScriptableObject
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

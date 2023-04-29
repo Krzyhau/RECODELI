@@ -1,9 +1,20 @@
+using LudumDare.Scripts.ScriptableObjects;
 using UnityEngine;
 using Zenject;
 
-public class SceneInstaller : MonoInstaller
+namespace LudumDare.Scripts
 {
-    public override void InstallBindings()
+    public class SceneInstaller : MonoInstaller
     {
+        [SerializeField] private GameSettings gameSettings;
+        public override void InstallBindings()
+        {
+            InstallSettings();
+        }
+
+        private void InstallSettings()
+        {
+            Container.Bind<GameSettings>().FromInstance(gameSettings).AsSingle().NonLazy();
+        }
     }
 }
