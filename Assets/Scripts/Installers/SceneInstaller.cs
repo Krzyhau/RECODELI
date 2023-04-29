@@ -6,15 +6,14 @@ namespace LudumDare.Scripts
 {
     public class SceneInstaller : MonoInstaller
     {
-        [SerializeField] private GameSettings gameSettings;
         public override void InstallBindings()
         {
-            InstallSettings();
+            InstallScene();
         }
 
-        private void InstallSettings()
+        private void InstallScene()
         {
-            Container.Bind<GameSettings>().FromInstance(gameSettings).AsSingle().NonLazy();
+
         }
     }
 }
