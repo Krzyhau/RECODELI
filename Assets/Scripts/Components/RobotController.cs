@@ -30,12 +30,12 @@ namespace LudumDare.Scripts.Components
 
             // dla testu
             ExecuteCommands(new List<RobotAction>()
-        {
-            new ForwardAction(1.0f),
-            new BackAction(3.0f),
-            new TurnLeftAction(0.5f),
-            new WaitAction(2.0f),
-        });
+            {
+                new ForwardAction(1.0f),
+                new BackAction(3.0f),
+                new TurnLeftAction(0.5f),
+                new WaitAction(2.0f),
+            });
 
 
             CurrentPropellingForce = 0;
@@ -54,7 +54,7 @@ namespace LudumDare.Scripts.Components
 
         private void HandlePropelling()
         {
-            Rigidbody.AddForce(transform.forward * propulsionForce, ForceMode.Acceleration);
+            Rigidbody.AddForce(transform.forward * CurrentPropellingForce, ForceMode.Acceleration);
         }
 
         private IEnumerator CommandExecutionCoroutine(List<RobotAction> commands)
