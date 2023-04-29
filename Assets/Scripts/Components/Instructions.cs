@@ -4,7 +4,7 @@ using Zenject;
 
 namespace LudumDare.Scripts.Components
 {
-    public class Instructions : MonoBehaviour
+    public class Instructions : MonoBehaviour //TODO - 10px na start pozniej 5px przerwy, scrollbar dla instructions
     {
         public const float buttonOffset = 35f;
 
@@ -13,21 +13,33 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
 
+        private float newHeight = -15;
+        private int instructionsCount;
+
         public void AddInstruction(string text)
         {
-            float newHeight = instructionsListParent.GetChild(instructionsListParent.childCount - 1)
-                .transform.position.y - buttonOffset;
+            if (instructionsListParent.childCount > 0)
+            {
+                newHeight = instructionsListParent.GetChild(instructionsListParent.childCount - 1)
+                    .transform.position.y - buttonOffset;
+            }
+            
             var newPrefab = Instantiate(instructionButtonPrefab, instructionsListParent);
-            
+            if (instructionsListParent.childCount > 1)
+            {
+                newPrefab.transform.position = newPrefab.transform.position.ChangeY(newHeight);
+            }
+            else
+            {
+                newPrefab.GetComponent<RectTransform>().anchoredPosition = new Vector3(0,newHeight,0);
+            }
+            addNewButtonTransform.transform.position = addNewButtonTransform.transform.position.ChangeY(newHeight);
             newPrefab.ChangeLabel(text);
-            newPrefab.transform.position.ChangeY(newHeight);
-            
+            newPrefab.gameObject.name = "Instruction: "+instructionsCount;
+
+
             RefreshAddNewButton();
-        }
-
-        public void RemoveInstruction()
-        {
-
+            instructionsCount++;
         }
 
         private void RefreshAddNewButton()

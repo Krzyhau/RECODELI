@@ -12,5 +12,17 @@ namespace LudumDare.Scripts.Components
         {
             textLabel.text = label;
         }
+        public void ChangePosition()
+        {
+
+        }
+        public void RemoveInstruction()
+        {
+            foreach(Transform child in transform.parent)
+            {
+                Debug.Log(child.name);
+            }
+            Destroy(gameObject);
+        }
     }
 }
