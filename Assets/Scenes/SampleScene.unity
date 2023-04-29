@@ -551,6 +551,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   prefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9, type: 3}
   parent: {fileID: 1051104433}
+  addNewButton: {fileID: 196051640}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -762,7 +763,7 @@ MonoBehaviour:
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
-          m_StringArgument: TestowyTest
+          m_StringArgument: Forward
           m_BoolArgument: 0
         m_CallState: 2
 --- !u!114 &449578835
@@ -1126,7 +1127,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 711522689}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 394834871}
+        m_TargetAssemblyTypeName: Instructions, Assembly-CSharp
+        m_MethodName: AddInstruction
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: Back
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &711522689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2008,30 +2021,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1051104433}
     m_Modifications:
-    - target: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
-        type: 3}
-      propertyPath: text
-      value: 
-      objectReference: {fileID: 4404246349465766277}
-    - target: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
-        type: 3}
-      propertyPath: TextInput
-      value: 
-      objectReference: {fileID: 4404246349465766276}
-    - target: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
-        type: 3}
-      propertyPath: TextLabel
-      value: 
-      objectReference: {fileID: 4404246349465766277}
     - target: {fileID: 1379632587143664886, guid: ac6071bf5e129f94eba7d16e591fabd9,
         type: 3}
       propertyPath: m_Name
       value: ForwardInstruction
-      objectReference: {fileID: 0}
-    - target: {fileID: 1379632587143664886, guid: ac6071bf5e129f94eba7d16e591fabd9,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3906403566760679004, guid: ac6071bf5e129f94eba7d16e591fabd9,
         type: 3}
@@ -2149,27 +2142,3 @@ RectTransform:
     type: 3}
   m_PrefabInstance: {fileID: 4404246349465766274}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &4404246349465766276 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8774933953237428711, guid: ac6071bf5e129f94eba7d16e591fabd9,
-    type: 3}
-  m_PrefabInstance: {fileID: 4404246349465766274}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4404246349465766277 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8158375827770987879, guid: ac6071bf5e129f94eba7d16e591fabd9,
-    type: 3}
-  m_PrefabInstance: {fileID: 4404246349465766274}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
