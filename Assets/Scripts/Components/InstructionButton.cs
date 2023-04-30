@@ -9,10 +9,21 @@ namespace LudumDare.Scripts.Components
     {
         [SerializeField] private Text textLabel;
         [SerializeField] private Text textInput;
+        [SerializeField] private Sprite highlightSprite;
+
         public Instructions instructions;
         private float newHeight;
 
+        private Image background;
+        private Sprite defaultSprite;
+
         public string Label => textLabel.text;
+
+        private void Start()
+        {
+            background = GetComponent<Image>();
+            defaultSprite = background.sprite;
+        }
 
         public void ChangeLabel(string label)
         {
@@ -76,6 +87,11 @@ namespace LudumDare.Scripts.Components
             }
 
             Destroy(this.gameObject);
+        }
+
+        public void SetHighlighted(bool highlighted)
+        {
+            background.sprite = (highlighted) ? highlightSprite : defaultSprite;
         }
     }
 }

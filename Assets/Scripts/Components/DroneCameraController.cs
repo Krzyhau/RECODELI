@@ -33,7 +33,7 @@ namespace LudumDare.Scripts.Components
             controlledCamera.transform.position = Vector3.Lerp(
                 controlledCamera.transform.position,
                 preinterpolatedCameraPosition,
-                cameraInterpolationFactor * Time.deltaTime
+                cameraInterpolationFactor * Time.unscaledDeltaTime
             );
         }
 

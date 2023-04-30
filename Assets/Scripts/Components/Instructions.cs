@@ -77,10 +77,6 @@ namespace LudumDare.Scripts.Components
             return actionList;
         }
 
-        public void PlayInstructions()
-        {
-            RobotController.Instance.ExecuteCommands(GetRobotActionList());
-        }
         public void MoveAddButton(float offset)
         {
             newHeight = addNewButtonTransform.anchoredPosition.y + offset;
@@ -89,6 +85,16 @@ namespace LudumDare.Scripts.Components
             //OLD na transform position 
             /*addNewButtonTransform.transform.position = addNewButtonTransform.transform.position
                     .ChangeY(addNewButtonTransform.transform.position.y + offset);*/
+        }
+
+        public void HighlightInstruction(int id)
+        {
+            for (int i = 0; i < instructionsListParent.childCount; i++)
+            {
+                if (!instructionsListParent.GetChild(i).TryGetComponent(out InstructionButton button)) continue;
+
+                button.SetHighlighted(i == id);
+            }
         }
     }
 }

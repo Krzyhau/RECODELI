@@ -403,6 +403,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   textLabel: {fileID: 8158375827770987879}
   textInput: {fileID: 8774933953237428711}
+  highlightSprite: {fileID: 21300000, guid: b63560a04456a9942b3b8d9de4ba93b4, type: 3}
   instructions: {fileID: 0}
 --- !u!1 &1962975239916498903
 GameObject:

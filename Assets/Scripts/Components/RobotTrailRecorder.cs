@@ -6,11 +6,11 @@ namespace LudumDare.Scripts.Components
 {
     public class RobotTrailRecorder : MonoBehaviour
     {
-        [SerializeField] private RobotController controller;
         [SerializeField] private float distanceThreshold;
 
         private bool recording;
         private Vector3 lastPosition = Vector3.zero;
+        private RobotController controller;
 
         public bool Recording => recording;
 
@@ -19,24 +19,20 @@ namespace LudumDare.Scripts.Components
 
         private void Start()
         {
-            // TODO: Zenject the shit out of the Robot Controller
-
             lineRenderer = GetComponent<LineRenderer>();
-
-            StartRecording();
         }
 
 
         private void FixedUpdate()
         {
-            if (recording)
+            if (!recording || controller==null) return;
+            
+
+            var currentPoint = controller.transform.position;
+            if ((currentPoint - lastPosition).magnitude > distanceThreshold)
             {
-                var currentPoint = controller.transform.position;
-                if ((currentPoint - lastPosition).magnitude > distanceThreshold)
-                {
-                    AddPoint(currentPoint);
-                    lastPosition = currentPoint;
-                }
+                AddPoint(currentPoint);
+                lastPosition = currentPoint;
             }
         }
 
@@ -53,15 +49,15 @@ namespace LudumDare.Scripts.Components
             lineRenderer.SetPositions(tracePoints.ToArray());
         }
 
-        // TODO: Call this function when simulation has stopped.
         public void StopRecording()
         {
             recording = false;
+            controller = null;
         }
 
-        // TODO: Call this function when simulation has started
-        public void StartRecording()
+        public void StartRecording(RobotController controller)
         {
+            this.controller = controller;
             tracePoints.Clear();
             AddPoint(controller.transform.position);
             recording = true;
