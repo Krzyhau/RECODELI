@@ -7,6 +7,7 @@ namespace LudumDare.Scripts.Components
 {
     public class Explosive : MonoBehaviour
     {
+        [SerializeField] private ParticleSystem explosionParticle;
         [SerializeField] private MeshRenderer glowingIndicatorMesh;
         [SerializeField] private float indicationMaxSpeed;
         [SerializeField] private float explosionForce;
@@ -68,7 +69,7 @@ namespace LudumDare.Scripts.Components
                 rigidbody.AddForce(pushVector, ForceMode.Impulse);
             }
 
-            // TODO: Create explosion particle here
+            Instantiate(explosionParticle, transform.position, Quaternion.identity);
 
             Destroy(gameObject);
         }

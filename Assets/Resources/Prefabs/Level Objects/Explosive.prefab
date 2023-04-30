@@ -99,6 +99,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: feeba124ee382a8419755e07a73f8c17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionParticle: {fileID: 3038071385814310973, guid: d126b17d5630988468318de594e6e424,
+    type: 3}
   glowingIndicatorMesh: {fileID: 4275985656205304399}
   indicationMaxSpeed: 5
   explosionForce: 50
