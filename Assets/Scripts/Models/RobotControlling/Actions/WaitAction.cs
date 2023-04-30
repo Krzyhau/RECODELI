@@ -6,8 +6,6 @@ namespace LudumDare.Scripts.Models
 {
     public class WaitAction : RobotAction
     {
-        public override string Name => "WAIT";
-
         public override RobotThrusterFlag Thrusters => RobotThrusterFlag.None;
 
         public WaitAction(float param) : base(param) 

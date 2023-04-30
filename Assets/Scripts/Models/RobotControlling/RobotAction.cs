@@ -7,13 +7,25 @@ namespace LudumDare.Scripts.Models
     {
         protected float parameter;
 
-        public abstract string Name { get; }
         public abstract RobotThrusterFlag Thrusters { get; }
         public abstract IEnumerator Execute(RobotController controller);
 
         public RobotAction(float param)
         {
             parameter = param;
+        }
+
+        public static RobotAction CreateFromName(string name, float param)
+        {
+            switch (name.ToUpper())
+            {
+                case "WAIT": return new WaitAction(param);
+                case "FORWARD": return new ForwardAction(param);
+                case "BACKWARD": return new BackwardAction(param);
+                case "TURN LEFT": return new TurnLeftAction(param);
+                case "TURN RIGHT": return new TurnRightAction(param);
+                default: return null;
+            }
         }
     }
 }

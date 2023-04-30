@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 namespace LudumDare.Scripts.Components
 {
@@ -38,7 +39,7 @@ namespace LudumDare.Scripts.Components
 
         private void Panning()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 heldPlanePosition = GetMousePosOnXZPlane();
                 panning = true;

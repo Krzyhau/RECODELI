@@ -1,4 +1,6 @@
+using LudumDare.Scripts.Models;
 using LudumDare.Scripts.Utils;
+using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
 
@@ -9,6 +11,7 @@ namespace LudumDare.Scripts.Components
         public const float buttonOffset = 35f;
 
         [Inject] private readonly InstructionButton instructionButtonPrefab;
+        [SerializeField] private RobotController robotController;
 
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
@@ -55,6 +58,37 @@ namespace LudumDare.Scripts.Components
             RefreshAddNewButton();
             instructionsCount++;
             newHeight = -15;
+        }
+
+        public List<RobotAction> GetRobotActionList()
+        {
+            var actionList = new List<RobotAction>();
+
+            for (int i = 0; i < instructionsListParent.childCount; i++)
+            {
+                if (!instructionsListParent.GetChild(i).TryGetComponent(out InstructionButton button)) continue;
+                var robotAction = RobotAction.CreateFromName(button.Label, button.GetParameterValue());
+                if (robotAction != null)
+                {
+                    actionList.Add(robotAction);
+                }
+            }
+
+            return actionList;
+        }
+
+        public void PlayInstructions()
+        {
+            robotController.ExecuteCommands(GetRobotActionList());
+        }
+
+        private void Update()
+        {
+            // TODO: TYMCZASOWE! zamieniæ na button w ui
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                PlayInstructions();
+            }
         }
 
         private void RefreshAddNewButton()

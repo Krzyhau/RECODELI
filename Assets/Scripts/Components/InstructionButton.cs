@@ -1,4 +1,5 @@
 using LudumDare.Scripts.Utils;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,10 +11,20 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Text textInput;
         public Instructions instructions;
         private float newHeight;
+
+        public string Label => textLabel.text;
+
         public void ChangeLabel(string label)
         {
             textLabel.text = label;
         }
+
+        public float GetParameterValue()
+        {
+            bool valid = float.TryParse(textInput.text.Replace(",", "."), NumberStyles.Float, CultureInfo.InvariantCulture, out var parameter);
+            return !valid ? 0.0f : parameter;
+        }
+
         public void MoveUp()
         {
             var i = transform.GetSiblingIndex();

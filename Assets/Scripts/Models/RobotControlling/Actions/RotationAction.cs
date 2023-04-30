@@ -16,7 +16,6 @@ namespace LudumDare.Scripts.Models
 
         public override IEnumerator Execute(RobotController controller)
         {
-            var currentRotation = controller.transform.eulerAngles.y;
             var deltaRotation = parameter * rotationDirection * controller.RotationSpeed;
 
             for (float t = 0; t < parameter; t += Time.fixedDeltaTime)
@@ -24,12 +23,15 @@ namespace LudumDare.Scripts.Models
                 yield return new WaitForFixedUpdate();
 
                 var t1 = controller.RotationCurve.Evaluate(t / parameter);
-                var t2 = controller.RotationCurve.Evaluate((t + Time.fixedDeltaTime) / parameter);
+                var t2 = controller.RotationCurve.Evaluate(Mathf.Min(1.0f, (t + Time.fixedDeltaTime) / parameter));
                 var desiredAngle = deltaRotation * t1;
                 var desiredNextAngle = deltaRotation * t2;
                 var desiredAngularVelocity = (desiredNextAngle - desiredAngle) / Time.fixedDeltaTime;
                 controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * desiredAngularVelocity, 0);
             }
+
+            yield return new WaitForFixedUpdate();
+            controller.Rigidbody.angularVelocity = Vector3.zero;
         }
     }
 }
