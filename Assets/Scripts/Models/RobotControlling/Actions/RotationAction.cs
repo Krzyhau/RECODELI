@@ -25,11 +25,10 @@ namespace LudumDare.Scripts.Models
 
                 var t1 = controller.RotationCurve.Evaluate(t / parameter);
                 var t2 = controller.RotationCurve.Evaluate((t + Time.fixedDeltaTime) / parameter);
-                var desiredAngle = Mathf.Lerp(currentRotation, currentRotation + deltaRotation, t1);
-                var desiredNextAngle = Mathf.Lerp(currentRotation, currentRotation + deltaRotation, t2);
-
-                controller.transform.localEulerAngles = new Vector3(0, desiredAngle, 0);
-                controller.Rigidbody.angularVelocity = new Vector3(0, (desiredNextAngle - desiredAngle) / Time.fixedDeltaTime, 0);
+                var desiredAngle = deltaRotation * t1;
+                var desiredNextAngle = deltaRotation * t2;
+                var desiredAngularVelocity = (desiredNextAngle - desiredAngle) / Time.fixedDeltaTime;
+                controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * desiredAngularVelocity, 0);
             }
         }
     }
