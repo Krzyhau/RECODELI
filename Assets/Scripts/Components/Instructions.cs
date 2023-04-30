@@ -2,7 +2,6 @@ using LudumDare.Scripts.Models;
 using LudumDare.Scripts.Utils;
 using System.Collections.Generic;
 using UnityEngine;
-using Zenject;
 
 namespace LudumDare.Scripts.Components
 {
@@ -10,12 +9,10 @@ namespace LudumDare.Scripts.Components
     {
         public const float buttonOffset = 40f;
 
-        [Inject] private readonly InstructionButton instructionButtonPrefab;
-        [SerializeField] private RobotController robotController;
+        [SerializeField] private InstructionButton instructionButtonPrefab;
 
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
-        [SerializeField] private RectTransform instructions;
 
 
         private float newHeight = -15;
@@ -51,7 +48,8 @@ namespace LudumDare.Scripts.Components
             //zwieksza height instructions jak brakuje miejsca
             if (newPrefabRect.anchoredPosition.y<-300)
             {
-                instructions.sizeDelta = instructions.sizeDelta.ChangeY(instructions.sizeDelta.y + buttonOffset);
+                var instructionsRect = GetComponent<RectTransform>();
+                instructionsRect.sizeDelta = instructionsRect.sizeDelta.ChangeY(instructionsRect.sizeDelta.y + buttonOffset);
             }
 
             newPrefab.ChangeLabel(text);
@@ -81,7 +79,7 @@ namespace LudumDare.Scripts.Components
 
         public void PlayInstructions()
         {
-            robotController.ExecuteCommands(GetRobotActionList());
+            RobotController.Instance.ExecuteCommands(GetRobotActionList());
         }
         public void MoveAddButton(float offset)
         {

@@ -23,6 +23,9 @@ namespace LudumDare.Scripts.Components
 
         public Rigidbody Rigidbody { get; private set; }
 
+        public static RobotController Instance { get; private set; }
+
+        private void Awake() => Instance = this;
 
         private void Start()
         {

@@ -559,7 +559,7 @@ RectTransform:
   - {fileID: 6124367594792305385}
   - {fileID: 4950434807644815377}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1570,8 +1570,6 @@ GameObject:
   - component: {fileID: 5635701136206852884}
   - component: {fileID: 2642119281671167674}
   - component: {fileID: 626753200354081254}
-  - component: {fileID: 9016708199756633285}
-  - component: {fileID: 6094019410701185952}
   m_Layer: 5
   m_Name: Instructions
   m_TagString: Untagged
@@ -1655,38 +1653,6 @@ MonoBehaviour:
   instructionsListParent: {fileID: 7919702112255226354}
   addNewButtonTransform: {fileID: 7640884375242022601}
   instructions: {fileID: 6165805454155545448}
---- !u!114 &9016708199756633285
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4030159342999035438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 6094019410701185952}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &6094019410701185952
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4030159342999035438}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17eee6aa568ae284fab8de7dc4f7c1f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  instructionButtonPrefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
-    type: 3}
 --- !u!1 &4043494051878970434
 GameObject:
   m_ObjectHideFlags: 0
@@ -2725,9 +2691,6 @@ GameObject:
   - component: {fileID: 3181792742371559969}
   - component: {fileID: 38710269914621529}
   - component: {fileID: 2027361794249399144}
-  - component: {fileID: 3863073916257260742}
-  - component: {fileID: 7938357550064288983}
-  - component: {fileID: 4179228389444667534}
   m_Layer: 5
   m_Name: NewInstructionsList
   m_TagString: Untagged
@@ -2800,54 +2763,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 0.4
---- !u!114 &3863073916257260742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7149970747287907660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 59eb456c6715d204d87ced89974ed22a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  robotController: {fileID: 0}
-  instructionsListParent: {fileID: 0}
-  addNewButtonTransform: {fileID: 0}
-  instructions: {fileID: 0}
---- !u!114 &7938357550064288983
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7149970747287907660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _scriptableObjectInstallers: []
-  _monoInstallers:
-  - {fileID: 4179228389444667534}
-  _installerPrefabs: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
---- !u!114 &4179228389444667534
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7149970747287907660}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17eee6aa568ae284fab8de7dc4f7c1f7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  instructionButtonPrefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
-    type: 3}
 --- !u!1 &7694723227060875234
 GameObject:
   m_ObjectHideFlags: 0
