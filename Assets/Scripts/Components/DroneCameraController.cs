@@ -81,7 +81,7 @@ namespace LudumDare.Scripts.Components
                 zoomDistance -= zoomScrollDistance;
             }
 
-            if (zoomDistance == 0.0f) return;
+            if (zoomDistance == 0.0f || EventSystem.current.IsPointerOverGameObject()) return;
 
             var hoveredPlanePosition = GetMousePosOnXZPlane();
 

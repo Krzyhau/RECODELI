@@ -8,7 +8,7 @@ namespace LudumDare.Scripts.Components
 {
     public class Instructions : MonoBehaviour //TODO - 10px na start pozniej 5px przerwy, scrollbar dla instructions
     {
-        public const float buttonOffset = 35f;
+        public const float buttonOffset = 55f;
 
         [Inject] private readonly InstructionButton instructionButtonPrefab;
         [SerializeField] private RobotController robotController;
