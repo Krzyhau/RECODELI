@@ -25,17 +25,19 @@ namespace LudumDare.Scripts.Components
             return !valid ? 0.0f : parameter;
         }
 
-        public void MoveUp()
+        public void MoveUp() //TODO przepuœciæ przez kompilator Szymona.
         {
             var i = transform.GetSiblingIndex();
             if (i > 0)
             {
-                var childTransform = transform.parent.GetChild(i).transform;
-                var childTransform2 = transform.parent.GetChild(i-1).transform;
-                var newHeight = childTransform.position.y + Instructions.buttonOffset;
-                var newHeight2 = childTransform2.position.y - Instructions.buttonOffset;
-                childTransform.position = childTransform.position.ChangeY(newHeight);
-                childTransform2.position = childTransform2.position.ChangeY(newHeight2);
+                var childTransform = transform.parent.GetChild(i).GetComponent<RectTransform>();
+                var childTransform2 = transform.parent.GetChild(i-1).GetComponent<RectTransform>();
+
+                var newHeight = childTransform.anchoredPosition.y + Instructions.buttonOffset;
+                var newHeight2 = childTransform2.anchoredPosition.y - Instructions.buttonOffset;
+
+                childTransform.anchoredPosition = childTransform.anchoredPosition.ChangeY(newHeight);
+                childTransform2.anchoredPosition = childTransform2.anchoredPosition.ChangeY(newHeight2);
                 childTransform.SetSiblingIndex(i - 1);
             }
         }
@@ -44,12 +46,14 @@ namespace LudumDare.Scripts.Components
             var i = transform.GetSiblingIndex();
             if (i<transform.parent.childCount-1)
             {
-                var childTransform = transform.parent.GetChild(i).transform;
-                var childTransform2 = transform.parent.GetChild(i + 1).transform;
-                var newHeight = childTransform.position.y - Instructions.buttonOffset;
-                var newHeight2 = childTransform2.position.y + Instructions.buttonOffset;
-                childTransform.position = childTransform.position.ChangeY(newHeight);
-                childTransform2.position = childTransform2.position.ChangeY(newHeight2);
+                var childTransform = transform.parent.GetChild(i).GetComponent<RectTransform>();
+                var childTransform2 = transform.parent.GetChild(i + 1).GetComponent<RectTransform>();
+
+                var newHeight = childTransform.anchoredPosition.y - Instructions.buttonOffset;
+                var newHeight2 = childTransform2.anchoredPosition.y + Instructions.buttonOffset;
+
+                childTransform.anchoredPosition = childTransform.anchoredPosition.ChangeY(newHeight);
+                childTransform2.anchoredPosition = childTransform2.anchoredPosition.ChangeY(newHeight2);
                 childTransform.SetSiblingIndex(i + 1);
             }
         }
