@@ -12,6 +12,8 @@ namespace LudumDare.Scripts.Components
 
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
+        [SerializeField] private RectTransform instructions; //todo to jest .this???
+
 
         private float newHeight = -15;
         private int instructionsCount;
@@ -25,27 +27,45 @@ namespace LudumDare.Scripts.Components
             }
             
             var newPrefab = Instantiate(instructionButtonPrefab, instructionsListParent);
+
+            //Ustawia pozycje - dla 1dziecka anchored
             if (instructionsListParent.childCount > 1)
             {
                 newPrefab.transform.position = newPrefab.transform.position.ChangeY(newHeight);
+                MoveAddButton(-buttonOffset);
             }
             else
             {
                 newPrefab.GetComponent<RectTransform>().anchoredPosition = new Vector3(0,newHeight,0);
+                addNewButtonTransform.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, newHeight - 10 - buttonOffset, 0);
+                Debug.Log(newHeight);
             }
-            addNewButtonTransform.transform.position = addNewButtonTransform.transform.position.ChangeY(newHeight);
+
+            //zwieksza height instructions jak brakuje miejsca
+            if (newPrefab.GetComponent<RectTransform>().anchoredPosition.y<-700)
+            {
+                var parentRect = instructions.transform.GetComponent<RectTransform>();
+                parentRect.sizeDelta = parentRect.sizeDelta.ChangeY(parentRect.sizeDelta.y + buttonOffset);
+            }
+
             newPrefab.ChangeLabel(text);
             newPrefab.gameObject.name = "Instruction: "+instructionsCount;
-
+            newPrefab.instructions = this;
 
             RefreshAddNewButton();
             instructionsCount++;
+            newHeight = -15;
         }
 
         private void RefreshAddNewButton()
         {
             addNewButtonTransform.transform.position.ChangeY
                 (addNewButtonTransform.transform.position.y - buttonOffset);
+        }
+        public void MoveAddButton(float offset)
+        {
+            addNewButtonTransform.transform.position = addNewButtonTransform.transform.position
+                    .ChangeY(addNewButtonTransform.transform.position.y + offset);
         }
     }
 }
