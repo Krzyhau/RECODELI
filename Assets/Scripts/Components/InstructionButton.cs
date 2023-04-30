@@ -9,6 +9,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Text textLabel;
         [SerializeField] private Text textInput;
         public Instructions instructions;
+        private float newHeight;
         public void ChangeLabel(string label)
         {
             textLabel.text = label;
@@ -46,13 +47,19 @@ namespace LudumDare.Scripts.Components
             for (int i = transform.GetSiblingIndex(); i < transform.parent.childCount; i++)
             {
                 var childTransform = transform.parent.GetChild(i).transform;
-                var newHeight = childTransform.position.y + Instructions.buttonOffset;
+                newHeight = childTransform.position.y + Instructions.buttonOffset;
                 childTransform.position =
                     childTransform.position.ChangeY(newHeight);
             }
             instructions.MoveAddButton(Instructions.buttonOffset);
-            /*addNewButtonTransform.transform.position = addNewButtonTransform.transform.position
-                    .ChangeY(addNewButtonTransform.transform.position.y - buttonOffset);*/
+
+            var lastChildTransform = transform.parent.GetChild(transform.parent.childCount-1).transform;
+            if (lastChildTransform.GetComponent<RectTransform>().anchoredPosition.y < -290)
+            {
+                var parentRect = instructions.transform.GetComponent<RectTransform>();
+                parentRect.sizeDelta = parentRect.sizeDelta.ChangeY(parentRect.sizeDelta.y - Instructions.buttonOffset);
+            }
+
             Destroy(this.gameObject);
         }
     }

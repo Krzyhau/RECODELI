@@ -42,7 +42,7 @@ namespace LudumDare.Scripts.Components
             }
 
             //zwieksza height instructions jak brakuje miejsca
-            if (newPrefab.GetComponent<RectTransform>().anchoredPosition.y<-700)
+            if (newPrefab.GetComponent<RectTransform>().anchoredPosition.y<-300)
             {
                 var parentRect = instructions.transform.GetComponent<RectTransform>();
                 parentRect.sizeDelta = parentRect.sizeDelta.ChangeY(parentRect.sizeDelta.y + buttonOffset);
