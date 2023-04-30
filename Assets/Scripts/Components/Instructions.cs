@@ -82,15 +82,6 @@ namespace LudumDare.Scripts.Components
             robotController.ExecuteCommands(GetRobotActionList());
         }
 
-        private void Update()
-        {
-            // TODO: TYMCZASOWE! zamieniæ na button w ui
-            if (Input.GetKeyDown(KeyCode.Space))
-            {
-                PlayInstructions();
-            }
-        }
-
         private void RefreshAddNewButton()
         {
             addNewButtonTransform.transform.position.ChangeY

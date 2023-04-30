@@ -1106,6 +1106,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 626753200354081254, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: robotController
+      value: 
+      objectReference: {fileID: 157248447}
     - target: {fileID: 1345378506476689501, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
       propertyPath: m_Name
