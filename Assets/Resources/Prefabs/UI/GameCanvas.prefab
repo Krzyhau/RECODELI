@@ -534,7 +534,7 @@ GameObject:
   - component: {fileID: 8021798260985975848}
   - component: {fileID: 2670189713149877302}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: GameCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -559,7 +559,7 @@ RectTransform:
   - {fileID: 6124367594792305385}
   - {fileID: 4950434807644815377}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -751,7 +751,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 7594407705927412044}
   m_Direction: 2
   m_Value: 0
-  m_Size: 1
+  m_Size: 0
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -1649,10 +1649,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59eb456c6715d204d87ced89974ed22a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  robotController: {fileID: 0}
+  instructionButtonPrefab: {fileID: 1202754650123941620, guid: ac6071bf5e129f94eba7d16e591fabd9,
+    type: 3}
   instructionsListParent: {fileID: 7919702112255226354}
   addNewButtonTransform: {fileID: 7640884375242022601}
-  instructions: {fileID: 6165805454155545448}
 --- !u!1 &4043494051878970434
 GameObject:
   m_ObjectHideFlags: 0

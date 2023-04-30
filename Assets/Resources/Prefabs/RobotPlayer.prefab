@@ -68,7 +68,7 @@ Transform:
   m_Children:
   - {fileID: 4934729488299878775}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &1300663991107002564
 BoxCollider:
@@ -499,7 +499,7 @@ GameObject:
   - component: {fileID: 4934729488299878775}
   - component: {fileID: 6425433314325610487}
   - component: {fileID: 698762629241023048}
-  - component: {fileID: 2071290291672483042}
+  - component: {fileID: 6261297769857955075}
   m_Layer: 0
   m_Name: Model
   m_TagString: Untagged
@@ -575,7 +575,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!95 &2071290291672483042
+--- !u!95 &6261297769857955075
 Animator:
   serializedVersion: 5
   m_ObjectHideFlags: 0
