@@ -10,9 +10,12 @@ namespace LudumDare.Scripts.Components
         public const float buttonOffset = 40f;
 
         [SerializeField] private InstructionButton instructionButtonPrefab;
+        [SerializeField] private PlaybackInstructionButton playbackPrefab;
+
 
         [SerializeField] private RectTransform instructionsListParent;
         [SerializeField] private RectTransform addNewButtonTransform;
+        [SerializeField] private RectTransform playbackInstructionsList;
 
 
         private float newHeight = -15;
@@ -89,11 +92,37 @@ namespace LudumDare.Scripts.Components
 
         public void HighlightInstruction(int id)
         {
-            for (int i = 0; i < instructionsListParent.childCount; i++)
+            //OLD
+            /*for (int i = 0; i < instructionsListParent.childCount; i++)
             {
                 if (!instructionsListParent.GetChild(i).TryGetComponent(out InstructionButton button)) continue;
 
                 button.SetHighlighted(i == id);
+            }*/
+            for (int i = 0; i < playbackInstructionsList.childCount; i++)
+            {
+                if (!playbackInstructionsList.GetChild(i).TryGetComponent(out PlaybackInstructionButton button)) continue;
+                button.SetHighlighted(i == id);
+            }
+        }
+
+        public void UpdatePlaybackInstruction()
+        {
+            for (var i = 0;i< instructionsListParent.childCount; i++)
+            {
+                var newPrefab = Instantiate(playbackPrefab, playbackInstructionsList);
+                newPrefab.GetComponent<RectTransform>().anchoredPosition = 
+                    instructionsListParent.GetChild(i).GetComponent<RectTransform>().anchoredPosition;
+                InstructionButton property = instructionsListParent.GetChild(i).GetComponent<InstructionButton>();
+                newPrefab.ChangeLabel(property.Label);
+                newPrefab.ChangeValue((property.GetParameterValue()));
+            }
+        }
+        public void RemovePlaybackInstruction()
+        {
+            for (var i = 0; i < playbackInstructionsList.childCount; i++)
+            {
+                Destroy(playbackInstructionsList.GetChild(i).gameObject);
             }
         }
     }

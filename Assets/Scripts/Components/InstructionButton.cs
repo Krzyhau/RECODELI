@@ -19,7 +19,7 @@ namespace LudumDare.Scripts.Components
 
         public string Label => textLabel.text;
 
-        private void Start()
+        private void Awake()
         {
             background = GetComponent<Image>();
             defaultSprite = background.sprite;
@@ -88,10 +88,10 @@ namespace LudumDare.Scripts.Components
 
             Destroy(this.gameObject);
         }
-
-        public void SetHighlighted(bool highlighted)
+        //OLD
+        /*public void SetHighlighted(bool highlighted)
         {
             background.sprite = (highlighted) ? highlightSprite : defaultSprite;
-        }
+        }*/
     }
 }

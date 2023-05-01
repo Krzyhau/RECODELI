@@ -48,6 +48,7 @@ namespace LudumDare.Scripts.Components
             {
                 if(lastInstruction < RobotController.CurrentCommandIndex)
                 {
+                    Debug.Log(RobotController.CurrentCommandIndex);
                     instructionsHud.HighlightInstruction(RobotController.CurrentCommandIndex);
                     lastInstruction = RobotController.CurrentCommandIndex;
                 }
@@ -65,6 +66,8 @@ namespace LudumDare.Scripts.Components
 
         public void PlayInstructions()
         {
+            instructionsHud.UpdatePlaybackInstruction();
+            //instructionsHud.HighlightInstruction(0);
             RobotController.ExecuteCommands(instructionsHud.GetRobotActionList());
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
@@ -84,7 +87,8 @@ namespace LudumDare.Scripts.Components
             simulationInstance.gameObject.SetActive(true);
             simulationInstance.name = simulationGroupName + " (Instance)";
             playingSimulation = false;
-            instructionsHud.HighlightInstruction(-1);
+            instructionsHud.RemovePlaybackInstruction();
+            //instructionsHud.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
@@ -95,5 +99,6 @@ namespace LudumDare.Scripts.Components
         {
             Time.timeScale = timescaleScrollbar.value * maximumTimescale;
         }
+
     }
 }
