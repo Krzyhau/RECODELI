@@ -1,6 +1,10 @@
 using System;
 using LootLocker.Requests;
-using Unity.Plastic.Newtonsoft.Json;
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+using Newtonsoft.Json;
+#else
+using LLlibs.ZeroDepJson;
+#endif
 
 namespace LootLocker.Requests
 {
@@ -12,7 +16,7 @@ namespace LootLocker.Requests
         public LootLockerLevel_Thresholds level_thresholds { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerOtherPlayerInfoRequest : LootLockerGetRequest
     {
         public LootLockerOtherPlayerInfoRequest(string playerID, string platform = "")
@@ -25,12 +29,12 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerStandardResponse : LootLockerResponse
     {
     }
 
-    [System.Serializable]
+    [Serializable]
     public class PlayerNameRequest
     {
         public string name { get; set; }
@@ -66,7 +70,7 @@ namespace LootLocker.Requests
         }
     }
     
-    [System.Serializable]
+    [Serializable]
     public class Player1stPartyPlatformIDsLookupResponse : LootLockerResponse
     {
         public PlayerWith1stPartyPlatformIDs[] players { get; set; }
@@ -88,7 +92,7 @@ namespace LootLocker.Requests
         public ulong? psn_id { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class PlayerNameLookupResponse : LootLockerResponse
     {
         public PlayerNameWithIDs[] players { get; set; }
@@ -103,25 +107,25 @@ namespace LootLocker.Requests
         public string platform_player_id { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class PlayerNameResponse : LootLockerResponse
     {
         public string name { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerDlcResponse : LootLockerResponse
     {
         public string[] dlcs { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerDeactivatedAssetsResponse : LootLockerResponse
     {
         public LootLockerDeactivatedObjects[] objects { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerDeactivatedObjects
     {
         public int deactivated_asset_id { get; set; }
@@ -130,13 +134,13 @@ namespace LootLocker.Requests
     }
 
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerBalanceResponse : LootLockerResponse
     {
         public int? balance { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerXpSubmitResponse : LootLockerResponse
     {
         public LootLockerXp xp { get; set; }
@@ -144,31 +148,31 @@ namespace LootLocker.Requests
         public bool check_grant_notifications { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerXpResponse : LootLockerResponse
     {
         public int? xp { get; set; }
         public int? level { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerXp
     {
         public int? previous { get; set; }
         public int? current { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerLevel
     {
         public int? level { get; set; }
         public int? xp_threshold { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerInventoryResponse : LootLockerResponse
     {
-        public LootLockerInventory[] inventory;
+        public LootLockerInventory[] inventory { get; set; }
     }
 
     public class LootLockerInventory
@@ -182,7 +186,7 @@ namespace LootLocker.Requests
         public LootLockerRental rental { get; set; }
 
 
-        public float balance;
+        public float balance { get; set; }
     }
     
     public class LootLockerPlayerFileRequest
@@ -203,20 +207,25 @@ namespace LootLocker.Requests
         public string name { get; set; }
         public int size { get; set; }
         public string purpose { get; set; }
+
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
         [JsonProperty("public")]
+#else
+        [Json(Name = "public")]
+#endif
         public bool is_public { get; set; }
         public string url { get; set; }
         public DateTime url_expires_at { get; set; }
         public DateTime created_at { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerAssetClass
     {
         public string Asset { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerRental
     {
         public bool is_rental { get; set; }
@@ -225,7 +234,7 @@ namespace LootLocker.Requests
         public string is_active { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerXpSubmitRequest
     {
         public int? points;
@@ -236,7 +245,7 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerXpRequest : LootLockerGetRequest
     {
         public LootLockerXpRequest()

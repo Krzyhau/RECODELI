@@ -1,16 +1,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using Unity.Plastic.Newtonsoft.Json;
 using LootLocker.LootLockerEnums;
-using Unity.Plastic.Newtonsoft.Json.Serialization;
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+#else
+using LLlibs.ZeroDepJson;
+#endif
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
-
-
-// using LootLocker.Admin;
-// using LootLocker.Admin.Requests;
 
 //this is common between user and admin
 namespace LootLocker
@@ -18,32 +18,64 @@ namespace LootLocker
 
     public static class LootLockerJsonSettings
     {
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
         public static readonly JsonSerializerSettings Default = new JsonSerializerSettings
         {
             ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() },
             Formatting = Formatting.None
         };
-        public static readonly JsonSerializerSettings Indented = new JsonSerializerSettings
-        {
-            ContractResolver = new DefaultContractResolver { NamingStrategy = new SnakeCaseNamingStrategy() },
-            Formatting = Formatting.None
-        };
+#else
+        public static readonly JsonOptions Default = new JsonOptions(JsonSerializationOptions.Default & ~JsonSerializationOptions.SkipGetOnly);
+#endif
     }
 
     public static class LootLockerJson
     {
-        public static string SerializeObject(object obj, JsonSerializerSettings settings = null)
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+        public static string SerializeObject(object obj)
+        {
+            return SerializeObject(obj, LootLockerJsonSettings.Default);
+        }
+
+        public static string SerializeObject(object obj, JsonSerializerSettings settings)
         {
             return JsonConvert.SerializeObject(obj, settings ?? LootLockerJsonSettings.Default);
         }
 
-        public static T DeserializeObject<T>(string json, JsonSerializerSettings settings = null)
+        public static T DeserializeObject<T>(string json)
+        {
+            return DeserializeObject<T>(json, LootLockerJsonSettings.Default);
+        }
+
+
+        public static T DeserializeObject<T>(string json, JsonSerializerSettings settings)
         {
             return JsonConvert.DeserializeObject<T>(json, settings ?? LootLockerJsonSettings.Default);
         }
+#else //LOOTLOCKER_USE_NEWTONSOFTJSON
+        public static string SerializeObject(object obj)
+        {
+            return SerializeObject(obj, LootLockerJsonSettings.Default);
+        }
+
+        public static string SerializeObject(object obj, JsonOptions options)
+        {
+            return Json.Serialize(obj, options ?? LootLockerJsonSettings.Default);
+        }
+
+        public static T DeserializeObject<T>(string json)
+        {
+            return DeserializeObject<T>(json, LootLockerJsonSettings.Default);
+        }
+
+        public static T DeserializeObject<T>(string json, JsonOptions options)
+        {
+            return Json.Deserialize<T>(json, options ?? LootLockerJsonSettings.Default);
+        }
+#endif //LOOTLOCKER_USE_NEWTONSOFTJSON
     }
 
-    [System.Serializable]
+    [Serializable]
     public enum LootLockerHTTPMethod
     {
         GET = 0,
@@ -61,48 +93,59 @@ namespace LootLocker
     /// <summary>
     /// All ServerAPI.SendRequest responses will invoke the callback using an instance of this class for easier handling in client code.
     /// </summary>
-    [System.Serializable]
     public class LootLockerResponse
     {
         /// <summary>
         /// TRUE if http error OR server returns an error status
         /// </summary>
-        public bool hasError;
+        public bool hasError { get; set; }
 
         /// <summary>
         /// HTTP Status Code
         /// </summary>
-        public int statusCode;
+        public int statusCode { get; set; }
 
         /// <summary>
         /// Raw text response from the server
         /// <para>If hasError = true, this will contain the error message.</para>
         /// </summary>
-        public string text;
+        public string text { get; set; }
 
-        public bool success;
+        public bool success { get; set; }
 
 
-        public string Error;
+        public string Error { get; set; }
 
         /// <summary>
         /// A texture downloaded in the webrequest, if applicable, otherwise this will be null.
         /// </summary>
-        public Texture2D texture;
+        public Texture2D texture { get; set; }
 
         /// <summary>
         /// inheritdoc added this because unity main thread executing style cut the calling stack and make the event orphan see also calling multiple events 
         /// of the same type makes use unable to identify each one
         /// </summary>
-        public string EventId;
+        public string EventId { get; set; }
 
-        public static void Deserialize<T>(Action<T> onComplete, LootLockerResponse serverResponse, JsonSerializerSettings settings = null)
+        public static void Deserialize<T>(Action<T> onComplete, LootLockerResponse serverResponse,
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+            JsonSerializerSettings options = null
+#else //LOOTLOCKER_USE_NEWTONSOFTJSON
+            JsonOptions options = null
+#endif
+            )
             where T : LootLockerResponse, new()
         {
-            onComplete?.Invoke(Deserialize<T>(serverResponse, settings));
+            onComplete?.Invoke(Deserialize<T>(serverResponse, options));
         }
 
-        public static T Deserialize<T>(LootLockerResponse serverResponse, JsonSerializerSettings settings = null)
+        public static T Deserialize<T>(LootLockerResponse serverResponse,
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+            JsonSerializerSettings options = null
+#else //LOOTLOCKER_USE_NEWTONSOFTJSON
+            JsonOptions options = null
+#endif
+            )
             where T : LootLockerResponse, new() 
         {
             if (serverResponse == null)
@@ -114,7 +157,7 @@ namespace LootLocker
                 return new T() { success = false, Error = serverResponse.Error, statusCode = serverResponse.statusCode };
             }
 
-            var response = LootLockerJson.DeserializeObject<T>(serverResponse.text, settings ?? LootLockerJsonSettings.Default) ?? new T();
+            var response = LootLockerJson.DeserializeObject<T>(serverResponse.text, options ?? LootLockerJsonSettings.Default) ?? new T();
 
             response.text = serverResponse.text;
             response.success = serverResponse.success;
@@ -324,18 +367,18 @@ namespace LootLocker
     /// <summary>
     /// Construct a request to send to the server.
     /// </summary>
-    [System.Serializable]
+    [Serializable]
     public struct LootLockerServerRequest
     {
-        public string endpoint;
-        public LootLockerHTTPMethod httpMethod;
-        public Dictionary<string, object> payload;
-        public string jsonPayload;
-        public byte[] upload;
-        public string uploadName;
-        public string uploadType;
-        public LootLocker.LootLockerEnums.LootLockerCallerRole adminCall;
-        public WWWForm form;
+        public string endpoint { get; set; }
+        public LootLockerHTTPMethod httpMethod { get; set; }
+        public Dictionary<string, object> payload { get; set; }
+        public string jsonPayload { get; set; }
+        public byte[] upload { get; set; }
+        public string uploadName { get; set; }
+        public string uploadType { get; set; }
+        public LootLocker.LootLockerEnums.LootLockerCallerRole adminCall { get; set; }
+        public WWWForm form { get; set; }
 
         /// <summary>
         /// Leave this null if you don't need custom headers
@@ -348,7 +391,7 @@ namespace LootLocker
         /// </summary>
         public Dictionary<string, string> queryParams;
 
-        public int retryCount;
+        public int retryCount { get; set; }
 
         #region Make ServerRequest and call send (3 functions)
 
@@ -428,9 +471,9 @@ namespace LootLocker
             Dictionary<string, string> headers = new Dictionary<string, string>();
             if (file.Length == 0)
             {
-                #if UNITY_EDITOR
+#if UNITY_EDITOR
                     LootLockerLogger.GetForLogLevel(LootLockerLogger.LogLevel.Error)("File content is empty, not allowed.");
-                #endif
+#endif
                 onComplete?.Invoke(LootLockerResponseFactory.Error<LootLockerResponse>("File content is empty, not allowed."));
                 return;
             }

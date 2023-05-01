@@ -4,12 +4,12 @@ using LootLocker.Requests;
 
 namespace LootLocker.Requests
 {
-    [System.Serializable]
+    [Serializable]
     public class LootLockerSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
         public string platform => CurrentPlatform.GetString();
-        public string player_identifier { get; private set; }
+        public string player_identifier { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerSessionRequest(string player_identifier)
@@ -22,7 +22,7 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerWhiteLabelSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
@@ -62,7 +62,7 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerSessionResponse : LootLockerResponse
     {
         public string session_token { get; set; }
@@ -84,27 +84,27 @@ namespace LootLocker.Requests
         public string player_identifier { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerGoogleSessionResponse : LootLockerSessionResponse
     {
         public string player_identifier { get; set; }
         public string refresh_token { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerAppleSessionResponse : LootLockerSessionResponse
     {
         public string player_identifier { get; set; }
         public string refresh_token { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerEpicSessionResponse : LootLockerSessionResponse
     {
         public string refresh_token { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerLevel_Thresholds
     {
         public int current { get; set; }
@@ -113,11 +113,11 @@ namespace LootLocker.Requests
         public bool next_is_prestige { get; set; }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerNintendoSwitchSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string nsa_id_token { get; private set; }
+        public string nsa_id_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerNintendoSwitchSessionRequest(string nsa_id_token)
@@ -126,11 +126,11 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerEpicSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string id_token { get; private set; }
+        public string id_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerEpicSessionRequest(string id_token)
@@ -139,11 +139,11 @@ namespace LootLocker.Requests
         }
     }
 
-    [System.Serializable]
+    [Serializable]
     public class LootLockerEpicRefreshSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string refresh_token { get; private set; }
+        public string refresh_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerEpicRefreshSessionRequest(string refresh_token)
@@ -155,7 +155,7 @@ namespace LootLocker.Requests
     public class LootLockerXboxOneSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string xbox_user_token { get; private set; }
+        public string xbox_user_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerXboxOneSessionRequest(string xbox_user_token)
@@ -167,7 +167,7 @@ namespace LootLocker.Requests
     public class LootLockerGoogleSignInSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string id_token { get; private set; }
+        public string id_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerGoogleSignInSessionRequest(string id_token)
@@ -179,7 +179,7 @@ namespace LootLocker.Requests
     public class LootLockerGoogleRefreshSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string refresh_token { get; private set; }
+        public string refresh_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerGoogleRefreshSessionRequest(string refresh_token)
@@ -191,7 +191,7 @@ namespace LootLocker.Requests
     public class LootLockerAppleSignInSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string apple_authorization_code { get; private set; }
+        public string apple_authorization_code { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerAppleSignInSessionRequest(string apple_authorization_code)
@@ -203,7 +203,7 @@ namespace LootLocker.Requests
     public class LootLockerAppleRefreshSessionRequest : LootLockerGetRequest
     {
         public string game_key => LootLockerConfig.current.apiKey?.ToString();
-        public string refresh_token { get; private set; }
+        public string refresh_token { get; set; }
         public string game_version => LootLockerConfig.current.game_version;
 
         public LootLockerAppleRefreshSessionRequest(string refresh_token)

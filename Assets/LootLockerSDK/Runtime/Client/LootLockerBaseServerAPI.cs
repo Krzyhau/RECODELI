@@ -2,14 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
-//using Newtonsoft.Json;
-using Unity.Plastic.Newtonsoft.Json;
 using System;
 using System.Text;
 using System.Net;
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+#else
+using LLlibs.ZeroDepJson;
+#endif
 using LootLocker.Requests;
-//using Newtonsoft.Json.Linq;
-using Unity.Plastic.Newtonsoft.Json.Linq;
 
 namespace LootLocker.LootLockerEnums
 {
@@ -169,12 +171,12 @@ namespace LootLocker
                         else
                         {
                             tries = 0;
-                            response.Error += " " + webRequest.downloadHandler.text;
+                            response.Error += " " + ObfuscateJsonStringForLogging(webRequest.downloadHandler.text);
                             response.statusCode = (int)webRequest.responseCode;
                             response.success = false;
                             response.hasError = true;
                             response.text = webRequest.downloadHandler.text;
-                            LootLockerLogger.GetForLogLevel(LootLockerLogger.LogLevel.Error)(ObfuscateJsonStringForLogging(response.Error));
+                            LootLockerLogger.GetForLogLevel(LootLockerLogger.LogLevel.Error)(response.Error);
                             OnServerResponse?.Invoke(response);
                         }
 
@@ -206,8 +208,8 @@ namespace LootLocker
 
         protected struct ServerError
         {
-            public HttpStatusCode status;
-            public string text;
+            public HttpStatusCode status { get; set; }
+            public string text { get; set; }
         }
 
         protected void BroadcastError(ServerError error)
@@ -340,11 +342,11 @@ namespace LootLocker
 
         private struct ObfuscationDetails
         {
-            public string key;
-            public char replacementChar;
-            public int visibleCharsFromBeginning;
-            public int visibleCharsFromEnd;
-            public bool hideCharactersForShortStrings;
+            public string key { get; set; }
+            public char replacementChar { get; set; }
+            public int visibleCharsFromBeginning { get; set; }
+            public int visibleCharsFromEnd { get; set; }
+            public bool hideCharactersForShortStrings { get; set; }
 
             public ObfuscationDetails(string key, char replacementChar = '*', int visibleCharsFromBeginning = 3, int visibleCharsFromEnd = 3, bool hideCharactersForShortStrings = true)
             {
@@ -368,11 +370,12 @@ namespace LootLocker
 
         private static string ObfuscateJsonStringForLogging(string json)
         {
+#if LOOTLOCKER_USE_NEWTONSOFTJSON
             if (string.IsNullOrEmpty(json))
             {
                 return json;
             }
-
+            
             JObject jsonObject;
             try
             {
@@ -433,6 +436,75 @@ namespace LootLocker
             }
 
             return LootLockerJson.SerializeObject(jsonObject);
+            
+#else //LOOTLOCKER_USE_NEWTONSOFTJSON
+            if (string.IsNullOrEmpty(json) || json.Equals("{}"))
+            {
+                return json;
+            }
+
+            Dictionary<string, object> jsonObject = null;
+            try
+            {
+                jsonObject = Json.Deserialize(json) as Dictionary<string, object>;
+            }
+            catch (JsonException)
+            {
+                return json;
+            }
+
+            if (jsonObject != null && jsonObject.Count > 0)
+            {
+                foreach (ObfuscationDetails obfuscationInfo in FieldsToObfuscate)
+                {
+                    string valueToObfuscate;
+                    try
+                    {
+                        if (!jsonObject.ContainsKey(obfuscationInfo.key))
+                        {
+                            continue;
+                        }
+
+                        valueToObfuscate = Json.Serialize(jsonObject[obfuscationInfo.key]);
+                    }
+                    catch (KeyNotFoundException)
+                    {
+                        continue;
+                    }
+
+                    if (string.IsNullOrEmpty(valueToObfuscate))
+                        continue;
+
+                    if (valueToObfuscate.Equals("null", StringComparison.Ordinal))
+                        continue;
+
+                    int replaceFrom = 0;
+                    int replaceTo = valueToObfuscate.Length;
+
+                    // Deal with short strings
+                    if (valueToObfuscate.Length <= obfuscationInfo.visibleCharsFromBeginning + obfuscationInfo.visibleCharsFromEnd)
+                    {
+                        if (!obfuscationInfo.hideCharactersForShortStrings) // Hide nothing, else hide everything
+                            continue;
+                    }
+                    // Replace in
+                    else
+                    {
+                        replaceFrom += obfuscationInfo.visibleCharsFromBeginning;
+                        replaceTo -= obfuscationInfo.visibleCharsFromEnd;
+                    }
+
+                    StringBuilder replacement = new StringBuilder();
+                    replacement.Append(obfuscationInfo.replacementChar, replaceTo - replaceFrom);
+                    StringBuilder obfuscatedValue = new StringBuilder(valueToObfuscate);
+                    obfuscatedValue.Remove(replaceFrom, replacement.Length);
+                    obfuscatedValue.Insert(replaceFrom, replacement.ToString());
+                    jsonObject[obfuscationInfo.key] = obfuscatedValue.ToString();
+                }
+            }
+
+            return LootLockerJson.SerializeObject(jsonObject);
+#endif //LOOTLOCKER_USE_NEWTONSOFTJSON
         }
 
         string BuildURL(string endpoint, Dictionary<string, string> queryParams = null)
