@@ -29,7 +29,7 @@ namespace LudumDare.Scripts.Components
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
-        private float simulationStartTime;
+        private float simulationTime;
 
         public RobotController RobotController { get; private set; }
 
@@ -67,9 +67,16 @@ namespace LudumDare.Scripts.Components
 
         private void FixedUpdate()
         {
+            if (playingSimulation)
+            {
+                simulationTime += Time.fixedDeltaTime;
+            }
+
             if(playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
             {
-                var simulationTime = Time.time - simulationStartTime;
+                // make sure the rounding is the same as in leaderboard
+                simulationTime = Mathf.FloorToInt(simulationTime * 100.0f) / 100.0f;
+
                 var codeCount = RobotController.CurrentCommands.Count;
                 scoreboard.SubmitRecord(simulationTime, codeCount);
 
@@ -86,7 +93,7 @@ namespace LudumDare.Scripts.Components
 
         public void PlayInstructions()
         {
-            simulationStartTime = Time.time;
+            simulationTime = 0.0f;
             instructionsHud.UpdatePlaybackInstruction();
             //instructionsHud.HighlightInstruction(0);
             RobotController.ExecuteCommands(instructionsHud.GetRobotActionList());
