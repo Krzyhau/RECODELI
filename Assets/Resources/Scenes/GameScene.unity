@@ -1332,6 +1332,21 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 168752372458311096, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 168752372458311096, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 168752372458311096, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 168752372458311096, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
@@ -1389,6 +1404,26 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 285125856743774854, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 330585545}
+    - target: {fileID: 285125856743774854, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 285125856743774854, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_PixelPerfect
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 285125856743774854, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_PlaneDistance
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 705369496113038006, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
@@ -1480,6 +1515,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8021798260985975848, guid: cbf339d6cbf33004c8682095cb873695,
+        type: 3}
+      propertyPath: m_PresetInfoIsWorld
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 8739178639990567192, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
       propertyPath: m_SizeDelta.y
@@ -1488,7 +1528,7 @@ PrefabInstance:
     - target: {fileID: 8739178639990567192, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 1.0000014
+      value: 1.0000019
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
