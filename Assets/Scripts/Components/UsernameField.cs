@@ -12,14 +12,21 @@ namespace LudumDare.Scripts.Components
 
         [SerializeField] private string sceneToLoad;
 
+        [SerializeField] private TMP_InputField usernameField;
+
+        private void Start()
+        {
+            usernameField.text = PlayerPrefs.GetString("PlayerName", "");
+        }
+
         public void AcceptUsername() => StartCoroutine(AcceptUsernameRoutine());
 
         private IEnumerator AcceptUsernameRoutine()
         {
-            var username = GetComponent<TMP_InputField>().text;
-            if (username.Length <= 0) yield break;
+            Debug.Log(usernameField);
+            if (usernameField.text.Length == 0) yield break;
 
-            Scoreboard.PlayerName = username;
+            Scoreboard.PlayerName = usernameField.text;
 
             canvasGroupToHide.alpha = 0;
 

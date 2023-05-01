@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace LudumDare.Scripts.Components
@@ -15,6 +16,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Scoreboard scoreboard;
         [SerializeField] private float maximumTimescale;
         [SerializeField] private Text textSliderValue;
+        [SerializeField] private string levelSelectScene;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;
@@ -122,6 +124,11 @@ namespace LudumDare.Scripts.Components
         {
             Time.timeScale = timescaleScrollbar.value * maximumTimescale;
             textSliderValue.text = Time.timeScale.ToString("0.00").Replace(",",".");
+        }
+
+        public void LeaveToLevelSelect()
+        {
+            SceneManager.LoadScene(levelSelectScene);
         }
     }
 }

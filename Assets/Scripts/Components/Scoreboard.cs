@@ -39,12 +39,17 @@ namespace LudumDare.Scripts.Components
         private string TimeBoardName => $"{LevelID}-time";
         private string CodeBoardName => $"{LevelID}-code";
 
+        private bool lastSubmitted = false;
+        private float lastSubmittedTime;
+        private int lastSubmittedInstructions;
+
         public Scoreboard Instance { get; private set; }
 
         private void Awake() => Instance = this;
 
         private void Start()
         {
+            if (PlayerName == null || PlayerName.Length == 0) PlayerName = "Playtester";
             if (!Initiated && PlayerName.Length > 0) Login(PlayerName);
         }
 
@@ -70,6 +75,10 @@ namespace LudumDare.Scripts.Components
         public void SubmitRecord(float time, int codeCount) => StartCoroutine(SubmitRecordRoutine(time, codeCount));
         private IEnumerator SubmitRecordRoutine(float time, int codeCount)
         {
+            lastSubmitted = true;
+            lastSubmittedTime = time;
+            lastSubmittedInstructions = codeCount;
+
             yield return new WaitWhile(() => Initiated == false);
 
             bool doneTime = false;
@@ -203,7 +212,20 @@ namespace LudumDare.Scripts.Components
             PlayerTimeScore.text = "";
             PlayerInstructionsList.text = "";
             PlayerInstructionsScore.text = "";
-            PlayerTime.text = $"TIME: {ownTimeRecord.Time} (#{ownTimeRecord.Place})".ToUpper().Replace(",", ".");
+
+            if (lastSubmitted)
+            {
+                PlayerTime.text = $"TIME: {lastSubmittedTime}".ToUpper().Replace(",", ".");
+                PlayerInstructions.text = $"INSTRUCTIONS: {lastSubmittedInstructions}".ToUpper().Replace(",", ".");
+            }
+            else
+            {
+                PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (#{ownCodeRecord.Place})".ToUpper().Replace(",", ".");
+                PlayerTime.text = $"TIME: {ownTimeRecord.Time} (#{ownTimeRecord.Place})".ToUpper().Replace(",", ".");
+            }
+            
+
+
             for(int i = 0; i < topTimeRecords.Count; i++)
             {
                 PlayerTimeList.text = $"{PlayerTimeList.text}{topTimeRecords[i].Place}.) " +
@@ -211,7 +233,7 @@ namespace LudumDare.Scripts.Components
                 PlayerTimeScore.text = $"{PlayerTimeScore.text}{topTimeRecords[i].Time}\n".Replace(",", ".");
             }
 
-            PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (#{ownCodeRecord.Place})".ToUpper().Replace(",", ".");
+            
             for (int i = 0; i < topCodeRecords.Count; i++)
             {
                 PlayerInstructionsList.text = $"{PlayerInstructionsList.text}{topCodeRecords[i].Place}.) " +
