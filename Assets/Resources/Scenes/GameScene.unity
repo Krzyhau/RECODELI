@@ -123,7 +123,19 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!1001 &4041541130758372319
+--- !u!114 &94936390 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6683751994633787836, guid: aec0749b79a8e904b8c09e79275d683d,
+    type: 3}
+  m_PrefabInstance: {fileID: 3976983058636526376}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b805a340e5687304e9b0dff29308c214, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!1001 &3976983058636526376
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -139,7 +151,12 @@ PrefabInstance:
     - target: {fileID: 1764640249283011508, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -0.00030517578
+      value: -0.00033569336
+      objectReference: {fileID: 0}
+    - target: {fileID: 2555070135924741986, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Text
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2632587095047106960, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
@@ -155,6 +172,61 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.y
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 94936390}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ShowScoreboard
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: LudumDare.Scripts.Components.Scoreboard, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139924628740212357, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: OnEndingAnimationDone.m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 4032422866002312628, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 4814250090916684502, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerTimeList
+      objectReference: {fileID: 0}
+    - target: {fileID: 5277516873996202364, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerCommands
+      objectReference: {fileID: 0}
+    - target: {fileID: 6084190995868493793, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Text
+      value: 
       objectReference: {fileID: 0}
     - target: {fileID: 6306712042945997556, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
@@ -211,10 +283,17 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 6683751994633787836, guid: aec0749b79a8e904b8c09e79275d683d,
+    - target: {fileID: 6343229072607778041, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
-      propertyPath: LevelID
-      value: 1
+      propertyPath: m_Text
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 6826862547267739273, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Text
+      value: '
+
+'
       objectReference: {fileID: 0}
     - target: {fileID: 7255505819295141282, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
@@ -230,6 +309,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_AnchorMin.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8524992226932048381, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Name
+      value: PlayerCommandsList
+      objectReference: {fileID: 0}
+    - target: {fileID: 9063469775609890781, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: m_Text
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

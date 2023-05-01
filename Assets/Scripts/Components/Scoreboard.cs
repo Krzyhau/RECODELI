@@ -4,12 +4,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LudumDare.Scripts.Components
 {
     public class Scoreboard : MonoBehaviour
     {
         [SerializeField] private int LevelID;
+        [SerializeField] private Text PlayerTime;
+        [SerializeField] private Text PlayerTimeList;
+        [SerializeField] private Text PlayerTimeScore;
+        [SerializeField] private Text PlayerInstructions;
+        [SerializeField] private Text PlayerInstructionsList;
+        [SerializeField] private Text PlayerInstructionsScore;
+
 
         public struct TimeRecord
         {
@@ -108,11 +116,11 @@ namespace LudumDare.Scripts.Components
 
             const int topCount = 10;
 
-            TimeRecord ownTimeRecord;
-            CodeRecord ownCodeRecord;
+            var ownTimeRecord = new TimeRecord();
+            var ownCodeRecord = new CodeRecord();
 
-            List<TimeRecord> topTimeRecords;
-            List<CodeRecord> topCodeRecords;
+            var topTimeRecords = new List<TimeRecord>();
+            var topCodeRecords = new List<CodeRecord>();
 
             LootLockerSDKManager.GetMemberRank(TimeBoardName, PlayerName, (response) =>
             {
@@ -149,7 +157,7 @@ namespace LudumDare.Scripts.Components
                 {
                     Debug.Log("failed: " + response.Error);
                 }
-                loadTasks[0] = true;
+                loadTasks[1] = true;
             });
 
 
@@ -169,6 +177,7 @@ namespace LudumDare.Scripts.Components
                 {
                     Debug.Log("failed: " + response.Error);
                 }
+                loadTasks[2] = true;
             });
 
             LootLockerSDKManager.GetScoreList(CodeBoardName, topCount, 0, (response) =>
@@ -187,11 +196,33 @@ namespace LudumDare.Scripts.Components
                 {
                     Debug.Log("failed: " + response.Error);
                 }
+                loadTasks[3] = true;
             });
 
             yield return new WaitWhile(() => loadTasks.Any(b=>!b));
+            PlayerTimeList.text = "";
+            PlayerTimeScore.text = "";
+            PlayerInstructionsList.text = "";
+            PlayerInstructionsScore.text = "";
+            PlayerTime.text = $"TIME: {ownTimeRecord.Time} (#{ownTimeRecord.Place})".ToUpper().Replace(",", ".");
+            for(int i = 0; i < topTimeRecords.Count; i++)
+            {
+                PlayerTimeList.text = $"{PlayerTimeList.text}{topTimeRecords[i].Place}.) " +
+                    $"{topTimeRecords[i].PlayerName}\n".Replace(",",".");
+                PlayerTimeScore.text = $"{PlayerTimeScore.text}{topTimeRecords[i].Time}\n".Replace(",", ".");
+            }
 
-            // TODO - wsadŸ to do gotowych divów jak ju¿ bêd¹ zrobione
+            PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (${ownCodeRecord.Place})".ToUpper().Replace(",", ".");
+            for (int i = 0; i < topCodeRecords.Count; i++)
+            {
+                PlayerInstructionsList.text = $"{PlayerInstructionsList.text}{topCodeRecords[i].Place}.) " +
+                    $"{topCodeRecords[i].PlayerName}\n".Replace(",", ".");
+                PlayerInstructionsScore.text = $"{PlayerInstructionsScore.text}{topCodeRecords[i].Lines}\n".Replace(",", ".");
+            }
+        }
+        public void ShowScoreboard()
+        {
+            LoadScores();
         }
     }
 }
