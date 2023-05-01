@@ -14,6 +14,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private EndingController endingController;
         [SerializeField] private Scoreboard scoreboard;
         [SerializeField] private float maximumTimescale;
+        [SerializeField] private Text textSliderValue;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;
@@ -120,7 +121,7 @@ namespace LudumDare.Scripts.Components
         public void ChangeTimeScale()
         {
             Time.timeScale = timescaleScrollbar.value * maximumTimescale;
+            textSliderValue.text = Time.timeScale.ToString("0.00").Replace(",",".");
         }
-
     }
 }

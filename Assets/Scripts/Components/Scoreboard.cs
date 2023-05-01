@@ -212,7 +212,7 @@ namespace LudumDare.Scripts.Components
                 PlayerTimeScore.text = $"{PlayerTimeScore.text}{topTimeRecords[i].Time}\n".Replace(",", ".");
             }
 
-            PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (${ownCodeRecord.Place})".ToUpper().Replace(",", ".");
+            PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (#{ownCodeRecord.Place})".ToUpper().Replace(",", ".");
             for (int i = 0; i < topCodeRecords.Count; i++)
             {
                 PlayerInstructionsList.text = $"{PlayerInstructionsList.text}{topCodeRecords[i].Place}.) " +
