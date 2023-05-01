@@ -10,7 +10,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private Instructions instructionsHud;
         [SerializeField] private Scrollbar timescaleScrollbar;
-
+        [SerializeField] private float maximumTimescale;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;
@@ -30,6 +30,8 @@ namespace LudumDare.Scripts.Components
             simulationGroupName = simulationGroup.name;
             simulationGroup.name += " (Original)";
             simulationGroup.gameObject.SetActive(false);
+
+            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f,maximumTimescale);
 
             RestartSimulation();
         }
@@ -91,7 +93,7 @@ namespace LudumDare.Scripts.Components
 
         public void ChangeTimeScale()
         {
-            Time.timeScale = timescaleScrollbar.value * 5.0f;
+            Time.timeScale = timescaleScrollbar.value * maximumTimescale;
         }
     }
 }
