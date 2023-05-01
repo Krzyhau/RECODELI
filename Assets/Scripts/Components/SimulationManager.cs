@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.UI;
 
 namespace LudumDare.Scripts.Components
 {
@@ -8,10 +9,12 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Transform simulationGroup;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private Instructions instructionsHud;
+        [SerializeField] private Scrollbar timescaleScrollbar;
 
         private bool playingSimulation = false;
         private Transform simulationInstance;
         private string simulationGroupName;
+
 
         private int lastInstruction;
 
@@ -36,6 +39,7 @@ namespace LudumDare.Scripts.Components
                     lastInstruction = RobotController.CurrentCommandIndex;
                 }
             }
+            ChangeTimeScale();
         }
 
         public void PlayInstructions()
@@ -63,6 +67,11 @@ namespace LudumDare.Scripts.Components
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
+        }
+
+        public void ChangeTimeScale()
+        {
+            Time.timeScale = timescaleScrollbar.value * 5.0f;
         }
     }
 }

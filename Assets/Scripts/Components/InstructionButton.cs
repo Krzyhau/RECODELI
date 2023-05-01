@@ -72,14 +72,14 @@ namespace LudumDare.Scripts.Components
         {
             for (int i = transform.GetSiblingIndex(); i < transform.parent.childCount; i++)
             {
-                var childTransform = transform.parent.GetChild(i).transform;
-                newHeight = childTransform.position.y + Instructions.buttonOffset;
-                childTransform.position =
-                    childTransform.position.ChangeY(newHeight);
+                var childTransform = transform.parent.GetChild(i).GetComponent<RectTransform>(); ;
+                newHeight = childTransform.anchoredPosition.y + Instructions.buttonOffset;
+                childTransform.anchoredPosition =
+                    childTransform.anchoredPosition.ChangeY(newHeight);
             }
             instructions.MoveAddButton(Instructions.buttonOffset);
 
-            var lastChildTransform = transform.parent.GetChild(transform.parent.childCount-1).transform;
+            var lastChildTransform = transform.parent.GetChild(transform.parent.childCount-1).GetComponent<RectTransform>();
             if (lastChildTransform.GetComponent<RectTransform>().anchoredPosition.y < -290)
             {
                 var parentRect = instructions.transform.GetComponent<RectTransform>();
