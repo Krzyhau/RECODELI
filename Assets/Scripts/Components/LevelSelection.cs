@@ -8,6 +8,7 @@ namespace LudumDare.Scripts.Components
     public class LevelSelection : MonoBehaviour
     {
         [SerializeField] private CanvasGroup groupToHide;
+        [SerializeField] private AudioSource audioSource;
 
 
         private void Start()
@@ -18,6 +19,7 @@ namespace LudumDare.Scripts.Components
         public void ClickedLevel(int id)
         {
             StartCoroutine(LevelTransition(id));
+            audioSource.Play();
         }
 
         private IEnumerator LevelTransition(int id)

@@ -105,7 +105,8 @@ namespace LudumDare.Scripts.Components
         private void UpdateGlitching()
         {
             if (currentGlitchingForce == 0.0f) return;
-            currentGlitchingForce = Mathf.Max(0.0f, currentGlitchingForce - glitchingFadeoutSpeed * Time.unscaledDeltaTime);
+            var subtract = Mathf.Min(glitchingFadeoutSpeed * Time.unscaledDeltaTime, Time.timeSinceLevelLoad);
+            currentGlitchingForce = Mathf.Max(0.0f, currentGlitchingForce - subtract);
             glitchingMaterial.SetFloat("_Intensity", currentGlitchingForce);
         }
 

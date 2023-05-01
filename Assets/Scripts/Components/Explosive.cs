@@ -9,6 +9,7 @@ namespace LudumDare.Scripts.Components
     {
         [SerializeField] private ParticleSystem explosionParticle;
         [SerializeField] private MeshRenderer glowingIndicatorMesh;
+        [SerializeField] private AudioSource indicatorBeepingSound;
         [SerializeField] private float indicationMaxSpeed;
         [SerializeField] private float explosionForce;
         [SerializeField] private float explosionRadius;
@@ -51,6 +52,10 @@ namespace LudumDare.Scripts.Components
                 glowingIndicatorMesh.material.SetFloat("_Intensity", newIndicationState ? 30.0f : 5.0f);
 
                 currentIndicationState = newIndicationState;
+                if (newIndicationState)
+                {
+                    indicatorBeepingSound.Play();
+                }
             }
         }
 

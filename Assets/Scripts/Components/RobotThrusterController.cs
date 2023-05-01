@@ -18,6 +18,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private ParticleSystem backRightThruster;
 
         [SerializeField] private RobotController controller;
+        [SerializeField] private AudioSource thrusterAudio;
 
         private void FixedUpdate()
         {
@@ -25,6 +26,15 @@ namespace LudumDare.Scripts.Components
             SwitchParticleSystem(frontRightThruster, RobotThrusterFlag.FrontRight);
             SwitchParticleSystem(backLeftThruster, RobotThrusterFlag.BackLeft);
             SwitchParticleSystem(backRightThruster, RobotThrusterFlag.BackRight);
+
+            if(GetThrusterFlags() > 0 && !thrusterAudio.isPlaying)
+            {
+                thrusterAudio.Play();
+            }
+            else if(GetThrusterFlags() == 0 && thrusterAudio.isPlaying)
+            {
+                thrusterAudio.Stop();
+            }
         }
 
         private void SwitchParticleSystem(ParticleSystem particles, RobotThrusterFlag particleFlag)
