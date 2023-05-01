@@ -215,7 +215,7 @@ namespace LudumDare.Scripts.Components
 
             if (lastSubmitted)
             {
-                PlayerTime.text = $"TIME: {lastSubmittedTime}".ToUpper().Replace(",", ".");
+                PlayerTime.text = $"TIME: {lastSubmittedTime.ToString("0.00")}".ToUpper().Replace(",", ".");
                 PlayerInstructions.text = $"INSTRUCTIONS: {lastSubmittedInstructions}".ToUpper().Replace(",", ".");
             }
             else
