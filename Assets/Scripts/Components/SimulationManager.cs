@@ -68,7 +68,7 @@ namespace LudumDare.Scripts.Components
             {
                 var simulationTime = Time.time - simulationStartTime;
                 var codeCount = RobotController.CurrentCommands.Count;
-                StartCoroutine(scoreboard.SubmitRecordRoutine(simulationTime, codeCount));
+                scoreboard.SubmitRecord(simulationTime, codeCount);
 
                 endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
             }
@@ -95,7 +95,10 @@ namespace LudumDare.Scripts.Components
         public void RestartSimulation()
         {
             if (!playingSimulation && simulationInstance != null) return;
-            if (endingController.EndingInProgress) return;
+            if (endingController.EndingInProgress)
+            {
+                endingController.RevertEnding();
+            }
 
             if(simulationInstance != null)
             {

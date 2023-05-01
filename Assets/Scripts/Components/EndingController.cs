@@ -91,7 +91,25 @@ namespace LudumDare.Scripts.Components
 
             mainUiGroupToHide.interactable = false;
 
+            animationState = 0.0f;
             started = true;
+        }
+
+        public void RevertEnding()
+        {
+            if (!started) return;
+
+            controlledCamera.transform.position = startCameraPosition;
+            controlledCamera.transform.rotation = startCameraRotation;
+
+            // robota i goalboxa nie trzeba bo one i tak s¹ usuwane przy resecie symulacji
+
+            mainUiGroupToHide.interactable = true;
+            mainUiGroupToHide.alpha = 1.0f;
+
+            controlledCamera.enabled = true;
+            started = false;
+            animationState = 0.0f;
         }
     }
 }
