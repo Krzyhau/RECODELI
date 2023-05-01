@@ -81,6 +81,8 @@ namespace LudumDare.Scripts.Components
                 scoreboard.SubmitRecord(simulationTime, codeCount);
 
                 endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
+
+                timescaleScrollbar.value = 1.0f;
             }
         }
 

@@ -14,7 +14,13 @@ namespace LudumDare.Scripts.Models
 
         public override IEnumerator Execute(RobotController controller)
         {
-            yield return new WaitForSeconds(parameter);
+            float remainingTime = parameter;
+            while(remainingTime > 0)
+            {
+                yield return new WaitForFixedUpdate();
+                remainingTime -= Time.fixedDeltaTime;
+            }
+            yield return new WaitForFixedUpdate();
         }
     }
 }
