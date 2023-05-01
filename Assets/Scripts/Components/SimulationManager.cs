@@ -11,6 +11,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private Instructions instructionsHud;
         [SerializeField] private Scrollbar timescaleScrollbar;
+        [SerializeField] private EndingController endingController;
         [SerializeField] private float maximumTimescale;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
@@ -67,6 +68,14 @@ namespace LudumDare.Scripts.Components
             UpdateGlitching();
         }
 
+        private void FixedUpdate()
+        {
+            if(playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
+            {
+                endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
+            }
+        }
+
         private void UpdateGlitching()
         {
             if (currentGlitchingForce == 0.0f) return;
@@ -87,6 +96,7 @@ namespace LudumDare.Scripts.Components
         public void RestartSimulation()
         {
             if (!playingSimulation && simulationInstance != null) return;
+            if (endingController.EndingInProgress) return;
 
             if(simulationInstance != null)
             {

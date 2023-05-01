@@ -23,7 +23,9 @@ namespace LudumDare.Scripts.Components
 
         public Rigidbody Rigidbody { get; private set; }
 
-        private void Start()
+        public GoalBox ReachedGoalBox { get; set; }
+
+        private void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
         }
