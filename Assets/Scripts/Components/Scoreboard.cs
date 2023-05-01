@@ -33,7 +33,7 @@ namespace LudumDare.Scripts.Components
             public int Lines;
         }
 
-        public static string PlayerName { get; private set; }
+        public static string PlayerName { get; set; }
         public static bool Initiated { get; private set; }
 
         private string TimeBoardName => $"{LevelID}-time";
@@ -45,7 +45,6 @@ namespace LudumDare.Scripts.Components
 
         private void Start()
         {
-            PlayerName = "Krzyhau"; // TODO: do ustawienia
             if (!Initiated && PlayerName.Length > 0) Login(PlayerName);
         }
 

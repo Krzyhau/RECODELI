@@ -100,7 +100,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _Chromatic_Abbreviation: 0.002
+    - _Chromatic_Abbreviation: 0.001
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -120,7 +120,9 @@ Material:
     - _Parallax: 0.005
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scanline_Factor: -0.4
+    - _Scanline_Factor: 0
+    - _Scanline_Negative_Factor: 0.2
+    - _Scanline_Positive_Factor: 0.003
     - _Scanlines: 628
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
