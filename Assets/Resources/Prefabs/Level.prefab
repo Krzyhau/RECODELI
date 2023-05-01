@@ -44,6 +44,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6306712042945997556}
+  - component: {fileID: 3049633797470585844}
   m_Layer: 0
   m_Name: Level
   m_TagString: Untagged
@@ -72,6 +73,19 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3049633797470585844
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1110901102991421766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7349a99c6689d504da80e514db01c925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  id: 1
 --- !u!1 &1306242566477572799
 GameObject:
   m_ObjectHideFlags: 0
@@ -544,6 +558,7 @@ MonoBehaviour:
   trailRecorder: {fileID: 7779010048635189657}
   instructionsHud: {fileID: 4998636211623174458}
   timescaleScrollbar: {fileID: 493550728657058843}
+  maximumTimescale: 0
   glitchingMaterial: {fileID: 2100000, guid: 83d9a3514b05dde44970f4dcaa2c4208, type: 2}
   glitchingFadeoutSpeed: 2
   glitchingForce: 0.5
@@ -1013,7 +1028,7 @@ PrefabInstance:
     - target: {fileID: 5725493544002578144, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
       propertyPath: m_Value
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5871586016595585457, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
@@ -1023,7 +1038,7 @@ PrefabInstance:
     - target: {fileID: 6165805454155545448, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 0.00036621094
+      value: -0.00021362305
       objectReference: {fileID: 0}
     - target: {fileID: 7594407705927412044, guid: cbf339d6cbf33004c8682095cb873695,
         type: 3}
