@@ -11,11 +11,16 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Instructions instructionsHud;
         [SerializeField] private Scrollbar timescaleScrollbar;
 
+        [Header("Glitching")]
+        [SerializeField] private Material glitchingMaterial;
+        [SerializeField] private float glitchingFadeoutSpeed;
+        [SerializeField] private float glitchingForce;
+
         private bool playingSimulation = false;
         private Transform simulationInstance;
         private string simulationGroupName;
 
-
+        private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
         public RobotController RobotController { get; private set; }
@@ -29,6 +34,12 @@ namespace LudumDare.Scripts.Components
             RestartSimulation();
         }
 
+        private void OnDisable()
+        {
+            currentGlitchingForce = 0.0f;
+            UpdateGlitching();
+        }
+
         private void Update()
         {
             if (playingSimulation)
@@ -40,6 +51,14 @@ namespace LudumDare.Scripts.Components
                 }
             }
             ChangeTimeScale();
+            UpdateGlitching();
+        }
+
+        private void UpdateGlitching()
+        {
+            if (currentGlitchingForce == 0.0f) return;
+            currentGlitchingForce = Mathf.Max(0.0f, currentGlitchingForce - glitchingFadeoutSpeed * Time.unscaledDeltaTime);
+            glitchingMaterial.SetFloat("_Intensity", currentGlitchingForce);
         }
 
         public void PlayInstructions()
@@ -64,6 +83,7 @@ namespace LudumDare.Scripts.Components
             simulationInstance.name = simulationGroupName + " (Instance)";
             playingSimulation = false;
             instructionsHud.HighlightInstruction(-1);
+            currentGlitchingForce = glitchingForce;
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
