@@ -464,6 +464,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   greenLight: {fileID: 2102313052013741715}
+  orangeLight: {fileID: 4809969305899621573}
   levelSelection: {fileID: 0}
   id: 0
 --- !u!225 &6045916331324462319

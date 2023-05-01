@@ -21,6 +21,11 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;
         [SerializeField] private float glitchingForce;
+        [Header("SFX")]
+        [SerializeField] private AudioSource idleAmbient;
+        [SerializeField] private AudioSource playAmbient;
+        [SerializeField] private AudioSource successSound;
+        [SerializeField] private AudioSource restartSound;
 
         private bool playingSimulation = false;
         private Transform simulationInstance;
@@ -91,6 +96,10 @@ namespace LudumDare.Scripts.Components
             timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
 
             LevelSelection.SetLevelCompleted(scoreboard.Level);
+
+            playAmbient.gameObject.SetActive(false);
+            idleAmbient.gameObject.SetActive(true);
+            successSound.Play();
         }
 
         private void UpdateGlitching()
@@ -109,6 +118,9 @@ namespace LudumDare.Scripts.Components
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
             lastInstruction = -1;
+
+            playAmbient.gameObject.SetActive(true);
+            idleAmbient.gameObject.SetActive(false);
         }
 
         public void RestartSimulation()
@@ -132,6 +144,11 @@ namespace LudumDare.Scripts.Components
             //instructionsHud.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
             timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
+
+            restartSound.Play();
+
+            playAmbient.gameObject.SetActive(false);
+            idleAmbient.gameObject.SetActive(true);
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");

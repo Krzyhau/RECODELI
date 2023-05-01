@@ -32,7 +32,7 @@ namespace LudumDare.Scripts.Components
             loginSuccessfulSound.Play();
 
             Scoreboard.PlayerName = usernameField.text;
-            PlayerPrefs.SetString("PlayerName", "Krzyhau");
+            PlayerPrefs.SetString("PlayerName", usernameField.text);
 
             canvasGroupToHide.alpha = 0;
 

@@ -12,6 +12,7 @@ namespace LudumDare.Scripts.Components
     public class LevelButton : MonoBehaviour
     {
         [SerializeField] private Transform greenLight;
+        [SerializeField] private Transform orangeLight;
         [SerializeField] private LevelSelection levelSelection;
         [SerializeField] private int id;
 
@@ -33,7 +34,9 @@ namespace LudumDare.Scripts.Components
             ownGroup.alpha = 0.0f;
             ownGroup.interactable = false;
 
-            greenLight.gameObject.SetActive(LevelSelection.IsLevelCompleted(id));
+            bool completed = LevelSelection.IsLevelCompleted(id);
+            greenLight.gameObject.SetActive(completed);
+            orangeLight.gameObject.SetActive(!completed);
 
             if (LevelSelection.IsLevelUnlocked(id))
             {

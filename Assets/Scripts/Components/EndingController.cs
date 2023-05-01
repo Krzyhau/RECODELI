@@ -46,7 +46,7 @@ namespace LudumDare.Scripts.Components
 
             animationState += Time.unscaledDeltaTime / animationLength;
 
-            if (animationState > 1.0f) {
+            if (animationState >= 1.0f) {
                 OnEndingAnimationDone.Invoke();
                 animationState = 1.0f;
             }

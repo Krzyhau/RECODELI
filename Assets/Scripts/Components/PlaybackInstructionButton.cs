@@ -24,7 +24,7 @@ namespace LudumDare.Scripts
         }
         public void ChangeValue(float value)
         {
-            textInput.text = value.ToString();
+            textInput.text = value.ToString().Replace(",", ".") + "s";
         }
         public void SetHighlighted(bool highlighted)
         { 

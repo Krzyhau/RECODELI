@@ -8,6 +8,7 @@ namespace LudumDare.Scripts.Components
     public class DroneCameraController : MonoBehaviour
     {
         [SerializeField] private Camera controlledCamera;
+        [SerializeField] private SimulationManager simulationManager;
 
         [SerializeField] private float zoomScrollDistance;
         [SerializeField] private float zoomNearLimit;
@@ -19,6 +20,7 @@ namespace LudumDare.Scripts.Components
         private Vector3 heldPlanePosition;
         private Vector3 preinterpolatedCameraPosition;
         private bool panning;
+        private bool followingRobot;
 
         private void Start()
         {
@@ -29,6 +31,18 @@ namespace LudumDare.Scripts.Components
         {
             Panning();
             Zooming();
+
+            if (followingRobot && simulationManager.RobotController != null)
+            {
+                var currentY = preinterpolatedCameraPosition.y;
+                preinterpolatedCameraPosition = simulationManager.RobotController.transform.position;
+
+                var displacementDelta = (currentY - preinterpolatedCameraPosition.y) * controlledCamera.transform.forward;
+
+                preinterpolatedCameraPosition -= displacementDelta;
+                preinterpolatedCameraPosition.y = currentY;
+                preinterpolatedCameraPosition += controlledCamera.transform.right * currentY * 0.25f;
+            }
 
             controlledCamera.transform.position = Vector3.Lerp(
                 controlledCamera.transform.position,
@@ -43,6 +57,7 @@ namespace LudumDare.Scripts.Components
             {
                 heldPlanePosition = GetMousePosOnXZPlane();
                 panning = true;
+                followingRobot = false;
             }
             if (!Input.GetMouseButton(0))
             {
@@ -104,6 +119,11 @@ namespace LudumDare.Scripts.Components
             var mouseWorldDirection = controlledCamera.ScreenToWorldPoint(mouseScreenPosition) - cameraPosition;
             var mouseWorldPosition = preinterpolatedCameraPosition + mouseWorldDirection * (preinterpolatedCameraPosition.y / -mouseWorldDirection.y);
             return mouseWorldPosition;
+        }
+
+        public void FollowRobot()
+        {
+            followingRobot = true;
         }
     }
 }
