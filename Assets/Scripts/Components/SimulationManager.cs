@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.UI;
@@ -34,6 +35,15 @@ namespace LudumDare.Scripts.Components
             timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f,maximumTimescale);
 
             RestartSimulation();
+        }
+
+        private void Start()
+        {
+            Task.Run(async () =>
+            {
+                bool result = await Scoreboard.SubmitScore(1, 13.37f, 5);
+                Debug.Log($"Result of submitting: {result}");
+            });
         }
 
         private void OnDisable()
