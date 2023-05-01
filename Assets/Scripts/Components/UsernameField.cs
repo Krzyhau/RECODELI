@@ -9,10 +9,10 @@ namespace LudumDare.Scripts.Components
     public class UsernameField : MonoBehaviour
     {
         [SerializeField] private CanvasGroup canvasGroupToHide;
-
         [SerializeField] private string sceneToLoad;
-
         [SerializeField] private TMP_InputField usernameField;
+        [SerializeField] private AudioSource loginSuccessfulSound;
+        [SerializeField] private AudioSource loginFailureSound;
 
         private void Start()
         {
@@ -24,9 +24,15 @@ namespace LudumDare.Scripts.Components
         private IEnumerator AcceptUsernameRoutine()
         {
             Debug.Log(usernameField);
-            if (usernameField.text.Length == 0) yield break;
+            if (usernameField.text.Length == 0)
+            {
+                loginFailureSound.Play();
+                yield break;
+            }
+            loginSuccessfulSound.Play();
 
             Scoreboard.PlayerName = usernameField.text;
+            PlayerPrefs.SetString("PlayerName", "Krzyhau");
 
             canvasGroupToHide.alpha = 0;
 

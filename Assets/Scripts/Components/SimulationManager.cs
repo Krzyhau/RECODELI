@@ -74,16 +74,23 @@ namespace LudumDare.Scripts.Components
 
             if(playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
             {
-                // make sure the rounding is the same as in leaderboard
-                simulationTime = Mathf.FloorToInt(simulationTime * 100.0f) / 100.0f;
-
-                var codeCount = RobotController.CurrentCommands.Count;
-                scoreboard.SubmitRecord(simulationTime, codeCount);
-
-                endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
-
-                timescaleScrollbar.value = 1.0f;
+                SimulationSuccessful();
             }
+        }
+
+        private void SimulationSuccessful()
+        {
+            // make sure the rounding is the same as in leaderboard
+            simulationTime = Mathf.FloorToInt(simulationTime * 100.0f) / 100.0f;
+
+            var codeCount = RobotController.CurrentCommands.Count;
+            scoreboard.SubmitRecord(simulationTime, codeCount);
+
+            endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
+
+            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
+
+            LevelSelection.SetLevelCompleted(scoreboard.Level);
         }
 
         private void UpdateGlitching()
@@ -124,6 +131,7 @@ namespace LudumDare.Scripts.Components
             instructionsHud.RemovePlaybackInstruction();
             //instructionsHud.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
+            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");

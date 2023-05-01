@@ -18,6 +18,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Text PlayerInstructionsList;
         [SerializeField] private Text PlayerInstructionsScore;
 
+        public int Level => LevelID;
 
         public struct TimeRecord
         {
@@ -49,7 +50,7 @@ namespace LudumDare.Scripts.Components
 
         private void Start()
         {
-            if (PlayerName == null || PlayerName.Length == 0) PlayerName = "Playtester";
+            if (PlayerName == null || PlayerName.Length == 0) PlayerName = PlayerPrefs.GetString("PlayerName", "Playtester");
             if (!Initiated && PlayerName.Length > 0) Login(PlayerName);
         }
 
@@ -118,6 +119,12 @@ namespace LudumDare.Scripts.Components
         public void LoadScores() => StartCoroutine(LoadScoresRoutine());
         public IEnumerator LoadScoresRoutine()
         {
+            PlayerTimeList.text = "";
+            PlayerTimeScore.text = "";
+            PlayerInstructionsList.text = "";
+            PlayerInstructionsScore.text = "";
+
+
             yield return new WaitWhile(() => Initiated == false);
 
             bool[] loadTasks = new bool[4];
@@ -208,10 +215,6 @@ namespace LudumDare.Scripts.Components
             });
 
             yield return new WaitWhile(() => loadTasks.Any(b=>!b));
-            PlayerTimeList.text = "";
-            PlayerTimeScore.text = "";
-            PlayerInstructionsList.text = "";
-            PlayerInstructionsScore.text = "";
 
             if (lastSubmitted)
             {
