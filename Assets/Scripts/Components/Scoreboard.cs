@@ -7,8 +7,10 @@ using UnityEngine;
 
 namespace LudumDare.Scripts.Components
 {
-    public static class Scoreboard
+    public class Scoreboard : MonoBehaviour
     {
+        [SerializeField] private int LevelID;
+
         public struct TimeRecord
         {
             public int Place;
@@ -19,78 +21,75 @@ namespace LudumDare.Scripts.Components
         public static string PlayerName { get; private set; }
         public static bool Initiated { get; private set; }
 
-        private static string TimeBoardName(int levelID) => $"{levelID}-time";
-        private static string CodeBoardName(int levelID) => $"{levelID}-code";
+        private string TimeBoardName => $"{LevelID}-time";
+        private string CodeBoardName => $"{LevelID}-code";
 
-        private static async Task<bool> EnsureConnected()
+        public Scoreboard Instance { get; private set; }
+
+        private void Awake() => Instance = this;
+
+        private void Start()
         {
-            var result = new TaskCompletionSource<bool>();
-            Debug.Log("HALO 1");
-            LootLockerSDKManager.StartGuestSession(response =>
-            {
-                Debug.Log("HALO 2");
-                result.SetResult(response.success);
-                Debug.Log(response.text);
-            });
-
-            Debug.Log("HALO 3");
-            return await result.Task;
+            PlayerName = "Krzyhau"; // TODO: do ustawienia
+            if (!Initiated && PlayerName.Length > 0) StartCoroutine(LoginRoutine(PlayerName));
         }
 
-        public static async Task<List<TimeRecord>> GetTimeRecordsForLevel(int level)
+        public IEnumerator LoginRoutine(string playerName)
         {
-            bool state = await EnsureConnected();
-            if(!state) return new List<TimeRecord>();
-
-            var result = new TaskCompletionSource<List<TimeRecord>>();
-
-            LootLockerSDKManager.GetScoreList(TimeBoardName(level), 10, 0, (response) =>
+            LootLockerSDKManager.StartGuestSession((response) =>
             {
-                if (response.statusCode == 200)
+                if (response.success)
                 {
-                    result.SetResult(response.items.Select(i=> new TimeRecord()
-                    {
-                        Place = i.rank,
-                        PlayerName = i.member_id,
-                        Time = i.score / 100.0f
-                    }).ToList());
+                    Debug.Log("Player was logged in");
+                    Initiated = true;
+                    PlayerName = playerName;
                 }
                 else
                 {
-                    result.SetResult(new List<TimeRecord>());
+                    Debug.Log("Could not start session");
                 }
             });
-
-            return await result.Task;
+            yield return new WaitWhile(() => Initiated == false);
         }
 
 
-
-        public static async Task<bool> SubmitScore(int level, float time, int instructions)
+        public IEnumerator SubmitRecordRoutine(float time, int codeCount)
         {
-            bool state = await EnsureConnected();
-            if (!state)
-            {
-                Debug.Log("Couldn't submit - cannot ensure guest connection");
-                return false;
-            }
-            Debug.Log("HALO 4");
+            yield return new WaitWhile(() => Initiated == false);
 
-            var submitTime = new TaskCompletionSource<bool>();
-            var submitInstructions = new TaskCompletionSource<bool>();
+            bool doneTime = false;
+            bool doneCode = false;
+            string playerID = PlayerName;
 
-            LootLockerSDKManager.SubmitScore(PlayerName, Mathf.FloorToInt(time * 100.0f), TimeBoardName(level), (response) =>
+            LootLockerSDKManager.SubmitScore(playerID, Mathf.FloorToInt(time * 100), TimeBoardName, (response) =>
             {
-                submitTime.SetResult(response.statusCode == 200);
+                if (response.success)
+                {
+                    Debug.Log("Successfully uploaded time score");
+                    doneTime = true;
+                }
+                else
+                {
+                    Debug.Log("Failed " + response.Error);
+                    doneTime = true;
+                }
             });
 
-            LootLockerSDKManager.SubmitScore(PlayerName, instructions, CodeBoardName(level), (response) =>
+            LootLockerSDKManager.SubmitScore(playerID, codeCount, CodeBoardName, (response) =>
             {
-                submitInstructions.SetResult(response.statusCode == 200);
+                if (response.success)
+                {
+                    Debug.Log("Successfully uploaded code score");
+                    doneCode = true;
+                }
+                else
+                {
+                    Debug.Log("Failed " + response.Error);
+                    doneCode = true;
+                }
             });
 
-            bool[] results = await Task.WhenAll(submitTime.Task, submitInstructions.Task);
-            return results[0] && results[1];
+            yield return new WaitWhile(() => doneTime == false || doneCode == false);
         }
 
     }

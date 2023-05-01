@@ -12,6 +12,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private Instructions instructionsHud;
         [SerializeField] private Scrollbar timescaleScrollbar;
         [SerializeField] private EndingController endingController;
+        [SerializeField] private Scoreboard scoreboard;
         [SerializeField] private float maximumTimescale;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
@@ -25,6 +26,8 @@ namespace LudumDare.Scripts.Components
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
+        private float simulationStartTime;
+
         public RobotController RobotController { get; private set; }
 
         private void Awake()
@@ -36,15 +39,6 @@ namespace LudumDare.Scripts.Components
             timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f,maximumTimescale);
 
             RestartSimulation();
-        }
-
-        private void Start()
-        {
-            Task.Run(async () =>
-            {
-                bool result = await Scoreboard.SubmitScore(1, 13.37f, 5);
-                Debug.Log($"Result of submitting: {result}");
-            });
         }
 
         private void OnDisable()
@@ -72,6 +66,10 @@ namespace LudumDare.Scripts.Components
         {
             if(playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
             {
+                var simulationTime = Time.time - simulationStartTime;
+                var codeCount = RobotController.CurrentCommands.Count;
+                StartCoroutine(scoreboard.SubmitRecordRoutine(simulationTime, codeCount));
+
                 endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
             }
         }
@@ -85,6 +83,7 @@ namespace LudumDare.Scripts.Components
 
         public void PlayInstructions()
         {
+            simulationStartTime = Time.time;
             instructionsHud.UpdatePlaybackInstruction();
             //instructionsHud.HighlightInstruction(0);
             RobotController.ExecuteCommands(instructionsHud.GetRobotActionList());

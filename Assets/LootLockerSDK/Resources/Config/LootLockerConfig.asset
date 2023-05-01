@@ -16,7 +16,7 @@ MonoBehaviour:
   token: 
   adminToken: 
   refreshToken: 
-  domainKey: 48hfsip2
+  domainKey: 
   gameID: 0
   game_version: 1.0.0.0
   deviceID: 
