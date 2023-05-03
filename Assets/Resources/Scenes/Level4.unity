@@ -1495,6 +1495,16 @@ PrefabInstance:
       propertyPath: LevelID
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 6683751994633787836, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: AuthorTime
+      value: 3.21
+      objectReference: {fileID: 0}
+    - target: {fileID: 6683751994633787836, guid: aec0749b79a8e904b8c09e79275d683d,
+        type: 3}
+      propertyPath: AuthorInstructions
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7255505819295141282, guid: aec0749b79a8e904b8c09e79275d683d,
         type: 3}
       propertyPath: m_AnchorMax.x

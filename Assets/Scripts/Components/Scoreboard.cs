@@ -11,6 +11,8 @@ namespace LudumDare.Scripts.Components
     public class Scoreboard : MonoBehaviour
     {
         [SerializeField] private int LevelID;
+        [SerializeField] private float AuthorTime;
+        [SerializeField] private int AuthorInstructions;
         [SerializeField] private Text PlayerTime;
         [SerializeField] private Text PlayerTimeList;
         [SerializeField] private Text PlayerTimeScore;
@@ -36,6 +38,7 @@ namespace LudumDare.Scripts.Components
 
         public static string PlayerName { get; set; }
         public static bool Initiated { get; private set; }
+        public static bool ConnectionFailed { get; private set; }
 
         private string TimeBoardName => $"{LevelID}-time";
         private string CodeBoardName => $"{LevelID}-code";
@@ -62,13 +65,14 @@ namespace LudumDare.Scripts.Components
                 if (response.success)
                 {
                     Debug.Log("Player was logged in");
-                    Initiated = true;
                     PlayerName = playerName;
                 }
                 else
                 {
                     Debug.Log("Could not start session");
+                    ConnectionFailed = true;
                 }
+                Initiated = true;
             });
             yield return new WaitWhile(() => Initiated == false);
         }
@@ -129,6 +133,8 @@ namespace LudumDare.Scripts.Components
 
             bool[] loadTasks = new bool[4];
 
+            bool failedAtLeastOnce = false;
+
             const int topCount = 10;
 
             var ownTimeRecord = new TimeRecord();
@@ -152,6 +158,7 @@ namespace LudumDare.Scripts.Components
                 else
                 {
                     Debug.Log("failed: " + response.Error);
+                    failedAtLeastOnce = true;
                 }
                 loadTasks[0] = true;
             });
@@ -171,6 +178,7 @@ namespace LudumDare.Scripts.Components
                 else
                 {
                     Debug.Log("failed: " + response.Error);
+                    failedAtLeastOnce = true;
                 }
                 loadTasks[1] = true;
             });
@@ -191,6 +199,7 @@ namespace LudumDare.Scripts.Components
                 else
                 {
                     Debug.Log("failed: " + response.Error);
+                    failedAtLeastOnce = true;
                 }
                 loadTasks[2] = true;
             });
@@ -210,6 +219,7 @@ namespace LudumDare.Scripts.Components
                 else
                 {
                     Debug.Log("failed: " + response.Error);
+                    failedAtLeastOnce = true;
                 }
                 loadTasks[3] = true;
             });
@@ -226,22 +236,30 @@ namespace LudumDare.Scripts.Components
                 PlayerInstructions.text = $"INSTRUCTIONS: {ownCodeRecord.Lines} (#{ownCodeRecord.Place})".ToUpper().Replace(",", ".");
                 PlayerTime.text = $"TIME: {ownTimeRecord.Time} (#{ownTimeRecord.Place})".ToUpper().Replace(",", ".");
             }
-            
 
-
-            for(int i = 0; i < topTimeRecords.Count; i++)
+            if (failedAtLeastOnce)
             {
-                PlayerTimeList.text = $"{PlayerTimeList.text}{topTimeRecords[i].Place}.) " +
-                    $"{topTimeRecords[i].PlayerName}\n".Replace(",",".");
-                PlayerTimeScore.text = $"{PlayerTimeScore.text}{topTimeRecords[i].Time}\n".Replace(",", ".");
+                PlayerTimeList.text = "SCOREBOARD IS CURRENTLY NOT FUNCTIONING!\n\nOPERATORS ARE ENCOURAGED TO SHARE SCORES THROUGH OTHER COMMUNICATION CHANNELS!";
+                PlayerInstructionsList.text += "AS AN ALTERNATIVE, WE ARE *DELIVERING* OUR OWN BEST SCORES:\n\n";
+                PlayerInstructionsList.text += $"AUTHOR TIME: {AuthorTime.ToString("0.00").Replace(",", ".")}\n";
+                PlayerInstructionsList.text += $"AUTHOR INSTRUCTIONS: {AuthorInstructions}";
             }
-
-            
-            for (int i = 0; i < topCodeRecords.Count; i++)
+            else
             {
-                PlayerInstructionsList.text = $"{PlayerInstructionsList.text}{topCodeRecords[i].Place}.) " +
-                    $"{topCodeRecords[i].PlayerName}\n".Replace(",", ".");
-                PlayerInstructionsScore.text = $"{PlayerInstructionsScore.text}{topCodeRecords[i].Lines}\n".Replace(",", ".");
+                for (int i = 0; i < topTimeRecords.Count; i++)
+                {
+                    PlayerTimeList.text = $"{PlayerTimeList.text}{topTimeRecords[i].Place}.) " +
+                        $"{topTimeRecords[i].PlayerName}\n".Replace(",", ".");
+                    PlayerTimeScore.text = $"{PlayerTimeScore.text}{topTimeRecords[i].Time}\n".Replace(",", ".");
+                }
+
+
+                for (int i = 0; i < topCodeRecords.Count; i++)
+                {
+                    PlayerInstructionsList.text = $"{PlayerInstructionsList.text}{topCodeRecords[i].Place}.) " +
+                        $"{topCodeRecords[i].PlayerName}\n".Replace(",", ".");
+                    PlayerInstructionsScore.text = $"{PlayerInstructionsScore.text}{topCodeRecords[i].Lines}\n".Replace(",", ".");
+                }
             }
         }
         public void ShowScoreboard()
