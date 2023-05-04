@@ -11,11 +11,11 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float propulsionForce;
 
-        public int CurrentCommandIndex { get; private set; }
-        public bool ExecutingCommands { get; private set; }
-        public RobotAction CurrentCommand => ExecutingCommands ? CurrentCommands[CurrentCommandIndex] : null;
+        public int CurrentInstructionIndex { get; private set; }
+        public bool ExecutingInstructions { get; private set; }
+        public RobotInstruction CurrentInstruction => ExecutingInstructions ? CurrentInstructions[CurrentInstructionIndex] : null;
 
-        public List<RobotAction> CurrentCommands { get; set; }
+        public List<RobotInstruction> CurrentInstructions { get; set; }
 
         public float RotationSpeed => rotationSpeed;
         public float PropulsionForce => propulsionForce;
@@ -32,29 +32,29 @@ namespace LudumDare.Scripts.Components
 
         private IEnumerator CommandExecutionCoroutine()
         {
-            ExecutingCommands = true;
-            CurrentCommandIndex = 0;
-            while (CurrentCommandIndex < CurrentCommands.Count)
+            ExecutingInstructions = true;
+            CurrentInstructionIndex = 0;
+            while (CurrentInstructionIndex < CurrentInstructions.Count)
             {
-                yield return CurrentCommand.Execute(this);
-                CurrentCommandIndex++;
+                yield return CurrentInstruction.Execute(this);
+                CurrentInstructionIndex++;
             }
-            ExecutingCommands = false;
-            CurrentCommandIndex = -1;
+            ExecutingInstructions = false;
+            CurrentInstructionIndex = -1;
         }
 
 
-        public bool ExecuteCommands(List<RobotAction> commands)
+        public bool ExecuteCommands(List<RobotInstruction> commands)
         {
-            if (ExecutingCommands) return false;
+            if (ExecutingInstructions) return false;
 
-            CurrentCommands = commands;
+            CurrentInstructions = commands;
             return ExecuteCommands();
         }
 
         public bool ExecuteCommands()
         {
-            if (ExecutingCommands || CurrentCommands.Count < 0) return false;
+            if (ExecutingInstructions || CurrentInstructions.Count < 0) return false;
 
             StartCoroutine(CommandExecutionCoroutine());
 

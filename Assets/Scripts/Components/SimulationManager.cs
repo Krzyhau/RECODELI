@@ -59,11 +59,11 @@ namespace LudumDare.Scripts.Components
         {
             if (playingSimulation)
             {
-                if(lastInstruction < RobotController.CurrentCommandIndex)
+                if(lastInstruction < RobotController.CurrentInstructionIndex)
                 {
-                    Debug.Log(RobotController.CurrentCommandIndex);
-                    instructionsHud.HighlightInstruction(RobotController.CurrentCommandIndex);
-                    lastInstruction = RobotController.CurrentCommandIndex;
+                    Debug.Log(RobotController.CurrentInstructionIndex);
+                    instructionsHud.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                    lastInstruction = RobotController.CurrentInstructionIndex;
                 }
             }
             ChangeTimeScale();
@@ -88,7 +88,7 @@ namespace LudumDare.Scripts.Components
             // make sure the rounding is the same as in leaderboard
             simulationTime = Mathf.FloorToInt(simulationTime * 100.0f) / 100.0f;
 
-            var codeCount = RobotController.CurrentCommands.Count;
+            var codeCount = RobotController.CurrentInstructions.Count;
             scoreboard.SubmitRecord(simulationTime, codeCount);
 
             endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
@@ -115,7 +115,7 @@ namespace LudumDare.Scripts.Components
             simulationTime = 0.0f;
             instructionsHud.UpdatePlaybackInstruction();
             //instructionsHud.HighlightInstruction(0);
-            RobotController.ExecuteCommands(instructionsHud.GetRobotActionList());
+            RobotController.ExecuteCommands(instructionsHud.GetRobotInstructionsList());
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
             lastInstruction = -1;

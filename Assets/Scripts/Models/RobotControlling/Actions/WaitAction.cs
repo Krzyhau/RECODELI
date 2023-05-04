@@ -4,15 +4,12 @@ using LudumDare.Scripts.Components;
 
 namespace LudumDare.Scripts.Models
 {
-    public class WaitAction : RobotAction
+    public class WaitAction : IRobotAction<float>
     {
-        public override RobotThrusterFlag Thrusters => RobotThrusterFlag.None;
+        public string Name => "WAIT";
+        public RobotThrusterFlag ThrustersState => RobotThrusterFlag.None;
 
-        public WaitAction(float param) : base(param) 
-        { 
-        }
-
-        public override IEnumerator Execute(RobotController controller)
+        public IEnumerator Execute(RobotController controller, float parameter)
         {
             float remainingTime = parameter;
             while(remainingTime > 0)

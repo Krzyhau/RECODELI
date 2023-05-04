@@ -2,9 +2,10 @@ namespace LudumDare.Scripts.Models
 {
     public class BackwardAction : MovementAction
     {
-        public override RobotThrusterFlag Thrusters => RobotThrusterFlag.FrontRight | RobotThrusterFlag.FrontLeft;
+        public override string Name => "BACKWARD";
+        public override RobotThrusterFlag ThrustersState => RobotThrusterFlag.FrontRight | RobotThrusterFlag.FrontLeft;
 
-        public BackwardAction(float param) : base(param, -1.0f)
+        public BackwardAction() : base(-1.0f)
         {
         }
     }

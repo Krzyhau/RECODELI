@@ -63,21 +63,21 @@ namespace LudumDare.Scripts.Components
             newHeight = -15;
         }
 
-        public List<RobotAction> GetRobotActionList()
+        public List<RobotInstruction> GetRobotInstructionsList()
         {
-            var actionList = new List<RobotAction>();
+            var instructionsList = new List<RobotInstruction>();
 
             for (int i = 0; i < instructionsListParent.childCount; i++)
             {
                 if (!instructionsListParent.GetChild(i).TryGetComponent(out InstructionButton button)) continue;
-                var robotAction = RobotAction.CreateFromName(button.Label, button.GetParameterValue());
-                if (robotAction != null)
+                var robotInstruction = RobotActions.CreateInstruction(button.Label, button.GetParameterValue());
+                if (robotInstruction != null)
                 {
-                    actionList.Add(robotAction);
+                    instructionsList.Add(robotInstruction);
                 }
             }
 
-            return actionList;
+            return instructionsList;
         }
 
         public void MoveAddButton(float offset)

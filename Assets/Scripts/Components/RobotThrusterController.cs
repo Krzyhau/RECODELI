@@ -64,9 +64,9 @@ namespace LudumDare.Scripts.Components
 
         private RobotThrusterFlag GetThrusterFlags()
         {
-            if (controller.ExecutingCommands)
+            if (controller.ExecutingInstructions)
             {
-                return controller.CurrentCommand.Thrusters;
+                return controller.CurrentInstruction.Action.ThrustersState;
             }
 
             return RobotThrusterFlag.None;

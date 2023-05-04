@@ -4,16 +4,19 @@ using LudumDare.Scripts.Components;
 
 namespace LudumDare.Scripts.Models
 {
-    public abstract class MovementAction : RobotAction
+    public abstract class MovementAction : IRobotAction<float>
     {
+        public abstract string Name { get; }
+        public abstract RobotThrusterFlag ThrustersState { get; }
+
         private float movementDirection;
 
-        public MovementAction(float param, float direction) : base(param) 
+        public MovementAction(float direction) : base()
         { 
             movementDirection = direction;
         }
 
-        public override IEnumerator Execute(RobotController controller)
+        public IEnumerator Execute(RobotController controller, float parameter)
         {
             for(float t = 0; t < parameter; t += Time.fixedDeltaTime)
             {

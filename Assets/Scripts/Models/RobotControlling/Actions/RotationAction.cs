@@ -5,16 +5,19 @@ using LudumDare.Scripts.Utils;
 
 namespace LudumDare.Scripts.Models
 {
-    public abstract class RotationAction : RobotAction
+    public abstract class RotationAction : IRobotAction<float>
     {
+        public abstract string Name { get; }
+        public abstract RobotThrusterFlag ThrustersState { get; }
+
         private float rotationDirection;
 
-        public RotationAction(float param, float direction) : base(param) 
+        public RotationAction(float direction) : base() 
         {
             rotationDirection = direction;
         }
 
-        public override IEnumerator Execute(RobotController controller)
+        public IEnumerator Execute(RobotController controller, float parameter)
         {
             var deltaRotation = parameter * rotationDirection * controller.RotationSpeed;
 
