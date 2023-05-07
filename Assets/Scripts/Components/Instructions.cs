@@ -70,7 +70,7 @@ namespace LudumDare.Scripts.Components
             for (int i = 0; i < instructionsListParent.childCount; i++)
             {
                 if (!instructionsListParent.GetChild(i).TryGetComponent(out InstructionButton button)) continue;
-                var robotInstruction = RobotActions.CreateInstruction(button.Label, button.GetParameterValue());
+                var robotInstruction = RobotAction.CreateInstruction(button.Label, button.GetParameterValue());
                 if (robotInstruction != null)
                 {
                     instructionsList.Add(robotInstruction);
