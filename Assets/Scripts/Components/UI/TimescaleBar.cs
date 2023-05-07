@@ -4,7 +4,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LudumDare.Scripts
+namespace LudumDare.Scripts.Components.UI
 {
     public class TimescaleBar : MonoBehaviour
     {

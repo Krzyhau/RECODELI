@@ -1,3 +1,5 @@
+using LudumDare.Scripts.Components.UI;
+using LudumDare.Scripts.Models;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -10,12 +12,10 @@ namespace LudumDare.Scripts.Components
     {
         [SerializeField] private Transform simulationGroup;
         [SerializeField] private RobotTrailRecorder trailRecorder;
-        [SerializeField] private Instructions instructionsHud;
-        [SerializeField] private Scrollbar timescaleScrollbar;
         [SerializeField] private EndingController endingController;
+        [SerializeField] private InstructionEditor instructionEditor; 
         [SerializeField] private Scoreboard scoreboard;
-        [SerializeField] private float maximumTimescale;
-        [SerializeField] private Text textSliderValue;
+        [SerializeField] private TimescaleBar timescaleBar;
         [SerializeField] private string levelSelectScene;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
@@ -27,6 +27,7 @@ namespace LudumDare.Scripts.Components
         [SerializeField] private AudioSource successSound;
         [SerializeField] private AudioSource restartSound;
 
+        private bool paused = false;
         private bool playingSimulation = false;
         private Transform simulationInstance;
         private string simulationGroupName;
@@ -37,14 +38,14 @@ namespace LudumDare.Scripts.Components
         private float simulationTime;
 
         public RobotController RobotController { get; private set; }
+        public bool PlayingSimulation => playingSimulation;
+        public bool PausedSimulation => paused;
 
         private void Awake()
         {
             simulationGroupName = simulationGroup.name;
             simulationGroup.name += " (Original)";
             simulationGroup.gameObject.SetActive(false);
-
-            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f,maximumTimescale);
 
             RestartSimulation();
         }
@@ -62,11 +63,16 @@ namespace LudumDare.Scripts.Components
                 if(lastInstruction < RobotController.CurrentInstructionIndex)
                 {
                     Debug.Log(RobotController.CurrentInstructionIndex);
-                    instructionsHud.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                    //instructionsHud.HighlightInstruction(RobotController.CurrentInstructionIndex);
                     lastInstruction = RobotController.CurrentInstructionIndex;
                 }
             }
-            ChangeTimeScale();
+
+            if (!paused)
+            {
+                Time.timeScale = timescaleBar.Timescale;
+            }
+
             UpdateGlitching();
         }
 
@@ -77,7 +83,7 @@ namespace LudumDare.Scripts.Components
                 simulationTime += Time.fixedDeltaTime;
             }
 
-            if(playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
+            if (playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
             {
                 SimulationSuccessful();
             }
@@ -93,7 +99,7 @@ namespace LudumDare.Scripts.Components
 
             endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
 
-            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
+            Time.timeScale = 1.0f;
 
             LevelSelection.SetLevelCompleted(scoreboard.Level);
 
@@ -113,9 +119,9 @@ namespace LudumDare.Scripts.Components
         public void PlayInstructions()
         {
             simulationTime = 0.0f;
-            instructionsHud.UpdatePlaybackInstruction();
-            //instructionsHud.HighlightInstruction(0);
-            RobotController.ExecuteCommands(instructionsHud.GetRobotInstructionsList());
+            instructionEditor.HighlightInstruction(0);
+            instructionEditor.SetPlaybackState(true);
+            RobotController.ExecuteCommands(instructionEditor.GetRobotInstructionsList());
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
             lastInstruction = -1;
@@ -141,10 +147,9 @@ namespace LudumDare.Scripts.Components
             simulationInstance.gameObject.SetActive(true);
             simulationInstance.name = simulationGroupName + " (Instance)";
             playingSimulation = false;
-            instructionsHud.RemovePlaybackInstruction();
-            //instructionsHud.HighlightInstruction(-1);
+            instructionEditor.SetPlaybackState(false);
+            instructionEditor.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
-            timescaleScrollbar.value = 1.0f / Mathf.Max(1.0f, maximumTimescale);
 
             restartSound.Play();
 
@@ -155,10 +160,15 @@ namespace LudumDare.Scripts.Components
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
         }
 
-        public void ChangeTimeScale()
+        public void PauseSimulation()
         {
-            Time.timeScale = timescaleScrollbar.value * maximumTimescale;
-            textSliderValue.text = Time.timeScale.ToString("0.00").Replace(",",".");
+            paused = true;
+            Time.timeScale = 0.0f;
+        }
+
+        public void ResumeSimulation()
+        {
+            paused = false;
         }
 
         public void LeaveToLevelSelect()

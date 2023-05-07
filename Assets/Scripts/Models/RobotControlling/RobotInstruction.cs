@@ -23,6 +23,9 @@ namespace LudumDare.Scripts.Models
     {
         public T Parameter { get; set; }
 
+        public RobotInstruction(RobotAction<T> action) : base(action)
+        {
+        }
         public RobotInstruction(RobotAction<T> action, T parameter) : base(action)
         {
             Parameter = parameter;

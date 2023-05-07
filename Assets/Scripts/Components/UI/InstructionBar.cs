@@ -23,6 +23,8 @@ namespace LudumDare.Scripts.Components.UI
 
         private RobotInstruction instruction;
 
+        public Button.ButtonClickedEvent OnClick => barHandle.onClick;
+
         public bool Selected
         {
             get { return selected; }
@@ -43,27 +45,30 @@ namespace LudumDare.Scripts.Components.UI
             {
                 instruction = value;
                 titleText.text = instruction.Action.Name;
-                secondaryField.gameObject.SetActive(instruction.Action.ParameterStringCount > 1);
-                var paramStrings = instruction.ParameterToStrings();
-                primaryField.text = paramStrings[0];
-                if(paramStrings.Length > 1) secondaryField.text = paramStrings[1];
+                if(primaryField != null && secondaryField != null)
+                {
+                    secondaryField.gameObject.SetActive(instruction.Action.ParameterStringCount > 1);
+                    var paramStrings = instruction.ParameterToStrings();
+                    primaryField.text = paramStrings[0];
+                    if (paramStrings.Length > 1) secondaryField.text = paramStrings[1];
+                }
             }
         }
 
         private void OnEnable()
         {
-            primaryField.onValueChanged.AddListener(OnParameterChanged);
-            secondaryField.onValueChanged.AddListener(OnParameterChanged);
+            if (primaryField != null) primaryField.onValueChanged.AddListener(OnParameterChanged);
+            if (secondaryField != null) secondaryField.onValueChanged.AddListener(OnParameterChanged);
         }
         private void OnDisable()
         {
-            primaryField.onValueChanged.RemoveListener(OnParameterChanged);
-            secondaryField.onValueChanged.RemoveListener(OnParameterChanged);
+            if (primaryField != null) primaryField.onValueChanged.RemoveListener(OnParameterChanged);
+            if (secondaryField != null) secondaryField.onValueChanged.RemoveListener(OnParameterChanged);
         }
 
         private void OnParameterChanged(string _)
         {
-            if (Instruction == null) return;
+            if (Instruction == null || primaryField == null || secondaryField == null) return;
 
             Instruction.SetParameterFromStrings(new string[] { primaryField.text, secondaryField.text });
         }

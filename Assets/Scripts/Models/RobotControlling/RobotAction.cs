@@ -24,11 +24,17 @@ namespace LudumDare.Scripts.Models
                 .ToList();
         }
 
+        public abstract RobotInstruction CreateInstruction();
+
         public static RobotAction GetByName(string name)
         {
             return List.FirstOrDefault(s => s.Name == name);
         }
 
+        public static RobotInstruction CreateInstruction(string name)
+        {
+            return GetByName(name).CreateInstruction();
+        }
         public static RobotInstruction<T> CreateInstruction<T>(string name, T parameter)
         {
             return new RobotInstruction<T>((RobotAction<T>)GetByName(name), parameter);
@@ -44,6 +50,10 @@ namespace LudumDare.Scripts.Models
         public override Type GetParameterType()
         {
             return typeof(T);
+        }
+        public override RobotInstruction CreateInstruction()
+        {
+            return new RobotInstruction<T>(this);
         }
     }
 }

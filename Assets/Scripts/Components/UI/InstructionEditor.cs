@@ -1,3 +1,4 @@
+using LudumDare.Scripts.Models;
 using LudumDare.Scripts.Utils;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,9 +13,12 @@ namespace LudumDare.Scripts.Components.UI
 {
     public class InstructionEditor : MonoBehaviour
     {
+        [SerializeField] private RectTransform instructionsContainer;
         [SerializeField] private InstructionBar instructionBarPrefab;
         [SerializeField] private RectTransform validClickArea;
         [SerializeField] private GameObject noInstructionsPopup;
+        [SerializeField] private GameObject instructionsMenu;
+        [SerializeField] private GameObject addInstructionMenu;
         [SerializeField] private float barsPadding;
         [SerializeField] private float barsPositionInterpolation;
 
@@ -23,12 +27,13 @@ namespace LudumDare.Scripts.Components.UI
         [SerializeField] private Button undoButton;
         [SerializeField] private Button redoButton;
 
-        private RectTransform instructionsContainer;
         private Canvas canvasContainer;
 
         private List<InstructionBar> grabbedInstructions = new List<InstructionBar>();
         private bool grabbing;
         private bool clickedInClickZone;
+        private bool addInstructionMenuActive;
+        private bool addInstructionMenuWasActive;
         private InstructionBar lastClickedInstructionBar;
         private float buttonBasedMousePosition;
 
@@ -54,7 +59,6 @@ namespace LudumDare.Scripts.Components.UI
             // TODO: move it somewhere else once a fitting place is made
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
-            instructionsContainer = GetComponent<RectTransform>();
             canvasContainer = instructionsContainer.GetComponentInParent<Canvas>();
         }
 
@@ -64,19 +68,26 @@ namespace LudumDare.Scripts.Components.UI
             RecalculateButtonBasedMousePosition();
             UpdateBarsPosition();
 
-            UpdateBarsSelection();
-            HandleBarGrabbing();
+            if (!addInstructionMenuWasActive)
+            {
+                UpdateBarsSelection();
+                HandleBarGrabbing();
+            }
+            else if (!addInstructionMenuActive)
+            {
+                addInstructionMenuWasActive = false;
+            }
 
             UpdateButtons();
 
             HandleKeyboardShortcuts();
 
-
-            if(EnumerateBars().Count() > 0 && noInstructionsPopup.activeSelf)
+            var barCount = EnumerateBars().Count();
+            if (barCount > 0 && noInstructionsPopup.activeSelf)
             {
                 noInstructionsPopup.SetActive(false);
             }
-            if (EnumerateBars().Count() == 0 && !noInstructionsPopup.activeSelf)
+            if (barCount == 0 && !noInstructionsPopup.activeSelf)
             {
                 noInstructionsPopup.SetActive(true);
             }
@@ -84,7 +95,7 @@ namespace LudumDare.Scripts.Components.UI
 
         private void ValidateBarsChildren()
         {
-            foreach(Transform child in instructionsContainer)
+            foreach (Transform child in instructionsContainer)
             {
                 if (!child.gameObject.TryGetComponent(out InstructionBar bar))
                 {
@@ -102,7 +113,7 @@ namespace LudumDare.Scripts.Components.UI
 
             var yPosition = -mousePosInRect.y;
 
-            if(yPosition < 0)
+            if (yPosition < 0)
             {
                 buttonBasedMousePosition = 0;
                 return;
@@ -114,7 +125,7 @@ namespace LudumDare.Scripts.Components.UI
             {
                 var height = barsPadding + child.sizeDelta.y;
 
-                if(yPosition >= currentPosition && yPosition < currentPosition + height)
+                if (yPosition >= currentPosition && yPosition < currentPosition + height)
                 {
                     float innerFactor = (yPosition - currentPosition) / height;
                     buttonBasedMousePosition = buttonIndex + innerFactor;
@@ -166,26 +177,26 @@ namespace LudumDare.Scripts.Components.UI
                 // find out what to select
                 if (clickedBar != null)
                 {
-                    if(rangeSelection && lastClickedInstructionBar != null)
+                    if (rangeSelection && lastClickedInstructionBar != null)
                     {
                         int startPos = lastClickedInstructionBar.transform.GetSiblingIndex();
                         int endPos = clickedBar.transform.GetSiblingIndex();
                         int step = startPos > endPos ? -1 : 1;
-                        for(int i = startPos; i != endPos; i += step)
+                        for (int i = startPos; i != endPos; i += step)
                         {
                             GetBar(i).Selected = true;
                         }
                     }
 
-                    if(multipleSelection || !clickedBar.Selected)
+                    if (multipleSelection || !clickedBar.Selected)
                     {
                         clickedBar.Selected = !clickedBar.Selected;
                     }
-                    
+
                     lastClickedInstructionBar = clickedBar;
                 }
             }
-            
+
             // unselect other buttons
             if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection)
             {
@@ -194,7 +205,7 @@ namespace LudumDare.Scripts.Components.UI
                     if (bar != lastClickedInstructionBar) bar.Selected = false;
                 }
             }
-            
+
         }
 
         private void HandleBarGrabbing()
@@ -237,9 +248,9 @@ namespace LudumDare.Scripts.Components.UI
                 if (newPos != oldPos && minPos >= 0 && maxPos < instructionsContainer.childCount)
                 {
                     // move all grabbed bars to the very end first so they don't get mixed up later
-                    foreach(var bar in grabbedInstructions)
+                    foreach (var bar in grabbedInstructions)
                     {
-                        bar.transform.SetSiblingIndex(instructionsContainer.childCount-1);
+                        bar.transform.SetSiblingIndex(instructionsContainer.childCount - 1);
                     }
 
                     int currPos = minPos;
@@ -255,14 +266,23 @@ namespace LudumDare.Scripts.Components.UI
 
         private void UpdateButtons()
         {
-            deleteButton.interactable = EnumerateBars().Where(bar => bar.Selected).Any();
+            if (addInstructionMenuActive)
+            {
+                deleteButton.interactable = false;
+                undoButton.interactable = false;
+                redoButton.interactable = false;
+            }
+            else
+            {
+                deleteButton.interactable = EnumerateBars().Where(bar => bar.Selected).Any();
+                undoButton.interactable = false;
+                redoButton.interactable = false;
+            }
         }
-
-
 
         private void HandleKeyboardShortcuts()
         {
-            if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
@@ -299,10 +319,12 @@ namespace LudumDare.Scripts.Components.UI
 
         public void DeleteSelected()
         {
-            foreach(var bar in EnumerateBars().Where(bar => bar.Selected))
+            foreach (var bar in EnumerateBars().Where(bar => bar.Selected))
             {
                 Destroy(bar.gameObject);
             }
+
+            // TODO: add undo action here
         }
 
         public void Undo()
@@ -313,6 +335,47 @@ namespace LudumDare.Scripts.Components.UI
         public void Redo()
         {
 
+        }
+
+        public void SetAddInstructionMenuActive(bool active)
+        {
+            instructionsMenu.SetActive(!active);
+            addInstructionMenu.SetActive(active);
+
+            addInstructionMenuActive = active;
+            if (active) addInstructionMenuWasActive = true;
+        }
+
+        public void AddInstruction(RobotInstruction instruction) => AddInstructions(new List<RobotInstruction>(){ instruction });
+        public void AddInstructions(List<RobotInstruction> instructions)
+        {
+            foreach(RobotInstruction instruction in instructions)
+            {
+                var addIndex = instructionsContainer.childCount - 1;
+                var selected = EnumerateBars().Where(bar => bar.Selected);
+                if (selected.Any())
+                {
+                    addIndex = selected.Select(bar => bar.transform.GetSiblingIndex()).Max();
+                    foreach (var selectedBar in selected)
+                    {
+                        selectedBar.Selected = false;
+                    }
+                }
+
+                var yPos = addIndex < 0 ? 0.0f : (GetBar(addIndex).GetComponent<RectTransform>().anchoredPosition.y);
+
+                var bar = Instantiate(instructionBarPrefab, instructionsContainer);
+
+                bar.transform.SetSiblingIndex(addIndex + 1);
+                bar.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, yPos);
+
+                bar.Selected = true;
+                bar.Instruction = instruction;
+
+                SetAddInstructionMenuActive(false);
+            }
+
+            // TODO: Add undo action here
         }
 
         public InstructionBar GetBar(int i)
@@ -326,6 +389,21 @@ namespace LudumDare.Scripts.Components.UI
             {
                 yield return GetBar(i);
             }
+        }
+
+        public void HighlightInstruction(int instructionIndex)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        public void SetPlaybackState(bool state)
+        {
+            //throw new System.NotImplementedException();
+        }
+
+        public List<RobotInstruction> GetRobotInstructionsList()
+        {
+            return EnumerateBars().Select(bar => bar.Instruction).ToList();
         }
     }
 }
