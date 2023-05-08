@@ -16,10 +16,15 @@ namespace LudumDare.Scripts.Components.UI
         [SerializeField] private TMP_Text titleText;
         [SerializeField] private TMP_InputField primaryField; 
         [SerializeField] private TMP_InputField secondaryField;
+        [SerializeField] private RectTransform progressBar;
 
         private Sprite originalSprite;
         private Image barHandleImage;
         private bool selected;
+
+        private float progressInterpState;
+        private float progressInterpStateTarget;
+        private float progressInterpCalcSpeed;
 
         private RobotInstruction instruction;
 
@@ -64,6 +69,26 @@ namespace LudumDare.Scripts.Components.UI
         {
             if (primaryField != null) primaryField.onValueChanged.RemoveListener(OnParameterChanged);
             if (secondaryField != null) secondaryField.onValueChanged.RemoveListener(OnParameterChanged);
+        }
+
+        private void FixedUpdate()
+        {
+            if (progressBar != null)
+            {
+                progressInterpState = progressInterpStateTarget;
+                progressInterpStateTarget = instruction.Progress;
+
+                progressInterpCalcSpeed = (progressInterpStateTarget - progressInterpState) / Time.fixedDeltaTime;
+            }
+        }
+
+        private void Update()
+        {
+            if(progressBar != null)
+            {
+                progressInterpState = Mathf.MoveTowards(progressInterpState, progressInterpStateTarget, progressInterpCalcSpeed * Time.deltaTime);
+                progressBar.localScale = new Vector3(progressInterpState, 1.0f, 1.0f);
+            }
         }
 
         private void OnParameterChanged(string _)

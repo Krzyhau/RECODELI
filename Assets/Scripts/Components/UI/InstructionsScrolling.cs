@@ -11,20 +11,26 @@ namespace LudumDare.Scripts.Components.UI
     public class InstructionsScrolling : MonoBehaviour
     {
         [SerializeField] private Scrollbar verticalScrollBar;
+        [SerializeField] private InstructionEditor instructionEditor;
         [SerializeField] private float mouseScrollScale;
         [SerializeField] private float mouseScrollTime;
         [SerializeField] private float edgeProximityDistance;
         [SerializeField] private float edgeProximityMaxSpeed;
+        [SerializeField] private AnimationCurve interpolationCurve;
 
         private RectTransform instructionsContainer;
         private RectTransform instructionsContainerParent;
         private Canvas canvasContainer;
-        private InstructionEditor instructionEditor;
 
         private float mouseScrollFactor;
         private float mouseScrollState;
 
         private float parentVerticalMousePosition;
+
+        private bool interpolate = false;
+        private float interpolationState = 0.0f;
+        private float interpolationStartPosition;
+        private float interpolationEndPosition;
 
         private void Awake()
         {
@@ -36,17 +42,18 @@ namespace LudumDare.Scripts.Components.UI
 
         private void Update()
         {
-            RecalculateButtonBasedMousePosition();
+            RecalculateVerticalMousePosition();
 
             HandleGrabbingEdgeProximityScrolling();
             HandleMouseScrolling();
+            HandleInterpolation();
 
             verticalScrollBar.value = Mathf.Clamp(verticalScrollBar.value, 0.0f, 1.0f);
 
             ApplyScrollingToContainer();
         }
 
-        private void RecalculateButtonBasedMousePosition()
+        private void RecalculateVerticalMousePosition()
         {
             var mouseInRect = RectTransformUtility.ScreenPointToLocalPointInRectangle(
                 instructionsContainerParent, Input.mousePosition, canvasContainer.worldCamera, out var mousePosInRect
@@ -87,6 +94,8 @@ namespace LudumDare.Scripts.Components.UI
                 {
                     mouseScrollState = 0.0f;
                 }
+
+                interpolate = false;
             }
         }
 
@@ -98,7 +107,38 @@ namespace LudumDare.Scripts.Components.UI
             var upperEdge = Mathf.Lerp(-edgeProximityMaxSpeed, 0.0f, parentVerticalMousePosition / edgeProximityDistance);
             var lowerEdge = Mathf.Lerp(edgeProximityMaxSpeed, 0.0f, (parentHeight - parentVerticalMousePosition) / edgeProximityDistance);
 
-            verticalScrollBar.value += (upperEdge + lowerEdge) * Time.unscaledDeltaTime;
+            float scrollValue = (upperEdge + lowerEdge) * Time.unscaledDeltaTime;
+
+            verticalScrollBar.value += scrollValue;
+
+            if (scrollValue != 0) interpolate = false;
+        }
+
+        private void HandleInterpolation()
+        {
+            if (!interpolate) return;
+
+            float containerHeight = instructionsContainer.sizeDelta.y;
+            float maxHeight = instructionsContainerParent.rect.height;
+
+            if (containerHeight <= maxHeight)
+            {
+                interpolate = false;
+                return;
+            }
+
+            interpolationState += Time.unscaledDeltaTime;
+            var interpCurveState = interpolationCurve.Evaluate(interpolationState);
+
+            if(interpCurveState > 1.0f)
+            {
+                interpolate = false;
+                return;
+            }
+
+            var targetPosition = Mathf.Lerp(interpolationStartPosition, interpolationEndPosition, interpCurveState);
+
+            verticalScrollBar.value = targetPosition / (containerHeight - maxHeight);
         }
 
         private void ApplyScrollingToContainer()
@@ -111,6 +151,37 @@ namespace LudumDare.Scripts.Components.UI
 
             float containerNewPosition = Mathf.Max(0.0f, containerHeight - maxHeight) * verticalScrollBar.value;
             instructionsContainer.anchoredPosition = Vector2.up * containerNewPosition;
+        }
+
+        public void InterpolateToPosition(float position)
+        {
+            float containerHeight = instructionsContainer.sizeDelta.y;
+            float maxHeight = instructionsContainerParent.rect.height;
+
+            if (containerHeight <= maxHeight)
+            {
+                interpolate = false;
+                return;
+            }
+
+            interpolate = true;
+            interpolationState = 0.0f;
+
+            interpolationStartPosition = instructionsContainer.anchoredPosition.y;
+            var minimumPosition = interpolationStartPosition + edgeProximityDistance;
+            var maximumPosition = interpolationStartPosition + maxHeight - edgeProximityDistance;
+
+            interpolationEndPosition = interpolationStartPosition;
+            if (position < minimumPosition)
+            {
+                interpolationEndPosition -= (minimumPosition - position);
+            }
+            if (position > maximumPosition)
+            {
+                interpolationEndPosition += (position - maximumPosition);
+            }
+
+            interpolationEndPosition = Mathf.Clamp(interpolationEndPosition, 0.0f, containerHeight - maxHeight);
         }
     }
 }

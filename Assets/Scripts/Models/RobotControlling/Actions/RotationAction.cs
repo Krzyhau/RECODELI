@@ -15,8 +15,9 @@ namespace LudumDare.Scripts.Models
             rotationDirection = direction;
         }
 
-        public override IEnumerator Execute(RobotController controller, float parameter)
+        public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
         {
+            var parameter = instruction.Parameter;
             var deltaRotation = parameter * rotationDirection * controller.RotationSpeed;
 
             for (float t = 0; t < parameter; t += Time.fixedDeltaTime)
@@ -29,6 +30,8 @@ namespace LudumDare.Scripts.Models
                 var desiredNextAngle = deltaRotation * t2;
                 var desiredAngularVelocity = (desiredNextAngle - desiredAngle) / Time.fixedDeltaTime;
                 controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * desiredAngularVelocity, 0);
+
+                instruction.UpdateProgress(t / parameter);
             }
 
             yield return new WaitForFixedUpdate();

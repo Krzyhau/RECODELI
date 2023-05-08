@@ -13,14 +13,16 @@ namespace LudumDare.Scripts.Models
             movementDirection = direction;
         }
 
-        public override IEnumerator Execute(RobotController controller, float parameter)
+        public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            for(float t = 0; t < parameter; t += Time.fixedDeltaTime)
+            for(float t = 0; t < instruction.Parameter; t += Time.fixedDeltaTime)
             {
                 yield return new WaitForFixedUpdate();
-                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, parameter - t);
+                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, instruction.Parameter - t);
                 var flyingForce = controller.transform.forward * movementDirection * controller.PropulsionForce * accelerationStep;
                 controller.Rigidbody.AddForce(flyingForce, ForceMode.VelocityChange);
+
+                instruction.UpdateProgress(t / instruction.Parameter);
             }
             yield return new WaitForFixedUpdate();
         }

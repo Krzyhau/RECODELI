@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace LudumDare.Scripts.Models
 {
@@ -17,8 +18,7 @@ namespace LudumDare.Scripts.Models
 
         static RobotAction()
         {
-            List = AppDomain.CurrentDomain.GetAssemblies()
-                .SelectMany(s => s.GetTypes())
+            List = Assembly.GetExecutingAssembly().GetTypes()
                 .Where(p => typeof(RobotAction).IsAssignableFrom(p) && p.IsClass && !p.IsAbstract)
                 .Select(p => (RobotAction)Activator.CreateInstance(p))
                 .ToList();
@@ -40,13 +40,20 @@ namespace LudumDare.Scripts.Models
             return new RobotInstruction<T>((RobotAction<T>)GetByName(name), parameter);
         }
 
+        public static RobotInstruction CreateInstruction(string name, string[] parameters)
+        {
+            var instruction = GetByName(name).CreateInstruction();
+            instruction.SetParameterFromStrings(parameters);
+            return instruction;
+        }
+
     }
 
     public abstract class RobotAction<T> : RobotAction
     {
         public abstract string[] ParameterToStrings(T param);
         public abstract T ParameterFromStrings(string[] paramStrings);
-        public abstract IEnumerator Execute(RobotController controller, T parameter);
+        public abstract IEnumerator Execute(RobotController controller, RobotInstruction<T> instruction);
         public override Type GetParameterType()
         {
             return typeof(T);

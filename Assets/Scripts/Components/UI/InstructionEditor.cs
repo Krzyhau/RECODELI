@@ -15,19 +15,31 @@ namespace LudumDare.Scripts.Components.UI
     {
         [SerializeField] private RectTransform instructionsContainer;
         [SerializeField] private InstructionBar instructionBarPrefab;
-        [SerializeField] private RectTransform validClickArea;
+        [SerializeField] private CanvasGroup validClickArea;
+        [SerializeField] private InstructionsScrolling scrollingHandler;
         [SerializeField] private GameObject noInstructionsPopup;
         [SerializeField] private GameObject instructionsMenu;
         [SerializeField] private GameObject addInstructionMenu;
         [SerializeField] private float barsPadding;
         [SerializeField] private float barsPositionInterpolation;
+        [SerializeField] private int maxUndoHistory;
 
         [Header("Buttons")]
         [SerializeField] private Button deleteButton;
         [SerializeField] private Button undoButton;
         [SerializeField] private Button redoButton;
+        [SerializeField] private Button copyButton;
+        [SerializeField] private Button pasteButton;
 
-        private Canvas canvasContainer;
+        private struct RobotInstructionListCopy
+        {
+            public List<RobotInstruction> Instructions;
+            public int ButtonBasedFocusPosition;
+            public List<int> SelectionIndices;
+        }
+
+        private List<RobotInstructionListCopy> undoList;
+        private List<RobotInstructionListCopy> redoList;
 
         private List<InstructionBar> grabbedInstructions = new List<InstructionBar>();
         private bool grabbing;
@@ -36,6 +48,9 @@ namespace LudumDare.Scripts.Components.UI
         private bool addInstructionMenuWasActive;
         private InstructionBar lastClickedInstructionBar;
         private float buttonBasedMousePosition;
+        private bool playingInstructions;
+        private Canvas canvasContainer;
+        
 
         public bool Grabbing => grabbing;
 
@@ -44,6 +59,8 @@ namespace LudumDare.Scripts.Components.UI
             deleteButton.onClick.AddListener(DeleteSelected);
             undoButton.onClick.AddListener(Undo);
             redoButton.onClick.AddListener(Redo);
+            copyButton.onClick.AddListener(CopySelected);
+            pasteButton.onClick.AddListener(Paste);
         }
 
         private void OnDisable()
@@ -51,6 +68,8 @@ namespace LudumDare.Scripts.Components.UI
             deleteButton.onClick.RemoveListener(DeleteSelected);
             undoButton.onClick.RemoveListener(Undo);
             redoButton.onClick.RemoveListener(Redo);
+            copyButton.onClick.RemoveListener(CopySelected);
+            pasteButton.onClick.RemoveListener(Paste);
         }
 
         private void Awake()
@@ -60,6 +79,9 @@ namespace LudumDare.Scripts.Components.UI
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             canvasContainer = instructionsContainer.GetComponentInParent<Canvas>();
+
+            undoList = new List<RobotInstructionListCopy>();
+            redoList = new List<RobotInstructionListCopy>();
         }
 
         private void Update()
@@ -68,12 +90,12 @@ namespace LudumDare.Scripts.Components.UI
             RecalculateButtonBasedMousePosition();
             UpdateBarsPosition();
 
-            if (!addInstructionMenuWasActive)
+            if (!addInstructionMenuWasActive && !playingInstructions)
             {
                 UpdateBarsSelection();
                 HandleBarGrabbing();
             }
-            else if (!addInstructionMenuActive)
+            if (addInstructionMenuWasActive && !addInstructionMenuActive)
             {
                 addInstructionMenuWasActive = false;
             }
@@ -198,7 +220,7 @@ namespace LudumDare.Scripts.Components.UI
             }
 
             // unselect other buttons
-            if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection)
+            if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection && overClickZone)
             {
                 foreach (InstructionBar bar in EnumerateBars())
                 {
@@ -227,6 +249,7 @@ namespace LudumDare.Scripts.Components.UI
                     {
                         grabbing = true;
                         grabbedInstructions = selectedBars.ToList();
+                        StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => bar.transform.GetSiblingIndex()).Average()));
                     }
                 }
             }
@@ -266,23 +289,27 @@ namespace LudumDare.Scripts.Components.UI
 
         private void UpdateButtons()
         {
-            if (addInstructionMenuActive)
+            if (addInstructionMenuActive || playingInstructions)
             {
                 deleteButton.interactable = false;
                 undoButton.interactable = false;
                 redoButton.interactable = false;
+                copyButton.interactable = false;
+                pasteButton.interactable = false;
             }
             else
             {
                 deleteButton.interactable = EnumerateBars().Where(bar => bar.Selected).Any();
-                undoButton.interactable = false;
-                redoButton.interactable = false;
+                undoButton.interactable = undoList.Count > 0;
+                redoButton.interactable = redoList.Count > 0;
+                copyButton.interactable = deleteButton.interactable;
+                pasteButton.interactable = RobotInstruction.IsValidListString(GUIUtility.systemCopyBuffer);
             }
         }
 
         private void HandleKeyboardShortcuts()
         {
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            if (!addInstructionMenuActive && !playingInstructions)
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
@@ -290,11 +317,11 @@ namespace LudumDare.Scripts.Components.UI
                 }
                 else if (Input.GetKeyDown(KeyCode.C))
                 {
-                    // TODO: implement copy here
+                    CopySelected();
                 }
                 else if (Input.GetKeyDown(KeyCode.V))
                 {
-                    // TODO: implement paste here
+                    Paste();
                 }
                 else if (Input.GetKeyDown(KeyCode.Z))
                 {
@@ -304,37 +331,202 @@ namespace LudumDare.Scripts.Components.UI
                 {
                     Redo();
                 }
-            }
 
-            if (Input.GetKeyDown(KeyCode.Escape))
-            {
-                foreach (var bar in EnumerateBars()) bar.Selected = false;
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    foreach (var bar in EnumerateBars()) bar.Selected = false;
+                }
+                if (Input.GetKeyDown(KeyCode.Delete))
+                {
+                    DeleteSelected();
+                }
             }
-            if (Input.GetKeyDown(KeyCode.Delete))
+            else if(addInstructionMenuActive)
             {
-                DeleteSelected();
+                if (Input.GetKeyDown(KeyCode.Escape))
+                {
+                    SetAddInstructionMenuActive(false);
+                }
             }
         }
 
 
-        public void DeleteSelected()
+        private InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
         {
-            foreach (var bar in EnumerateBars().Where(bar => bar.Selected))
+            var bar = Instantiate(instructionBarPrefab, instructionsContainer);
+
+            bar.transform.SetSiblingIndex(index);
+            float buttonPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * index;
+            bar.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -buttonPosition);
+
+            bar.Selected = true;
+            bar.Instruction = (RobotInstruction)instruction.Clone();
+
+            return bar;
+        }
+
+        private void StoreUndoOperation(int focusPosition)
+        {
+            undoList.Add(new RobotInstructionListCopy
             {
-                Destroy(bar.gameObject);
+                Instructions = EnumerateBars().Select(bar => bar.Instruction).ToList(),
+                ButtonBasedFocusPosition = focusPosition,
+                SelectionIndices = EnumerateBars().Where(bar => bar.Selected).Select(bar => bar.transform.GetSiblingIndex()).ToList()
+            });
+
+            if(undoList.Count > maxUndoHistory)
+            {
+                undoList.RemoveAt(0);
             }
 
-            // TODO: add undo action here
+            redoList.Clear();
+        }
+
+        private void AddInstructions(List<RobotInstruction> instructions)
+        {
+            var addIndex = instructionsContainer.childCount - 1;
+            var selected = EnumerateBars().Where(bar => bar.Selected);
+            if (selected.Any())
+            {
+                addIndex = selected.Select(bar => bar.transform.GetSiblingIndex()).Max();
+            }
+
+            StoreUndoOperation(addIndex + instructions.Count / 2);
+
+            foreach (var selectedBar in selected)
+            {
+                selectedBar.Selected = false;
+            }
+
+            foreach (RobotInstruction instruction in instructions)
+            {
+                CreateInstructionBarAt(instruction, addIndex + 1);
+
+                addIndex++;
+            }
+            SetAddInstructionMenuActive(false);
+        }
+
+        public void DeleteSelected()
+        {
+            var selectedBars = EnumerateBars().Where(bar => bar.Selected);
+
+            if (selectedBars.Any())
+            {
+                var barToSelectAfterwards = selectedBars.Select(bar => bar.transform.GetSiblingIndex()).Min() - 1;
+                if(barToSelectAfterwards < 0)
+                {
+                    var nonSelectedBars = EnumerateBars().Where(bar => !bar.Selected);
+                    if (nonSelectedBars.Any())
+                    {
+                        barToSelectAfterwards = nonSelectedBars.Select(bar => bar.transform.GetSiblingIndex()).Min();
+                    }
+                }
+
+                var focusIndex = selectedBars.Select(bar => bar.transform.GetSiblingIndex()).Average();
+                StoreUndoOperation(Mathf.RoundToInt((float)focusIndex));
+
+                foreach (var bar in selectedBars)
+                {
+                    Destroy(bar.gameObject);
+                }
+
+                if (barToSelectAfterwards >= 0)
+                {
+                    GetBar(barToSelectAfterwards).Selected = true;
+                }
+            }
         }
 
         public void Undo()
         {
+            if (undoList.Count == 0) return;
+            var undo = undoList.Last();
 
+            var focusPos = undo.ButtonBasedFocusPosition;
+
+            redoList.Add(new RobotInstructionListCopy
+            {
+                Instructions = EnumerateBars().Select(bar => bar.Instruction).ToList(),
+                ButtonBasedFocusPosition = focusPos,
+                SelectionIndices = EnumerateBars().Where(bar => bar.Selected).Select(bar => bar.transform.GetSiblingIndex()).ToList()
+            });
+
+            foreach (var bar in EnumerateBars())
+            {
+                Destroy(bar.gameObject);
+            }
+
+            var currentIndex = 0;
+            foreach (var instruction in undo.Instructions)
+            {
+                var bar = CreateInstructionBarAt(instruction, currentIndex);
+                bar.Selected = undo.SelectionIndices.Contains(currentIndex);
+                currentIndex++;
+            }
+
+            undoList.RemoveAt(undoList.Count - 1);
+
+            grabbing = false;
+
+            float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * focusPos;
+            scrollingHandler.InterpolateToPosition(buttonFocusPosition);
         }
 
         public void Redo()
         {
+            if (redoList.Count == 0) return;
+            var redo = redoList.Last();
+            var focusPos = redo.ButtonBasedFocusPosition;
 
+            undoList.Add(new RobotInstructionListCopy
+            {
+                Instructions = EnumerateBars().Select(bar => bar.Instruction).ToList(),
+                ButtonBasedFocusPosition = focusPos,
+                SelectionIndices = EnumerateBars().Where(bar => bar.Selected).Select(bar => bar.transform.GetSiblingIndex()).ToList()
+            });
+
+            foreach (var bar in EnumerateBars())
+            {
+                Destroy(bar.gameObject);
+            }
+
+            var currentIndex = 0;
+            
+            foreach (var instruction in redo.Instructions)
+            {
+                var bar = CreateInstructionBarAt(instruction, currentIndex);
+                bar.Selected = redo.SelectionIndices.Contains(currentIndex);
+                currentIndex++;
+            }
+
+            redoList.RemoveAt(redoList.Count - 1);
+
+            grabbing = false;
+
+            float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * focusPos;
+            scrollingHandler.InterpolateToPosition(buttonFocusPosition);
+        }
+
+        public void CopySelected()
+        {
+            var selectedBars = EnumerateBars().Where(bar => bar.Selected);
+
+            if (selectedBars.Any())
+            {
+                GUIUtility.systemCopyBuffer = RobotInstruction.ListToString(
+                    selectedBars.Select(bar=>bar.Instruction).ToList()
+                );
+            }
+        }
+
+        public void Paste()
+        {
+            var clipboard = GUIUtility.systemCopyBuffer;
+            if (RobotInstruction.IsValidListString(clipboard))
+            {
+                AddInstructions(RobotInstruction.StringToList(clipboard));
+            }
         }
 
         public void SetAddInstructionMenuActive(bool active)
@@ -347,36 +539,6 @@ namespace LudumDare.Scripts.Components.UI
         }
 
         public void AddInstruction(RobotInstruction instruction) => AddInstructions(new List<RobotInstruction>(){ instruction });
-        public void AddInstructions(List<RobotInstruction> instructions)
-        {
-            foreach(RobotInstruction instruction in instructions)
-            {
-                var addIndex = instructionsContainer.childCount - 1;
-                var selected = EnumerateBars().Where(bar => bar.Selected);
-                if (selected.Any())
-                {
-                    addIndex = selected.Select(bar => bar.transform.GetSiblingIndex()).Max();
-                    foreach (var selectedBar in selected)
-                    {
-                        selectedBar.Selected = false;
-                    }
-                }
-
-                var yPos = addIndex < 0 ? 0.0f : (GetBar(addIndex).GetComponent<RectTransform>().anchoredPosition.y);
-
-                var bar = Instantiate(instructionBarPrefab, instructionsContainer);
-
-                bar.transform.SetSiblingIndex(addIndex + 1);
-                bar.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, yPos);
-
-                bar.Selected = true;
-                bar.Instruction = instruction;
-
-                SetAddInstructionMenuActive(false);
-            }
-
-            // TODO: Add undo action here
-        }
 
         public InstructionBar GetBar(int i)
         {
@@ -398,7 +560,23 @@ namespace LudumDare.Scripts.Components.UI
 
         public void SetPlaybackState(bool state)
         {
-            //throw new System.NotImplementedException();
+            playingInstructions = state;
+            if (!state)
+            {
+                foreach(var bar in EnumerateBars())
+                {
+                    bar.Instruction.UpdateProgress(0.0f);
+                }
+            }
+
+            validClickArea.interactable = !state;
+            if (state)
+            {
+                foreach(var bar in EnumerateBars())
+                {
+                    bar.Selected = false;
+                }
+            }
         }
 
         public List<RobotInstruction> GetRobotInstructionsList()
