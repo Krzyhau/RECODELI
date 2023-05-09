@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Controllers
 {
     public class DroneCameraController : MonoBehaviour
     {

@@ -1,8 +1,9 @@
+using RecoDeli.Scripts.Gameplay.Robot;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Gameplay
 {
     public class RobotTrailRecorder : MonoBehaviour
     {

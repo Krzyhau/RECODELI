@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace LudumDare.Scripts.Components.UI
+namespace RecoDeli.Scripts.UI
 {
     public class InstructionsScrolling : MonoBehaviour
     {

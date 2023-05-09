@@ -1,8 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using LudumDare.Scripts.Components;
 
-namespace LudumDare.Scripts.Models
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class MovementAction : RobotActionSingle
     {

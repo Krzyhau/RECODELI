@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Gameplay
 {
     public class Explosive : MonoBehaviour
     {

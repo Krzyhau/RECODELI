@@ -1668,7 +1668,7 @@ GameObject:
   - component: {fileID: 2470069302333560752}
   - component: {fileID: 6924653318195045674}
   m_Layer: 0
-  m_Name: InstructionBar
+  m_Name: Instruction Bar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

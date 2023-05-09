@@ -1,17 +1,9 @@
-using LudumDare.Scripts.Models;
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-
-
-
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public class RobotThrusterController : MonoBehaviour
     {
-
         [SerializeField] private ParticleSystem frontLeftThruster;
         [SerializeField] private ParticleSystem frontRightThruster;
         [SerializeField] private ParticleSystem backLeftThruster;
@@ -42,24 +34,10 @@ namespace LudumDare.Scripts.Components
             var newState = (GetThrusterFlags() & particleFlag) > 0;
             var oldState = particles.isPlaying;
 
-            if (newState == oldState)
-            {
-                //  _______   _____/  |_ __ _________  ____   /\ 
-                //  \_  __ \_/ __ \   __\  |  \_  __ \/    \  \/ 
-                //   |  | \/\  ___/|  | |  |  /|  | \/   |  \ /\ 
-                //   |__|    \___  >__| |____/ |__|  |___|  / )/
-                //               \/                       \/
-                return;
-            }
+            if (newState == oldState)  return;
 
-            if (newState)
-            {
-                particles.Play();
-            }
-            else
-            {
-                particles.Stop();
-            }
+            if (newState) particles.Play();
+            else particles.Stop();
         }
 
         private RobotThrusterFlag GetThrusterFlags()
@@ -68,8 +46,10 @@ namespace LudumDare.Scripts.Components
             {
                 return controller.CurrentInstruction.Action.ThrustersState;
             }
-
-            return RobotThrusterFlag.None;
+            else
+            {
+                return RobotThrusterFlag.None;
+            }
         }
     }
 }

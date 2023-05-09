@@ -1,9 +1,7 @@
 using System.Collections;
 using UnityEngine;
-using LudumDare.Scripts.Components;
-using LudumDare.Scripts.Utils;
 
-namespace LudumDare.Scripts.Models
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class RotationAction : RobotActionSingle
     {

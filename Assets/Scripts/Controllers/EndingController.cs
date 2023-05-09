@@ -1,9 +1,11 @@
+using RecoDeli.Scripts.Gameplay;
+using RecoDeli.Scripts.Gameplay.Robot;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Controllers
 {
     public class EndingController : MonoBehaviour
     {

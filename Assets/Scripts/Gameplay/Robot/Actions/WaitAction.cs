@@ -1,8 +1,7 @@
 using UnityEngine;
 using System.Collections;
-using LudumDare.Scripts.Components;
 
-namespace LudumDare.Scripts.Models
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public class WaitAction : RobotActionSingle
     {

@@ -1,20 +1,20 @@
-using LudumDare.Scripts.Components.UI;
-using LudumDare.Scripts.Models;
+using RecoDeli.Scripts.Gameplay;
+using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.UI;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Controllers
 {
     public class SimulationManager : MonoBehaviour
     {
         [SerializeField] private Transform simulationGroup;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
-        [SerializeField] private InstructionEditor instructionEditor; 
-        [SerializeField] private Scoreboard scoreboard;
+        [SerializeField] private InstructionEditor instructionEditor;
         [SerializeField] private TimescaleBar timescaleBar;
         [SerializeField] private string levelSelectScene;
         [Header("Glitching")]
@@ -40,6 +40,7 @@ namespace LudumDare.Scripts.Components
         public RobotController RobotController { get; private set; }
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
+        public float SimulationTime => simulationTime;
 
         private void Awake()
         {
@@ -91,17 +92,9 @@ namespace LudumDare.Scripts.Components
 
         private void SimulationSuccessful()
         {
-            // make sure the rounding is the same as in leaderboard
-            simulationTime = Mathf.FloorToInt(simulationTime * 100.0f) / 100.0f;
-
-            var codeCount = RobotController.CurrentInstructions.Count;
-            scoreboard.SubmitRecord(simulationTime, codeCount);
-
             endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
 
             Time.timeScale = 1.0f;
-
-            LevelSelection.SetLevelCompleted(scoreboard.Level);
 
             playAmbient.gameObject.SetActive(false);
             idleAmbient.gameObject.SetActive(true);

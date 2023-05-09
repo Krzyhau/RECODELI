@@ -1,35 +1,40 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class AudioManager : MonoBehaviour
+namespace RecoDeli.Scripts.Controllers
 {
-
-    public AudioClip newClip;
-
-    AudioClip oldClip;
-    AudioSource audios;
-
-    void Start()
+    public class AudioManager : MonoBehaviour
     {
-        audios = GetComponent<AudioSource>();
-    }
 
-    void LateUpdate()
-    {
-        if(newClip == null) {
-            oldClip = null;
-        }
-        if (newClip!=null && newClip != oldClip) {
-            audios.PlayOneShot(newClip);
-            oldClip = newClip;
-            newClip = null;
-            
-        }
-    }
+        public AudioClip newClip;
 
-    public void PlayClip(AudioClip clip) {
-        if (!clip) return;
-        audios.PlayOneShot(clip);
+        AudioClip oldClip;
+        AudioSource audios;
+
+        void Start()
+        {
+            audios = GetComponent<AudioSource>();
+        }
+
+        void LateUpdate()
+        {
+            if (newClip == null)
+            {
+                oldClip = null;
+            }
+            if (newClip != null && newClip != oldClip)
+            {
+                audios.PlayOneShot(newClip);
+                oldClip = newClip;
+                newClip = null;
+
+            }
+        }
+
+        public void PlayClip(AudioClip clip)
+        {
+            if (!clip) return;
+            audios.PlayOneShot(clip);
+        }
     }
 }
+

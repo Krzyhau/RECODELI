@@ -1,11 +1,10 @@
-﻿using LudumDare.Scripts.Components;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 
-namespace LudumDare.Scripts.Models
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class RobotAction
     {

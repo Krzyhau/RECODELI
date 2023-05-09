@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LudumDare.Scripts.Components.UI
+namespace RecoDeli.Scripts.UI
 {
     [ExecuteInEditMode]
     public class ButtonText : MonoBehaviour

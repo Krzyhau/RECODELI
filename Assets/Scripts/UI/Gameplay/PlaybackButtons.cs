@@ -1,8 +1,9 @@
+using RecoDeli.Scripts.Controllers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LudumDare.Scripts.Components.UI
+namespace RecoDeli.Scripts.UI
 {
     public class PlaybackButtons : MonoBehaviour
     {

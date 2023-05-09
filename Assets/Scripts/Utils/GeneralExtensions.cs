@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace LudumDare.Scripts.Utils
+namespace RecoDeli.Scripts.Utils
 {
     public static class GeneralExtensions
     {

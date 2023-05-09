@@ -1,5 +1,5 @@
-using LudumDare.Scripts.Models;
-using LudumDare.Scripts.Utils;
+using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.Utils;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-namespace LudumDare.Scripts.Components.UI
+namespace RecoDeli.Scripts.UI
 {
     public class InstructionBar : MonoBehaviour
     {

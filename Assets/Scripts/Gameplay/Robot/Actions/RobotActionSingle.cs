@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LudumDare.Scripts.Models
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class RobotActionSingle : RobotAction<float>
     {

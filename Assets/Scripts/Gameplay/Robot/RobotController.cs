@@ -1,9 +1,8 @@
-using LudumDare.Scripts.Models;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace LudumDare.Scripts.Components
+namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public class RobotController : MonoBehaviour
     {
