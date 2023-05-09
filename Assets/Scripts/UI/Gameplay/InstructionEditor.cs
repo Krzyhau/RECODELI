@@ -314,7 +314,7 @@ namespace RecoDeli.Scripts.UI
 
         private void HandleKeyboardShortcuts()
         {
-            if (!addInstructionMenuActive && !playingInstructions)
+            if (!addInstructionMenuActive && !playingInstructions && !EventSystem.current.HasInputFieldSelected())
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
