@@ -1,3 +1,4 @@
+using RecoDeli.Scripts.Prototyping;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -9,6 +10,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         [SerializeField] private float rotationSpeed;
         [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float propulsionForce;
+        [SerializeField] private float propulsionRotationDrag;
 
         public int CurrentInstructionIndex { get; private set; }
         public bool ExecutingInstructions { get; private set; }
@@ -18,10 +20,10 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public float RotationSpeed => rotationSpeed;
         public float PropulsionForce => propulsionForce;
+        public float PropulsionRotationDrag => propulsionRotationDrag;
         public AnimationCurve RotationCurve => rotationCurve;
 
         public Rigidbody Rigidbody { get; private set; }
-
         public GoalBox ReachedGoalBox { get; set; }
 
         private void Awake()
@@ -29,10 +31,16 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             Rigidbody = GetComponent<Rigidbody>();
         }
 
+        private void FixedUpdate()
+        {
+            Rigidbody.angularDrag = RotationMethodSelector.ShouldUseDragMethod ? 0.1f : 0.0f;
+        }
+
         private IEnumerator CommandExecutionCoroutine()
         {
             ExecutingInstructions = true;
             CurrentInstructionIndex = 0;
+            yield return new WaitForFixedUpdate();
             while (CurrentInstructionIndex < CurrentInstructions.Count)
             {
                 yield return CurrentInstruction.Execute(this);
