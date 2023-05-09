@@ -50,7 +50,7 @@ namespace LudumDare.Scripts.Components.UI
         private float buttonBasedMousePosition;
         private bool playingInstructions;
         private Canvas canvasContainer;
-        
+        private float prePlayScrollPosition;
 
         public bool Grabbing => grabbing;
 
@@ -199,6 +199,11 @@ namespace LudumDare.Scripts.Components.UI
                 // find out what to select
                 if (clickedBar != null)
                 {
+                    if (lastClickedInstructionBar == null || !lastClickedInstructionBar.Selected)
+                    {
+                        lastClickedInstructionBar = EnumerateBars().Where(bar => bar.Selected).FirstOrDefault();
+                    }
+
                     if (rangeSelection && lastClickedInstructionBar != null)
                     {
                         int startPos = lastClickedInstructionBar.transform.GetSiblingIndex();
@@ -454,6 +459,7 @@ namespace LudumDare.Scripts.Components.UI
 
             foreach (var bar in EnumerateBars())
             {
+                bar.gameObject.SetActive(false);
                 Destroy(bar.gameObject);
             }
 
@@ -488,6 +494,7 @@ namespace LudumDare.Scripts.Components.UI
 
             foreach (var bar in EnumerateBars())
             {
+                bar.gameObject.SetActive(false);
                 Destroy(bar.gameObject);
             }
 
@@ -555,7 +562,15 @@ namespace LudumDare.Scripts.Components.UI
 
         public void HighlightInstruction(int instructionIndex)
         {
-            //throw new System.NotImplementedException();
+            if (instructionIndex == -1)
+            {
+                scrollingHandler.InterpolateToPosition(prePlayScrollPosition, true);
+            }
+            else
+            {
+                float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * instructionIndex;
+                scrollingHandler.InterpolateToPosition(buttonFocusPosition);
+            }
         }
 
         public void SetPlaybackState(bool state)
@@ -572,7 +587,8 @@ namespace LudumDare.Scripts.Components.UI
             validClickArea.interactable = !state;
             if (state)
             {
-                foreach(var bar in EnumerateBars())
+                prePlayScrollPosition = scrollingHandler.CurrentScrollPosition;
+                foreach (var bar in EnumerateBars())
                 {
                     bar.Selected = false;
                 }

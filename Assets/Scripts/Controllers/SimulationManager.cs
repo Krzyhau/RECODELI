@@ -63,7 +63,7 @@ namespace LudumDare.Scripts.Components
                 if(lastInstruction < RobotController.CurrentInstructionIndex)
                 {
                     Debug.Log(RobotController.CurrentInstructionIndex);
-                    //instructionsHud.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                    instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                     lastInstruction = RobotController.CurrentInstructionIndex;
                 }
             }

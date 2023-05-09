@@ -16,6 +16,7 @@ namespace LudumDare.Scripts.Components.UI
         [SerializeField] private float mouseScrollTime;
         [SerializeField] private float edgeProximityDistance;
         [SerializeField] private float edgeProximityMaxSpeed;
+        [SerializeField] private float interpolationEdgeDistance;
         [SerializeField] private AnimationCurve interpolationCurve;
 
         private RectTransform instructionsContainer;
@@ -31,6 +32,8 @@ namespace LudumDare.Scripts.Components.UI
         private float interpolationState = 0.0f;
         private float interpolationStartPosition;
         private float interpolationEndPosition;
+
+        public float CurrentScrollPosition => instructionsContainer.anchoredPosition.y;
 
         private void Awake()
         {
@@ -130,10 +133,9 @@ namespace LudumDare.Scripts.Components.UI
             interpolationState += Time.unscaledDeltaTime;
             var interpCurveState = interpolationCurve.Evaluate(interpolationState);
 
-            if(interpCurveState > 1.0f)
+            if(interpCurveState >= 1.0f)
             {
                 interpolate = false;
-                return;
             }
 
             var targetPosition = Mathf.Lerp(interpolationStartPosition, interpolationEndPosition, interpCurveState);
@@ -153,7 +155,7 @@ namespace LudumDare.Scripts.Components.UI
             instructionsContainer.anchoredPosition = Vector2.up * containerNewPosition;
         }
 
-        public void InterpolateToPosition(float position)
+        public void InterpolateToPosition(float position, bool literal=false)
         {
             float containerHeight = instructionsContainer.sizeDelta.y;
             float maxHeight = instructionsContainerParent.rect.height;
@@ -168,8 +170,15 @@ namespace LudumDare.Scripts.Components.UI
             interpolationState = 0.0f;
 
             interpolationStartPosition = instructionsContainer.anchoredPosition.y;
-            var minimumPosition = interpolationStartPosition + edgeProximityDistance;
-            var maximumPosition = interpolationStartPosition + maxHeight - edgeProximityDistance;
+
+            if (literal)
+            {
+                interpolationEndPosition = position;
+                return;
+            }
+
+            var minimumPosition = interpolationStartPosition + interpolationEdgeDistance;
+            var maximumPosition = interpolationStartPosition + maxHeight - interpolationEdgeDistance;
 
             interpolationEndPosition = interpolationStartPosition;
             if (position < minimumPosition)
@@ -180,8 +189,6 @@ namespace LudumDare.Scripts.Components.UI
             {
                 interpolationEndPosition += (position - maximumPosition);
             }
-
-            interpolationEndPosition = Mathf.Clamp(interpolationEndPosition, 0.0f, containerHeight - maxHeight);
         }
     }
 }
