@@ -34,7 +34,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         {
             return GetByName(name).CreateInstruction();
         }
-        public static RobotInstruction<T> CreateInstruction<T>(string name, T parameter)
+        public static RobotInstruction<T> CreateInstruction<T>(string name, T parameter) where T : IEquatable<T>
         {
             return new RobotInstruction<T>((RobotAction<T>)GetByName(name), parameter);
         }
@@ -48,7 +48,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
     }
 
-    public abstract class RobotAction<T> : RobotAction
+    public abstract class RobotAction<T> : RobotAction where T : IEquatable<T>
     {
         public abstract string[] ParameterToStrings(T param);
         public abstract T ParameterFromStrings(string[] paramStrings);

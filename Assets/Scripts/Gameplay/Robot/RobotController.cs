@@ -67,5 +67,14 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
             return true;
         }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            Debug.Log(
+                $"Contact with a prop.\n"+
+                $"Robot position: {Rigidbody.position.ToString("N10")}\n" +
+                $"Box position: {collision.collider.attachedRigidbody.position.ToString("N10")}"
+            );
+        }
     }
 }

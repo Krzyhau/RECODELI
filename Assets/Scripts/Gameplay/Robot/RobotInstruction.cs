@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
-    public abstract class RobotInstruction : ICloneable
+    public abstract class RobotInstruction : ICloneable, IEquatable<RobotInstruction>
     {
         const string CLIPBOARD_HEADER = "--- RECODELI INSTRUCTIONS ---";
 
@@ -19,11 +19,17 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         }
         public abstract object Clone();
 
+        public abstract bool Equals(RobotInstruction other);
         public abstract IEnumerator Execute(RobotController controller);
 
         public abstract string[] ParameterToStrings();
         public abstract void SetParameterFromStrings(string[] paramStrings);
 
+
+        public void UpdateProgress(float progress)
+        {
+            Progress = Mathf.Clamp(progress, 0.0f, 1.0f);
+        }
 
         public static string ListToString(List<RobotInstruction> instructions)
         {
@@ -70,14 +76,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
             return true;
         }
-
-        public void UpdateProgress(float progress)
-        {
-            Progress = Mathf.Clamp(progress, 0.0f, 1.0f);
-        }
     }
 
-    public class RobotInstruction<T> : RobotInstruction
+    public class RobotInstruction<T> : RobotInstruction where T : IEquatable<T>
     {
         public T Parameter { get; set; }
 
@@ -91,6 +92,14 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public override object Clone()
         {
             return new RobotInstruction<T>((RobotAction<T>)Action, Parameter);
+        }
+        public override bool Equals(RobotInstruction other)
+        {
+            if (other is null) return this is null;
+
+            return Action.Name == other.Action.Name 
+                && Action.GetParameterType() == other.Action.GetParameterType()
+                && Parameter.Equals(((RobotInstruction<T>)other).Parameter);
         }
 
         public override IEnumerator Execute(RobotController controller)

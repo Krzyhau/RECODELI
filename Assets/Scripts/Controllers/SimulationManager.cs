@@ -63,7 +63,6 @@ namespace RecoDeli.Scripts.Controllers
             {
                 if(lastInstruction < RobotController.CurrentInstructionIndex)
                 {
-                    Debug.Log(RobotController.CurrentInstructionIndex);
                     instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                     lastInstruction = RobotController.CurrentInstructionIndex;
                 }
