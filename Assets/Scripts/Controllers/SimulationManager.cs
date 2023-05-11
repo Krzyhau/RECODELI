@@ -1,9 +1,11 @@
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.UI;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Rendering;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -30,12 +32,14 @@ namespace RecoDeli.Scripts.Controllers
         private bool paused = false;
         private bool playingSimulation = false;
         private Transform simulationInstance;
+        private Scene simulationScene;
         private string simulationGroupName;
 
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
         private float simulationTime;
+        private int simulationIndex;
 
         public RobotController RobotController { get; private set; }
         public bool PlayingSimulation => playingSimulation;
@@ -49,6 +53,10 @@ namespace RecoDeli.Scripts.Controllers
             simulationGroup.gameObject.SetActive(false);
 
             RestartSimulation();
+        }
+        private void OnEnable()
+        {
+
         }
 
         private void OnDisable()
@@ -66,6 +74,7 @@ namespace RecoDeli.Scripts.Controllers
                     instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                     lastInstruction = RobotController.CurrentInstructionIndex;
                 }
+
             }
 
             if (!paused)
@@ -81,6 +90,7 @@ namespace RecoDeli.Scripts.Controllers
             if (playingSimulation)
             {
                 simulationTime += Time.fixedDeltaTime;
+                simulationScene.GetPhysicsScene().Simulate(Time.fixedDeltaTime);
             }
 
             if (playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
@@ -130,15 +140,8 @@ namespace RecoDeli.Scripts.Controllers
                 endingController.RevertEnding();
             }
 
-            if(simulationInstance != null)
-            {
-                Destroy(simulationInstance.gameObject);
-            }
-
-            simulationInstance = Instantiate(simulationGroup);
-            simulationInstance.gameObject.SetActive(true);
-            simulationInstance.name = simulationGroupName + " (Instance)";
             playingSimulation = false;
+
             instructionEditor.SetPlaybackState(false);
             instructionEditor.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
@@ -148,8 +151,28 @@ namespace RecoDeli.Scripts.Controllers
             playAmbient.gameObject.SetActive(false);
             idleAmbient.gameObject.SetActive(true);
 
+            if (simulationInstance != null)
+            {
+                Destroy(simulationInstance.gameObject);
+            }
+
+            simulationInstance = Instantiate(simulationGroup);
+            simulationInstance.name = simulationGroupName + " (Instance)";
+            simulationInstance.gameObject.SetActive(true);
+
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
+
+            if (simulationScene.isLoaded)
+            {
+                SceneManager.UnloadSceneAsync(simulationScene);
+            }
+            simulationIndex++;
+            simulationScene = SceneManager.CreateScene(
+                $"Simulation Scene {simulationIndex}", 
+                new CreateSceneParameters(LocalPhysicsMode.Physics3D)
+            );
+            SceneManager.MoveGameObjectToScene(simulationInstance.gameObject, simulationScene);
         }
 
         public void PauseSimulation()

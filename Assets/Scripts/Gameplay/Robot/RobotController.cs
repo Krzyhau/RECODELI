@@ -14,7 +14,10 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public int CurrentInstructionIndex { get; private set; }
         public bool ExecutingInstructions { get; private set; }
-        public RobotInstruction CurrentInstruction => ExecutingInstructions ? CurrentInstructions[CurrentInstructionIndex] : null;
+        public RobotInstruction CurrentInstruction => 
+            (ExecutingInstructions && CurrentInstructionIndex >= 0 && CurrentInstructionIndex < CurrentInstructions.Count)
+            ? CurrentInstructions[CurrentInstructionIndex] 
+            : null;
 
         public List<RobotInstruction> CurrentInstructions { get; set; }
 
@@ -38,6 +41,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private IEnumerator CommandExecutionCoroutine()
         {
+            if (CurrentInstructions.Count == 0) yield break;
             ExecutingInstructions = true;
             CurrentInstructionIndex = 0;
             yield return new WaitForFixedUpdate();

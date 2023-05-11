@@ -42,7 +42,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private RobotThrusterFlag GetThrusterFlags()
         {
-            if (controller.ExecutingInstructions)
+            if (controller.CurrentInstruction != null)
             {
                 return controller.CurrentInstruction.Action.ThrustersState;
             }
