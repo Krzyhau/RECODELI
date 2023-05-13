@@ -90,7 +90,7 @@ namespace RecoDeli.Scripts.Controllers
             if (playingSimulation)
             {
                 simulationTime += Time.fixedDeltaTime;
-                simulationScene.GetPhysicsScene().Simulate(Time.fixedDeltaTime);
+                //simulationScene.GetPhysicsScene().Simulate(Time.fixedDeltaTime);
             }
 
             if (playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
@@ -168,10 +168,11 @@ namespace RecoDeli.Scripts.Controllers
                 SceneManager.UnloadSceneAsync(simulationScene);
             }
             simulationIndex++;
-            simulationScene = SceneManager.CreateScene(
-                $"Simulation Scene {simulationIndex}", 
-                new CreateSceneParameters(LocalPhysicsMode.Physics3D)
-            );
+            //simulationScene = SceneManager.CreateScene(
+            //    $"Simulation Scene {simulationIndex}", 
+            //    new CreateSceneParameters(LocalPhysicsMode.Physics3D)
+            //);
+            simulationScene = SceneManager.CreateScene( $"Simulation Scene {simulationIndex}");
             SceneManager.MoveGameObjectToScene(simulationInstance.gameObject, simulationScene);
         }
 
