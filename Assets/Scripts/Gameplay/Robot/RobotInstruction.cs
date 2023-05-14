@@ -52,7 +52,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 return instructions;
             }
 
-            var instructionStrings = instructionsEncoded.Split('\n');
+            var instructionsUnifiedNewLines = instructionsEncoded.Replace("\r\n", "\n");
+            var instructionStrings = instructionsUnifiedNewLines.Split('\n');
 
             foreach (var instructionString in instructionStrings)
             {
@@ -69,7 +70,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public static bool IsValidListString(string instructionsEncoded)
         {
-            if (!instructionsEncoded.StartsWith(CLIPBOARD_HEADER + "\n"))
+            var instructionsUnifiedNewLines = instructionsEncoded.Replace("\r\n", "\n");
+            if (!instructionsUnifiedNewLines.StartsWith(CLIPBOARD_HEADER + "\n"))
             {
                 return false;
             }

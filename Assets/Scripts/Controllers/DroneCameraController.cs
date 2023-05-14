@@ -20,7 +20,9 @@ namespace RecoDeli.Scripts.Controllers
         private Vector3 heldPlanePosition;
         private Vector3 preinterpolatedCameraPosition;
         private bool panning;
-        private bool followingRobot;
+        private Transform followedObject;
+        private bool followRobot = false;
+        private bool followPackage = false;
 
         private void Start()
         {
@@ -32,10 +34,13 @@ namespace RecoDeli.Scripts.Controllers
             Panning();
             Zooming();
 
-            if (followingRobot && simulationManager.RobotController != null)
+            if (followRobot) followedObject = simulationManager.RobotController.transform;
+            if (followPackage) followedObject = simulationManager.GoalBox.transform;
+
+            if (followedObject != null)
             {
                 var currentY = preinterpolatedCameraPosition.y;
-                preinterpolatedCameraPosition = simulationManager.RobotController.transform.position;
+                preinterpolatedCameraPosition = followedObject.position;
 
                 var displacementDelta = (currentY - preinterpolatedCameraPosition.y) * controlledCamera.transform.forward;
 
@@ -57,7 +62,7 @@ namespace RecoDeli.Scripts.Controllers
             {
                 heldPlanePosition = GetMousePosOnXZPlane();
                 panning = true;
-                followingRobot = false;
+                FollowObject(null);
             }
             if (!Input.GetMouseButton(0))
             {
@@ -123,7 +128,21 @@ namespace RecoDeli.Scripts.Controllers
 
         public void FollowRobot()
         {
-            followingRobot = true;
+            followRobot = true;
+            followPackage = false;
+        }
+
+        public void FollowPackage()
+        {
+            followPackage = true;
+            followRobot = false;
+        }
+
+        public void FollowObject(GameObject go)
+        {
+            followRobot = false;
+            followPackage = false;
+            followedObject = go != null ? go.transform : null;
         }
     }
 }

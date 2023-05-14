@@ -14,6 +14,8 @@ namespace RecoDeli.Scripts.Gameplay
 
         private bool collected = false;
 
+        public bool IsFinalGoalBox => isFinalGoalBox;
+
         private void OnCollisionEnter(Collision collision)
         {
             if (collected) return;

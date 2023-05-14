@@ -157,6 +157,8 @@ namespace RecoDeli.Scripts.UI
 
         public void InterpolateToPosition(float position, bool literal=false)
         {
+            if (instructionsContainer == null || instructionsContainerParent == null) return;
+
             float containerHeight = instructionsContainer.sizeDelta.y;
             float maxHeight = instructionsContainerParent.rect.height;
 

@@ -2,6 +2,7 @@ using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.UI;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -42,6 +43,7 @@ namespace RecoDeli.Scripts.Controllers
         private int simulationIndex;
 
         public RobotController RobotController { get; private set; }
+        public GoalBox GoalBox { get; private set; }
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => simulationTime;
@@ -105,8 +107,8 @@ namespace RecoDeli.Scripts.Controllers
 
             Time.timeScale = 1.0f;
 
-            playAmbient.gameObject.SetActive(false);
-            idleAmbient.gameObject.SetActive(true);
+            playAmbient.mute = true;
+            idleAmbient.mute = false;
             successSound.Play();
         }
 
@@ -128,8 +130,8 @@ namespace RecoDeli.Scripts.Controllers
             playingSimulation = true;
             lastInstruction = -1;
 
-            playAmbient.gameObject.SetActive(true);
-            idleAmbient.gameObject.SetActive(false);
+            playAmbient.mute = false;
+            idleAmbient.mute = true;
         }
 
         public void RestartSimulation()
@@ -141,6 +143,7 @@ namespace RecoDeli.Scripts.Controllers
             }
 
             playingSimulation = false;
+            paused = false;
 
             instructionEditor.SetPlaybackState(false);
             instructionEditor.HighlightInstruction(-1);
@@ -148,8 +151,8 @@ namespace RecoDeli.Scripts.Controllers
 
             restartSound.Play();
 
-            playAmbient.gameObject.SetActive(false);
-            idleAmbient.gameObject.SetActive(true);
+            playAmbient.mute = true;
+            idleAmbient.mute = false;
 
             if (simulationInstance != null)
             {
@@ -162,18 +165,19 @@ namespace RecoDeli.Scripts.Controllers
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
+            GoalBox = simulationInstance.GetComponentsInChildren<GoalBox>().Where(box => box.IsFinalGoalBox).FirstOrDefault();
 
-            if (simulationScene.isLoaded)
-            {
-                SceneManager.UnloadSceneAsync(simulationScene);
-            }
+            //if (simulationScene.isLoaded)
+            //{
+            //    SceneManager.UnloadSceneAsync(simulationScene);
+            //}
             simulationIndex++;
             //simulationScene = SceneManager.CreateScene(
             //    $"Simulation Scene {simulationIndex}", 
             //    new CreateSceneParameters(LocalPhysicsMode.Physics3D)
             //);
-            simulationScene = SceneManager.CreateScene( $"Simulation Scene {simulationIndex}");
-            SceneManager.MoveGameObjectToScene(simulationInstance.gameObject, simulationScene);
+            //simulationScene = SceneManager.CreateScene( $"Simulation Scene {simulationIndex}");
+            //SceneManager.MoveGameObjectToScene(simulationInstance.gameObject, simulationScene);
         }
 
         public void PauseSimulation()
