@@ -2094,8 +2094,8 @@ MonoBehaviour:
   instructionEditor: {fileID: 6043954123749274576}
   mouseScrollScale: 440
   mouseScrollTime: 0.1
-  edgeProximityDistance: 50
-  edgeProximityMaxSpeed: 5
+  edgeProximityDistance: 75
+  edgeProximityMaxSpeed: 2
   interpolationEdgeDistance: 150
   interpolationCurve:
     serializedVersion: 2

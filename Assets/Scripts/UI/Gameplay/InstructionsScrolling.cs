@@ -1,9 +1,11 @@
-﻿using System;
+﻿using RecoDeli.Scripts.Utils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace RecoDeli.Scripts.UI
@@ -40,11 +42,11 @@ namespace RecoDeli.Scripts.UI
             instructionsContainer = GetComponent<RectTransform>();
             instructionsContainerParent = instructionsContainer.parent.GetComponent<RectTransform>();
             canvasContainer = instructionsContainer.GetComponentInParent<Canvas>();
-            instructionEditor = GetComponent<InstructionEditor>();
         }
 
         private void Update()
         {
+            RecalculateScrollingArea();
             RecalculateVerticalMousePosition();
 
             HandleGrabbingEdgeProximityScrolling();
@@ -68,6 +70,8 @@ namespace RecoDeli.Scripts.UI
 
         private void HandleMouseScrolling()
         {
+            if (!EventSystem.current.IsPointerOverGameObject(instructionEditor.gameObject)) return;
+
             float containerHeight = instructionsContainer.sizeDelta.y;
             float maxHeight = instructionsContainerParent.rect.height;
 
@@ -143,13 +147,19 @@ namespace RecoDeli.Scripts.UI
             verticalScrollBar.value = targetPosition / (containerHeight - maxHeight);
         }
 
-        private void ApplyScrollingToContainer()
+        private void RecalculateScrollingArea()
         {
             float containerHeight = instructionsContainer.sizeDelta.y;
             float maxHeight = instructionsContainerParent.rect.height;
 
             float scrollSize = maxHeight / Mathf.Max(maxHeight, containerHeight);
             verticalScrollBar.size = scrollSize;
+        }
+
+        private void ApplyScrollingToContainer()
+        {
+            float containerHeight = instructionsContainer.sizeDelta.y;
+            float maxHeight = instructionsContainerParent.rect.height;
 
             float containerNewPosition = Mathf.Max(0.0f, containerHeight - maxHeight) * verticalScrollBar.value;
             instructionsContainer.anchoredPosition = Vector2.up * containerNewPosition;
