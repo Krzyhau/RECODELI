@@ -5516,6 +5516,7 @@ MonoBehaviour:
   barsPadding: 10
   barsPositionInterpolation: 20
   maxUndoHistory: 20
+  addButton: {fileID: 5060068314122788568}
   deleteButton: {fileID: 3563096426394209639}
   undoButton: {fileID: 6475044343377582346}
   redoButton: {fileID: 2275129908070904525}
