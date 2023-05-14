@@ -27,6 +27,7 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private int maxUndoHistory;
 
         [Header("Buttons")]
+        [SerializeField] private Button addButton;
         [SerializeField] private Button deleteButton;
         [SerializeField] private Button undoButton;
         [SerializeField] private Button redoButton;
@@ -298,6 +299,7 @@ namespace RecoDeli.Scripts.UI
         {
             if (addInstructionMenuActive || playingInstructions)
             {
+                addButton.interactable = false;
                 deleteButton.interactable = false;
                 undoButton.interactable = false;
                 redoButton.interactable = false;
@@ -306,6 +308,7 @@ namespace RecoDeli.Scripts.UI
             }
             else
             {
+                addButton.interactable = !playingInstructions;
                 deleteButton.interactable = EnumerateBars().Where(bar => bar.Selected).Any();
                 undoButton.interactable = undoList.Count > 0;
                 redoButton.interactable = redoList.Count > 0;
@@ -589,6 +592,7 @@ namespace RecoDeli.Scripts.UI
             validClickArea.interactable = !state;
             if (state)
             {
+                SetAddInstructionMenuActive(false);
                 prePlayScrollPosition = scrollingHandler.CurrentScrollPosition;
                 foreach (var bar in EnumerateBars())
                 {
