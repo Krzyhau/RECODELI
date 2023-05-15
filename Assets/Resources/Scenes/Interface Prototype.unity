@@ -420,9 +420,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: '0.00
 
-    2
-
-    FREE'
+    2'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48ffea283ad210d47ab2175fd8b870f9, type: 2}
   m_sharedMaterial: {fileID: 199551394180597034, guid: 48ffea283ad210d47ab2175fd8b870f9,
@@ -914,9 +912,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: 'ARRIVAL TIME:
 
-    INSTRUCTIONS:
-
-    ANGLE MODE:'
+    INSTRUCTIONS:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 48ffea283ad210d47ab2175fd8b870f9, type: 2}
   m_sharedMaterial: {fileID: 199551394180597034, guid: 48ffea283ad210d47ab2175fd8b870f9,
@@ -2996,7 +2992,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 600, y: 360}
+  m_SizeDelta: {x: 500, y: 360}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1422094717
 MonoBehaviour:
