@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -23,6 +24,7 @@ namespace RecoDeli.Scripts.Controllers
         private Transform followedObject;
         private bool followRobot = false;
         private bool followPackage = false;
+        private RectTransform instructionsEditorRect;
 
         private void Start()
         {
@@ -46,7 +48,6 @@ namespace RecoDeli.Scripts.Controllers
 
                 preinterpolatedCameraPosition -= displacementDelta;
                 preinterpolatedCameraPosition.y = currentY;
-                preinterpolatedCameraPosition += controlledCamera.transform.right * currentY * 0.25f;
             }
 
             controlledCamera.transform.position = Vector3.Lerp(

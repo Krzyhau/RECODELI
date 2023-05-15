@@ -44,6 +44,7 @@ namespace RecoDeli.Scripts.Controllers
 
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
+        public InstructionEditor InstructionEditor => instructionEditor;
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => simulationTime;
