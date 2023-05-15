@@ -15,11 +15,13 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            for(float t = 0; t < instruction.Parameter; t += Time.fixedDeltaTime)
+            var absParameter = Mathf.Abs(instruction.Parameter);
+            var finalMovementDir = Mathf.Sign(instruction.Parameter) * movementDirection;
+            for (float t = 0; t < absParameter; t += Time.fixedDeltaTime)
             {
                 yield return new WaitForFixedUpdate();
-                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, instruction.Parameter - t);
-                var flyingForce = controller.transform.forward * movementDirection * controller.PropulsionForce * accelerationStep;
+                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, absParameter - t);
+                var flyingForce = controller.transform.forward * finalMovementDir * controller.PropulsionForce * accelerationStep;
                 controller.Rigidbody.AddForce(flyingForce, ForceMode.VelocityChange);
 
                 
@@ -30,7 +32,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 );
                 
 
-                instruction.UpdateProgress(t / instruction.Parameter);
+                instruction.UpdateProgress(t / absParameter);
             }
             yield return new WaitForFixedUpdate();
         }

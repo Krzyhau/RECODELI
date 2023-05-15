@@ -24,12 +24,13 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 yield break;
             }
 
-            var parameter = instruction.Parameter;
+            var parameter = Mathf.Abs(instruction.Parameter);
+            var direction = rotationDirection * Mathf.Sign(instruction.Parameter);
 
             for (float t = 0; t < parameter; t += Time.fixedDeltaTime)
             {
                 var accelerationStep = Mathf.Min(Time.fixedDeltaTime, parameter - t);
-                var rotationAcceleration = (rotationDirection * controller.RotationSpeed) * accelerationStep;
+                var rotationAcceleration = (direction * controller.RotationSpeed) * accelerationStep;
                 controller.Rigidbody.angularVelocity += new Vector3(0.0f, Mathf.Deg2Rad * rotationAcceleration, 0.0f);
 
                 if (parameter - t < Time.fixedDeltaTime) break;
@@ -40,7 +41,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private IEnumerator AutoRotationMode(RobotController controller, RobotInstruction<float> instruction)
         {
-            var parameter = Mathf.Sqrt(instruction.Parameter * 2.0f);
+            var direction = rotationDirection * Mathf.Sign(instruction.Parameter);
+            var parameter = Mathf.Sqrt(Mathf.Abs(instruction.Parameter) * 2.0f);
 
             var stepCounts = (parameter / Time.fixedDeltaTime);
 
@@ -50,7 +52,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             for (int step = 0; step <= stepCounts + 1; step++)
             {
                 float currentAngularVelocity = controller.Rigidbody.angularVelocity.y * Mathf.Rad2Deg;
-                float desiredAngularVelocity = rotationDirection * controller.RotationSpeed * Mathf.Max(0.0f, parameter - t);
+                float desiredAngularVelocity = direction * controller.RotationSpeed * Mathf.Max(0.0f, parameter - t);
 
                 float newAngularVelocity = Mathf.MoveTowards(currentAngularVelocity, desiredAngularVelocity, controller.RotationSpeed * Time.fixedDeltaTime);
                 controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * newAngularVelocity, 0);
