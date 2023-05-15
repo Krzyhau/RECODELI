@@ -1,11 +1,11 @@
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
-    public class TurnLeftAction : RotationAction
+    public class SpinLeftAction : RotationAction
     {
-        public override string Name => "TURN LEFT";
+        public override string Name => "SPIN LEFT";
         public override RobotThrusterFlag ThrustersState => RobotThrusterFlag.FrontLeft | RobotThrusterFlag.BackRight;
 
-        public TurnLeftAction() : base(-1.0f, true) 
+        public SpinLeftAction() : base(-1.0f, false) 
         { 
         }
     }

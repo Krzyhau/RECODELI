@@ -8,43 +8,56 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     {
 
         private float rotationDirection;
+        private bool autoRotationMode;
 
-        public RotationAction(float direction) : base() 
+        public RotationAction(float direction, bool autoRotation) : base() 
         {
             rotationDirection = direction;
+            autoRotationMode = autoRotation;
         }
 
         public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
         {
+            if (autoRotationMode)
+            {
+                yield return AutoRotationMode(controller, instruction);
+                yield break;
+            }
+
             var parameter = instruction.Parameter;
-            var deltaRotation = parameter * rotationDirection * controller.RotationSpeed;
 
             for (float t = 0; t < parameter; t += Time.fixedDeltaTime)
             {
-                if (RotationMethodSelector.ShouldUseFreeMethod)
-                {
-                    var accelerationStep = Mathf.Min(Time.fixedDeltaTime, parameter - t);
-                    var rotationAcceleration = (2.0f * rotationDirection * controller.RotationSpeed) * accelerationStep;
-                    controller.Rigidbody.angularVelocity += new Vector3(0.0f, Mathf.Deg2Rad * rotationAcceleration, 0.0f);
-                }
-                else
-                {
-                    var t1 = controller.RotationCurve.Evaluate(t / parameter);
-                    var t2 = controller.RotationCurve.Evaluate(Mathf.Min(1.0f, (t + Time.fixedDeltaTime) / parameter));
-                    var desiredAngle = deltaRotation * t1;
-                    var desiredNextAngle = deltaRotation * t2;
-                    var desiredAngularVelocity = (desiredNextAngle - desiredAngle) / Time.fixedDeltaTime;
-                    controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * desiredAngularVelocity, 0);
-                }
+                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, parameter - t);
+                var rotationAcceleration = (rotationDirection * controller.RotationSpeed) * accelerationStep;
+                controller.Rigidbody.angularVelocity += new Vector3(0.0f, Mathf.Deg2Rad * rotationAcceleration, 0.0f);
 
                 if (parameter - t < Time.fixedDeltaTime) break;
                 yield return new WaitForFixedUpdate();
                 instruction.UpdateProgress(t / parameter);
             }
+        }
 
-            if (!RotationMethodSelector.ShouldUseFreeMethod)
+        private IEnumerator AutoRotationMode(RobotController controller, RobotInstruction<float> instruction)
+        {
+            var parameter = Mathf.Sqrt(instruction.Parameter * 2.0f);
+
+            var stepCounts = (parameter / Time.fixedDeltaTime);
+
+            float t = Time.fixedDeltaTime;
+
+            // robot needs to rotate with certain velocity at given time in order to stop perfectly at given angle
+            for (int step = 0; step <= stepCounts + 1; step++)
             {
-                controller.Rigidbody.angularVelocity = Vector3.zero;
+                float currentAngularVelocity = controller.Rigidbody.angularVelocity.y * Mathf.Rad2Deg;
+                float desiredAngularVelocity = rotationDirection * controller.RotationSpeed * Mathf.Max(0.0f, parameter - t);
+
+                float newAngularVelocity = Mathf.MoveTowards(currentAngularVelocity, desiredAngularVelocity, controller.RotationSpeed * Time.fixedDeltaTime);
+                controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * newAngularVelocity, 0);
+
+                yield return new WaitForFixedUpdate();
+                instruction.UpdateProgress(step / stepCounts);
+                t += Time.fixedDeltaTime;
             }
         }
     }

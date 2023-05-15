@@ -22,14 +22,13 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 var flyingForce = controller.transform.forward * movementDirection * controller.PropulsionForce * accelerationStep;
                 controller.Rigidbody.AddForce(flyingForce, ForceMode.VelocityChange);
 
-                if (RotationMethodSelector.ShouldUseDragMethod)
-                {
-                    controller.Rigidbody.angularVelocity = Vector3.MoveTowards(
-                        controller.Rigidbody.angularVelocity,
-                        Vector3.zero,
-                        controller.PropulsionRotationDrag * Time.fixedDeltaTime
-                    );
-                }
+                
+                controller.Rigidbody.angularVelocity = Vector3.MoveTowards(
+                    controller.Rigidbody.angularVelocity,
+                    Vector3.zero,
+                    controller.PropulsionRotationDrag * Time.fixedDeltaTime
+                );
+                
 
                 instruction.UpdateProgress(t / instruction.Parameter);
             }

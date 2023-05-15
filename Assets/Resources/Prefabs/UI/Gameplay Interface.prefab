@@ -1595,6 +1595,8 @@ MonoBehaviour:
   - BACKWARD
   - TURN LEFT
   - TURN RIGHT
+  - SPIN LEFT
+  - SPIN RIGHT
   - WAIT
 --- !u!1 &2828957660654962076
 GameObject:

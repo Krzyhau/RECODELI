@@ -130,7 +130,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e51c212e7afdc5d43b03208a041e0539, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rotationSpeed: 90
+  rotationSpeed: 180
   rotationCurve:
     serializedVersion: 2
     m_Curve:

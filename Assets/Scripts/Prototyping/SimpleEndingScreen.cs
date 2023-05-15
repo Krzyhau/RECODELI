@@ -14,10 +14,7 @@ namespace RecoDeli.Scripts.Prototyping
         {
             var simulationTime = simulationManager.SimulationTime;
             var instructionCount = simulationManager.RobotController.CurrentInstructions.Count;
-            var rotationMethod = "LUDUM DARE";
-            if (RotationMethodSelector.ShouldUseFreeMethod) rotationMethod = "FREE";
-            if (RotationMethodSelector.ShouldUseDragMethod) rotationMethod = "ANGULAR DRAG";
-            valuesText.text = $"{simulationTime:0.000}\n{instructionCount}\n{rotationMethod}";
+            valuesText.text = $"{simulationTime:0.000}\n{instructionCount}";
         }
     }
 }

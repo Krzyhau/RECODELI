@@ -36,7 +36,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private void FixedUpdate()
         {
-            Rigidbody.angularDrag = RotationMethodSelector.ShouldUseDragMethod ? 0.1f : 0.0f;
+            //Rigidbody.angularDrag = RotationMethodSelector.ShouldUseDragMethod ? 0.1f : 0.0f;
         }
 
         private IEnumerator CommandExecutionCoroutine()
