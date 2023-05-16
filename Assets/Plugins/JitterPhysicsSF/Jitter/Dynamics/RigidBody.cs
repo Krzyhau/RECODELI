@@ -28,6 +28,7 @@ using Jitter.Collision.Shapes;
 using Jitter.Collision;
 using Jitter.Dynamics.Constraints;
 using Jitter.DataStructures;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Dynamics
@@ -61,14 +62,14 @@ namespace Jitter.Dynamics
 
         internal JBBox boundingBox;
 
-        internal float inactiveTime = 0.0f;
+        internal sfloat inactiveTime = sfloat.Zero;
 
         internal bool isActive = true;
         internal bool isStatic = false;
         internal bool affectedByGravity = true;
 
         internal CollisionIsland island;
-        internal float inverseMass;
+        internal sfloat inverseMass;
 
         internal JVector force, torque;
 
@@ -115,7 +116,7 @@ namespace Jitter.Dynamics
                     this.inertia = JMatrix.Zero;
                     this.invInertia = this.invInertiaWorld = JMatrix.Zero;
                     this.invOrientation = this.orientation = JMatrix.Identity;
-                    inverseMass = 1.0f;
+                    inverseMass = sfloat.One;
 
                     this.Shape.ShapeUpdated -= updatedHandler;
 
@@ -163,7 +164,7 @@ namespace Jitter.Dynamics
                 this.inertia = JMatrix.Zero;
                 this.invInertia = this.invInertiaWorld = JMatrix.Zero;
                 this.invOrientation = this.orientation = JMatrix.Identity;
-                inverseMass = 1.0f;
+                inverseMass = sfloat.One;
             }
 
             this.material = material;
@@ -237,12 +238,12 @@ namespace Jitter.Dynamics
                 if (!isActive && value)
                 {
                     // if inactive and should be active
-                    inactiveTime = 0.0f;
+                    inactiveTime = sfloat.Zero;
                 }
                 else if (isActive && !value)
                 {
                     // if active and should be inactive
-                    inactiveTime = float.PositiveInfinity;
+                    inactiveTime = sfloat.PositiveInfinity;
                     this.angularVelocity.MakeZero();
                     this.linearVelocity.MakeZero();
                 }
@@ -346,7 +347,7 @@ namespace Jitter.Dynamics
         {
             this.inertia = Shape.inertia;
             JMatrix.Inverse(ref inertia, out invInertia);
-            this.inverseMass = 1.0f / Shape.mass;
+            this.inverseMass = sfloat.One / Shape.mass;
             useShapeMassProperties = true;
         }
 
@@ -358,7 +359,7 @@ namespace Jitter.Dynamics
         /// <param name="mass">The mass/inverse mass of the object.</param>
         /// <param name="setAsInverseValues">Sets the InverseInertia and the InverseMass
         /// to this values.</param>
-        public void SetMassProperties(JMatrix inertia, float mass, bool setAsInverseValues)
+        public void SetMassProperties(JMatrix inertia, sfloat mass, bool setAsInverseValues)
         {
             if (setAsInverseValues)
             {
@@ -376,7 +377,7 @@ namespace Jitter.Dynamics
                     this.inertia = inertia;
                     JMatrix.Inverse(ref inertia, out this.invInertia);
                 }
-                this.inverseMass = 1.0f / mass;
+                this.inverseMass = sfloat.One / mass;
             }
 
             useShapeMassProperties = false;
@@ -519,12 +520,12 @@ namespace Jitter.Dynamics
         /// Setting the mass automatically scales the inertia.
         /// To set the mass indepedently from the mass use SetMassProperties.
         /// </summary>
-        public float Mass
+        public sfloat Mass
         {
-            get { return 1.0f / inverseMass; }
+            get { return sfloat.One / inverseMass; }
             set 
             {
-                if (value <= 0.0f) throw new ArgumentException("Mass can't be less or equal zero.");
+                if (value <= sfloat.Zero) throw new ArgumentException("Mass can't be less or equal zero.");
 
                 // scale inertia
                 if (!isParticle)
@@ -533,7 +534,7 @@ namespace Jitter.Dynamics
                     JMatrix.Inverse(ref inertia, out invInertia);
                 }
 
-                inverseMass = 1.0f / value;
+                inverseMass = sfloat.One / value;
             }
         }
 
@@ -542,11 +543,11 @@ namespace Jitter.Dynamics
 
         internal JVector sweptDirection = JVector.Zero;
 
-        public void SweptExpandBoundingBox(float timestep)
+        public void SweptExpandBoundingBox(sfloat timestep)
         {
             sweptDirection = linearVelocity * timestep;
 
-            if (sweptDirection.X < 0.0f)
+            if (sweptDirection.X < sfloat.Zero)
             {
                 boundingBox.Min.X += sweptDirection.X;
             }
@@ -555,7 +556,7 @@ namespace Jitter.Dynamics
                 boundingBox.Max.X += sweptDirection.X;
             }
 
-            if (sweptDirection.Y < 0.0f)
+            if (sweptDirection.Y < sfloat.Zero)
             {
                 boundingBox.Min.Y += sweptDirection.Y;
             }
@@ -564,7 +565,7 @@ namespace Jitter.Dynamics
                 boundingBox.Max.Y += sweptDirection.Y;
             }
 
-            if (sweptDirection.Z < 0.0f)
+            if (sweptDirection.Z < sfloat.Zero)
             {
                 boundingBox.Min.Z += sweptDirection.Z;
             }
@@ -623,12 +624,12 @@ namespace Jitter.Dynamics
         public int BroadphaseTag { get; set; }
 
 
-        public virtual void PreStep(float timestep)
+        public virtual void PreStep(sfloat timestep)
         {
             //
         }
 
-        public virtual void PostStep(float timestep)
+        public virtual void PostStep(sfloat timestep)
         {
             //
         }

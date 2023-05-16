@@ -25,6 +25,7 @@ using System.Threading;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Dynamics.Constraints
@@ -32,7 +33,7 @@ namespace Jitter.Dynamics.Constraints
 
     public interface IConstraint
     {
-        void PrepareForIteration(float timestep);
+        void PrepareForIteration(sfloat timestep);
         void Iterate();
 
         RigidBody Body1 { get; }
@@ -88,7 +89,7 @@ namespace Jitter.Dynamics.Constraints
         /// Called once before iteration starts.
         /// </summary>
         /// <param name="timestep">The simulation timestep</param>
-        public abstract void PrepareForIteration(float timestep);
+        public abstract void PrepareForIteration(sfloat timestep);
 
         /// <summary>
         /// Iteratively solve this constraint.

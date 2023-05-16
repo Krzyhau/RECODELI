@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Dynamics.Constraints.SingleBody
@@ -39,8 +40,8 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         private JVector lineNormal = JVector.Right;
         private JVector anchor;
 
-        private float biasFactor = 0.5f;
-        private float softness = 0.0f;
+        private sfloat biasFactor = sfloat.Half;
+        private sfloat softness = sfloat.Zero;
 
         /// <summary>
         /// Initializes a new instance of the WorldLineConstraint.
@@ -52,7 +53,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         public PointOnLine(RigidBody body, JVector localAnchor, JVector lineDirection)
             : base(body, null)
         {
-            if (lineDirection.LengthSquared() == 0.0f)
+            if (lineDirection.LengthSquared() == sfloat.Zero)
                 throw new ArgumentException("Line direction can't be zero", "lineDirection");
 
             localAnchor1 = localAnchor;
@@ -75,17 +76,17 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// <summary>
         /// Defines how big the applied impulses can get.
         /// </summary>
-        public float Softness { get { return softness; } set { softness = value; } }
+        public sfloat Softness { get { return softness; } set { softness = value; } }
 
         /// <summary>
         /// Defines how big the applied impulses can get which correct errors.
         /// </summary>
-        public float BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
+        public sfloat BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
 
-        float effectiveMass = 0.0f;
-        float accumulatedImpulse = 0.0f;
-        float bias;
-        float softnessOverDt;
+        sfloat effectiveMass = sfloat.Zero;
+        sfloat accumulatedImpulse = sfloat.Zero;
+        sfloat bias;
+        sfloat softnessOverDt;
 
         JVector[] jacobian = new JVector[2];
 
@@ -93,7 +94,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// Called once before iteration starts.
         /// </summary>
         /// <param name="timestep">The simulation timestep</param>
-        public override void PrepareForIteration(float timestep)
+        public override void PrepareForIteration(sfloat timestep)
         {
             JVector.Transform(ref localAnchor1, ref body1.orientation, out r1);
 
@@ -105,7 +106,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             JVector l = lineNormal;
 
             JVector t = (p1 - anchor) % l;
-            if (t.LengthSquared() != 0.0f) t.Normalize();
+            if (t.LengthSquared() != sfloat.Zero) t.Normalize();
             t = t % l;
 
             jacobian[0] = t;
@@ -117,9 +118,9 @@ namespace Jitter.Dynamics.Constraints.SingleBody
             softnessOverDt = softness / timestep;
             effectiveMass += softnessOverDt;
 
-            if (effectiveMass != 0) effectiveMass = 1.0f / effectiveMass;
+            if (effectiveMass != sfloat.Zero) effectiveMass = sfloat.One / effectiveMass;
 
-            bias = -(l % (p1 - anchor)).Length() * biasFactor * (1.0f / timestep);
+            bias = -(l % (p1 - anchor)).Length() * biasFactor * (sfloat.One / timestep);
 
             if (!body1.isStatic)
             {
@@ -134,13 +135,13 @@ namespace Jitter.Dynamics.Constraints.SingleBody
         /// </summary>
         public override void Iterate()
         {
-            float jv =
+            sfloat jv =
                 body1.linearVelocity * jacobian[0] +
                 body1.angularVelocity * jacobian[1];
 
-            float softnessScalar = accumulatedImpulse * softnessOverDt;
+            sfloat softnessScalar = accumulatedImpulse * softnessOverDt;
 
-            float lambda = -effectiveMass * (jv + bias + softnessScalar);
+            sfloat lambda = -effectiveMass * (jv + bias + softnessScalar);
 
             accumulatedImpulse += lambda;
 
@@ -153,7 +154,7 @@ namespace Jitter.Dynamics.Constraints.SingleBody
 
         public override void DebugDraw(IDebugDrawer drawer)
         {
-            drawer.DrawLine(anchor - lineNormal * 50.0f, anchor + lineNormal * 50.0f);
+            drawer.DrawLine(anchor - lineNormal * (sfloat)50.0f, anchor + lineNormal * (sfloat)50.0f);
             drawer.DrawLine(body1.position, body1.position + r1);
         }
 

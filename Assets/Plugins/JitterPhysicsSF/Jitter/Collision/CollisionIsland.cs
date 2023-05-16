@@ -28,6 +28,7 @@ using Jitter.Collision.Shapes;
 using Jitter.Dynamics.Constraints;
 using System.Collections.ObjectModel;
 using Jitter.DataStructures;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision
@@ -97,7 +98,7 @@ namespace Jitter.Collision
             foreach (RigidBody body in bodies)
             {
                 body.IsActive = active;
-                if (active && !body.IsActive) body.inactiveTime = 0.0f;
+                if (active && !body.IsActive) body.inactiveTime = sfloat.Zero;
             }
 
         }

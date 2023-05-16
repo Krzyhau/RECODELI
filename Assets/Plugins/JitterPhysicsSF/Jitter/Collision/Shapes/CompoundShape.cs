@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -112,7 +113,7 @@ namespace Jitter.Collision.Shapes
         public TransformedShape[] Shapes { get { return this.shapes; } }
 
         JVector shifted;
-        public JVector Shift { get { return -1.0f * this.shifted; } }
+        public JVector Shift { get { return sfloat.MinusOne * this.shifted; } }
 
         private JBBox mInternalBBox;
 
@@ -178,7 +179,7 @@ namespace Jitter.Collision.Shapes
         private void DoShifting()
         {
             for (int i = 0; i < Shapes.Length; i++) shifted += Shapes[i].position;
-            shifted *= (1.0f / shapes.Length);
+            shifted *= (sfloat.One / (sfloat)shapes.Length);
 
             for (int i = 0; i < Shapes.Length; i++) Shapes[i].position -= shifted;
         }
@@ -186,13 +187,13 @@ namespace Jitter.Collision.Shapes
         public override void CalculateMassInertia()
         {
             base.inertia = JMatrix.Zero;
-            base.mass = 0.0f;
+            base.mass = sfloat.Zero;
 
             for (int i = 0; i < Shapes.Length; i++)
             {
                 JMatrix currentInertia = Shapes[i].InverseOrientation * Shapes[i].Shape.Inertia * Shapes[i].Orientation;
-                JVector p = Shapes[i].Position * -1.0f;
-                float m = Shapes[i].Shape.Mass;
+                JVector p = Shapes[i].Position * sfloat.MinusOne;
+                sfloat m = Shapes[i].Shape.Mass;
 
                 currentInertia.M11 += m * (p.Y * p.Y + p.Z * p.Z);
                 currentInertia.M22 += m * (p.X * p.X + p.Z * p.Z);
@@ -251,8 +252,8 @@ namespace Jitter.Collision.Shapes
             box.Min = mInternalBBox.Min;
             box.Max = mInternalBBox.Max;
 
-            JVector localHalfExtents = 0.5f * (box.Max - box.Min);
-            JVector localCenter = 0.5f * (box.Max + box.Min);
+            JVector localHalfExtents = sfloat.Half * (box.Max - box.Min);
+            JVector localCenter = sfloat.Half * (box.Max + box.Min);
 
             JVector center;
             JVector.Transform(ref localCenter, ref orientation, out center);
@@ -326,8 +327,8 @@ namespace Jitter.Collision.Shapes
 
         protected void UpdateInternalBoundingBox()
         {
-            mInternalBBox.Min = new JVector(float.MaxValue);
-            mInternalBBox.Max = new JVector(float.MinValue);
+            mInternalBBox.Min = new JVector(sfloat.MaxValue);
+            mInternalBBox.Max = new JVector(sfloat.MinValue);
 
             for (int i = 0; i < shapes.Length; i++)
             {

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.LinearMath
@@ -62,16 +63,16 @@ namespace Jitter.LinearMath
             for (int thetaIndex = 0; thetaIndex < steps; thetaIndex++)
             {
                 // [0,PI]
-                float theta = JMath.Pi / (steps - 1) * thetaIndex;
-                float sinTheta = (float)Math.Sin(theta);
-                float cosTheta = (float)Math.Cos(theta);
+                sfloat theta = JMath.Pi / (sfloat)(steps - 1) * (sfloat)thetaIndex;
+                sfloat sinTheta = JMath.Sin(theta);
+                sfloat cosTheta = JMath.Cos(theta);
 
                 for (int phiIndex = 0; phiIndex < steps; phiIndex++)
                 {
                     // [-PI,PI]
-                    float phi = (2.0f * JMath.Pi) / (steps - 0) * phiIndex - JMath.Pi;
-                    float sinPhi = (float)Math.Sin(phi);
-                    float cosPhi = (float)Math.Cos(phi);
+                    sfloat phi = (sfloat.Two * JMath.Pi) / (sfloat)(steps - 0) * (sfloat)phiIndex - JMath.Pi;
+                    sfloat sinPhi = JMath.Sin(phi);
+                    sfloat cosPhi = JMath.Cos(phi);
 
                     JVector dir = new JVector(sinTheta * cosPhi, cosTheta, sinTheta * sinPhi);
 
@@ -97,9 +98,9 @@ namespace Jitter.LinearMath
         private static int FindExtremePoint(List<JVector> points,ref JVector dir)
         {
             int index = 0;
-            float current = float.MinValue;
+            sfloat current = sfloat.MinValue;
 
-            JVector point; float value;
+            JVector point; sfloat value;
 
             for (int i = 1; i < points.Count; i++)
             {

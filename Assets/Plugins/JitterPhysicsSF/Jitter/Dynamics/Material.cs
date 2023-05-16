@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoftFloat;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -10,25 +11,25 @@ namespace Jitter.Dynamics
     public class Material
     {
 
-        internal float kineticFriction = 0.3f;
-        internal float staticFriction = 0.6f;
-        internal float restitution = 0.0f;
+        internal sfloat kineticFriction = (sfloat)0.3f;
+        internal sfloat staticFriction = (sfloat)0.6f;
+        internal sfloat restitution = sfloat.Zero;
 
         public Material() { }
 
-        public float Restitution
+        public sfloat Restitution
         {
             get { return restitution; }
             set { restitution = value; }
         }
 
-        public float StaticFriction
+        public sfloat StaticFriction
         {
             get { return staticFriction; }
             set { staticFriction = value; }
         }
 
-        public float KineticFriction
+        public sfloat KineticFriction
         {
             get { return kineticFriction; }
             set { kineticFriction = value; }

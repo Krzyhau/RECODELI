@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -34,24 +35,24 @@ namespace Jitter.Collision.Shapes
     /// </summary>
     public class CapsuleShape : Shape
     {
-        private float length, radius;
+        private sfloat length, radius;
 
         /// <summary>
         /// Gets or sets the length of the capsule (exclusive the round endcaps).
         /// </summary>
-        public float Length { get { return length; } set { length = value; UpdateShape(); } }
+        public sfloat Length { get { return length; } set { length = value; UpdateShape(); } }
 
         /// <summary>
         /// Gets or sets the radius of the endcaps.
         /// </summary>
-        public float Radius { get { return radius; } set { radius = value; UpdateShape(); } }
+        public sfloat Radius { get { return radius; } set { radius = value; UpdateShape(); } }
 
         /// <summary>
         /// Create a new instance of the capsule.
         /// </summary>
         /// <param name="length">The length of the capsule (exclusive the round endcaps).</param>
         /// <param name="radius">The radius of the endcaps.</param>
-        public CapsuleShape(float length,float radius)
+        public CapsuleShape(sfloat length,sfloat radius)
         {
             this.length = length;
             this.radius = radius;
@@ -63,17 +64,17 @@ namespace Jitter.Collision.Shapes
         /// </summary>
         public override void CalculateMassInertia()
         {
-            float massSphere = (4.0f / 3.0f) * JMath.Pi * radius * radius * radius;
-            float massCylinder = JMath.Pi * radius * radius * length;
+            sfloat massSphere = ((sfloat)4.0f / (sfloat)3.0f) * JMath.Pi * radius * radius * radius;
+            sfloat massCylinder = JMath.Pi * radius * radius * length;
 
             mass = massCylinder + massSphere;
 
-            this.inertia.M11 = (1.0f / 4.0f) * massCylinder * radius * radius + (1.0f / 12.0f) * massCylinder * length * length + (2.0f / 5.0f) * massSphere * radius * radius + (1.0f / 4.0f) * length * length * massSphere;
-            this.inertia.M22 = (1.0f / 2.0f) * massCylinder * radius * radius + (2.0f / 5.0f) * massSphere * radius * radius;
-            this.inertia.M33 = (1.0f / 4.0f) * massCylinder * radius * radius + (1.0f / 12.0f) * massCylinder * length * length + (2.0f / 5.0f) * massSphere * radius * radius + (1.0f / 4.0f) * length * length * massSphere;
+            this.inertia.M11 = ((sfloat)1.0f / (sfloat)4.0f) * massCylinder * radius * radius + ((sfloat)1.0f / (sfloat)12.0f) * massCylinder * length * length + ((sfloat)2.0f / (sfloat)5.0f) * massSphere * radius * radius + ((sfloat)1.0f / (sfloat)4.0f) * length * length * massSphere;
+            this.inertia.M22 = ((sfloat)1.0f / (sfloat)2.0f) * massCylinder * radius * radius + ((sfloat)2.0f / (sfloat)5.0f) * massSphere * radius * radius;
+            this.inertia.M33 = ((sfloat)1.0f / (sfloat)4.0f) * massCylinder * radius * radius + ((sfloat)1.0f / (sfloat)12.0f) * massCylinder * length * length + ((sfloat)2.0f / (sfloat)5.0f) * massSphere * radius * radius + ((sfloat)1.0f / (sfloat)4.0f) * length * length * massSphere;
 
             //this.inertia.M11 = (1.0f / 4.0f) * mass * radius * radius + (1.0f / 12.0f) * mass * height * height;
-            //this.inertia.M22 = (1.0f / 2.0f) * mass * radius * radius;
+            //this.inertia.M22 = (1.0f / sfloat.Two) * mass * radius * radius;
             //this.inertia.M33 = (1.0f / 4.0f) * mass * radius * radius + (1.0f / 12.0f) * mass * height * height;
         }
 
@@ -87,25 +88,25 @@ namespace Jitter.Collision.Shapes
         /// <param name="result">The result.</param>
         public override void SupportMapping(ref JVector direction, out JVector result)
         {
-            float r = (float)Math.Sqrt(direction.X * direction.X + direction.Z * direction.Z);
+            sfloat r = JMath.Sqrt(direction.X * direction.X + direction.Z * direction.Z);
 
-            if (Math.Abs(direction.Y) > 0.0f)
+            if (sfloat.Abs(direction.Y) > sfloat.Zero)
             {
                 JVector dir; JVector.Normalize(ref direction, out dir);
                 JVector.Multiply(ref dir, radius, out result);
-                result.Y += Math.Sign(direction.Y) * 0.5f * length;              
+                result.Y += (sfloat)direction.Y.Sign() * sfloat.Half * length;              
             }
-            else if (r > 0.0f)
+            else if (r > sfloat.Zero)
             {
                 result.X = direction.X / r * radius;
-                result.Y = 0.0f;
+                result.Y = sfloat.Zero;
                 result.Z = direction.Z / r * radius;
             }
             else
             {
-                result.X = 0.0f;
-                result.Y = 0.0f;
-                result.Z = 0.0f;
+                result.X = sfloat.Zero;
+                result.Y = sfloat.Zero;
+                result.Z = sfloat.Zero;
             }
         }
     }

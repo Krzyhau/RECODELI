@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -34,8 +35,8 @@ namespace Jitter.Collision.Shapes
     /// </summary>
     public class TerrainShape : Multishape
     {
-        private float[,] heights;
-        private float scaleX, scaleZ;
+        private sfloat[,] heights;
+        private sfloat scaleX, scaleZ;
         private int heightsLength0, heightsLength1;
 
         private int minX, maxX;
@@ -44,13 +45,13 @@ namespace Jitter.Collision.Shapes
 
         private JBBox boundings;
 
-        private float sphericalExpansion = 0.05f;
+        private sfloat sphericalExpansion = (sfloat)0.05f;
 
         /// <summary>
         /// Expands the triangles by the specified amount.
         /// This stabilizes collision detection for flat shapes.
         /// </summary>
-        public float SphericalExpansion
+        public sfloat SphericalExpansion
         {
             get { return sphericalExpansion; }
             set { sphericalExpansion = value; }
@@ -62,7 +63,7 @@ namespace Jitter.Collision.Shapes
         /// <param name="heights">An array containing the heights of the terrain surface.</param>
         /// <param name="scaleX">The x-scale factor. (The x-space between neighbour heights)</param>
         /// <param name="scaleZ">The y-scale factor. (The y-space between neighbour heights)</param>
-        public TerrainShape(float[,] heights, float scaleX, float scaleZ)
+        public TerrainShape(sfloat[,] heights, sfloat scaleX, sfloat scaleZ)
         {
             heightsLength0 = heights.GetLength(0);
             heightsLength1 = heights.GetLength(1);
@@ -81,11 +82,11 @@ namespace Jitter.Collision.Shapes
                 }
             }
 
-            boundings.Min.X = 0.0f;
-            boundings.Min.Z = 0.0f;
+            boundings.Min.X = sfloat.Zero;
+            boundings.Min.Z = sfloat.Zero;
 
-            boundings.Max.X = checked(heightsLength0 * scaleX);
-            boundings.Max.Z = checked(heightsLength1 * scaleZ);
+            boundings.Max.X = checked((sfloat)heightsLength0 * scaleX);
+            boundings.Max.Z = checked((sfloat)heightsLength1 * scaleZ);
 
             #endregion
 
@@ -137,21 +138,21 @@ namespace Jitter.Collision.Shapes
             // each quad has two triangles, called 'leftTriangle' and !'leftTriangle'
             if (leftTriangle)
             {
-                points[0].Set((minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 0], (minZ + quadIndexZ + 0) * scaleZ);
-                points[1].Set((minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 0], (minZ + quadIndexZ + 0) * scaleZ);
-                points[2].Set((minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 1], (minZ + quadIndexZ + 1) * scaleZ);
+                points[0].Set((sfloat)(minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 0], (sfloat)(minZ + quadIndexZ + 0) * scaleZ);
+                points[1].Set((sfloat)(minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 0], (sfloat)(minZ + quadIndexZ + 0) * scaleZ);
+                points[2].Set((sfloat)(minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 1], (sfloat)(minZ + quadIndexZ + 1) * scaleZ);
             }
             else
             {
-                points[0].Set((minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 0], (minZ + quadIndexZ + 0) * scaleZ);
-                points[1].Set((minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 1], (minZ + quadIndexZ + 1) * scaleZ);
-                points[2].Set((minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 1], (minZ + quadIndexZ + 1) * scaleZ);
+                points[0].Set((sfloat)(minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 0], (sfloat)(minZ + quadIndexZ + 0) * scaleZ);
+                points[1].Set((sfloat)(minX + quadIndexX + 1) * scaleX, heights[minX + quadIndexX + 1, minZ + quadIndexZ + 1], (sfloat)(minZ + quadIndexZ + 1) * scaleZ);
+                points[2].Set((sfloat)(minX + quadIndexX + 0) * scaleX, heights[minX + quadIndexX + 0, minZ + quadIndexZ + 1], (sfloat)(minZ + quadIndexZ + 1) * scaleZ);
             }
 
             JVector sum = points[0];
             JVector.Add(ref sum, ref points[1], out sum);
             JVector.Add(ref sum, ref points[2], out sum);
-            JVector.Multiply(ref sum, 1.0f / 3.0f, out sum);
+            JVector.Multiply(ref sum, sfloat.One / (sfloat)3.0f, out sum);
             geomCen = sum;
 
             JVector.Subtract(ref points[1], ref points[0], out sum);
@@ -183,28 +184,28 @@ namespace Jitter.Collision.Shapes
             if (box.Min.X < boundings.Min.X) minX = 0;
             else
             {
-                minX = (int)Math.Floor((float)((box.Min.X - sphericalExpansion) / scaleX));
+                minX = (int)JMath.Floor((box.Min.X - sphericalExpansion) / scaleX);
                 minX = Math.Max(minX, 0);
             }
 
             if (box.Max.X > boundings.Max.X) maxX = heightsLength0 - 1;
             else
             {
-                maxX = (int)Math.Ceiling((float)((box.Max.X + sphericalExpansion) / scaleX));
+                maxX = (int)JMath.Ceiling((box.Max.X + sphericalExpansion) / scaleX);
                 maxX = Math.Min(maxX, heightsLength0 - 1);
             }
 
             if (box.Min.Z < boundings.Min.Z) minZ = 0;
             else
             {
-                minZ = (int)Math.Floor((float)((box.Min.Z - sphericalExpansion) / scaleZ));
+                minZ = (int)JMath.Floor((box.Min.Z - sphericalExpansion) / scaleZ);
                 minZ = Math.Max(minZ, 0);
             }
 
             if (box.Max.Z > boundings.Max.Z) maxZ = heightsLength1 - 1;
             else
             {
-                maxZ = (int)Math.Ceiling((float)((box.Max.Z + sphericalExpansion) / scaleZ));
+                maxZ = (int)JMath.Ceiling((box.Max.Z + sphericalExpansion) / scaleZ);
                 maxZ = Math.Min(maxZ, heightsLength1 - 1);
             }
 
@@ -221,7 +222,7 @@ namespace Jitter.Collision.Shapes
         public override void CalculateMassInertia()
         {
             this.inertia = JMatrix.Identity;
-            this.Mass = 1.0f;
+            this.Mass = sfloat.One;
         }
 
         /// <summary>
@@ -253,13 +254,13 @@ namespace Jitter.Collision.Shapes
                 int quadIndexX = index % (heightsLength0 - 1);
                 int quadIndexZ = index / (heightsLength0 - 1);
 
-                triangleList.Add(new JVector((0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 0], (0 + quadIndexZ + 0) * scaleZ));
-                triangleList.Add(new JVector((0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 0], (0 + quadIndexZ + 0) * scaleZ));
-                triangleList.Add(new JVector((0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 1], (0 + quadIndexZ + 1) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 0], (sfloat)(0 + quadIndexZ + 0) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 0], (sfloat)(0 + quadIndexZ + 0) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 1], (sfloat)(0 + quadIndexZ + 1) * scaleZ));
 
-                triangleList.Add(new JVector((0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 0], (0 + quadIndexZ + 0) * scaleZ));
-                triangleList.Add(new JVector((0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 1], (0 + quadIndexZ + 1) * scaleZ));
-                triangleList.Add(new JVector((0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 1], (0 + quadIndexZ + 1) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 0], (sfloat)(0 + quadIndexZ + 0) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 1) * scaleX, heights[0 + quadIndexX + 1, 0 + quadIndexZ + 1], (sfloat)(0 + quadIndexZ + 1) * scaleZ));
+                triangleList.Add(new JVector((sfloat)(0 + quadIndexX + 0) * scaleX, heights[0 + quadIndexX + 0, 0 + quadIndexZ + 1], (sfloat)(0 + quadIndexZ + 1) * scaleZ));
             }
         }
 
@@ -277,8 +278,8 @@ namespace Jitter.Collision.Shapes
             JVector.Multiply(ref expandVector, sphericalExpansion, out expandVector);
 
             int minIndex = 0;
-            float min = JVector.Dot(ref points[0], ref direction);
-            float dot = JVector.Dot(ref points[1], ref direction);
+            sfloat min = JVector.Dot(ref points[0], ref direction);
+            sfloat dot = JVector.Dot(ref points[1], ref direction);
             if (dot > min)
             {
                 min = dot;

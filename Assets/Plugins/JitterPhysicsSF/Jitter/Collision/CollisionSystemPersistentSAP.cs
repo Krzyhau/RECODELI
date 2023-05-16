@@ -25,6 +25,7 @@ using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
 using System.Collections;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision
@@ -50,7 +51,7 @@ namespace Jitter.Collision
                 this.Axis = axis;
             }
 
-            public float Value
+            public sfloat Value
             {
                 get
                 {
@@ -147,8 +148,8 @@ namespace Jitter.Collision
 
         private int QuickSort(SweepPoint sweepPoint1, SweepPoint sweepPoint2)
         {
-            float val1 = sweepPoint1.Value;
-            float val2 = sweepPoint2.Value;
+            sfloat val1 = sweepPoint1.Value;
+            sfloat val2 = sweepPoint2.Value;
 
             if (val1 > val2) return 1;
             else if (val2 > val1) return -1;
@@ -191,7 +192,7 @@ namespace Jitter.Collision
             for (int j = 1; j < axis.Count; j++)
             {
                 SweepPoint keyelement = axis[j];
-                float key = keyelement.Value;
+                sfloat key = keyelement.Value;
 
                 int i = j - 1;
 
@@ -350,23 +351,23 @@ namespace Jitter.Collision
 
         //    int index1 = 0,index2 = 0,index3 = 0;
 
-        //    if (rayDirection.X < 0.0f) index1 = axis1.Count - 1;
-        //    if (rayDirection.Y < 0.0f) index2 = axis2.Count - 1;
-        //    if (rayDirection.Z < 0.0f) index3 = axis3.Count - 1;
+        //    if (rayDirection.X < sfloat.Zero) index1 = axis1.Count - 1;
+        //    if (rayDirection.Y < sfloat.Zero) index2 = axis2.Count - 1;
+        //    if (rayDirection.Z < sfloat.Zero) index3 = axis3.Count - 1;
 
         //    int steps = 0;
 
         //    while (true)
         //    {
         //        steps++;
-        //        float distance1 = (axis1[index1].Value - rayOrigin.X) / rayDirection.X;
-        //        float distance2 = (axis2[index2].Value - rayOrigin.Y) / rayDirection.Y;
-        //        float distance3 = (axis3[index3].Value - rayOrigin.Z) / rayDirection.Z;
+        //        sfloat distance1 = (axis1[index1].Value - rayOrigin.X) / rayDirection.X;
+        //        sfloat distance2 = (axis2[index2].Value - rayOrigin.Y) / rayDirection.Y;
+        //        sfloat distance3 = (axis3[index3].Value - rayOrigin.Z) / rayDirection.Z;
 
 
-        //        float dist1 = Math.Abs(distance1);
-        //        float dist2 = Math.Abs(distance2);
-        //        float dist3 = Math.Abs(distance3);
+        //        sfloat dist1 = Math.Abs(distance1);
+        //        sfloat dist2 = Math.Abs(distance2);
+        //        sfloat dist3 = Math.Abs(distance3);
 
         //        if (dist1 < dist2)
         //        {
@@ -380,7 +381,7 @@ namespace Jitter.Collision
 
         //                rayOrigin = rayOrigin + distance3 * rayDirection;
 
-        //                index3 += (rayDirection.Z > 0.0f) ? 1 : -1;
+        //                index3 += (rayDirection.Z > sfloat.Zero) ? 1 : -1;
         //                if (index3 >= axis3.Count || index3 < 0) break;
                        
         //            }
@@ -394,7 +395,7 @@ namespace Jitter.Collision
 
         //                rayOrigin = rayOrigin + distance1 * rayDirection;
 
-        //                index1 += (rayDirection.X > 0.0f) ? 1 : -1;
+        //                index1 += (rayDirection.X > sfloat.Zero) ? 1 : -1;
         //                if (index1 >= axis1.Count || index1 < 0) break;
         //            }
         //        }
@@ -409,7 +410,7 @@ namespace Jitter.Collision
 
         //                rayOrigin = rayOrigin + distance2 * rayDirection;
 
-        //                index2 += (rayDirection.Y > 0.0f) ? 1 : -1;
+        //                index2 += (rayDirection.Y > sfloat.Zero) ? 1 : -1;
         //                if (index2 >= axis2.Count || index2 < 0) break;
 
         //            }
@@ -423,7 +424,7 @@ namespace Jitter.Collision
 
         //                rayOrigin = rayOrigin + distance3 * rayDirection;
 
-        //                index3 += (rayDirection.Z > 0.0f) ? 1 : -1;
+        //                index3 += (rayDirection.Z > sfloat.Zero) ? 1 : -1;
         //                if (index3 >= axis3.Count || index3 < 0) break;
         //            }
         //        }
@@ -440,12 +441,12 @@ namespace Jitter.Collision
         /// against rays (rays are of infinite length). They are checked against segments
         /// which start at rayOrigin and end in rayOrigin + rayDirection.
         /// </summary>
-        #region public override bool Raycast(JVector rayOrigin, JVector rayDirection, out JVector normal,out float fraction)
-        public override bool Raycast(JVector rayOrigin, JVector rayDirection, RaycastCallback raycast, out RigidBody body, out JVector normal, out float fraction)
+        #region public override bool Raycast(JVector rayOrigin, JVector rayDirection, out JVector normal,out sfloat fraction)
+        public override bool Raycast(JVector rayOrigin, JVector rayDirection, RaycastCallback raycast, out RigidBody body, out JVector normal, out sfloat fraction)
         {
-            body = null; normal = JVector.Zero; fraction = float.MaxValue;
+            body = null; normal = JVector.Zero; fraction = sfloat.MaxValue;
 
-            JVector tempNormal;float tempFraction;
+            JVector tempNormal;sfloat tempFraction;
             bool result = false;
 
             // TODO: This can be done better in CollisionSystemPersistenSAP
@@ -495,10 +496,10 @@ namespace Jitter.Collision
         /// against rays (rays are of infinite length). They are checked against segments
         /// which start at rayOrigin and end in rayOrigin + rayDirection.
         /// </summary>
-        #region public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out float fraction)
-        public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out float fraction)
+        #region public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out sfloat fraction)
+        public override bool Raycast(RigidBody body, JVector rayOrigin, JVector rayDirection, out JVector normal, out sfloat fraction)
         {
-            fraction = float.MaxValue; normal = JVector.Zero;
+            fraction = sfloat.MaxValue; normal = JVector.Zero;
 
             if (!body.BoundingBox.RayIntersect(ref rayOrigin, ref rayDirection)) return false;
 
@@ -506,7 +507,7 @@ namespace Jitter.Collision
             {
                 Multishape ms = (body.Shape as Multishape).RequestWorkingClone();
                 
-                JVector tempNormal;float tempFraction;
+                JVector tempNormal;sfloat tempFraction;
                 bool multiShapeCollides = false;
 
                 JVector transformedOrigin; JVector.Subtract(ref rayOrigin, ref body.position, out transformedOrigin);

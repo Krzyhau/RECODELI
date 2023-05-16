@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -67,7 +68,7 @@ namespace Jitter.Collision.Shapes
 
         public JVector Shift()
         {
-            return -1 * this.shifted;
+            return sfloat.MinusOne * this.shifted;
         }
 
         public override void CalculateMassInertia()

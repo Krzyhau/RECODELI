@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Collision.Shapes
@@ -49,7 +50,7 @@ namespace Jitter.Collision.Shapes
             UpdateShape();
         }
 
-        public JVector Shift { get { return -1 * this.shifted; } }
+        public JVector Shift { get { return sfloat.MinusOne * this.shifted; } }
 
         public override void CalculateMassInertia()
         {
@@ -65,9 +66,9 @@ namespace Jitter.Collision.Shapes
         /// <param name="result">The result.</param>
         public override void SupportMapping(ref JVector direction, out JVector result)
         {
-            float maxDotProduct = float.MinValue;
+            sfloat maxDotProduct = sfloat.MinValue;
             int maxIndex = 0;
-            float dotProduct;
+            sfloat dotProduct;
 
             for (int i = 0; i < vertices.Count; i++)
             {

@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Dynamics
@@ -39,7 +40,7 @@ namespace Jitter.Dynamics
         /// Called once before iteration starts.
         /// </summary>
         /// <param name="timestep">The simulation timestep</param>
-        void PrepareForIteration(float timestep);
+        void PrepareForIteration(sfloat timestep);
 
         /// <summary>
         /// Iteratively solve this constraint.

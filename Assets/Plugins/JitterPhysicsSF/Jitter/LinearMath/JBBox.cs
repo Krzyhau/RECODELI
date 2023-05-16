@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.LinearMath
@@ -76,10 +77,10 @@ namespace Jitter.LinearMath
 
         static JBBox()
         {
-            LargeBox.Min = new JVector(float.MinValue);
-            LargeBox.Max = new JVector(float.MaxValue);
-            SmallBox.Min = new JVector(float.MaxValue);
-            SmallBox.Max = new JVector(float.MinValue);
+            LargeBox.Min = new JVector(sfloat.MinValue);
+            LargeBox.Max = new JVector(sfloat.MaxValue);
+            SmallBox.Min = new JVector(sfloat.MaxValue);
+            SmallBox.Max = new JVector(sfloat.MinValue);
         }
 
         /// <summary>
@@ -106,11 +107,11 @@ namespace Jitter.LinearMath
 
             JVector center;
             JVector.Add(ref Max, ref Min, out center);
-            center.X *= 0.5f; center.Y *= 0.5f; center.Z *= 0.5f;
+            center.X *= sfloat.Half; center.Y *= sfloat.Half; center.Z *= sfloat.Half;
 
             JVector halfExtents;
             JVector.Subtract(ref Max, ref Min, out halfExtents);
-            halfExtents.X *= 0.5f; halfExtents.Y *= 0.5f; halfExtents.Z *= 0.5f;
+            halfExtents.X *= sfloat.Half; halfExtents.Y *= sfloat.Half; halfExtents.Z *= sfloat.Half;
 
             JVector.TransposedTransform(ref center, ref orientation, out center);
 
@@ -123,8 +124,8 @@ namespace Jitter.LinearMath
 
         public void Transform(ref JMatrix orientation)
         {
-            JVector halfExtents = 0.5f * (Max - Min);
-            JVector center = 0.5f * (Max + Min);
+            JVector halfExtents = sfloat.Half * (Max - Min);
+            JVector center = sfloat.Half * (Max + Min);
 
             JVector.Transform(ref center, ref orientation, out center);
 
@@ -142,15 +143,15 @@ namespace Jitter.LinearMath
         /// <returns>The ContainmentType of the point.</returns>
         #region public Ray/Segment Intersection
 
-        private bool Intersect1D(float start, float dir, float min, float max,
-            ref float enter,ref float exit)
+        private bool Intersect1D(sfloat start, sfloat dir, sfloat min, sfloat max,
+            ref sfloat enter,ref sfloat exit)
         {
             if (dir * dir < JMath.Epsilon * JMath.Epsilon) return (start >= min && start <= max);
 
-            float t0 = (min - start) / dir;
-            float t1 = (max - start) / dir;
+            sfloat t0 = (min - start) / dir;
+            sfloat t1 = (max - start) / dir;
 
-            if (t0 > t1) { float tmp = t0; t0 = t1; t1 = tmp; }
+            if (t0 > t1) { sfloat tmp = t0; t0 = t1; t1 = tmp; }
 
             if (t0 > exit || t1 < enter) return false;
 
@@ -162,7 +163,7 @@ namespace Jitter.LinearMath
 
         public bool SegmentIntersect(ref JVector origin,ref JVector direction)
         {
-            float enter = 0.0f, exit = 1.0f;
+            sfloat enter = sfloat.Zero, exit = sfloat.One;
 
             if (!Intersect1D(origin.X, direction.X, Min.X, Max.X,ref enter,ref exit))
                 return false;
@@ -178,7 +179,7 @@ namespace Jitter.LinearMath
 
         public bool RayIntersect(ref JVector origin, ref JVector direction)
         {
-            float enter = 0.0f, exit = float.MaxValue;
+            sfloat enter = sfloat.Zero, exit = sfloat.MaxValue;
 
             if (!Intersect1D(origin.X, direction.X, Min.X, Max.X, ref enter, ref exit))
                 return false;
@@ -269,8 +270,8 @@ namespace Jitter.LinearMath
 
         public static JBBox CreateFromPoints(JVector[] points)
         {
-            JVector vector3 = new JVector(float.MaxValue);
-            JVector vector2 = new JVector(float.MinValue);
+            JVector vector3 = new JVector(sfloat.MaxValue);
+            JVector vector2 = new JVector(sfloat.MinValue);
 
             for (int i = 0; i < points.Length; i++)
             {
@@ -347,13 +348,13 @@ namespace Jitter.LinearMath
 
         #endregion
 
-        public JVector Center { get { return (Min + Max)* (1.0f /2.0f); } }
+        public JVector Center { get { return (Min + Max)* sfloat.Half; } }
 
-        internal float Perimeter
+        internal sfloat Perimeter
         {
             get
             {
-                return 2.0f * ((Max.X - Min.X) * (Max.Y - Min.Y) +
+                return sfloat.Two * ((Max.X - Min.X) * (Max.Y - Min.Y) +
                     (Max.X - Min.X) * (Max.Z - Min.Z) +
                     (Max.Z - Min.Z) * (Max.Y - Min.Y));
             }

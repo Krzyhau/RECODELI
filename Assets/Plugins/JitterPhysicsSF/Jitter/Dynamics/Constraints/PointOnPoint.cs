@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.Dynamics.Constraints
@@ -34,8 +35,8 @@ namespace Jitter.Dynamics.Constraints
         private JVector localAnchor1, localAnchor2;
         private JVector r1, r2;
 
-        private float biasFactor = 0.05f;
-        private float softness = 0.01f;
+        private sfloat biasFactor = (sfloat)0.05f;
+        private sfloat softness = (sfloat)0.01f;
 
         /// <summary>
         /// Initializes a new instance of the DistanceConstraint class.
@@ -56,22 +57,22 @@ namespace Jitter.Dynamics.Constraints
             JVector.Transform(ref localAnchor2, ref body2.invOrientation, out localAnchor2);
         }
 
-        public float AppliedImpulse { get { return accumulatedImpulse; } }
+        public sfloat AppliedImpulse { get { return accumulatedImpulse; } }
 
         /// <summary>
         /// Defines how big the applied impulses can get.
         /// </summary>
-        public float Softness { get { return softness; } set { softness = value; } }
+        public sfloat Softness { get { return softness; } set { softness = value; } }
 
         /// <summary>
         /// Defines how big the applied impulses can get which correct errors.
         /// </summary>
-        public float BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
+        public sfloat BiasFactor { get { return biasFactor; } set { biasFactor = value; } }
 
-        float effectiveMass = 0.0f;
-        float accumulatedImpulse = 0.0f;
-        float bias;
-        float softnessOverDt;
+        sfloat effectiveMass = sfloat.Zero;
+        sfloat accumulatedImpulse = sfloat.Zero;
+        sfloat bias;
+        sfloat softnessOverDt;
 
         JVector[] jacobian = new JVector[4];
 
@@ -79,7 +80,7 @@ namespace Jitter.Dynamics.Constraints
         /// Called once before iteration starts.
         /// </summary>
         /// <param name="timestep">The 5simulation timestep</param>
-        public override void PrepareForIteration(float timestep)
+        public override void PrepareForIteration(sfloat timestep)
         {
             JVector.Transform(ref localAnchor1, ref body1.orientation, out r1);
             JVector.Transform(ref localAnchor2, ref body2.orientation, out r2);
@@ -90,14 +91,14 @@ namespace Jitter.Dynamics.Constraints
 
             JVector.Subtract(ref p2, ref p1, out dp);
 
-            float deltaLength = dp.Length();
+            sfloat deltaLength = dp.Length();
 
             JVector n = p2 - p1;
-            if (n.LengthSquared() != 0.0f) n.Normalize();
+            if (n.LengthSquared() != sfloat.Zero) n.Normalize();
 
-            jacobian[0] = -1.0f * n;
-            jacobian[1] = -1.0f * (r1 % n);
-            jacobian[2] = 1.0f * n;
+            jacobian[0] = sfloat.MinusOne * n;
+            jacobian[1] = sfloat.MinusOne * (r1 % n);
+            jacobian[2] = sfloat.One * n;
             jacobian[3] = (r2 % n);
 
             effectiveMass = body1.inverseMass + body2.inverseMass
@@ -107,9 +108,9 @@ namespace Jitter.Dynamics.Constraints
             softnessOverDt = softness / timestep;
             effectiveMass += softnessOverDt;
 
-            effectiveMass = 1.0f / effectiveMass;
+            effectiveMass = sfloat.One / effectiveMass;
 
-            bias = deltaLength * biasFactor * (1.0f / timestep);
+            bias = deltaLength * biasFactor * (sfloat.One / timestep);
 
             if (!body1.isStatic)
             {
@@ -131,15 +132,15 @@ namespace Jitter.Dynamics.Constraints
         /// </summary>
         public override void Iterate()
         {
-            float jv =
+            sfloat jv =
                 body1.linearVelocity * jacobian[0] +
                 body1.angularVelocity * jacobian[1] +
                 body2.linearVelocity * jacobian[2] +
                 body2.angularVelocity * jacobian[3];
 
-            float softnessScalar = accumulatedImpulse * softnessOverDt;
+            sfloat softnessScalar = accumulatedImpulse * softnessOverDt;
 
-            float lambda = -effectiveMass * (jv + bias + softnessScalar);
+            sfloat lambda = -effectiveMass * (jv + bias + softnessScalar);
 
             accumulatedImpulse += lambda;
 

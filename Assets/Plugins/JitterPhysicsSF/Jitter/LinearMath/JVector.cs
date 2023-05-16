@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.LinearMath
@@ -36,16 +37,16 @@ namespace Jitter.LinearMath
     public struct JVector
     {
 
-        private const float ZeroEpsilonSq = JMath.Epsilon * JMath.Epsilon;
+        private static sfloat ZeroEpsilonSq = JMath.Epsilon * JMath.Epsilon;
         internal static JVector InternalZero;
         internal static JVector Arbitrary;
 
         /// <summary>The X component of the vector.</summary>
-        public float X;
+        public sfloat X;
         /// <summary>The Y component of the vector.</summary>
-        public float Y;
+        public sfloat Y;
         /// <summary>The Z component of the vector.</summary>
-        public float Z;
+        public sfloat Z;
 
         #region Static readonly variables
         /// <summary>
@@ -82,12 +83,12 @@ namespace Jitter.LinearMath
         public static readonly JVector One;
         /// <summary>
         /// A vector with components 
-        /// (float.MinValue,float.MinValue,float.MinValue);
+        /// (sfloat.MinValue,sfloat.MinValue,sfloat.MinValue);
         /// </summary>
         public static readonly JVector MinValue;
         /// <summary>
         /// A vector with components 
-        /// (float.MaxValue,float.MaxValue,float.MaxValue);
+        /// (sfloat.MaxValue,sfloat.MaxValue,sfloat.MaxValue);
         /// </summary>
         public static readonly JVector MaxValue;
         #endregion
@@ -95,17 +96,17 @@ namespace Jitter.LinearMath
         #region Private static constructor
         static JVector()
         {
-            One = new JVector(1, 1, 1);
-            Zero = new JVector(0, 0, 0);
-            Left = new JVector(1, 0, 0);
-            Right = new JVector(-1, 0, 0);
-            Up = new JVector(0, 1, 0);
-            Down = new JVector(0, -1, 0);
-            Backward = new JVector(0, 0, 1);
-            Forward = new JVector(0, 0, -1);
-            MinValue = new JVector(float.MinValue);
-            MaxValue = new JVector(float.MaxValue);
-            Arbitrary = new JVector(1, 1, 1);
+            One = new JVector(sfloat.One, sfloat.One, sfloat.One);
+            Zero = new JVector(sfloat.Zero, sfloat.Zero, sfloat.Zero);
+            Left = new JVector(sfloat.One, sfloat.Zero, sfloat.Zero);
+            Right = new JVector(sfloat.MinusOne, sfloat.Zero, sfloat.Zero);
+            Up = new JVector(sfloat.Zero, sfloat.One, sfloat.Zero);
+            Down = new JVector(sfloat.Zero, sfloat.MinusOne, sfloat.Zero);
+            Backward = new JVector(sfloat.Zero, sfloat.Zero, sfloat.One);
+            Forward = new JVector(sfloat.Zero, sfloat.Zero, sfloat.MinusOne);
+            MinValue = new JVector(sfloat.MinValue);
+            MaxValue = new JVector(sfloat.MaxValue);
+            Arbitrary = new JVector(sfloat.One, sfloat.One, sfloat.One);
             InternalZero = Zero;
         }
         #endregion
@@ -116,7 +117,7 @@ namespace Jitter.LinearMath
         /// <param name="x">The X component of the vector.</param>
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
-        public JVector(float x, float y, float z)
+        public JVector(sfloat x, sfloat y, sfloat z)
         {
             this.X = x;
             this.Y = y;
@@ -129,7 +130,7 @@ namespace Jitter.LinearMath
         /// <param name="x">The X component of the vector.</param>
         /// <param name="y">The Y component of the vector.</param>
         /// <param name="z">The Z component of the vector.</param>
-        public void Set(float x, float y, float z)
+        public void Set(sfloat x, sfloat y, sfloat z)
         {
             this.X = x;
             this.Y = y;
@@ -140,7 +141,7 @@ namespace Jitter.LinearMath
         /// Constructor initializing a new instance of the structure
         /// </summary>
         /// <param name="xyz">All components of the vector are set to xyz</param>
-        public JVector(float xyz)
+        public JVector(sfloat xyz)
         {
             this.X = xyz;
             this.Y = xyz;
@@ -266,9 +267,9 @@ namespace Jitter.LinearMath
         #region public void MakeZero()
         public void MakeZero()
         {
-            X = 0.0f;
-            Y = 0.0f;
-            Z = 0.0f;
+            X = sfloat.Zero;
+            Y = sfloat.Zero;
+            Z = sfloat.Zero;
         }
         #endregion
 
@@ -279,7 +280,7 @@ namespace Jitter.LinearMath
         #region public bool IsZero()
         public bool IsZero()
         {
-            return (this.LengthSquared() == 0.0f);
+            return (this.LengthSquared() == sfloat.Zero);
         }
 
         /// <summary>
@@ -314,9 +315,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The transformed vector.</param>
         public static void Transform(ref JVector position, ref JMatrix matrix, out JVector result)
         {
-            float num0 = ((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31);
-            float num1 = ((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32);
-            float num2 = ((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33);
+            sfloat num0 = ((position.X * matrix.M11) + (position.Y * matrix.M21)) + (position.Z * matrix.M31);
+            sfloat num1 = ((position.X * matrix.M12) + (position.Y * matrix.M22)) + (position.Z * matrix.M32);
+            sfloat num2 = ((position.X * matrix.M13) + (position.Y * matrix.M23)) + (position.Z * matrix.M33);
 
             result.X = num0;
             result.Y = num1;
@@ -331,9 +332,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The transformed vector.</param>
         public static void TransposedTransform(ref JVector position, ref JMatrix matrix, out JVector result)
         {
-            float num0 = ((position.X * matrix.M11) + (position.Y * matrix.M12)) + (position.Z * matrix.M13);
-            float num1 = ((position.X * matrix.M21) + (position.Y * matrix.M22)) + (position.Z * matrix.M23);
-            float num2 = ((position.X * matrix.M31) + (position.Y * matrix.M32)) + (position.Z * matrix.M33);
+            sfloat num0 = ((position.X * matrix.M11) + (position.Y * matrix.M12)) + (position.Z * matrix.M13);
+            sfloat num1 = ((position.X * matrix.M21) + (position.Y * matrix.M22)) + (position.Z * matrix.M23);
+            sfloat num2 = ((position.X * matrix.M31) + (position.Y * matrix.M32)) + (position.Z * matrix.M33);
 
             result.X = num0;
             result.Y = num1;
@@ -347,8 +348,8 @@ namespace Jitter.LinearMath
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
-        #region public static float Dot(JVector vector1, JVector vector2)
-        public static float Dot(JVector vector1, JVector vector2)
+        #region public static sfloat Dot(JVector vector1, JVector vector2)
+        public static sfloat Dot(JVector vector1, JVector vector2)
         {
             return JVector.Dot(ref vector1, ref vector2);
         }
@@ -360,7 +361,7 @@ namespace Jitter.LinearMath
         /// <param name="vector1">The first vector.</param>
         /// <param name="vector2">The second vector.</param>
         /// <returns>Returns the dot product of both vectors.</returns>
-        public static float Dot(ref JVector vector1, ref JVector vector2)
+        public static sfloat Dot(ref JVector vector1, ref JVector vector2)
         {
             return ((vector1.X * vector2.X) + (vector1.Y * vector2.Y)) + (vector1.Z * vector2.Z);
         }
@@ -388,9 +389,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The sum of both vectors.</param>
         public static void Add(ref JVector value1, ref JVector value2, out JVector result)
         {
-            float num0 = value1.X + value2.X;
-            float num1 = value1.Y + value2.Y;
-            float num2 = value1.Z + value2.Z;
+            sfloat num0 = value1.X + value2.X;
+            sfloat num1 = value1.Y + value2.Y;
+            sfloat num2 = value1.Z + value2.Z;
 
             result.X = num0;
             result.Y = num1;
@@ -420,9 +421,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The difference of both vectors.</param>
         public static void Subtract(ref JVector value1, ref JVector value2, out JVector result)
         {
-            float num0 = value1.X - value2.X;
-            float num1 = value1.Y - value2.Y;
-            float num2 = value1.Z - value2.Z;
+            sfloat num0 = value1.X - value2.X;
+            sfloat num1 = value1.Y - value2.Y;
+            sfloat num2 = value1.Z - value2.Z;
 
             result.X = num0;
             result.Y = num1;
@@ -452,9 +453,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The cross product of both vectors.</param>
         public static void Cross(ref JVector vector1, ref JVector vector2, out JVector result)
         {
-            float num3 = (vector1.Y * vector2.Z) - (vector1.Z * vector2.Y);
-            float num2 = (vector1.Z * vector2.X) - (vector1.X * vector2.Z);
-            float num = (vector1.X * vector2.Y) - (vector1.Y * vector2.X);
+            sfloat num3 = (vector1.Y * vector2.Z) - (vector1.Z * vector2.Y);
+            sfloat num2 = (vector1.Z * vector2.X) - (vector1.X * vector2.Z);
+            sfloat num = (vector1.X * vector2.Y) - (vector1.Y * vector2.X);
             result.X = num3;
             result.Y = num2;
             result.Z = num;
@@ -502,9 +503,9 @@ namespace Jitter.LinearMath
         /// <param name="result">The negated vector.</param>
         public static void Negate(ref JVector value, out JVector result)
         {
-            float num0 = -value.X;
-            float num1 = -value.Y;
-            float num2 = -value.Z;
+            sfloat num0 = -value.X;
+            sfloat num1 = -value.Y;
+            sfloat num2 = -value.Z;
 
             result.X = num0;
             result.Y = num1;
@@ -530,8 +531,8 @@ namespace Jitter.LinearMath
         /// </summary>
         public void Normalize()
         {
-            float num2 = ((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z);
-            float num = 1f / ((float)Math.Sqrt((double)num2));
+            sfloat num2 = ((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z);
+            sfloat num = sfloat.One / JMath.Sqrt(num2);
             this.X *= num;
             this.Y *= num;
             this.Z *= num;
@@ -544,8 +545,8 @@ namespace Jitter.LinearMath
         /// <param name="result">A normalized vector.</param>
         public static void Normalize(ref JVector value, out JVector result)
         {
-            float num2 = ((value.X * value.X) + (value.Y * value.Y)) + (value.Z * value.Z);
-            float num = 1f / ((float)Math.Sqrt((double)num2));
+            sfloat num2 = ((value.X * value.X) + (value.Y * value.Y)) + (value.Z * value.Z);
+            sfloat num = sfloat.One / (JMath.Sqrt(num2));
             result.X = value.X * num;
             result.Y = value.Y * num;
             result.Z = value.Z * num;
@@ -556,8 +557,8 @@ namespace Jitter.LinearMath
         /// Gets the squared length of the vector.
         /// </summary>
         /// <returns>Returns the squared length of the vector.</returns>
-        #region public float LengthSquared()
-        public float LengthSquared()
+        #region public sfloat LengthSquared()
+        public sfloat LengthSquared()
         {
             return (((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z));
         }
@@ -567,11 +568,11 @@ namespace Jitter.LinearMath
         /// Gets the length of the vector.
         /// </summary>
         /// <returns>Returns the length of the vector.</returns>
-        #region public float Length()
-        public float Length()
+        #region public sfloat Length()
+        public sfloat Length()
         {
-            float num = ((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z);
-            return (float)Math.Sqrt((double)num);
+            sfloat num = ((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z);
+            return JMath.Sqrt(num);
         }
         #endregion
 
@@ -584,7 +585,7 @@ namespace Jitter.LinearMath
         /// <param name="vector2">The second vector to swap with the first.</param>
         public static void Swap(ref JVector vector1, ref JVector vector2)
         {
-            float temp;
+            sfloat temp;
 
             temp = vector1.X;
             vector1.X = vector2.X;
@@ -606,8 +607,8 @@ namespace Jitter.LinearMath
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <returns>Returns the multiplied vector.</returns>
-        #region public static JVector Multiply(JVector value1, float scaleFactor)
-        public static JVector Multiply(JVector value1, float scaleFactor)
+        #region public static JVector Multiply(JVector value1, sfloat scaleFactor)
+        public static JVector Multiply(JVector value1, sfloat scaleFactor)
         {
             JVector result;
             JVector.Multiply(ref value1, scaleFactor, out result);
@@ -620,7 +621,7 @@ namespace Jitter.LinearMath
         /// <param name="value1">The vector to multiply.</param>
         /// <param name="scaleFactor">The scale factor.</param>
         /// <param name="result">Returns the multiplied vector.</param>
-        public static void Multiply(ref JVector value1, float scaleFactor, out JVector result)
+        public static void Multiply(ref JVector value1, sfloat scaleFactor, out JVector result)
         {
             result.X = value1.X * scaleFactor;
             result.Y = value1.Y * scaleFactor;
@@ -648,8 +649,8 @@ namespace Jitter.LinearMath
         /// <param name="value1">The first vector.</param>
         /// <param name="value2">The second vector.</param>
         /// <returns>Returns the dot product of both.</returns>
-        #region public static float operator *(JVector value1, JVector value2)
-        public static float operator *(JVector value1, JVector value2)
+        #region public static sfloat operator *(JVector value1, JVector value2)
+        public static sfloat operator *(JVector value1, JVector value2)
         {
             return JVector.Dot(ref value1, ref value2);
         }
@@ -661,8 +662,8 @@ namespace Jitter.LinearMath
         /// <param name="value1">The vector to scale.</param>
         /// <param name="value2">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        #region public static JVector operator *(JVector value1, float value2)
-        public static JVector operator *(JVector value1, float value2)
+        #region public static JVector operator *(JVector value1, sfloat value2)
+        public static JVector operator *(JVector value1, sfloat value2)
         {
             JVector result;
             JVector.Multiply(ref value1, value2,out result);
@@ -676,8 +677,8 @@ namespace Jitter.LinearMath
         /// <param name="value2">The vector to scale.</param>
         /// <param name="value1">The scale factor.</param>
         /// <returns>Returns the scaled vector.</returns>
-        #region public static JVector operator *(float value1, JVector value2)
-        public static JVector operator *(float value1, JVector value2)
+        #region public static JVector operator *(sfloat value1, JVector value2)
+        public static JVector operator *(sfloat value1, JVector value2)
         {
             JVector result;
             JVector.Multiply(ref value2, value1, out result);

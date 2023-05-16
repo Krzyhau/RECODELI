@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.LinearMath
@@ -38,13 +39,13 @@ namespace Jitter.LinearMath
     {
 
         /// <summary>The X component of the quaternion.</summary>
-        public float X;
+        public sfloat X;
         /// <summary>The Y component of the quaternion.</summary>
-        public float Y;
+        public sfloat Y;
         /// <summary>The Z component of the quaternion.</summary>
-        public float Z;
+        public sfloat Z;
         /// <summary>The W component of the quaternion.</summary>
-        public float W;
+        public sfloat W;
 
         static JQuaternion()
         {
@@ -57,7 +58,7 @@ namespace Jitter.LinearMath
         /// <param name="y">The Y component of the quaternion.</param>
         /// <param name="z">The Z component of the quaternion.</param>
         /// <param name="w">The W component of the quaternion.</param>
-        public JQuaternion(float x, float y, float z, float w)
+        public JQuaternion(sfloat x, sfloat y, sfloat z, sfloat w)
         {
             this.X = x;
             this.Y = y;
@@ -79,17 +80,17 @@ namespace Jitter.LinearMath
             return result;
         }
 
-        public static void CreateFromYawPitchRoll(float yaw, float pitch, float roll, out JQuaternion result)
+        public static void CreateFromYawPitchRoll(sfloat yaw, sfloat pitch, sfloat roll, out JQuaternion result)
         {
-            float num9 = roll * 0.5f;
-            float num6 = (float)Math.Sin((double)num9);
-            float num5 = (float)Math.Cos((double)num9);
-            float num8 = pitch * 0.5f;
-            float num4 = (float)Math.Sin((double)num8);
-            float num3 = (float)Math.Cos((double)num8);
-            float num7 = yaw * 0.5f;
-            float num2 = (float)Math.Sin((double)num7);
-            float num = (float)Math.Cos((double)num7);
+            sfloat num9 = roll * sfloat.Half;
+            sfloat num6 = JMath.Sin(num9);
+            sfloat num5 = JMath.Cos(num9);
+            sfloat num8 = pitch * sfloat.Half;
+            sfloat num4 = JMath.Sin(num8);
+            sfloat num3 = JMath.Cos(num8);
+            sfloat num7 = yaw * sfloat.Half;
+            sfloat num2 = JMath.Sin(num7);
+            sfloat num = JMath.Cos(num7);
             result.X = ((num * num4) * num5) + ((num2 * num3) * num6);
             result.Y = ((num2 * num3) * num5) - ((num * num4) * num6);
             result.Z = ((num * num3) * num6) - ((num2 * num4) * num5);
@@ -175,18 +176,18 @@ namespace Jitter.LinearMath
         /// <param name="result">The product of both quaternions.</param>
         public static void Multiply(ref JQuaternion quaternion1, ref JQuaternion quaternion2, out JQuaternion result)
         {
-            float x = quaternion1.X;
-            float y = quaternion1.Y;
-            float z = quaternion1.Z;
-            float w = quaternion1.W;
-            float num4 = quaternion2.X;
-            float num3 = quaternion2.Y;
-            float num2 = quaternion2.Z;
-            float num = quaternion2.W;
-            float num12 = (y * num2) - (z * num3);
-            float num11 = (z * num4) - (x * num2);
-            float num10 = (x * num3) - (y * num4);
-            float num9 = ((x * num4) + (y * num3)) + (z * num2);
+            sfloat x = quaternion1.X;
+            sfloat y = quaternion1.Y;
+            sfloat z = quaternion1.Z;
+            sfloat w = quaternion1.W;
+            sfloat num4 = quaternion2.X;
+            sfloat num3 = quaternion2.Y;
+            sfloat num2 = quaternion2.Z;
+            sfloat num = quaternion2.W;
+            sfloat num12 = (y * num2) - (z * num3);
+            sfloat num11 = (z * num4) - (x * num2);
+            sfloat num10 = (x * num3) - (y * num4);
+            sfloat num9 = ((x * num4) + (y * num3)) + (z * num2);
             result.X = ((x * num) + (num4 * w)) + num12;
             result.Y = ((y * num) + (num3 * w)) + num11;
             result.Z = ((z * num) + (num2 * w)) + num10;
@@ -200,8 +201,8 @@ namespace Jitter.LinearMath
         /// <param name="quaternion1">The quaternion to scale.</param>
         /// <param name="scaleFactor">Scale factor.</param>
         /// <returns>The scaled quaternion.</returns>
-        #region public static JQuaternion Multiply(JQuaternion quaternion1, float scaleFactor)
-        public static JQuaternion Multiply(JQuaternion quaternion1, float scaleFactor)
+        #region public static JQuaternion Multiply(JQuaternion quaternion1, sfloat scaleFactor)
+        public static JQuaternion Multiply(JQuaternion quaternion1, sfloat scaleFactor)
         {
             JQuaternion result;
             JQuaternion.Multiply(ref quaternion1, scaleFactor, out result);
@@ -214,7 +215,7 @@ namespace Jitter.LinearMath
         /// <param name="quaternion1">The quaternion to scale.</param>
         /// <param name="scaleFactor">Scale factor.</param>
         /// <param name="result">The scaled quaternion.</param>
-        public static void Multiply(ref JQuaternion quaternion1, float scaleFactor, out JQuaternion result)
+        public static void Multiply(ref JQuaternion quaternion1, sfloat scaleFactor, out JQuaternion result)
         {
             result.X = quaternion1.X * scaleFactor;
             result.Y = quaternion1.Y * scaleFactor;
@@ -229,8 +230,8 @@ namespace Jitter.LinearMath
         #region public void Normalize()
         public void Normalize()
         {
-            float num2 = (((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z)) + (this.W * this.W);
-            float num = 1f / ((float)Math.Sqrt((double)num2));
+            sfloat num2 = (((this.X * this.X) + (this.Y * this.Y)) + (this.Z * this.Z)) + (this.W * this.W);
+            sfloat num = sfloat.One / (JMath.Sqrt(num2));
             this.X *= num;
             this.Y *= num;
             this.Z *= num;
@@ -258,41 +259,41 @@ namespace Jitter.LinearMath
         /// <param name="result">JQuaternion representing an orientation.</param>
         public static void CreateFromMatrix(ref JMatrix matrix, out JQuaternion result)
         {
-            float num8 = (matrix.M11 + matrix.M22) + matrix.M33;
-            if (num8 > 0f)
+            sfloat num8 = (matrix.M11 + matrix.M22) + matrix.M33;
+            if (num8 > sfloat.Zero)
             {
-                float num = (float)Math.Sqrt((double)(num8 + 1f));
-                result.W = num * 0.5f;
-                num = 0.5f / num;
+                sfloat num = JMath.Sqrt(num8 + sfloat.One);
+                result.W = num * sfloat.Half;
+                num = sfloat.Half / num;
                 result.X = (matrix.M23 - matrix.M32) * num;
                 result.Y = (matrix.M31 - matrix.M13) * num;
                 result.Z = (matrix.M12 - matrix.M21) * num;
             }
             else if ((matrix.M11 >= matrix.M22) && (matrix.M11 >= matrix.M33))
             {
-                float num7 = (float)Math.Sqrt((double)(((1f + matrix.M11) - matrix.M22) - matrix.M33));
-                float num4 = 0.5f / num7;
-                result.X = 0.5f * num7;
+                sfloat num7 = JMath.Sqrt(((sfloat.One + matrix.M11) - matrix.M22) - matrix.M33);
+                sfloat num4 = sfloat.Half / num7;
+                result.X = sfloat.Half * num7;
                 result.Y = (matrix.M12 + matrix.M21) * num4;
                 result.Z = (matrix.M13 + matrix.M31) * num4;
                 result.W = (matrix.M23 - matrix.M32) * num4;
             }
             else if (matrix.M22 > matrix.M33)
             {
-                float num6 = (float)Math.Sqrt((double)(((1f + matrix.M22) - matrix.M11) - matrix.M33));
-                float num3 = 0.5f / num6;
+                sfloat num6 = JMath.Sqrt(((sfloat.One + matrix.M22) - matrix.M11) - matrix.M33);
+                sfloat num3 = sfloat.Half / num6;
                 result.X = (matrix.M21 + matrix.M12) * num3;
-                result.Y = 0.5f * num6;
+                result.Y = sfloat.Half * num6;
                 result.Z = (matrix.M32 + matrix.M23) * num3;
                 result.W = (matrix.M31 - matrix.M13) * num3;
             }
             else
             {
-                float num5 = (float)Math.Sqrt((double)(((1f + matrix.M33) - matrix.M11) - matrix.M22));
-                float num2 = 0.5f / num5;
+                sfloat num5 = JMath.Sqrt(((sfloat.One + matrix.M33) - matrix.M11) - matrix.M22);
+                sfloat num2 = sfloat.Half / num5;
                 result.X = (matrix.M31 + matrix.M13) * num2;
                 result.Y = (matrix.M32 + matrix.M23) * num2;
-                result.Z = 0.5f * num5;
+                result.Z = sfloat.Half * num5;
                 result.W = (matrix.M12 - matrix.M21) * num2;
             }
         }
@@ -304,7 +305,7 @@ namespace Jitter.LinearMath
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The product of both quaternions.</returns>
-        #region public static float operator *(JQuaternion value1, JQuaternion value2)
+        #region public static sfloat operator *(JQuaternion value1, JQuaternion value2)
         public static JQuaternion operator *(JQuaternion value1, JQuaternion value2)
         {
             JQuaternion result;
@@ -319,7 +320,7 @@ namespace Jitter.LinearMath
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The sum of both quaternions.</returns>
-        #region public static float operator +(JQuaternion value1, JQuaternion value2)
+        #region public static sfloat operator +(JQuaternion value1, JQuaternion value2)
         public static JQuaternion operator +(JQuaternion value1, JQuaternion value2)
         {
             JQuaternion result;
@@ -334,7 +335,7 @@ namespace Jitter.LinearMath
         /// <param name="value1">The first quaternion.</param>
         /// <param name="value2">The second quaternion.</param>
         /// <returns>The difference of both quaternions.</returns>
-        #region public static float operator -(JQuaternion value1, JQuaternion value2)
+        #region public static sfloat operator -(JQuaternion value1, JQuaternion value2)
         public static JQuaternion operator -(JQuaternion value1, JQuaternion value2)
         {
             JQuaternion result;

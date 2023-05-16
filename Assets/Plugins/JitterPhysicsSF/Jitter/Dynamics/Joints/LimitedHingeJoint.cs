@@ -5,6 +5,7 @@ using System.Text;
 using Jitter.LinearMath;
 using Jitter.Dynamics.Joints;
 using Jitter.Dynamics.Constraints;
+using SoftFloat;
 
 namespace Jitter.Dynamics.Joints
 {
@@ -34,14 +35,14 @@ namespace Jitter.Dynamics.Joints
         /// <param name="position">The position in world space where both bodies get connected.</param>
         /// <param name="hingeAxis">The axis if the hinge.</param>
         public LimitedHingeJoint(World world, RigidBody body1, RigidBody body2, JVector position, JVector hingeAxis,
-            float hingeFwdAngle, float hingeBckAngle)
+            sfloat hingeFwdAngle, sfloat hingeBckAngle)
             : base(world)
         {
             // Create the hinge first, two point constraints
 
             worldPointConstraint = new PointOnPoint[2];
 
-            hingeAxis *= 0.5f;
+            hingeAxis *= sfloat.Half;
 
             JVector pos1 = position; JVector.Add(ref pos1, ref hingeAxis, out pos1);
             JVector pos2 = position; JVector.Subtract(ref pos2, ref hingeAxis, out pos2);
@@ -57,7 +58,7 @@ namespace Jitter.Dynamics.Joints
             // choose a direction that is perpendicular to the hinge
             JVector perpDir = JVector.Up;
 
-            if (JVector.Dot(perpDir, hingeAxis) > 0.1f) perpDir = JVector.Right;
+            if (JVector.Dot(perpDir, hingeAxis) > (sfloat)0.1f) perpDir = JVector.Right;
 
             // now make it perpendicular to the hinge
             JVector sideAxis = JVector.Cross(hingeAxis, perpDir);
@@ -66,7 +67,7 @@ namespace Jitter.Dynamics.Joints
 
             // the length of the "arm" TODO take this as a parameter? what's
             // the effect of changing it?
-            float len = 10.0f * 3;
+            sfloat len = (sfloat)10.0f * (sfloat)3;
 
             // Choose a position using that dir. this will be the anchor point
             // for body 0. relative to hinge
@@ -75,12 +76,12 @@ namespace Jitter.Dynamics.Joints
 
             // anchor point for body 2 is chosen to be in the middle of the
             // angle range.  relative to hinge
-            float angleToMiddle = 0.5f * (hingeFwdAngle - hingeBckAngle);
-            JVector hingeRelAnchorPos1 = JVector.Transform(hingeRelAnchorPos0, JMatrix.CreateFromAxisAngle(hingeAxis, -angleToMiddle / 360.0f * 2.0f * JMath.Pi));
+            sfloat angleToMiddle = sfloat.Half * (hingeFwdAngle - hingeBckAngle);
+            JVector hingeRelAnchorPos1 = JVector.Transform(hingeRelAnchorPos0, JMatrix.CreateFromAxisAngle(hingeAxis, -angleToMiddle / (sfloat)360.0f * sfloat.Two * JMath.Pi));
 
             // work out the "string" length
-            float hingeHalfAngle = 0.5f * (hingeFwdAngle + hingeBckAngle);
-            float allowedDistance = len * 2.0f * (float)System.Math.Sin(hingeHalfAngle * 0.5f / 360.0f * 2.0f * JMath.Pi);
+            sfloat hingeHalfAngle = sfloat.Half * (hingeFwdAngle + hingeBckAngle);
+            sfloat allowedDistance = len * sfloat.Two * JMath.Sin(hingeHalfAngle * sfloat.Half / (sfloat)360.0f * sfloat.Two * JMath.Pi);
 
             JVector hingePos = body1.Position;
             JVector relPos0c = hingePos + hingeRelAnchorPos0;

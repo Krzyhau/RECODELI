@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using Jitter.Dynamics;
 using Jitter.LinearMath;
 using Jitter.Collision.Shapes;
+using SoftFloat;
 #endregion
 
 namespace Jitter.LinearMath
@@ -38,25 +39,99 @@ namespace Jitter.LinearMath
         /// <summary>
         /// PI.
         /// </summary>
-        public const float Pi = 3.1415926535f;
+        public static sfloat Pi = sfloat.Pi;
 
-        public const float PiOver2 = 1.570796326794f;
+        public static sfloat PiOver2 = sfloat.PiOverTwo;
 
         /// <summary>
         /// A small value often used to decide if numeric 
         /// results are zero.
         /// </summary>
-        public const float Epsilon = 1.192092896e-012f;
+        public static sfloat Epsilon = sfloat.Epsilon;
 
         /// <summary>
         /// Gets the square root.
         /// </summary>
         /// <param name="number">The number to get the square root from.</param>
         /// <returns></returns>
-        #region public static float Sqrt(float number)
-        public static float Sqrt(float number)
+        #region public static sfloat Sqrt(sfloat number)
+        public static sfloat Sqrt(sfloat number)
         {
-            return (float)Math.Sqrt(number);
+            return libm.sqrtf(number);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the sine.
+        /// </summary>
+        /// <param name="number">The number to get the sine from.</param>
+        /// <returns></returns>
+        #region public static sfloat Sin(sfloat number)
+        public static sfloat Sin(sfloat number)
+        {
+            return libm.sinf(number);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the cosine.
+        /// </summary>
+        /// <param name="number">The number to get the cosine from.</param>
+        /// <returns></returns>
+        #region public static sfloat Cos(sfloat number)
+        public static sfloat Cos(sfloat number)
+        {
+            return libm.cosf(number);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the floor of given number.
+        /// </summary>
+        /// <param name="number">The number to get the floor value from.</param>
+        /// <returns></returns>
+        #region public static sfloat Floor(sfloat number)
+        public static sfloat Floor(sfloat number)
+        {
+            return libm.floorf(number);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the ceiling of given number.
+        /// </summary>
+        /// <param name="number">The number to get the ceiling value from.</param>
+        /// <returns></returns>
+        #region public static sfloat Ceiling(sfloat number)
+        public static sfloat Ceiling(sfloat number)
+        {
+            return libm.ceilf(number);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the arctan for given point.
+        /// </summary>
+        /// <param name="y">Y coordinate to get the arctan from.</param>
+        /// <param name="x">X coordinate to get the arctan from.</param>
+        /// <returns></returns>
+        #region public static sfloat Atan2(sfloat y, sfloat x)
+        public static sfloat Atan2(sfloat y, sfloat x)
+        {
+            return libm.atan2f(y, x);
+        }
+        #endregion
+
+        /// <summary>
+        /// Gets the power of given number.
+        /// </summary>
+        /// <param name="number">Base of the power.</param>
+        /// <param name="exponent">Exponent of the power.</param>
+        /// <returns></returns>
+        #region public static sfloat Atan2(sfloat y, sfloat x)
+        public static sfloat Pow(sfloat number, sfloat exponent)
+        {
+            return libm.powf(number, exponent);
         }
         #endregion
 
@@ -66,8 +141,8 @@ namespace Jitter.LinearMath
         /// <param name="val1">The first value.</param>
         /// <param name="val2">The second value.</param>
         /// <returns>Returns the largest value.</returns>
-        #region public static float Max(float val1, float val2)
-        public static float Max(float val1, float val2)
+        #region public static sfloat Max(sfloat val1, sfloat val2)
+        public static sfloat Max(sfloat val1, sfloat val2)
         {
             return (val1 > val2) ? val1 : val2;
         }
@@ -79,8 +154,8 @@ namespace Jitter.LinearMath
         /// <param name="val1">The first value.</param>
         /// <param name="val2">The second value.</param>
         /// <returns>Returns the smallest value.</returns>
-        #region public static float Min(float val1, float val2)
-        public static float Min(float val1, float val2)
+        #region public static sfloat Min(sfloat val1, sfloat val2)
+        public static sfloat Min(sfloat val1, sfloat val2)
         {
             return (val1 < val2) ? val1 : val2;
         }
@@ -93,10 +168,10 @@ namespace Jitter.LinearMath
         /// <param name="val2">The second value.</param>
         /// <param name="val3">The third value.</param>
         /// <returns>Returns the largest value.</returns>
-        #region public static float Max(float val1, float val2,float val3)
-        public static float Max(float val1, float val2,float val3)
+        #region public static sfloat Max(sfloat val1, sfloat val2,sfloat val3)
+        public static sfloat Max(sfloat val1, sfloat val2,sfloat val3)
         {
-            float max12 = (val1 > val2) ? val1 : val2;
+            sfloat max12 = (val1 > val2) ? val1 : val2;
             return (max12 > val3) ? max12 : val3;
         }
         #endregion
@@ -108,8 +183,8 @@ namespace Jitter.LinearMath
         /// <param name="min">The minimum value.</param>
         /// <param name="max">The maximum value.</param>
         /// <returns>The clamped value.</returns>
-        #region public static float Clamp(float value, float min, float max)
-        public static float Clamp(float value, float min, float max)
+        #region public static sfloat Clamp(sfloat value, sfloat min, sfloat max)
+        public static sfloat Clamp(sfloat value, sfloat min, sfloat max)
         {
             value = (value > max) ? max : value;
             value = (value < min) ? min : value;
@@ -125,15 +200,15 @@ namespace Jitter.LinearMath
         #region public static void Absolute(ref JMatrix matrix,out JMatrix result)
         public static void Absolute(ref JMatrix matrix,out JMatrix result)
         {
-            result.M11 = Math.Abs(matrix.M11);
-            result.M12 = Math.Abs(matrix.M12);
-            result.M13 = Math.Abs(matrix.M13);
-            result.M21 = Math.Abs(matrix.M21);
-            result.M22 = Math.Abs(matrix.M22);
-            result.M23 = Math.Abs(matrix.M23);
-            result.M31 = Math.Abs(matrix.M31);
-            result.M32 = Math.Abs(matrix.M32);
-            result.M33 = Math.Abs(matrix.M33);
+            result.M11 = sfloat.Abs(matrix.M11);
+            result.M12 = sfloat.Abs(matrix.M12);
+            result.M13 = sfloat.Abs(matrix.M13);
+            result.M21 = sfloat.Abs(matrix.M21);
+            result.M22 = sfloat.Abs(matrix.M22);
+            result.M23 = sfloat.Abs(matrix.M23);
+            result.M31 = sfloat.Abs(matrix.M31);
+            result.M32 = sfloat.Abs(matrix.M32);
+            result.M33 = sfloat.Abs(matrix.M33);
         }
         #endregion
     }
