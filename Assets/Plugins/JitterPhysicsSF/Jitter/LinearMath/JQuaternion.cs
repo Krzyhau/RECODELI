@@ -344,5 +344,14 @@ namespace Jitter.LinearMath
         }
         #endregion
 
+        public static explicit operator UnityEngine.Quaternion(JQuaternion quaternion)
+        {
+            return new UnityEngine.Quaternion((float)quaternion.X, (float)quaternion.Y, (float)quaternion.Z, (float)quaternion.W);
+        }
+
+        public static explicit operator JQuaternion(UnityEngine.Quaternion quaternion)
+        {
+            return new JQuaternion((sfloat)quaternion.x, (sfloat)quaternion.y, (sfloat)quaternion.z, (sfloat)quaternion.w);
+        }
     }
 }

@@ -606,5 +606,25 @@ namespace Jitter.LinearMath
 
         #endregion
 
+
+        public static explicit operator UnityEngine.Quaternion(JMatrix matrix)
+        {
+            return UnityEngine.Quaternion.LookRotation(
+                new UnityEngine.Vector3((float)matrix.M31, (float)matrix.M32, (float)matrix.M33),
+                new UnityEngine.Vector3((float)matrix.M21, (float)matrix.M22, (float)matrix.M23)
+            );
+        }
+
+        public static explicit operator JMatrix(UnityEngine.Quaternion rotation)
+        {
+            var forward = rotation * UnityEngine.Vector3.forward;
+            var up = rotation * UnityEngine.Vector3.up;
+            var right = rotation * UnityEngine.Vector3.right;
+            return new JMatrix(
+                (sfloat)right.x, (sfloat)right.y, (sfloat)right.z,
+                (sfloat)up.x, (sfloat)up.y, (sfloat)up.z,
+                (sfloat)forward.x, (sfloat)forward.y, (sfloat)forward.z
+            );
+        }
     }
 }

@@ -492,7 +492,7 @@ namespace Jitter.LinearMath
         public static JVector Negate(JVector value)
         {
             JVector result;
-            JVector.Negate(ref value,out result);
+            JVector.Negate(ref value, out result);
             return result;
         }
 
@@ -666,7 +666,7 @@ namespace Jitter.LinearMath
         public static JVector operator *(JVector value1, sfloat value2)
         {
             JVector result;
-            JVector.Multiply(ref value1, value2,out result);
+            JVector.Multiply(ref value1, value2, out result);
             return result;
         }
         #endregion
@@ -714,5 +714,15 @@ namespace Jitter.LinearMath
         }
         #endregion
 
+
+        public static explicit operator UnityEngine.Vector3(JVector vector)
+        {
+            return new UnityEngine.Vector3( (float)vector.X, (float)vector.Y, (float)vector.Z);
+        }
+
+        public static explicit operator JVector(UnityEngine.Vector3 vector)
+        {
+            return new JVector((sfloat)vector.x, (sfloat)vector.y, (sfloat)vector.z);
+        }
     }
 }
