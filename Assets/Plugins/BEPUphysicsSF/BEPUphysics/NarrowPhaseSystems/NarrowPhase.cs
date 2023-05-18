@@ -137,7 +137,7 @@ namespace BEPUphysics.NarrowPhaseSystems
             : this(timeStepSettings, overlaps)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
         Action<int> updateBroadPhaseOverlapDelegate;

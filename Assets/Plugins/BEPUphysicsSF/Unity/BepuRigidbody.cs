@@ -9,13 +9,21 @@ using UnityEngine;
 
 namespace BEPUphysics.Unity
 {
-    public class BepuRigidbody : MonoBehaviour
+    public class BepuRigidbody : MonoBehaviour, IBepuEntity
     {
         [SerializeField] private float mass;
         [SerializeField] private bool kinematic;
 
         private BepuSimulation simulation;
         private Entity physicsEntity;
+        private UnityEngine.Vector3 previousRenderPosition;
+        private UnityEngine.Quaternion previousRenderRotation;
+        private UnityEngine.Vector3 previousLocalScale;
+
+        private UnityEngine.Vector3 previousPhysicsPosition;
+        private UnityEngine.Vector3 currentPhysicsPosition;
+        private UnityEngine.Quaternion previousPhysicsRotation = UnityEngine.Quaternion.identity;
+        private UnityEngine.Quaternion currentPhysicsRotation = UnityEngine.Quaternion.identity;
 
         public float Mass
         {
@@ -23,7 +31,7 @@ namespace BEPUphysics.Unity
             set
             {
                 mass = value;
-                Entity.Mass = (sfloat)value;
+                if(Entity != null) Entity.Mass = (sfloat)value;
             }
         }
         public bool Kinematic
@@ -32,27 +40,55 @@ namespace BEPUphysics.Unity
             set
             {
                 kinematic = value;
-                if (kinematic) Entity.BecomeKinematic();
-                else Entity.BecomeDynamic(Entity.Mass);
+                if (Entity != null)
+                {
+                    if (kinematic) Entity.BecomeKinematic();
+                    else Entity.BecomeDynamic(Entity.Mass);
+                }
             }
         }
         public Entity Entity => physicsEntity;
         public BepuSimulation Simulation => simulation;
 
-        private void Update()
+        private void LateUpdate()
         {
             if (Entity == null) return;
-            transform.position = new UnityEngine.Vector3(
-                (float)Entity.position.X,
-                (float)Entity.position.Y,
-                (float)Entity.position.Z
-            );
-            transform.rotation = new UnityEngine.Quaternion(
-                (float)Entity.Orientation.X,
-                (float)Entity.Orientation.Y,
-                (float)Entity.Orientation.Z,
-                (float)Entity.Orientation.W
-            );
+
+            SyncTransform();
+        }
+
+        private void OnValidate()
+        {
+            Mass = mass;
+            Kinematic = kinematic;
+        }
+
+        private void SyncTransform()
+        {
+            if(previousRenderPosition != transform.position)
+            {
+                physicsEntity.Position = transform.position.ToBEPU();
+                currentPhysicsPosition = transform.position;
+                previousPhysicsPosition = transform.position;
+            }
+            else
+            {
+                transform.position = UnityEngine.Vector3.Lerp(previousPhysicsPosition, currentPhysicsPosition, simulation.InterpolationTime);
+            }
+
+            if(previousRenderRotation != transform.rotation)
+            {
+                physicsEntity.Orientation = transform.rotation.ToBEPU();
+                currentPhysicsRotation = transform.rotation;
+                previousPhysicsRotation = transform.rotation;
+            }
+            else
+            {
+                transform.rotation = UnityEngine.Quaternion.Lerp(previousPhysicsRotation, currentPhysicsRotation, simulation.InterpolationTime);
+            }
+
+            previousRenderPosition = transform.position;
+            previousRenderRotation = transform.rotation;
         }
 
         public void Initialize(BepuSimulation simulation)
@@ -75,24 +111,22 @@ namespace BEPUphysics.Unity
                 return;
             }
 
-            physicsEntity.Position = new BEPUutilities.Vector3(
-                (sfloat)transform.position.x,
-                (sfloat)transform.position.y,
-                (sfloat)transform.position.z
-            );
-
-            physicsEntity.Orientation = new BEPUutilities.Quaternion(
-                (sfloat)transform.rotation.x,
-                (sfloat)transform.rotation.y,
-                (sfloat)transform.rotation.z,
-                (sfloat)transform.rotation.w
-            );
-
             simulation.PhysicsSpace.Add(physicsEntity);
 
-            // re-set the properties so physics body can be set up properly
-            Mass = mass;
-            Kinematic = kinematic;
+            OnValidate();
+        }
+
+        public void PhysicsUpdate()
+        {
+
+        }
+
+        public void PostPhysicsUpdate()
+        {
+            previousPhysicsPosition = currentPhysicsPosition;
+            previousPhysicsRotation = currentPhysicsRotation;
+            currentPhysicsPosition = Entity.Position.ToUnity();
+            currentPhysicsRotation = Entity.Orientation.ToUnity();
         }
     }
 }

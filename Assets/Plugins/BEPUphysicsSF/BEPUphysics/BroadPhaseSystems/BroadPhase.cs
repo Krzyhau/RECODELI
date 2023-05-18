@@ -29,7 +29,7 @@ namespace BEPUphysics.BroadPhaseSystems
             : this()
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
         //TODO: Initial capacity?  Special collection type other than list due to structs? RawList? Clear at beginning of each frame?
         readonly RawList<BroadPhaseOverlap> overlaps = new RawList<BroadPhaseOverlap>();

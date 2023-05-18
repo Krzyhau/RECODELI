@@ -82,7 +82,7 @@ namespace BEPUphysics.Constraints
             : this(timeStepSettings, deactivationManager)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
         private SpinLock addRemoveLocker = new SpinLock();

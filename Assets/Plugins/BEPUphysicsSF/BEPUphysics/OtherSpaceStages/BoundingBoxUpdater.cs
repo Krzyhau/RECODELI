@@ -39,7 +39,7 @@ namespace BEPUphysics.OtherSpaceStages
             : this(timeStepSettings)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
 
         }
         Action<int> multithreadedLoopBodyDelegate;

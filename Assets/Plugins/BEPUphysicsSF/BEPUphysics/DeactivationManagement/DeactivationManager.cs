@@ -125,7 +125,7 @@ namespace BEPUphysics.DeactivationManagement
             : this(timeStepSettings)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
         //TODO: Deactivation Candidate Detection
         //-Could scan the entities of CURRENTLY ACTIVE simulation islands.

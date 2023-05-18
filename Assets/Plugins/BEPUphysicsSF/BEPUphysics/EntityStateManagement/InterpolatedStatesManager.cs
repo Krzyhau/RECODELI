@@ -101,7 +101,7 @@ namespace BEPUphysics.EntityStateManagement
             multithreadedWithReadBuffersDelegate = UpdateIndex;
             FlipLocker = new object();
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
 

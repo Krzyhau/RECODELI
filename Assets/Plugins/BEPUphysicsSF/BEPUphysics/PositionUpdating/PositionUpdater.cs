@@ -29,7 +29,7 @@ namespace BEPUphysics.PositionUpdating
             :this(timeStepSettings)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
         protected PositionUpdater(TimeStepSettings timeStepSettings)

@@ -41,7 +41,7 @@ namespace BEPUphysics.UpdateableSystems.ForceFields
         {
             Shape = shape;
             subfunction = new Action<int>(CalculateImpulsesSubfunction);
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
         /// <summary>

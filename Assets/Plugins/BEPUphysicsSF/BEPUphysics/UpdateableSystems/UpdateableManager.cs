@@ -33,7 +33,7 @@ namespace BEPUphysics.UpdateableSystems
             : this(timeStepSettings)
         {
             ParallelLooper = parallelLooper;
-            AllowMultithreading = true;
+            AllowMultithreading = false;
         }
 
         ///<summary>
