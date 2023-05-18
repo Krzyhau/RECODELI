@@ -46,6 +46,7 @@ namespace BEPUphysics.Unity
             {
                 rigidbody.Initialize(this);
             }
+            rigidbodies = rigidbodies.Where(rigidbody => rigidbody.Initialized).ToList();
 
             initialised = true;
             if (activateOnAwake) Active = true;

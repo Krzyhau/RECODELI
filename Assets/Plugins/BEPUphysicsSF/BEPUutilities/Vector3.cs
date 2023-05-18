@@ -409,6 +409,22 @@ namespace BEPUutilities
         }
 
         /// <summary>
+        /// Gets the unit vector (1,1,1).
+        /// </summary>
+        public static Vector3 One
+        {
+            get
+            {
+                return new Vector3()
+                {
+                    X = sfloat.One,
+                    Y = sfloat.One,
+                    Z = sfloat.One
+                };
+            }
+        }
+
+        /// <summary>
         /// Gets the up vector (0,1,0).
         /// </summary>
         public static Vector3 Up
