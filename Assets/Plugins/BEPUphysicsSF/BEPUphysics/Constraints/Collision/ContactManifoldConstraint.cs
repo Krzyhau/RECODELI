@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.Constraints.SolverGroups;
 using BEPUutilities.DataStructures;
 using BEPUphysics.Entities;
@@ -167,9 +168,9 @@ namespace BEPUphysics.Constraints.Collision
             }
             else
             {
-                materialInteraction.KineticFriction = 0;
-                materialInteraction.StaticFriction = 0;
-                materialInteraction.Bounciness = 0;
+                materialInteraction.KineticFriction = sfloat.Zero;
+                materialInteraction.StaticFriction = sfloat.Zero;
+                materialInteraction.Bounciness = sfloat.Zero;
             }
         }
 

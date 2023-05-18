@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
@@ -53,11 +54,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
         /// Updates the manifold.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
 
             //Now, generate a contact between the two shapes.
-            float distance;
+            sfloat distance;
             Vector3 axis;
             BoxContactDataCache manifold;
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))
@@ -122,11 +123,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 #else
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
 
             //Now, generate a contact between the two shapes.
-            float distance;
+            sfloat distance;
             Vector3 axis;
             var manifold = new TinyStructList<BoxContactData>();
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))

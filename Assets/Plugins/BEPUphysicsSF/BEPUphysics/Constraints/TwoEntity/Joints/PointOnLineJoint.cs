@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -273,7 +274,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
             #region Theory
 
@@ -318,7 +319,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 #else
             Vector2 lambda;
 #endif
-            //float va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
+            //sfloat va1, va2, wa1, wa2, vb1, vb2, wb1, wb2;
             //Vector3.Dot(ref worldAxis1, ref myParentA.myInternalLinearVelocity, out va1);
             //Vector3.Dot(ref worldAxis2, ref myParentA.myInternalLinearVelocity, out va2);
             //wa1 = prAT.M11 * myParentA.myInternalAngularVelocity.X + prAT.M12 * myParentA.myInternalAngularVelocity.Y + prAT.M13 * myParentA.myInternalAngularVelocity.Z;
@@ -350,8 +351,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
             Vector2.Add(ref lambda, ref accumulatedImpulse, out accumulatedImpulse);
 
-            float x = lambda.X;
-            float y = lambda.Y;
+            sfloat x = lambda.X;
+            sfloat y = lambda.Y;
             //Apply impulse
 #if !WINDOWS
             Vector3 impulse = new Vector3();
@@ -385,14 +386,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyLinearImpulse(ref impulse);
                 connectionB.ApplyAngularImpulse(ref torque);
             }
-            return (Math.Abs(lambda.X) + Math.Abs(lambda.Y));
+            return (sfloat.Abs(lambda.X) + sfloat.Abs(lambda.Y));
         }
 
         ///<summary>
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
             //Transform local axes into world space
             Matrix3x3.Transform(ref localRestrictedAxis1, ref connectionA.orientationMatrix, out worldRestrictedAxis1);
@@ -408,7 +409,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //Find the point on the line closest to the world point.
             Vector3 offset;
             Vector3.Subtract(ref worldPoint, ref worldLineAnchor, out offset);
-            float distanceAlongAxis;
+            sfloat distanceAlongAxis;
             Vector3.Dot(ref offset, ref worldLineDirection, out distanceAlongAxis);
 
             Vector3 worldNearPoint;
@@ -423,19 +424,19 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Dot(ref error3D, ref worldRestrictedAxis1, out error.X);
             Vector3.Dot(ref error3D, ref worldRestrictedAxis2, out error.Y);
 
-            float errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, 1 / dt, out errorReduction, out softness);
-            float bias = -errorReduction;
+            sfloat errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReduction, out softness);
+            sfloat bias = -errorReduction;
 
 
             biasVelocity.X = bias * error.X;
             biasVelocity.Y = bias * error.Y;
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            float length = biasVelocity.LengthSquared();
+            sfloat length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                float multiplier = maxCorrectiveVelocity / (float)Math.Sqrt(length);
+                sfloat multiplier = maxCorrectiveVelocity / libm.sqrtf(length);
                 biasVelocity.X *= multiplier;
                 biasVelocity.Y *= multiplier;
             }
@@ -446,8 +447,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Cross(ref rA, ref worldRestrictedAxis2, out angularA2);
             Vector3.Cross(ref worldRestrictedAxis2, ref rB, out angularB2);
 
-            float m11 = 0, m22 = 0, m1221 = 0;
-            float inverseMass;
+            sfloat m11 = sfloat.Zero, m22 = sfloat.Zero, m1221 = sfloat.Zero;
+            sfloat inverseMass;
             Vector3 intermediate;
             //Compute the effective mass matrix.
             if (connectionA.isDynamic)
@@ -466,7 +467,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
             if (connectionB.isDynamic)
             {
-                float extra;
+                sfloat extra;
                 inverseMass = connectionB.inverseMass;
                 Matrix3x3.Transform(ref angularB1, ref connectionB.inertiaTensorInverse, out intermediate);
                 Vector3.Dot(ref intermediate, ref angularB1, out extra);
@@ -505,8 +506,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3 impulse;
             Vector3 torque;
 #endif
-            float x = accumulatedImpulse.X;
-            float y = accumulatedImpulse.Y;
+            sfloat x = accumulatedImpulse.X;
+            sfloat y = accumulatedImpulse.Y;
             impulse.X = worldRestrictedAxis1.X * x + worldRestrictedAxis2.X * y;
             impulse.Y = worldRestrictedAxis1.Y * x + worldRestrictedAxis2.Y * y;
             impulse.Z = worldRestrictedAxis1.Z * x + worldRestrictedAxis2.Z * y;
@@ -538,7 +539,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         private void UpdateRestrictedAxes()
         {
             localRestrictedAxis1 = Vector3.Cross(Vector3.Up, localLineDirection);
-            if (localRestrictedAxis1.LengthSquared() < .001f)
+            if (localRestrictedAxis1.LengthSquared() < (sfloat).001f)
             {
                 localRestrictedAxis1 = Vector3.Cross(Vector3.Right, localLineDirection);
             }

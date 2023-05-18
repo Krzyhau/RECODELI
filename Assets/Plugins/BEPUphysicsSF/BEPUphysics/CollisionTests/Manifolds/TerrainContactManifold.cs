@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionShapes.ConvexShapes;
@@ -27,7 +28,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 
-        protected internal override int FindOverlappingTriangles(float dt)
+        protected internal override int FindOverlappingTriangles(sfloat dt)
         {
             BoundingBox boundingBox;
             convex.Shape.GetLocalBoundingBox(ref convex.worldTransform, ref terrain.worldTransform, out boundingBox);
@@ -42,17 +43,17 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 Vector3.Multiply(ref transformedVelocity, dt, out transformedVelocity);
 
 
-                if (transformedVelocity.X > 0)
+                if (transformedVelocity.X > sfloat.Zero)
                     boundingBox.Max.X += transformedVelocity.X;
                 else
                     boundingBox.Min.X += transformedVelocity.X;
 
-                if (transformedVelocity.Y > 0)
+                if (transformedVelocity.Y > sfloat.Zero)
                     boundingBox.Max.Y += transformedVelocity.Y;
                 else
                     boundingBox.Min.Y += transformedVelocity.Y;
 
-                if (transformedVelocity.Z > 0)
+                if (transformedVelocity.Z > sfloat.Zero)
                     boundingBox.Max.Z += transformedVelocity.Z;
                 else
                     boundingBox.Min.Z += transformedVelocity.Z;
@@ -84,7 +85,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             terrain.Shape.GetLocalPosition(a.ColumnIndex, a.RowIndex, out localTriangleShape.vA);
             terrain.Shape.GetLocalPosition(b.ColumnIndex, b.RowIndex, out localTriangleShape.vB);
             terrain.Shape.GetLocalPosition(c.ColumnIndex, c.RowIndex, out localTriangleShape.vC);
-            localTriangleShape.collisionMargin = 0;
+            localTriangleShape.collisionMargin = sfloat.Zero;
 
             localTriangleShape.sidedness = terrain.sidedness;
  
@@ -102,17 +103,17 @@ namespace BEPUphysics.CollisionTests.Manifolds
         protected override void ProcessCandidates(ref QuickList<ContactData> candidates)
         {
             //If the candidates list is empty, then let's see if the convex is in the 'thickness' of the terrain.
-            if (candidates.Count == 0 & terrain.thickness > 0)
+            if (candidates.Count == 0 & terrain.thickness > sfloat.Zero)
             {
                 RayHit rayHit;
                 Ray ray = new Ray { Position = convex.worldTransform.Position, Direction = terrain.worldTransform.LinearTransform.Up };
                 ray.Direction.Normalize();
-                //The raycast has to use doublesidedness, since we're casting from the bottom up.
+                //The raycast has to use sfloatsidedness, since we're casting from the bottom up.
                 if (terrain.Shape.RayCast(ref ray, terrain.thickness, ref terrain.worldTransform, TriangleSidedness.DoubleSided, out rayHit))
                 {
                     //Found a hit!
                     rayHit.Normal.Normalize();
-                    float dot;
+                    sfloat dot;
                     Vector3.Dot(ref ray.Direction, ref rayHit.Normal, out dot);
 
                     var newContact = new ContactData

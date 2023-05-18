@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.Entities;
  
 using BEPUutilities.DataStructures;
@@ -43,19 +44,19 @@ namespace BEPUphysics.Constraints.Collision
             isActive = false;
         }
 
-        internal float accumulatedImpulse;
-        //float linearBX, linearBY, linearBZ;
-        private float angularAX, angularAY, angularAZ;
-        private float angularBX, angularBY, angularBZ;
+        internal sfloat accumulatedImpulse;
+        //sfloat linearBX, linearBY, linearBZ;
+        private sfloat angularAX, angularAY, angularAZ;
+        private sfloat angularBX, angularBY, angularBZ;
 
         //Inverse effective mass matrix
 
 
-        private float friction;
-        internal float linearAX, linearAY, linearAZ;
+        private sfloat friction;
+        internal sfloat linearAX, linearAY, linearAZ;
         private Entity entityA, entityB;
         private bool entityAIsDynamic, entityBIsDynamic;
-        private float velocityToImpulse;
+        private sfloat velocityToImpulse;
 
 
         ///<summary>
@@ -68,9 +69,9 @@ namespace BEPUphysics.Constraints.Collision
             this.contactManifoldConstraint = contactManifoldConstraint;
             this.penetrationConstraint = penetrationConstraint;
             IsActive = true;
-            linearAX = 0;
-            linearAY = 0;
-            linearAZ = 0;
+            linearAX = sfloat.Zero;
+            linearAY = sfloat.Zero;
+            linearAZ = sfloat.Zero;
 
             entityA = contactManifoldConstraint.EntityA;
             entityB = contactManifoldConstraint.EntityB;
@@ -81,7 +82,7 @@ namespace BEPUphysics.Constraints.Collision
         ///</summary>
         public void CleanUp()
         {
-            accumulatedImpulse = 0;
+            accumulatedImpulse = sfloat.Zero;
             contactManifoldConstraint = null;
             penetrationConstraint = null;
             entityA = null;
@@ -100,7 +101,7 @@ namespace BEPUphysics.Constraints.Collision
         /// <summary>
         /// Gets the total impulse applied by this friction constraint in the last time step.
         /// </summary>
-        public float TotalImpulse
+        public sfloat TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -108,11 +109,11 @@ namespace BEPUphysics.Constraints.Collision
         ///<summary>
         /// Gets the relative velocity of the constraint.  This is the velocity along the tangent movement direction.
         ///</summary>
-        public float RelativeVelocity
+        public sfloat RelativeVelocity
         {
             get
             {
-                float velocity = 0;
+                sfloat velocity = sfloat.Zero;
                 if (entityA != null)
                     velocity += entityA.linearVelocity.X * linearAX + entityA.linearVelocity.Y * linearAY + entityA.linearVelocity.Z * linearAZ +
                                 entityA.angularVelocity.X * angularAX + entityA.angularVelocity.Y * angularAY + entityA.angularVelocity.Z * angularAZ;
@@ -128,15 +129,15 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
             //Compute relative velocity and convert to impulse
-            float lambda = RelativeVelocity * velocityToImpulse;
+            sfloat lambda = RelativeVelocity * velocityToImpulse;
 
 
             //Clamp accumulated impulse
-            float previousAccumulatedImpulse = accumulatedImpulse;
-            float maxForce = friction * penetrationConstraint.accumulatedImpulse;
+            sfloat previousAccumulatedImpulse = accumulatedImpulse;
+            sfloat maxForce = friction * penetrationConstraint.accumulatedImpulse;
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maxForce, maxForce);
             lambda = accumulatedImpulse - previousAccumulatedImpulse;
 
@@ -170,14 +171,14 @@ namespace BEPUphysics.Constraints.Collision
                 entityB.ApplyAngularImpulse(ref angular);
             }
 
-            return Math.Abs(lambda);
+            return sfloat.Abs(lambda);
         }
 
         /// <summary>
         /// Initializes the constraint for this frame.
         /// </summary>
         /// <param name="dt">Time since the last frame.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
 
 
@@ -203,16 +204,16 @@ namespace BEPUphysics.Constraints.Collision
 
             //Get rid of the normal velocity.
             Vector3 normal = penetrationConstraint.contact.Normal;
-            float normalVelocityScalar = normal.X * relativeVelocity.X + normal.Y * relativeVelocity.Y + normal.Z * relativeVelocity.Z;
+            sfloat normalVelocityScalar = normal.X * relativeVelocity.X + normal.Y * relativeVelocity.Y + normal.Z * relativeVelocity.Z;
             relativeVelocity.X -= normalVelocityScalar * normal.X;
             relativeVelocity.Y -= normalVelocityScalar * normal.Y;
             relativeVelocity.Z -= normalVelocityScalar * normal.Z;
 
             //Create the jacobian entry and decide the friction coefficient.
-            float length = relativeVelocity.LengthSquared();
+            sfloat length = relativeVelocity.LengthSquared();
             if (length > Toolbox.Epsilon)
             {
-                length = (float)Math.Sqrt(length);
+                length = libm.sqrtf(length);
                 linearAX = relativeVelocity.X / length;
                 linearAY = relativeVelocity.Y / length;
                 linearAZ = relativeVelocity.Z / length;
@@ -231,7 +232,7 @@ namespace BEPUphysics.Constraints.Collision
                 //return;
 
                 //if the above doesn't work well, try using the previous frame's jacobian.
-                if (linearAX != 0 || linearAY != 0 || linearAZ != 0)
+                if (linearAX != sfloat.Zero || linearAY != sfloat.Zero || linearAZ != sfloat.Zero)
                 {
                     friction = contactManifoldConstraint.materialInteraction.StaticFriction;
                 }
@@ -256,10 +257,10 @@ namespace BEPUphysics.Constraints.Collision
             angularBZ = (linearAX * rb.Y) - (linearAY * rb.X);
 
             //Compute inverse effective mass matrix
-            float entryA, entryB;
+            sfloat entryA, entryB;
 
             //these are the transformed coordinates
-            float tX, tY, tZ;
+            sfloat tX, tY, tZ;
             if (entityAIsDynamic)
             {
                 tX = angularAX * entityA.inertiaTensorInverse.M11 + angularAY * entityA.inertiaTensorInverse.M21 + angularAZ * entityA.inertiaTensorInverse.M31;
@@ -268,7 +269,7 @@ namespace BEPUphysics.Constraints.Collision
                 entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + entityA.inverseMass;
             }
             else
-                entryA = 0;
+                entryA = sfloat.Zero;
 
             if (entityBIsDynamic)
             {
@@ -278,9 +279,9 @@ namespace BEPUphysics.Constraints.Collision
                 entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + entityB.inverseMass;
             }
             else
-                entryB = 0;
+                entryB = sfloat.Zero;
 
-            velocityToImpulse = -1 / (entryA + entryB); //Softness?
+            velocityToImpulse = sfloat.MinusOne / (entryA + entryB); //Softness?
 
 
 

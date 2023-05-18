@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
@@ -72,17 +73,17 @@ namespace BEPUphysics.Character
             {
                 //Update the character's orientation to something compatible with the new direction.
                 Quaternion orientation;
-                float lengthSquared = value.LengthSquared();
+                sfloat lengthSquared = value.LengthSquared();
                 if (lengthSquared < Toolbox.Epsilon)
                     value = Body.OrientationMatrix.Down; //Silently fail. Assuming here that a dynamic process is setting this property; don't need to make a stink about it.
                 else
-                    Vector3.Divide(ref value, (float)Math.Sqrt(lengthSquared), out value);
+                    Vector3.Divide(ref value, libm.sqrtf(lengthSquared), out value);
                 Quaternion.GetQuaternionBetweenNormalizedVectors(ref Toolbox.DownVector, ref value, out orientation);
                 Body.Orientation = orientation;
             }
         }
 
-        Vector3 viewDirection = new Vector3(0, 0, -1);
+        Vector3 viewDirection = new Vector3(sfloat.Zero, sfloat.Zero, sfloat.MinusOne);
 
         /// <summary>
         /// Gets or sets the view direction associated with the character.
@@ -97,18 +98,18 @@ namespace BEPUphysics.Character
             }
             set
             {
-                float lengthSquared = value.LengthSquared();
-                if (lengthSquared > 1e-7f)
+                sfloat lengthSquared = value.LengthSquared();
+                if (lengthSquared > (sfloat)1e-7f)
                 {
-                    Vector3.Divide(ref value, (float)Math.Sqrt(lengthSquared), out viewDirection);
+                    Vector3.Divide(ref value, libm.sqrtf(lengthSquared), out viewDirection);
                 }
                 else
                 {
                     value = Vector3.Cross(Down, Toolbox.UpVector);
                     lengthSquared = value.LengthSquared();
-                    if (lengthSquared > 1e-7f)
+                    if (lengthSquared > (sfloat)1e-7f)
                     {
-                        Vector3.Divide(ref value, (float)Math.Sqrt(lengthSquared), out viewDirection);
+                        Vector3.Divide(ref value, libm.sqrtf(lengthSquared), out viewDirection);
                     }
                     else
                     {
@@ -119,11 +120,11 @@ namespace BEPUphysics.Character
             }
         }
 
-        private float jumpSpeed;
+        private sfloat jumpSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character leaves the ground when it jumps.
         /// </summary>
-        public float JumpSpeed
+        public sfloat JumpSpeed
         {
             get
             {
@@ -131,16 +132,16 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 jumpSpeed = value;
             }
         }
-        float slidingJumpSpeed;
+        sfloat slidingJumpSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character leaves the ground when it jumps without traction.
         /// </summary>
-        public float SlidingJumpSpeed
+        public sfloat SlidingJumpSpeed
         {
             get
             {
@@ -148,16 +149,16 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 slidingJumpSpeed = value;
             }
         }
-        float jumpForceFactor = 1f;
+        sfloat jumpForceFactor = sfloat.One;
         /// <summary>
         /// Gets or sets the amount of force to apply to supporting dynamic entities as a fraction of the force used to reach the jump speed.
         /// </summary>
-        public float JumpForceFactor
+        public sfloat JumpForceFactor
         {
             get
             {
@@ -165,18 +166,18 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 jumpForceFactor = value;
             }
         }
 
-        float standingSpeed;
+        sfloat standingSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character will try to move while standing with a support that provides traction.
         /// Relative velocities with a greater magnitude will be decelerated.
         /// </summary>
-        public float StandingSpeed
+        public sfloat StandingSpeed
         {
             get
             {
@@ -184,17 +185,17 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 standingSpeed = value;
             }
         }
-        float crouchingSpeed;
+        sfloat crouchingSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character will try to move while crouching with a support that provides traction.
         /// Relative velocities with a greater magnitude will be decelerated.
         /// </summary>
-        public float CrouchingSpeed
+        public sfloat CrouchingSpeed
         {
             get
             {
@@ -202,17 +203,17 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 crouchingSpeed = value;
             }
         }
-        float proneSpeed;
+        sfloat proneSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character will try to move while prone with a support that provides traction.
         /// Relative velocities with a greater magnitude will be decelerated.
         /// </summary>
-        public float ProneSpeed
+        public sfloat ProneSpeed
         {
             get
             {
@@ -220,16 +221,16 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 proneSpeed = value;
             }
         }
-        float tractionForce;
+        sfloat tractionForce;
         /// <summary>
         /// Gets or sets the maximum force that the character can apply while on a support which provides traction.
         /// </summary>
-        public float TractionForce
+        public sfloat TractionForce
         {
             get
             {
@@ -237,18 +238,18 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 tractionForce = value;
             }
         }
 
-        float slidingSpeed;
+        sfloat slidingSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character will try to move while on a support that does not provide traction.
         /// Relative velocities with a greater magnitude will be decelerated.
         /// </summary>
-        public float SlidingSpeed
+        public sfloat SlidingSpeed
         {
             get
             {
@@ -256,16 +257,16 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 slidingSpeed = value;
             }
         }
-        float slidingForce;
+        sfloat slidingForce;
         /// <summary>
         /// Gets or sets the maximum force that the character can apply while on a support which does not provide traction.
         /// </summary>
-        public float SlidingForce
+        public sfloat SlidingForce
         {
             get
             {
@@ -273,18 +274,18 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 slidingForce = value;
             }
         }
 
-        float airSpeed;
+        sfloat airSpeed;
         /// <summary>
         /// Gets or sets the speed at which the character will try to move with no support.
         /// The character will not be decelerated while airborne.
         /// </summary>
-        public float AirSpeed
+        public sfloat AirSpeed
         {
             get
             {
@@ -292,16 +293,16 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 airSpeed = value;
             }
         }
-        float airForce;
+        sfloat airForce;
         /// <summary>
         /// Gets or sets the maximum force that the character can apply with no support.
         /// </summary>
-        public float AirForce
+        public sfloat AirForce
         {
             get
             {
@@ -309,19 +310,19 @@ namespace BEPUphysics.Character
             }
             set
             {
-                if (value < 0)
+                if (value < sfloat.Zero)
                     throw new ArgumentException("Value must be nonnegative.");
                 airForce = value;
             }
         }
 
-        private float speedScale = 1;
+        private sfloat speedScale = sfloat.One;
         /// <summary>
         /// Gets or sets a scaling factor to apply to the maximum speed of the character.
         /// This is useful when a character does not have 0 or MaximumSpeed target speed, but rather
         /// intermediate values. A common use case is analog controller sticks.
         /// </summary>
-        public float SpeedScale
+        public sfloat SpeedScale
         {
             get { return speedScale; }
             set { speedScale = value; }
@@ -331,12 +332,12 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets or sets the radius of the body cylinder.  To change the height, use the StanceManager.StandingHeight and StanceManager.CrouchingHeight.
         /// </summary>
-        public float BodyRadius
+        public sfloat BodyRadius
         {
             get { return Body.CollisionInformation.Shape.Radius; }
             set
             {
-                if (value <= 0)
+                if (value <= sfloat.Zero)
                     throw new ArgumentException("Radius must be positive.");
                 Body.CollisionInformation.Shape.Radius = value;
                 //Tell the query manager to update its representation.
@@ -347,12 +348,12 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets or sets the collision margin of the body cylinder. Also updates the StanceManager's query shapes to match.
         /// </summary>
-        public float CollisionMargin
+        public sfloat CollisionMargin
         {
             get { return Body.CollisionInformation.Shape.CollisionMargin; }
             set
             {
-                if (value <= 0)
+                if (value <= sfloat.Zero)
                     throw new ArgumentException("Radius must be positive.");
                 Body.CollisionInformation.Shape.CollisionMargin = value;
                 //Tell the query manager to update its representation.
@@ -398,12 +399,12 @@ namespace BEPUphysics.Character
         /// <param name="slidingJumpSpeed">Speed at which the character leaves the ground when it jumps without traction</param>
         /// <param name="maximumGlueForce">Maximum force the vertical motion constraint is allowed to apply in an attempt to keep the character on the ground.</param>
         public CharacterController(
-            Vector3 position = new Vector3(),
-            float height = 1.7f, float crouchingHeight = 1.7f * .7f, float proneHeight = 1.7f * 0.3f, float radius = 0.6f, float margin = 0.1f, float mass = 10f,
-            float maximumTractionSlope = 0.8f, float maximumSupportSlope = 1.3f,
-            float standingSpeed = 8f, float crouchingSpeed = 3f, float proneSpeed = 1.5f, float tractionForce = 1000, float slidingSpeed = 6, float slidingForce = 50, float airSpeed = 1, float airForce = 250,
-            float jumpSpeed = 4.5f, float slidingJumpSpeed = 3,
-            float maximumGlueForce = 5000
+            Vector3 position,
+            sfloat height, sfloat crouchingHeight, sfloat proneHeight, sfloat radius, sfloat margin, sfloat mass,
+            sfloat maximumTractionSlope, sfloat maximumSupportSlope,
+            sfloat standingSpeed, sfloat crouchingSpeed, sfloat proneSpeed, sfloat tractionForce, sfloat slidingSpeed, sfloat slidingForce, sfloat airSpeed, sfloat airForce,
+            sfloat jumpSpeed, sfloat slidingJumpSpeed,
+            sfloat maximumGlueForce
             )
         {
             if (margin > radius || margin > crouchingHeight || margin > height)
@@ -418,12 +419,12 @@ namespace BEPUphysics.Character
             //TODO: In v0.16.2, compound bodies would override the material properties that get set in the CreatingPair event handler.
             //In a future version where this is changed, change this to conceptually minimally required CreatingPair.
             Body.CollisionInformation.Events.DetectingInitialCollision += RemoveFriction;
-            Body.LinearDamping = 0;
+            Body.LinearDamping = sfloat.Zero;
             ContactCategorizer = new CharacterContactCategorizer(maximumTractionSlope, maximumSupportSlope);
             QueryManager = new QueryManager(Body, ContactCategorizer);
             SupportFinder = new SupportFinder(Body, QueryManager, ContactCategorizer);
             HorizontalMotionConstraint = new HorizontalMotionConstraint(Body, SupportFinder);
-            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = radius * 0.25f;
+            HorizontalMotionConstraint.PositionAnchorDistanceThreshold = radius * (sfloat)0.25f;
             VerticalMotionConstraint = new VerticalMotionConstraint(Body, SupportFinder, maximumGlueForce);
             StepManager = new StepManager(Body, ContactCategorizer, SupportFinder, QueryManager, HorizontalMotionConstraint);
             StanceManager = new StanceManager(Body, crouchingHeight, proneHeight, QueryManager, SupportFinder);
@@ -480,9 +481,9 @@ namespace BEPUphysics.Character
                 //Expand the bounding box up and down using the step height.
                 Vector3 expansion;
                 Vector3.Multiply(ref down, StepManager.MaximumStepHeight, out expansion);
-                expansion.X = Math.Abs(expansion.X);
-                expansion.Y = Math.Abs(expansion.Y);
-                expansion.Z = Math.Abs(expansion.Z);
+                expansion.X = sfloat.Abs(expansion.X);
+                expansion.Y = sfloat.Abs(expansion.Y);
+                expansion.Z = sfloat.Abs(expansion.Z);
 
                 //When the character climbs a step, it teleports horizontally a little to gain support. Expand the bounding box to accommodate the margin.
                 //Compute the expansion caused by the extra radius along each axis.
@@ -500,14 +501,14 @@ namespace BEPUphysics.Character
                 //To show this, try setting up the triangles at the corner of a cylinder with the world axes and cylinder axes.
 
                 //Since the test axes we're using are all standard directions ({0,0,1}, {0,1,0}, and {0,0,1}), most of the cross product logic simplifies out, and we are left with:
-                var horizontalExpansionAmount = Body.CollisionInformation.Shape.CollisionMargin * 1.1f;
+                var horizontalExpansionAmount = Body.CollisionInformation.Shape.CollisionMargin * (sfloat)1.1f;
                 Vector3 squaredDown;
                 squaredDown.X = down.X * down.X;
                 squaredDown.Y = down.Y * down.Y;
                 squaredDown.Z = down.Z * down.Z;
-                expansion.X += horizontalExpansionAmount * (float)Math.Sqrt(squaredDown.Y + squaredDown.Z);
-                expansion.Y += horizontalExpansionAmount * (float)Math.Sqrt(squaredDown.X + squaredDown.Z);
-                expansion.Z += horizontalExpansionAmount * (float)Math.Sqrt(squaredDown.X + squaredDown.Y);
+                expansion.X += horizontalExpansionAmount * libm.sqrtf(squaredDown.Y + squaredDown.Z);
+                expansion.Y += horizontalExpansionAmount * libm.sqrtf(squaredDown.X + squaredDown.Z);
+                expansion.Z += horizontalExpansionAmount * libm.sqrtf(squaredDown.X + squaredDown.Y);
 
                 Vector3.Add(ref expansion, ref boundingBox.Max, out boundingBox.Max);
                 Vector3.Subtract(ref boundingBox.Min, ref expansion, out boundingBox.Min);
@@ -520,7 +521,7 @@ namespace BEPUphysics.Character
         }
 
 
-        void IBeforeSolverUpdateable.Update(float dt)
+        void IBeforeSolverUpdateable.Update(sfloat dt)
         {
             //Someone may want to use the Body.CollisionInformation.Tag for their own purposes.
             //That could screw up the locking mechanism above and would be tricky to track down.
@@ -545,11 +546,11 @@ namespace BEPUphysics.Character
                 //Compute the initial velocities relative to the support.
                 Vector3 relativeVelocity;
                 ComputeRelativeVelocity(ref supportData, out relativeVelocity);
-                float verticalVelocity = Vector3.Dot(supportData.Normal, relativeVelocity);
+                sfloat verticalVelocity = Vector3.Dot(supportData.Normal, relativeVelocity);
 
 
                 //Don't attempt to use an object as support if we are flying away from it (and we were never standing on it to begin with).
-                if (SupportFinder.HasSupport && !hadSupport && verticalVelocity < 0)
+                if (SupportFinder.HasSupport && !hadSupport && verticalVelocity < sfloat.Zero)
                 {
                     SupportFinder.ClearSupportData();
                     supportData = new SupportData();
@@ -565,9 +566,9 @@ namespace BEPUphysics.Character
                     if (SupportFinder.HasTraction)
                     {
                         //The character has traction, so jump straight up.
-                        float currentDownVelocity = Vector3.Dot(Down, relativeVelocity);
+                        sfloat currentDownVelocity = Vector3.Dot(Down, relativeVelocity);
                         //Target velocity is JumpSpeed.
-                        float velocityChange = Math.Max(jumpSpeed + currentDownVelocity, 0);
+                        sfloat velocityChange = sfloat.Max(jumpSpeed + currentDownVelocity, sfloat.Zero);
                         ApplyJumpVelocity(ref supportData, Down * -velocityChange, ref relativeVelocity);
 
 
@@ -580,9 +581,9 @@ namespace BEPUphysics.Character
                     else if (SupportFinder.HasSupport)
                     {
                         //The character does not have traction, so jump along the surface normal instead.
-                        float currentNormalVelocity = Vector3.Dot(supportData.Normal, relativeVelocity);
+                        sfloat currentNormalVelocity = Vector3.Dot(supportData.Normal, relativeVelocity);
                         //Target velocity is JumpSpeed.
-                        float velocityChange = Math.Max(slidingJumpSpeed - currentNormalVelocity, 0);
+                        sfloat velocityChange = sfloat.Max(slidingJumpSpeed - currentNormalVelocity, sfloat.Zero);
                         ApplyJumpVelocity(ref supportData, supportData.Normal * -velocityChange, ref relativeVelocity);
 
                         //Prevent any old contacts from hanging around and coming back with a negative depth.
@@ -631,7 +632,7 @@ namespace BEPUphysics.Character
             //Update the horizontal motion constraint's state.
             if (supportData.SupportObject != null)
             {
-                float speed;
+                sfloat speed;
                 switch (StanceManager.CurrentStance)
                 {
                     case Stance.Prone:
@@ -653,8 +654,8 @@ namespace BEPUphysics.Character
                 else
                 {
                     HorizontalMotionConstraint.MovementMode = MovementMode.Sliding;
-                    HorizontalMotionConstraint.TargetSpeed = Math.Min(speed, slidingSpeed);
-                    HorizontalMotionConstraint.MaximumForce = Math.Min(tractionForce, slidingForce);
+                    HorizontalMotionConstraint.TargetSpeed = sfloat.Min(speed, slidingSpeed);
+                    HorizontalMotionConstraint.MaximumForce = sfloat.Min(tractionForce, slidingForce);
                 }
             }
             else
@@ -668,7 +669,7 @@ namespace BEPUphysics.Character
 
         }
 
-        SupportData TeleportToPosition(Vector3 newPosition, float dt)
+        SupportData TeleportToPosition(Vector3 newPosition, sfloat dt)
         {
 
             Body.Position = newPosition;
@@ -704,16 +705,16 @@ namespace BEPUphysics.Character
 
             Vector3 downDirection = Body.OrientationMatrix.Down;
             Vector3 position = Body.Position;
-            float margin = Body.CollisionInformation.Shape.CollisionMargin;
-            float minimumHeight = Body.Height * .5f - margin;
-            float coreRadius = Body.Radius - margin;
-            float coreRadiusSquared = coreRadius * coreRadius;
+            sfloat margin = Body.CollisionInformation.Shape.CollisionMargin;
+            sfloat minimumHeight = Body.Height * sfloat.Half - margin;
+            sfloat coreRadius = Body.Radius - margin;
+            sfloat coreRadiusSquared = coreRadius * coreRadius;
             foreach (var pair in Body.CollisionInformation.Pairs)
             {
                 foreach (var contactData in pair.Contacts)
                 {
                     var contact = contactData.Contact;
-                    float dot;
+                    sfloat dot;
                     //Check to see if the contact position is at the bottom of the character.
                     Vector3 offset = contact.Position - Body.Position;
                     Vector3.Dot(ref offset, ref downDirection, out dot);
@@ -728,11 +729,11 @@ namespace BEPUphysics.Character
                         Vector3 horizontalOffset;
                         Vector3.Multiply(ref downDirection, dot, out horizontalOffset);
                         Vector3.Subtract(ref offset, ref horizontalOffset, out horizontalOffset);
-                        float length = horizontalOffset.LengthSquared();
+                        sfloat length = horizontalOffset.LengthSquared();
                         if (length > coreRadiusSquared)
                         {
                             //It's beyond the edge of the cylinder; clamp it.
-                            Vector3.Multiply(ref horizontalOffset, coreRadius / (float)Math.Sqrt(length), out horizontalOffset);
+                            Vector3.Multiply(ref horizontalOffset, coreRadius / libm.sqrtf(length), out horizontalOffset);
                         }
                         //It's on the bottom, so add the bottom height.
                         Vector3 closestPointOnCylinder;
@@ -747,19 +748,19 @@ namespace BEPUphysics.Character
                         if (length > Toolbox.Epsilon)
                         {
                             //Normalize the offset.
-                            Vector3.Divide(ref offsetDirection, (float)Math.Sqrt(length), out offsetDirection);
+                            Vector3.Divide(ref offsetDirection, libm.sqrtf(length), out offsetDirection);
                         }
                         else
                             continue; //If there's no offset, it's really deep and correcting this contact might be a bad idea.
 
                         Vector3.Dot(ref offsetDirection, ref downDirection, out dot);
-                        float dotOriginal;
+                        sfloat dotOriginal;
                         Vector3.Dot(ref contact.Normal, ref downDirection, out dotOriginal);
-                        if (dot > Math.Abs(dotOriginal)) //if the new offsetDirection normal is less steep than the original slope...
+                        if (dot > sfloat.Abs(dotOriginal)) //if the new offsetDirection normal is less steep than the original slope...
                         {
                             //Then use it!
                             Vector3.Dot(ref offsetDirection, ref contact.Normal, out dot);
-                            if (dot < 0)
+                            if (dot < sfloat.Zero)
                             {
                                 //Don't flip the normal relative to the contact normal.  That would be bad!
                                 Vector3.Negate(ref offsetDirection, out offsetDirection);

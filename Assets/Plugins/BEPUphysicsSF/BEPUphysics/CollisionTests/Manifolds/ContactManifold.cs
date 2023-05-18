@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
@@ -110,7 +111,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         /// Updates the manifold.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public abstract void Update(float dt);
+        public abstract void Update(sfloat dt);
 
         /// <summary>
         /// Clears the contacts associated with this manifold.

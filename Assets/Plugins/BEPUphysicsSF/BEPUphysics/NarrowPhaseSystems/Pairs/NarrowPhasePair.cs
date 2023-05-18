@@ -1,6 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.CollisionRuleManagement;
+using SoftFloat;
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -14,7 +15,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the collision between the broad phase entries.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public abstract void UpdateCollision(float dt);
+        public abstract void UpdateCollision(sfloat dt);
 
         ///<summary>
         /// Gets or sets whether or not the pair needs to be updated.

@@ -3,6 +3,7 @@ using BEPUphysics.Entities.Prefabs;
  
 using BEPUutilities.DataStructures;
 using BEPUutilities;
+using SoftFloat;
 
 namespace BEPUphysics.Constraints.TwoEntity
 {
@@ -14,7 +15,7 @@ namespace BEPUphysics.Constraints.TwoEntity
         /// <summary>
         /// Entity that constraints connect to when they are given a null connection.
         /// </summary>
-        public static readonly Entity WorldEntity = new Sphere(Vector3.Zero, 0);
+        public static readonly Entity WorldEntity = new Sphere(Vector3.Zero, sfloat.Zero);
 
         /// <summary>
         /// First connection to the constraint.

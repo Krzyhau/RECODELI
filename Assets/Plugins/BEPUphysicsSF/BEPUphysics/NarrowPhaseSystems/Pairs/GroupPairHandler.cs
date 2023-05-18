@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.Constraints;
@@ -155,7 +156,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler's contacts.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        protected virtual void UpdateContacts(float dt)
+        protected virtual void UpdateContacts(sfloat dt)
         {
 
             UpdateContainedPairs();
@@ -190,7 +191,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateCollision(float dt)
+        public override void UpdateCollision(sfloat dt)
         {
 
             if (!suppressEvents)
@@ -236,9 +237,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, float dt)
+        public override void UpdateTimeOfImpact(Collidable requester, sfloat dt)
         {
-            timeOfImpact = 1;
+            timeOfImpact = sfloat.One;
             foreach (CollidablePairHandler pair in subPairs.Values)
             {
                 //The system uses the identity of the requester to determine if it needs to do handle the TOI calculation.

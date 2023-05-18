@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.CollisionShapes.ConvexShapes;
  
 using BEPUphysics.Settings;
@@ -24,10 +25,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         {
             contact = new ContactData();
 
-            float radiusSum = a.collisionMargin + b.collisionMargin;
+            sfloat radiusSum = a.collisionMargin + b.collisionMargin;
             Vector3 centerDifference;
             Vector3.Subtract(ref positionB, ref positionA, out centerDifference);
-            float centerDistance = centerDifference.LengthSquared();
+            sfloat centerDistance = centerDifference.LengthSquared();
 
             if (centerDistance < (radiusSum + CollisionDetectionSettings.maximumContactDistance) * (radiusSum + CollisionDetectionSettings.maximumContactDistance))
             {
@@ -38,7 +39,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 else contact.Position = new Vector3();
                 Vector3.Add(ref contact.Position, ref positionA, out contact.Position);
 
-                centerDistance = (float)Math.Sqrt(centerDistance);
+                centerDistance = libm.sqrtf(centerDistance);
                 if (centerDistance > Toolbox.BigEpsilon)
                 {
                     Vector3.Divide(ref centerDifference, centerDistance, out contact.Normal);

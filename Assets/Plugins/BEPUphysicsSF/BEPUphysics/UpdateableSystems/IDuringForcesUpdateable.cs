@@ -1,4 +1,6 @@
-﻿namespace BEPUphysics.UpdateableSystems
+﻿using SoftFloat;
+
+namespace BEPUphysics.UpdateableSystems
 {
     ///<summary>
     /// Defines an object which is updated by a space during force application.
@@ -10,7 +12,7 @@
         /// Updates the object during force application.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void Update(float dt);
+        void Update(sfloat dt);
 
     }
 }

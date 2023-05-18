@@ -3,6 +3,7 @@ using BEPUphysics.CollisionTests;
 using BEPUphysics.Settings;
 using BEPUutilities;
 using System;
+using SoftFloat;
 using BEPUutilities.DataStructures;
 
 namespace BEPUphysics.Constraints.Collision
@@ -18,18 +19,18 @@ namespace BEPUphysics.Constraints.Collision
         /// Gets the contact associated with this penetration constraint.
         ///</summary>
         public Contact Contact { get { return contact; } }
-        internal float accumulatedImpulse;
-        //float linearBX, linearBY, linearBZ;
-        internal float angularAX, angularAY, angularAZ;
-        internal float angularBX, angularBY, angularBZ;
+        internal sfloat accumulatedImpulse;
+        //sfloat linearBX, linearBY, linearBZ;
+        internal sfloat angularAX, angularAY, angularAZ;
+        internal sfloat angularBX, angularBY, angularBZ;
 
-        private float softness;
-        private float bias;
-        private float linearAX, linearAY, linearAZ;
+        private sfloat softness;
+        private sfloat bias;
+        private sfloat linearAX, linearAY, linearAZ;
         private Entity entityA, entityB;
         private bool entityADynamic, entityBDynamic;
         //Inverse effective mass matrix
-        internal float velocityToImpulse;
+        internal sfloat velocityToImpulse;
         private ContactManifoldConstraint contactManifoldConstraint;
 
         internal Vector3 ra, rb;
@@ -64,7 +65,7 @@ namespace BEPUphysics.Constraints.Collision
         ///</summary>
         public void CleanUp()
         {
-            accumulatedImpulse = 0;
+            accumulatedImpulse = sfloat.Zero;
             contactManifoldConstraint = null;
             contact = null;
             entityA = null;
@@ -77,7 +78,7 @@ namespace BEPUphysics.Constraints.Collision
         /// <summary>
         /// Gets the total normal impulse applied by this penetration constraint to maintain the separation of the involved entities.
         /// </summary>
-        public float NormalImpulse
+        public sfloat NormalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -85,11 +86,11 @@ namespace BEPUphysics.Constraints.Collision
         ///<summary>
         /// Gets the relative velocity between the associated entities at the contact point along the contact normal.
         ///</summary>
-        public float RelativeVelocity
+        public sfloat RelativeVelocity
         {
             get
             {
-                float lambda = 0;
+                sfloat lambda = sfloat.Zero;
                 if (entityA != null)
                 {
                     lambda = entityA.linearVelocity.X * linearAX + entityA.linearVelocity.Y * linearAY + entityA.linearVelocity.Z * linearAZ +
@@ -111,7 +112,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
 
             entityADynamic = entityA != null && entityA.isDynamic;
@@ -148,10 +149,10 @@ namespace BEPUphysics.Constraints.Collision
 
 
             //Compute inverse effective mass matrix
-            float entryA, entryB;
+            sfloat entryA, entryB;
 
             //these are the transformed coordinates
-            float tX, tY, tZ;
+            sfloat tX, tY, tZ;
             if (entityADynamic)
             {
                 tX = angularAX * entityA.inertiaTensorInverse.M11 + angularAY * entityA.inertiaTensorInverse.M21 + angularAZ * entityA.inertiaTensorInverse.M31;
@@ -160,7 +161,7 @@ namespace BEPUphysics.Constraints.Collision
                 entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + entityA.inverseMass;
             }
             else
-                entryA = 0;
+                entryA = sfloat.Zero;
 
             if (entityBDynamic)
             {
@@ -170,7 +171,7 @@ namespace BEPUphysics.Constraints.Collision
                 entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + entityB.inverseMass;
             }
             else
-                entryB = 0;
+                entryB = sfloat.Zero;
 
             //If we used a single fixed softness value, then heavier objects will tend to 'squish' more than light objects.
             //In the extreme case, very heavy objects could simply fall through the ground by force of gravity.
@@ -181,28 +182,28 @@ namespace BEPUphysics.Constraints.Collision
             //Larger effective masses should correspond to smaller softnesses so that the spring has the same positional behavior.
             //Fortunately, we're already computing the necessary values: the raw, unsoftened effective mass inverse shall be used to compute the softness.
 
-            float effectiveMassInverse = entryA + entryB;
-            float updateRate = 1 / dt;
+            sfloat effectiveMassInverse = entryA + entryB;
+            sfloat updateRate = sfloat.One / dt;
             softness = CollisionResponseSettings.Softness * effectiveMassInverse * updateRate;
-            velocityToImpulse = -1 / (softness + effectiveMassInverse);
+            velocityToImpulse = sfloat.MinusOne / (softness + effectiveMassInverse);
 
 
             //Bounciness and bias (penetration correction)
-            if (contact.PenetrationDepth >= 0)
+            if (contact.PenetrationDepth >= sfloat.Zero)
             {
                 bias = MathHelper.Min(
-                    MathHelper.Max(0, contact.PenetrationDepth - CollisionDetectionSettings.AllowedPenetration) *
+                    MathHelper.Max(sfloat.Zero, contact.PenetrationDepth - CollisionDetectionSettings.AllowedPenetration) *
                     CollisionResponseSettings.PenetrationRecoveryStiffness * updateRate,
                     CollisionResponseSettings.MaximumPenetrationRecoverySpeed);
 
-                if (contactManifoldConstraint.materialInteraction.Bounciness > 0)
+                if (contactManifoldConstraint.materialInteraction.Bounciness > sfloat.Zero)
                 {
                     //Target a velocity which includes a portion of the incident velocity.
-                    float bounceVelocity = -RelativeVelocity;
-                    if (bounceVelocity > 0)
+                    sfloat bounceVelocity = -RelativeVelocity;
+                    if (bounceVelocity > sfloat.Zero)
                     {
-                        var lowThreshold = CollisionResponseSettings.BouncinessVelocityThreshold * 0.3f;
-                        var velocityFraction = MathHelper.Clamp((bounceVelocity - lowThreshold) / (CollisionResponseSettings.BouncinessVelocityThreshold - lowThreshold + Toolbox.Epsilon), 0, 1);
+                        var lowThreshold = CollisionResponseSettings.BouncinessVelocityThreshold * (sfloat)0.3f;
+                        var velocityFraction = MathHelper.Clamp((bounceVelocity - lowThreshold) / (CollisionResponseSettings.BouncinessVelocityThreshold - lowThreshold + Toolbox.Epsilon), sfloat.Zero, sfloat.One);
                         var bouncinessVelocity = velocityFraction * bounceVelocity * contactManifoldConstraint.materialInteraction.Bounciness;
                         bias = MathHelper.Max(bouncinessVelocity, bias);
                     }
@@ -223,7 +224,7 @@ namespace BEPUphysics.Constraints.Collision
                 //    //Target a velocity which includes a portion of the incident velocity.
                 //    //The contact isn't colliding currently, but go ahead and target the post-bounce velocity.
                 //    //The bias is added to the bounce velocity to simulate the object continuing to the surface and then bouncing off.
-                //    float relativeVelocity = -RelativeVelocity;
+                //    sfloat relativeVelocity = -RelativeVelocity;
                 //    if (relativeVelocity > CollisionResponseSettings.BouncinessVelocityThreshold)
                 //        bias = relativeVelocity * contactManifoldConstraint.materialInteraction.Bounciness + bias;
                 //}
@@ -275,15 +276,15 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes and applies an impulse to keep the colliders from penetrating.
         /// </summary>
         /// <returns>Impulse applied.</returns>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
 
             //Compute relative velocity
-            float lambda = (RelativeVelocity - bias + softness * accumulatedImpulse) * velocityToImpulse;
+            sfloat lambda = (RelativeVelocity - bias + softness * accumulatedImpulse) * velocityToImpulse;
 
             //Clamp accumulated impulse
-            float previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Max(0, accumulatedImpulse + lambda);
+            sfloat previousAccumulatedImpulse = accumulatedImpulse;
+            accumulatedImpulse = MathHelper.Max(sfloat.Zero, accumulatedImpulse + lambda);
             lambda = accumulatedImpulse - previousAccumulatedImpulse;
 
 
@@ -317,7 +318,7 @@ namespace BEPUphysics.Constraints.Collision
                 entityB.ApplyAngularImpulse(ref angular);
             }
 
-            return Math.Abs(lambda);
+            return sfloat.Abs(lambda);
         }
 
         protected internal override void CollectInvolvedEntities(RawList<Entity> outputInvolvedEntities)

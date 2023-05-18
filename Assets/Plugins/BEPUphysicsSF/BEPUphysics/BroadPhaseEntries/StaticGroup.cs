@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries.Events;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionShapes.ConvexShapes;
@@ -90,7 +91,7 @@ namespace BEPUphysics.BroadPhaseEntries
         /// <param name="maximumLength">Maximum length, in units of the ray's direction's length, to test.</param>
         /// <param name="rayHit">Hit location of the ray on the entry, if any.</param>
         /// <returns>Whether or not the ray hit the entry.</returns>
-        public override bool RayCast(Ray ray, float maximumLength, out RayHit rayHit)
+        public override bool RayCast(Ray ray, sfloat maximumLength, out RayHit rayHit)
         {
             RayCastResult result;
             bool toReturn = Shape.RayCast(ray, maximumLength, out result);
@@ -107,7 +108,7 @@ namespace BEPUphysics.BroadPhaseEntries
         /// in the entry, this filter will be passed into inner ray casts.</param>
         /// <param name="rayHit">Hit location of the ray on the entry, if any.</param>
         /// <returns>Whether or not the ray hit the entry.</returns>
-        public override bool RayCast(Ray ray, float maximumLength, Func<BroadPhaseEntry, bool> filter, out RayHit rayHit)
+        public override bool RayCast(Ray ray, sfloat maximumLength, Func<BroadPhaseEntry, bool> filter, out RayHit rayHit)
         {
             RayCastResult result;
             bool toReturn = Shape.RayCast(ray, maximumLength, filter, out result);

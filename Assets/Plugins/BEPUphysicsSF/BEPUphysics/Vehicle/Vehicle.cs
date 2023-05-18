@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.Entities;
 using BEPUutilities.DataStructures;
@@ -123,7 +124,7 @@ namespace BEPUphysics.Vehicle
         /// Performs the end-of-frame update component.
         /// </summary>
         /// <param name="dt">Time since last frame in simulation seconds.</param>
-        void IEndOfFrameUpdateable.Update(float dt)
+        void IEndOfFrameUpdateable.Update(sfloat dt)
         {
             //Graphics should be updated at the end of each frame.
             foreach (Wheel wheel in Wheels)
@@ -136,7 +137,7 @@ namespace BEPUphysics.Vehicle
         /// Performs the end-of-update update component.
         /// </summary>
         /// <param name="dt">Time since last frame in simulation seconds.</param>
-        void IEndOfTimeStepUpdateable.Update(float dt)
+        void IEndOfTimeStepUpdateable.Update(sfloat dt)
         {
             //Graphics should be updated at the end of each frame.
             foreach (Wheel wheel in Wheels)
@@ -145,7 +146,7 @@ namespace BEPUphysics.Vehicle
             }
         }
 
-        void IBeforeNarrowPhaseUpdateable.Update(float dt)
+        void IBeforeNarrowPhaseUpdateable.Update(sfloat dt)
         {
             //After broadphase, test for supports.
             foreach (Wheel wheel in wheels)
@@ -155,7 +156,7 @@ namespace BEPUphysics.Vehicle
             OnInvolvedEntitiesChanged();
         }
 
-        void IDuringForcesUpdateable.Update(float dt)
+        void IDuringForcesUpdateable.Update(sfloat dt)
         {
             foreach (Wheel wheel in wheels)
             {
@@ -198,7 +199,7 @@ namespace BEPUphysics.Vehicle
         /// Updates the vehicle.
         /// Called automatically when needed by the owning Space.
         /// </summary>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
             int numActive = 0;
             foreach (Wheel wheel in Wheels)
@@ -211,7 +212,7 @@ namespace BEPUphysics.Vehicle
             }
             if (numActive == 0)
                 isActiveInSolver = false;
-            return solverSettings.minimumImpulse + 1; //We take care of ourselves.
+            return solverSettings.minimumImpulse + sfloat.One; //We take care of ourselves.
         }
 
         /// <summary>
@@ -234,7 +235,7 @@ namespace BEPUphysics.Vehicle
         /// Called once before the iteration loop.
         /// </summary>
         /// <param name="dt">Time since previous frame in simulation seconds.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
             //TODO: to help balance multithreading, what if each wheel were its own SolverUpdateable
             //(no more CombinedUpdateable, basically)

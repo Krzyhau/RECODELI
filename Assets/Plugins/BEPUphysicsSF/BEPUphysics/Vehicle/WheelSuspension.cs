@@ -2,6 +2,7 @@
 using BEPUphysics.Entities;
 
 using BEPUutilities;
+using SoftFloat;
 
 namespace BEPUphysics.Vehicle
 {
@@ -13,32 +14,32 @@ namespace BEPUphysics.Vehicle
         private readonly SpringSettings springSettings = new SpringSettings();
 
 
-        internal float accumulatedImpulse;
+        internal sfloat accumulatedImpulse;
 
-        //float linearBX, linearBY, linearBZ;
-        private float angularAX, angularAY, angularAZ;
-        private float angularBX, angularBY, angularBZ;
-        private float bias;
+        //sfloat linearBX, linearBY, linearBZ;
+        private sfloat angularAX, angularAY, angularAZ;
+        private sfloat angularBX, angularBY, angularBZ;
+        private sfloat bias;
 
         internal bool isActive = true;
-        private float linearAX, linearAY, linearAZ;
-        private float allowedCompression = .01f;
-        internal float currentLength;
+        private sfloat linearAX, linearAY, linearAZ;
+        private sfloat allowedCompression = (sfloat).01f;
+        internal sfloat currentLength;
         internal Vector3 localAttachmentPoint;
         internal Vector3 localDirection;
-        private float maximumSpringCorrectionSpeed = float.MaxValue;
-        private float maximumSpringForce = float.MaxValue;
-        internal float restLength;
+        private sfloat maximumSpringCorrectionSpeed = sfloat.MaxValue;
+        private sfloat maximumSpringForce = sfloat.MaxValue;
+        internal sfloat restLength;
         internal SolverSettings solverSettings = new SolverSettings();
         private Wheel wheel;
         internal Vector3 worldAttachmentPoint;
         internal Vector3 worldDirection;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
-        private float softness;
+        private sfloat softness;
 
         //Inverse effective mass matrix
-        private float velocityToImpulse;
+        private sfloat velocityToImpulse;
         private bool supportIsDynamic;
 
         /// <summary>
@@ -49,7 +50,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="localDirection">Direction of the suspension in the vehicle's local space.  For a normal, straight down suspension, this would be (0, -1, 0).</param>
         /// <param name="restLength">Length of the suspension when uncompressed.</param>
         /// <param name="localAttachmentPoint">Place where the suspension hooks up to the body of the vehicle.</param>
-        public WheelSuspension(float stiffnessConstant, float dampingConstant, Vector3 localDirection, float restLength, Vector3 localAttachmentPoint)
+        public WheelSuspension(sfloat stiffnessConstant, sfloat dampingConstant, Vector3 localDirection, sfloat restLength, Vector3 localAttachmentPoint)
         {
             SpringSettings.Stiffness = stiffnessConstant;
             SpringSettings.Damping = dampingConstant;
@@ -67,17 +68,17 @@ namespace BEPUphysics.Vehicle
         /// Gets or sets the allowed compression of the suspension before suspension forces take effect.
         /// Usually a very small number.  Used to prevent 'jitter' where the wheel leaves the ground due to spring forces repeatedly.
         /// </summary>
-        public float AllowedCompression
+        public sfloat AllowedCompression
         {
             get { return allowedCompression; }
-            set { allowedCompression = MathHelper.Max(0, value); }
+            set { allowedCompression = MathHelper.Max(sfloat.Zero, value); }
         }
 
         /// <summary>
         /// Gets the the current length of the suspension.
         /// This will be less than the RestLength if the suspension is compressed.
         /// </summary>
-        public float CurrentLength
+        public sfloat CurrentLength
         {
             get { return currentLength; }
         }
@@ -106,25 +107,25 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum speed at which the suspension will try to return the suspension to rest length.
         /// </summary>
-        public float MaximumSpringCorrectionSpeed
+        public sfloat MaximumSpringCorrectionSpeed
         {
             get { return maximumSpringCorrectionSpeed; }
-            set { maximumSpringCorrectionSpeed = MathHelper.Max(0, value); }
+            set { maximumSpringCorrectionSpeed = MathHelper.Max(sfloat.Zero, value); }
         }
 
         /// <summary>
         /// Gets or sets the maximum force that can be applied by this suspension.
         /// </summary>
-        public float MaximumSpringForce
+        public sfloat MaximumSpringForce
         {
             get { return maximumSpringForce; }
-            set { maximumSpringForce = MathHelper.Max(0, value); }
+            set { maximumSpringForce = MathHelper.Max(sfloat.Zero, value); }
         }
 
         /// <summary>
         /// Gets or sets the length of the uncompressed suspension.
         /// </summary>
-        public float RestLength
+        public sfloat RestLength
         {
             get { return restLength; }
             set
@@ -138,7 +139,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force that the suspension is applying to support the vehicle.
         /// </summary>
-        public float TotalImpulse
+        public sfloat TotalImpulse
         {
             get { return -accumulatedImpulse; }
         }
@@ -235,11 +236,11 @@ namespace BEPUphysics.Vehicle
         ///<summary>
         /// Gets the relative velocity along the support normal at the contact point.
         ///</summary>
-        public float RelativeVelocity
+        public sfloat RelativeVelocity
         {
             get
             {
-                float velocity = vehicleEntity.linearVelocity.X * linearAX + vehicleEntity.linearVelocity.Y * linearAY + vehicleEntity.linearVelocity.Z * linearAZ +
+                sfloat velocity = vehicleEntity.linearVelocity.X * linearAX + vehicleEntity.linearVelocity.Y * linearAY + vehicleEntity.linearVelocity.Z * linearAZ +
                                  vehicleEntity.angularVelocity.X * angularAX + vehicleEntity.angularVelocity.Y * angularAY + vehicleEntity.angularVelocity.Z * angularAZ;
                 if (supportEntity != null)
                     velocity += -supportEntity.linearVelocity.X * linearAX - supportEntity.linearVelocity.Y * linearAY - supportEntity.linearVelocity.Z * linearAZ +
@@ -248,18 +249,18 @@ namespace BEPUphysics.Vehicle
             }
         }
 
-        internal float ApplyImpulse()
+        internal sfloat ApplyImpulse()
         {
             //Compute relative velocity
-            float lambda = (RelativeVelocity
+            sfloat lambda = (RelativeVelocity
                             + bias //Add in position correction
                             + softness * accumulatedImpulse) //Add in squishiness
                            * velocityToImpulse; //convert to impulse
 
 
             //Clamp accumulated impulse
-            float previousAccumulatedImpulse = accumulatedImpulse;
-            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maximumSpringForce, 0);
+            sfloat previousAccumulatedImpulse = accumulatedImpulse;
+            accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maximumSpringForce, sfloat.Zero);
             lambda = accumulatedImpulse - previousAccumulatedImpulse;
 
             //Apply the impulse
@@ -311,7 +312,7 @@ namespace BEPUphysics.Vehicle
             LocalAttachmentPoint = LocalAttachmentPoint;
         }
 
-        internal void PreStep(float dt)
+        internal void PreStep(sfloat dt)
         {
             vehicleEntity = wheel.vehicle.Body;
             supportEntity = wheel.supportingEntity;
@@ -339,10 +340,10 @@ namespace BEPUphysics.Vehicle
             angularBZ = (linearAX * wheel.rb.Y) - (linearAY * wheel.rb.X);
 
             //Compute inverse effective mass matrix
-            float entryA, entryB;
+            sfloat entryA, entryB;
 
             //these are the transformed coordinates
-            float tX, tY, tZ;
+            sfloat tX, tY, tZ;
             if (vehicleEntity.isDynamic)
             {
                 tX = angularAX * vehicleEntity.inertiaTensorInverse.M11 + angularAY * vehicleEntity.inertiaTensorInverse.M21 + angularAZ * vehicleEntity.inertiaTensorInverse.M31;
@@ -351,7 +352,7 @@ namespace BEPUphysics.Vehicle
                 entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + vehicleEntity.inverseMass;
             }
             else
-                entryA = 0;
+                entryA = sfloat.Zero;
 
             if (supportIsDynamic)
             {
@@ -361,16 +362,16 @@ namespace BEPUphysics.Vehicle
                 entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + supportEntity.inverseMass;
             }
             else
-                entryB = 0;
+                entryB = sfloat.Zero;
 
             //Convert spring constant and damping constant into ERP and CFM.
-            float biasFactor;
-            springSettings.ComputeErrorReductionAndSoftness(dt, 1 / dt, out biasFactor, out softness);
+            sfloat biasFactor;
+            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out biasFactor, out softness);
 
-            velocityToImpulse = -1 / (entryA + entryB + softness);
+            velocityToImpulse = sfloat.MinusOne / (entryA + entryB + softness);
 
             //Correction velocity
-            bias = MathHelper.Min(MathHelper.Max(0, (restLength - currentLength) - allowedCompression) * biasFactor, maximumSpringCorrectionSpeed);
+            bias = MathHelper.Min(MathHelper.Max(sfloat.Zero, (restLength - currentLength) - allowedCompression) * biasFactor, maximumSpringCorrectionSpeed);
 
 
         }

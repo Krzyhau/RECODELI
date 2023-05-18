@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
@@ -41,7 +42,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="localTransform">Affine transform to apply to the vertices.</param>
         /// <param name="solidity">Solidity/sidedness of the mesh.  "Solid" is only permitted if the mesh is closed.</param>
         /// <param name="mass">Mass of the mesh.</param>
-        public MobileMesh(Vector3[] vertices, int[] indices, AffineTransform localTransform, MobileMeshSolidity solidity, float mass)
+        public MobileMesh(Vector3[] vertices, int[] indices, AffineTransform localTransform, MobileMeshSolidity solidity, sfloat mass)
         {
             Vector3 center;
             var shape = new MobileMeshShape(vertices, indices, localTransform, solidity, out center);

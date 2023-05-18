@@ -23,7 +23,7 @@ namespace BEPUphysics.Unity
             set
             {
                 mass = value;
-                Entity.Mass = value;
+                Entity.Mass = (sfloat)value;
             }
         }
         public bool Kinematic
@@ -43,15 +43,15 @@ namespace BEPUphysics.Unity
         {
             if (Entity == null) return;
             transform.position = new UnityEngine.Vector3(
-                Entity.position.X,
-                Entity.position.Y,
-                Entity.position.Z
+                (float)Entity.position.X,
+                (float)Entity.position.Y,
+                (float)Entity.position.Z
             );
             transform.rotation = new UnityEngine.Quaternion(
-                Entity.Orientation.X,
-                Entity.Orientation.Y,
-                Entity.Orientation.Z,
-                Entity.Orientation.W
+                (float)Entity.Orientation.X,
+                (float)Entity.Orientation.Y,
+                (float)Entity.Orientation.Z,
+                (float)Entity.Orientation.W
             );
         }
 
@@ -65,7 +65,7 @@ namespace BEPUphysics.Unity
             {
                 var boxCollider = (BoxCollider)collider;
                 var size = UnityEngine.Vector3.Scale(transform.lossyScale, boxCollider.size);
-                physicsEntity = new Box(BEPUutilities.Vector3.Zero, size.x, size.y, size.z);
+                physicsEntity = new Box(BEPUutilities.Vector3.Zero, (sfloat)size.x, (sfloat)size.y, (sfloat)size.z);
 
             }
 
@@ -76,16 +76,16 @@ namespace BEPUphysics.Unity
             }
 
             physicsEntity.Position = new BEPUutilities.Vector3(
-                transform.position.x,
-                transform.position.y,
-                transform.position.z
+                (sfloat)transform.position.x,
+                (sfloat)transform.position.y,
+                (sfloat)transform.position.z
             );
 
             physicsEntity.Orientation = new BEPUutilities.Quaternion(
-                transform.rotation.x,
-                transform.rotation.y,
-                transform.rotation.z,
-                transform.rotation.w
+                (sfloat)transform.rotation.x,
+                (sfloat)transform.rotation.y,
+                (sfloat)transform.rotation.z,
+                (sfloat)transform.rotation.w
             );
 
             simulation.PhysicsSpace.Add(physicsEntity);

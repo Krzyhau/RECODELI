@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
- 
+using SoftFloat;
 
 namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
 {
@@ -36,7 +36,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         public void Initialize(ref Vector3 a, ref Vector3 b, ref Vector3 c)
         {
             var shape = Shape;
-            shape.collisionMargin = 0;
+            shape.collisionMargin = sfloat.Zero;
             shape.sidedness = TriangleSidedness.DoubleSided;
             shape.vA = a;
             shape.vB = b;

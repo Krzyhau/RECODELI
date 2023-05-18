@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUutilities.Threading;
 
 namespace BEPUphysics.PositionUpdating

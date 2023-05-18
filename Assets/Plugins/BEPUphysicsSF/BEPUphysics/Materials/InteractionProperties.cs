@@ -1,4 +1,6 @@
-﻿namespace BEPUphysics.Materials
+﻿using SoftFloat;
+
+namespace BEPUphysics.Materials
 {
     ///<summary>
     /// Contains the blended friction and bounciness of a pair of objects.
@@ -8,14 +10,14 @@
         ///<summary>
         /// Kinetic friction between the pair of objects.
         ///</summary>
-        public float KineticFriction;
+        public sfloat KineticFriction;
         ///<summary>
         /// Static friction between the pair of objects.
         ///</summary>
-        public float StaticFriction;
+        public sfloat StaticFriction;
         ///<summary>
         /// Bounciness between the pair of objects.
         ///</summary>
-        public float Bounciness;
+        public sfloat Bounciness;
     }
 }

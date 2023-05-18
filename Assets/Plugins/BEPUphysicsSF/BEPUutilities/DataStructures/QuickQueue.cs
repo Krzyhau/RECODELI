@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Diagnostics;
 using BEPUutilities.ResourceManagement;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ using System.Runtime.CompilerServices;
 namespace BEPUutilities.DataStructures
 {
     /// <summary>
-    /// Container supporting double ended queue behaviors built on top of pooled arrays.
+    /// Container supporting sfloat ended queue behaviors built on top of pooled arrays.
     /// </summary>
     /// <remarks>Be very careful when using this type. It has sacrificed a lot upon the altar of performance; a few notable issues include:
     /// it is a value type and copying it around will break things without extreme care, it cannot be validly default-constructed,

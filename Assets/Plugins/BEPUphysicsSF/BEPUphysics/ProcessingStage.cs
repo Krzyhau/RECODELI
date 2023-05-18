@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Diagnostics;
 
 namespace BEPUphysics
@@ -27,11 +28,11 @@ namespace BEPUphysics
         /// <summary>
         /// Gets the time elapsed in the previous execution of this stage, not including any hooked Starting or Finishing events.
         /// </summary>
-        public double Time
+        public sfloat Time
         {
             get
             {
-                return (end - start) / (double)Stopwatch.Frequency;
+                return (end - start) / (sfloat)Stopwatch.Frequency;
             }
         }
 

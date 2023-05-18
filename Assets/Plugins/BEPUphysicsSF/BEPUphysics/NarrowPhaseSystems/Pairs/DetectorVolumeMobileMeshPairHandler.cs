@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
@@ -60,11 +61,11 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
         private TriangleShape mobileTriangle = new TriangleShape();
-        private TriangleShape detectorTriangle = new TriangleShape { collisionMargin = 0 };
+        private TriangleShape detectorTriangle = new TriangleShape { collisionMargin = sfloat.Zero };
 
         RawList<int> overlaps = new RawList<int>(8);
 
-        public override void UpdateCollision(float dt)
+        public override void UpdateCollision(sfloat dt)
         {
             WasContaining = Containing;
             WasTouching = Touching;
@@ -91,7 +92,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 RigidTransform.Transform(ref mobileTriangle.vC, ref mesh.worldTransform, out mobileTriangle.vC);
                 Vector3.Add(ref mobileTriangle.vA, ref mobileTriangle.vB, out mobileTriangleTransform.Position);
                 Vector3.Add(ref mobileTriangle.vC, ref mobileTriangleTransform.Position, out mobileTriangleTransform.Position);
-                Vector3.Multiply(ref mobileTriangleTransform.Position, 1 / 3f, out mobileTriangleTransform.Position);
+                Vector3.Multiply(ref mobileTriangleTransform.Position, sfloat.One / (sfloat)3f, out mobileTriangleTransform.Position);
                 Vector3.Subtract(ref mobileTriangle.vA, ref mobileTriangleTransform.Position, out mobileTriangle.vA);
                 Vector3.Subtract(ref mobileTriangle.vB, ref mobileTriangleTransform.Position, out mobileTriangle.vB);
                 Vector3.Subtract(ref mobileTriangle.vC, ref mobileTriangleTransform.Position, out mobileTriangle.vC);
@@ -106,7 +107,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                     DetectorVolume.TriangleMesh.Data.GetTriangle(overlaps.Elements[j], out detectorTriangle.vA, out detectorTriangle.vB, out detectorTriangle.vC);
                     Vector3.Add(ref detectorTriangle.vA, ref detectorTriangle.vB, out detectorTriangleTransform.Position);
                     Vector3.Add(ref detectorTriangle.vC, ref detectorTriangleTransform.Position, out detectorTriangleTransform.Position);
-                    Vector3.Multiply(ref detectorTriangleTransform.Position, 1 / 3f, out detectorTriangleTransform.Position);
+                    Vector3.Multiply(ref detectorTriangleTransform.Position, sfloat.One / (sfloat)3f, out detectorTriangleTransform.Position);
                     Vector3.Subtract(ref detectorTriangle.vA, ref detectorTriangleTransform.Position, out detectorTriangle.vA);
                     Vector3.Subtract(ref detectorTriangle.vB, ref detectorTriangleTransform.Position, out detectorTriangle.vB);
                     Vector3.Subtract(ref detectorTriangle.vC, ref detectorTriangleTransform.Position, out detectorTriangle.vC);

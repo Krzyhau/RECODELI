@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.Threading;

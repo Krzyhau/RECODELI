@@ -2,7 +2,7 @@
 {
     ///<summary>
     /// Sidedness of a triangle or mesh.
-    /// A triangle can be double sided, or allow one of its sides to let interacting objects through.
+    /// A triangle can be sfloat sided, or allow one of its sides to let interacting objects through.
     ///</summary>
     public enum TriangleSidedness
     {

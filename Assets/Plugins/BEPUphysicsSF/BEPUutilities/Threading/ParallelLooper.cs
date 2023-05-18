@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using System.Collections.Generic;
 using System.Threading;
 
@@ -127,8 +128,8 @@ namespace BEPUutilities.Threading
             currentLoopBody = loopBody;
             iterationsPerSteal = Math.Max(1, iterationCount / taskSubdivisions);
             jobIndex = 0;
-            float maxJobs = iterationCount / (float) iterationsPerSteal;
-            if (maxJobs % 1 == 0)
+            sfloat maxJobs = (sfloat)iterationCount / (sfloat) iterationsPerSteal;
+            if (maxJobs % sfloat.One == sfloat.Zero)
                 maxJobIndex = (int) maxJobs;
             else
                 maxJobIndex = 1 + (int) maxJobs;

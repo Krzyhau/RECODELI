@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
  
@@ -130,14 +131,14 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         ///<param name="marginB">Second margin.</param>
         ///<param name="direction">Extreme point direction.</param>
         ///<param name="contribution">Margin contribution to the extreme point.</param>
-        public static void ExpandMinkowskiSum(float marginA, float marginB, ref Vector3 direction, out Vector3 contribution)
+        public static void ExpandMinkowskiSum(sfloat marginA, sfloat marginB, ref Vector3 direction, out Vector3 contribution)
         {
-            float lengthSquared = direction.LengthSquared();
+            sfloat lengthSquared = direction.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB.
-                Vector3.Multiply(ref direction, (marginA + marginB) / (float)Math.Sqrt(lengthSquared), out contribution);
+                Vector3.Multiply(ref direction, (marginA + marginB) / libm.sqrtf(lengthSquared), out contribution);
 
             }
             else
@@ -157,12 +158,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
         ///<param name="direction">Extreme point direction.</param>
         ///<param name="toExpandA">Margin contribution to the shapeA.</param>
         ///<param name="toExpandB">Margin contribution to the shapeB.</param>
-        public static void ExpandMinkowskiSum(float marginA, float marginB, Vector3 direction, ref Vector3 toExpandA, ref Vector3 toExpandB)
+        public static void ExpandMinkowskiSum(sfloat marginA, sfloat marginB, Vector3 direction, ref Vector3 toExpandA, ref Vector3 toExpandB)
         {
-            float lengthSquared = direction.LengthSquared();
+            sfloat lengthSquared = direction.LengthSquared();
             if (lengthSquared > Toolbox.Epsilon)
             {
-                lengthSquared = 1 / (float)Math.Sqrt(lengthSquared);   
+                lengthSquared = sfloat.One / libm.sqrtf(lengthSquared);   
                 //The contribution to the minkowski sum by the margin is:
                 //direction * marginA - (-direction) * marginB. 
                 Vector3 contribution;

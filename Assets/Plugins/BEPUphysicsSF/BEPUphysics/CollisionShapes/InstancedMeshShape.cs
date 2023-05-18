@@ -1,6 +1,7 @@
 ﻿
 using BEPUphysics.DataStructures;
 using BEPUutilities;
+using SoftFloat;
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -52,13 +53,13 @@ namespace BEPUphysics.CollisionShapes
 #if !WINDOWS
             boundingBox = new BoundingBox();
 #endif
-            float minX = float.MaxValue;
-            float minY = float.MaxValue;
-            float minZ = float.MaxValue;
+            sfloat minX = sfloat.MaxValue;
+            sfloat minY = sfloat.MaxValue;
+            sfloat minZ = sfloat.MaxValue;
 
-            float maxX = -float.MaxValue;
-            float maxY = -float.MaxValue;
-            float maxZ = -float.MaxValue;
+            sfloat maxX = -sfloat.MaxValue;
+            sfloat maxY = -sfloat.MaxValue;
+            sfloat maxZ = -sfloat.MaxValue;
             for (int i = 0; i < triangleMesh.Data.vertices.Length; i++)
             {
                 Vector3 vertex;

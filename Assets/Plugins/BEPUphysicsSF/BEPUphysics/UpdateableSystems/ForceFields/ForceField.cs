@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.Entities;
@@ -14,7 +15,7 @@ namespace BEPUphysics.UpdateableSystems.ForceFields
     {
         private readonly Action<int> subfunction;
         private IList<Entity> affectedEntities;
-        private float currentTimestep;
+        private sfloat currentTimestep;
         private ForceFieldShape shape;
 
 
@@ -85,7 +86,7 @@ namespace BEPUphysics.UpdateableSystems.ForceFields
         /// Called automatically when needed by the owning Space.
         /// </summary>
         /// <param name="dt">Time since the last frame in simulation seconds.</param>
-        void IDuringForcesUpdateable.Update(float dt)
+        void IDuringForcesUpdateable.Update(sfloat dt)
         {
             PreUpdate();
             affectedEntities = Shape.GetPossiblyAffectedEntities();
@@ -112,7 +113,7 @@ namespace BEPUphysics.UpdateableSystems.ForceFields
         /// <param name="e">Affected entity.</param>
         /// <param name="dt">Duration between simulation updates.</param>
         /// <param name="impulse">Impulse to apply to the entity.</param>
-        protected abstract void CalculateImpulse(Entity e, float dt, out Vector3 impulse);
+        protected abstract void CalculateImpulse(Entity e, sfloat dt, out Vector3 impulse);
 
         private void CalculateImpulsesSubfunction(int index)
         {

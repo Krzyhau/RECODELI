@@ -1,5 +1,5 @@
 ﻿using BEPUutilities;
- 
+using SoftFloat;
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -20,7 +20,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// The volume of a shape.
         /// </summary>
-        public float Volume;
+        public sfloat Volume;
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
 
@@ -22,7 +23,7 @@ namespace BEPUphysics.CollisionTests
         public static void ReduceContacts(RawList<Contact> contacts, ref QuickList<ContactData> contactCandidates, RawList<int> contactsToRemove, ref QuickList<ContactData> toAdd)
         {
             //Find the deepest point of all contacts/candidates, as well as a compounded 'normal' vector.
-            float maximumDepth = -float.MaxValue;
+            sfloat maximumDepth = -sfloat.MaxValue;
             int deepestIndex = -1;
             Vector3 normal = Toolbox.ZeroVector;
             for (int i = 0; i < contacts.Count; i++)
@@ -59,8 +60,8 @@ namespace BEPUphysics.CollisionTests
                 deepestPosition = contacts.Elements[deepestIndex].Position;
             else
                 deepestPosition = contactCandidates.Elements[deepestIndex - contacts.Count].Position;
-            float distanceSquared;
-            float furthestDistance = 0;
+            sfloat distanceSquared;
+            sfloat furthestDistance = sfloat.Zero;
             int furthestIndex = -1;
             for (int i = 0; i < contacts.Count; i++)
             {
@@ -112,12 +113,12 @@ namespace BEPUphysics.CollisionTests
             Vector3.Cross(ref xAxis, ref normal, out yAxis);
 
             //Determine the furthest points along the axis.
-            float minYAxisDot = float.MaxValue, maxYAxisDot = -float.MaxValue;
+            sfloat minYAxisDot = sfloat.MaxValue, maxYAxisDot = -sfloat.MaxValue;
             int minYAxisIndex = -1, maxYAxisIndex = -1;
 
             for (int i = 0; i < contacts.Count; i++)
             {
-                float dot;
+                sfloat dot;
                 Vector3.Dot(ref contacts.Elements[i].Position, ref yAxis, out dot);
                 if (dot < minYAxisDot)
                 {
@@ -133,7 +134,7 @@ namespace BEPUphysics.CollisionTests
             }
             for (int i = 0; i < contactCandidates.Count; i++)
             {
-                float dot;
+                sfloat dot;
                 Vector3.Dot(ref contactCandidates.Elements[i].Position, ref yAxis, out dot);
                 if (dot < minYAxisDot)
                 {
@@ -201,7 +202,7 @@ namespace BEPUphysics.CollisionTests
 
             
             //Find the deepest point of all contacts/candidates, as well as a compounded 'normal' vector.
-            float maximumDepth = -float.MaxValue;
+            sfloat maximumDepth = -sfloat.MaxValue;
             int deepestIndex = -1;
             for (int i = 0; i < 4; i++)
             {
@@ -223,8 +224,8 @@ namespace BEPUphysics.CollisionTests
                 deepestPosition = contacts.Elements[deepestIndex].Position;
             else
                 deepestPosition = contactCandidate.Position;
-            float distanceSquared;
-            float furthestDistance = 0;
+            sfloat distanceSquared;
+            sfloat furthestDistance = sfloat.Zero;
             int furthestIndex = -1;
             for (int i = 0; i < 4; i++)
             {
@@ -254,10 +255,10 @@ namespace BEPUphysics.CollisionTests
             Vector3.Cross(ref xAxis, ref contacts.Elements[0].Normal, out yAxis);
 
             //Determine the furthest points along the axis.
-            float minYAxisDot = float.MaxValue, maxYAxisDot = -float.MaxValue;
+            sfloat minYAxisDot = sfloat.MaxValue, maxYAxisDot = -sfloat.MaxValue;
             int minYAxisIndex = -1, maxYAxisIndex = -1;
 
-            float dot;
+            sfloat dot;
             for (int i = 0; i < 4; i++)
             {
                 Vector3.Dot(ref contacts.Elements[i].Position, ref yAxis, out dot);

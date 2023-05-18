@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
 using BEPUutilities;
@@ -24,13 +25,13 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// <summary>
         /// Maximum impulse that can be applied in a single frame.
         /// </summary>
-        private float maxForceDt;
+        private sfloat maxForceDt;
 
         /// <summary>
         /// Maximum impulse that can be applied in a single frame, squared.
         /// This is computed in the prestep to avoid doing extra multiplies in the more-often called applyImpulse method.
         /// </summary>
-        private float maxForceDtSquared;
+        private sfloat maxForceDtSquared;
 
         private Vector3 error;
 
@@ -39,7 +40,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         private Vector3 worldPoint;
 
         private Vector3 r;
-        private float usedSoftness;
+        private sfloat usedSoftness;
 
         /// <summary>
         /// Gets or sets the entity affected by the constraint.
@@ -159,7 +160,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
             //Compute relative velocity
             Vector3 lambda;
@@ -182,11 +183,11 @@ namespace BEPUphysics.Constraints.SingleEntity
             accumulatedImpulse += lambda;
 
             //If the impulse it takes to get to the goal is too high for the motor to handle, scale it back.
-            float sumImpulseLengthSquared = accumulatedImpulse.LengthSquared();
+            sfloat sumImpulseLengthSquared = accumulatedImpulse.LengthSquared();
             if (sumImpulseLengthSquared > maxForceDtSquared)
             {
                 //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                accumulatedImpulse *= maxForceDt / (float)Math.Sqrt(sumImpulseLengthSquared);
+                accumulatedImpulse *= maxForceDt / libm.sqrtf(sumImpulseLengthSquared);
 
                 //Since the limit was exceeded by this corrective impulse, limit it so that the accumulated impulse remains constrained.
                 lambda = accumulatedImpulse - previousAccumulatedImpulse;
@@ -198,40 +199,40 @@ namespace BEPUphysics.Constraints.SingleEntity
             Vector3.Cross(ref r, ref lambda, out taImpulse);
             entity.ApplyAngularImpulse(ref taImpulse);
 
-            return (Math.Abs(lambda.X) + Math.Abs(lambda.Y) + Math.Abs(lambda.Z));
+            return (sfloat.Abs(lambda.X) + sfloat.Abs(lambda.Y) + sfloat.Abs(lambda.Z));
         }
 
         ///<summary>
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
             //Transform point into world space.
             Matrix3x3.Transform(ref localPoint, ref entity.orientationMatrix, out r);
             Vector3.Add(ref r, ref entity.position, out worldPoint);
 
-            float updateRate = 1 / dt;
+            sfloat updateRate = sfloat.One / dt;
             if (settings.mode == MotorMode.Servomechanism)
             {
                 Vector3.Subtract(ref settings.servo.goal, ref worldPoint, out error);
-                float separationDistance = error.Length();
+                sfloat separationDistance = error.Length();
                 if (separationDistance > Toolbox.BigEpsilon)
                 {
-                    float errorReduction;
+                    sfloat errorReduction;
                     settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, updateRate, out errorReduction, out usedSoftness);
 
                     //The rate of correction can be based on a constant correction velocity as well as a 'spring like' correction velocity.
                     //The constant correction velocity could overshoot the destination, so clamp it.
-                    float correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance * updateRate) +
+                    sfloat correctionSpeed = MathHelper.Min(settings.servo.baseCorrectiveSpeed, separationDistance * updateRate) +
                                             separationDistance * errorReduction;
 
                     Vector3.Multiply(ref error, correctionSpeed / separationDistance, out biasVelocity);
                     //Ensure that the corrective velocity doesn't exceed the max.
-                    float length = biasVelocity.LengthSquared();
+                    sfloat length = biasVelocity.LengthSquared();
                     if (length > settings.servo.maxCorrectiveVelocitySquared)
                     {
-                        float multiplier = settings.servo.maxCorrectiveVelocity / (float)Math.Sqrt(length);
+                        sfloat multiplier = settings.servo.maxCorrectiveVelocity / libm.sqrtf(length);
                         biasVelocity.X *= multiplier;
                         biasVelocity.Y *= multiplier;
                         biasVelocity.Z *= multiplier;
@@ -289,18 +290,18 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// <summary>
         /// Computes the maxForceDt and maxForceDtSquared fields.
         /// </summary>
-        private void ComputeMaxForces(float maxForce, float dt)
+        private void ComputeMaxForces(sfloat maxForce, sfloat dt)
         {
             //Determine maximum force
-            if (maxForce < float.MaxValue)
+            if (maxForce < sfloat.MaxValue)
             {
                 maxForceDt = maxForce * dt;
                 maxForceDtSquared = maxForceDt * maxForceDt;
             }
             else
             {
-                maxForceDt = float.MaxValue;
-                maxForceDtSquared = float.MaxValue;
+                maxForceDt = sfloat.MaxValue;
+                maxForceDtSquared = sfloat.MaxValue;
             }
         }
     }

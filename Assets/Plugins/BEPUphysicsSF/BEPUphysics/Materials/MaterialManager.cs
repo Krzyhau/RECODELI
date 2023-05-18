@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 
 namespace BEPUphysics.Materials
@@ -26,17 +27,17 @@ namespace BEPUphysics.Materials
         /// Default coefficient of kinetic friction. 
         /// Defaults to 0.8.
         ///</summary>
-        public static float DefaultKineticFriction = .8f;
+        public static sfloat DefaultKineticFriction = (sfloat).8f;
         ///<summary>
         /// Default coefficient of static friction.
         /// Defaults to 1.
         ///</summary>
-        public static float DefaultStaticFriction = 1f;
+        public static sfloat DefaultStaticFriction = sfloat.One;
         ///<summary>
         /// Default coefficient of restitution.
         /// Defaults to 0.
         ///</summary>
-        public static float DefaultBounciness;
+        public static sfloat DefaultBounciness;
 
         static MaterialManager()
         {

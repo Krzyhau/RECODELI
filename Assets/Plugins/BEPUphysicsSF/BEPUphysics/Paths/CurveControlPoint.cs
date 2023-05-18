@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Linq;
 
 namespace BEPUphysics.Paths
@@ -9,7 +10,7 @@ namespace BEPUphysics.Paths
     /// <typeparam name="TValue">Type of values in the curve.</typeparam>
     public class CurveControlPoint<TValue> : IComparable<CurveControlPoint<TValue>>
     {
-        private double time;
+        private sfloat time;
 
         private TValue value;
 
@@ -19,7 +20,7 @@ namespace BEPUphysics.Paths
         /// <param name="time">Time at which the point is positioned.</param>
         /// <param name="value">Value of the control point.</param>
         /// <param name="curve">Curve associated with the control point.</param>
-        public CurveControlPoint(double time, TValue value, Curve<TValue> curve)
+        public CurveControlPoint(sfloat time, TValue value, Curve<TValue> curve)
         {
             Curve = curve;
             Time = time;
@@ -34,7 +35,7 @@ namespace BEPUphysics.Paths
         /// <summary>
         /// Gets or sets the time at which this control point is positioned.
         /// </summary>
-        public double Time
+        public sfloat Time
         {
             get { return time; }
             set

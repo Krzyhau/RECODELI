@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Threading;
 
 namespace BEPUutilities.Threading

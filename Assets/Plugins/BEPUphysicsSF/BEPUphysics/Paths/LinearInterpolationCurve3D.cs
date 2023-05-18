@@ -1,6 +1,8 @@
 ﻿
 
 using BEPUutilities;
+using SoftFloat;
+
 namespace BEPUphysics.Paths
 {
     /// <summary>
@@ -15,7 +17,7 @@ namespace BEPUphysics.Paths
         /// <param name="controlPointIndex">Index of the starting control point of the subinterval.</param>
         /// <param name="weight">Location to evaluate on the subinterval from 0 to 1.</param>
         /// <param name="value">Value at the given location.</param>
-        public override void Evaluate(int controlPointIndex, float weight, out Vector3 value)
+        public override void Evaluate(int controlPointIndex, sfloat weight, out Vector3 value)
         {
             value = Vector3.Lerp(ControlPoints[controlPointIndex].Value, ControlPoints[controlPointIndex + 1].Value, weight);
         }
@@ -76,7 +78,7 @@ namespace BEPUphysics.Paths
         ///// </summary>
         ///// <param name="time">Time to evaluate.</param>
         ///// <param name="value">Value at evaluated time.</param>
-        //public override void evaluate(double time, out Vector3 value)
+        //public override void evaluate(sfloat time, out Vector3 value)
         //{
         //    int maxIndex = controlPoints.count - 1;
         //    if (maxIndex == -1)
@@ -88,12 +90,12 @@ namespace BEPUphysics.Paths
 
         //    int index = getPreviousIndex(time);
         //    int nextIndex = Math.Min(index + 1, maxIndex); 
-        //    float denominator = controlPoints[nextIndex].time - controlPoints[index].time;
-        //    float intervalTime;
+        //    sfloat denominator = controlPoints[nextIndex].time - controlPoints[index].time;
+        //    sfloat intervalTime;
         //    if (denominator < Toolbox.epsilon)
         //        intervalTime = 0;
         //    else
-        //        intervalTime = (float)(time - controlPoints[index].time) / denominator;
+        //        intervalTime = (sfloat)(time - controlPoints[index].time) / denominator;
 
 
         //    value = Vector3.Lerp(controlPoints[index].value, controlPoints[nextIndex].value, intervalTime); 

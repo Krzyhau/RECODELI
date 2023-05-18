@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using BEPUutilities.DataStructures;
 using BEPUutilities;
+using SoftFloat;
 
 namespace BEPUutilities.ResourceManagement
 {
@@ -18,7 +19,7 @@ namespace BEPUutilities.ResourceManagement
         {
             SubPoolIntList = new LockingResourcePool<RawList<int>>();
             SubPoolIntSet = new LockingResourcePool<HashSet<int>>();
-            SubPoolFloatList = new LockingResourcePool<RawList<float>>();
+            SubPoolFloatList = new LockingResourcePool<RawList<sfloat>>();
             SubPoolVectorList = new LockingResourcePool<RawList<Vector3>>();
             SubPoolRayHitList = new LockingResourcePool<RawList<RayHit>>();
 
@@ -27,7 +28,7 @@ namespace BEPUutilities.ResourceManagement
         static LockingResourcePool<RawList<RayHit>> SubPoolRayHitList;
         static LockingResourcePool<RawList<int>> SubPoolIntList;
         static LockingResourcePool<HashSet<int>> SubPoolIntSet;
-        static LockingResourcePool<RawList<float>> SubPoolFloatList;
+        static LockingResourcePool<RawList<sfloat>> SubPoolFloatList;
         static LockingResourcePool<RawList<Vector3>> SubPoolVectorList;
 
         /// <summary>
@@ -90,10 +91,10 @@ namespace BEPUutilities.ResourceManagement
         }
 
         /// <summary>
-        /// Retrieves a float list from the resource pool.
+        /// Retrieves a sfloat list from the resource pool.
         /// </summary>
-        /// <returns>Empty float list.</returns>
-        public static RawList<float> GetFloatList()
+        /// <returns>Empty sfloat list.</returns>
+        public static RawList<sfloat> GetFloatList()
         {
             return SubPoolFloatList.Take();
         }
@@ -102,7 +103,7 @@ namespace BEPUutilities.ResourceManagement
         /// Returns a resource to the pool.
         /// </summary>
         /// <param name="list">List to return.</param>
-        public static void GiveBack(RawList<float> list)
+        public static void GiveBack(RawList<sfloat> list)
         {
             list.Clear();
             SubPoolFloatList.GiveBack(list);

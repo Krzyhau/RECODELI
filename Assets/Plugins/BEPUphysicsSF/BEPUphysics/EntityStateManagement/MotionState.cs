@@ -1,5 +1,6 @@
 ﻿ 
 using System;
+using SoftFloat;
 using BEPUutilities;
 
 namespace BEPUphysics.EntityStateManagement

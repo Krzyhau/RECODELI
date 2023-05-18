@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.Entities;
@@ -46,14 +47,14 @@ namespace BEPUphysics.Character
         /// <param name="length">Length of the ray to use in units of the ray's length.</param>
         /// <param name="earliestHit">Earliest intersection location and information.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, float length, out RayHit earliestHit)
+        public bool RayCast(Ray ray, sfloat length, out RayHit earliestHit)
         {
             earliestHit = new RayHit();
-            earliestHit.T = float.MaxValue;
+            earliestHit.T = sfloat.MaxValue;
             foreach (var collidable in characterBody.CollisionInformation.OverlappedCollidables)
             {
                 //Check to see if the collidable is hit by the ray.
-                float t;
+                sfloat t;
                 if (ray.Intersects(ref collidable.boundingBox, out t) && t < length)
                 {
                     //Is it an earlier hit than the current earliest?
@@ -64,7 +65,7 @@ namespace BEPUphysics.Character
                     }
                 }
             }
-            if (earliestHit.T == float.MaxValue)
+            if (earliestHit.T == sfloat.MaxValue)
                 return false;
             return true;
 
@@ -78,15 +79,15 @@ namespace BEPUphysics.Character
         /// <param name="earliestHit">Earliest intersection location and information.</param>
         /// <param name="hitObject">Collidable intersected by the ray, if any.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCast(Ray ray, float length, out RayHit earliestHit, out Collidable hitObject)
+        public bool RayCast(Ray ray, sfloat length, out RayHit earliestHit, out Collidable hitObject)
         {
             earliestHit = new RayHit();
-            earliestHit.T = float.MaxValue;
+            earliestHit.T = sfloat.MaxValue;
             hitObject = null;
             foreach (var collidable in characterBody.CollisionInformation.OverlappedCollidables)
             {
                 //Check to see if the collidable is hit by the ray.
-                float t;
+                sfloat t;
                 if (ray.Intersects(ref collidable.boundingBox, out t) && t < length)
                 {
                     //Is it an earlier hit than the current earliest?
@@ -98,7 +99,7 @@ namespace BEPUphysics.Character
                     }
                 }
             }
-            if (earliestHit.T == float.MaxValue)
+            if (earliestHit.T == sfloat.MaxValue)
                 return false;
             return true;
 
@@ -110,12 +111,12 @@ namespace BEPUphysics.Character
         /// <param name="ray">Ray to test.</param>
         /// <param name="length">Length of the ray to use in units of the ray's length.</param>
         /// <returns>Whether or not the ray hit anything.</returns>
-        public bool RayCastHitAnything(Ray ray, float length)
+        public bool RayCastHitAnything(Ray ray, sfloat length)
         {
             foreach (var collidable in characterBody.CollisionInformation.OverlappedCollidables)
             {
                 //Check to see if the collidable is hit by the ray.
-                float t;
+                sfloat t;
                 if (ray.Intersects(ref collidable.boundingBox, out t) && t < length)
                 {
                     RayHit hit;
@@ -140,7 +141,7 @@ namespace BEPUphysics.Character
         /// <param name="supportContacts">Output contacts that would provide support.</param>
         /// <param name="sideContacts">Output contacts on the sides of the query object.</param>
         /// <param name="headContacts">Output contacts on the head of the query object.</param>
-        /// <param name="forceStandardPairsToBeQueries">An extremely hacky control parameter that makes any mesh-cylinder pair treat the mesh as double sided. Useful for not going through the ceiling when changing stances.</param>
+        /// <param name="forceStandardPairsToBeQueries">An extremely hacky control parameter that makes any mesh-cylinder pair treat the mesh as sfloat sided. Useful for not going through the ceiling when changing stances.</param>
         public void QueryContacts(EntityCollidable queryObject,
             ref QuickList<CharacterContact> tractionContacts, ref QuickList<CharacterContact> supportContacts, ref QuickList<CharacterContact> sideContacts, ref QuickList<CharacterContact> headContacts,
             bool forceStandardPairsToBeQueries = false)
@@ -174,7 +175,7 @@ namespace BEPUphysics.Character
                                 standardPair.ContactManifold.IsQuery = true;
                         }
                         pairHandler.SuppressEvents = true;
-                        pairHandler.UpdateCollision(0);
+                        pairHandler.UpdateCollision(sfloat.Zero);
                         pairHandler.SuppressEvents = false;
                         if (forceStandardPairsToBeQueries)
                         {
@@ -210,7 +211,7 @@ namespace BEPUphysics.Character
         public void AnalyzeSupportState(ref QuickList<CharacterContact> tractionContacts, ref QuickList<CharacterContact> supportContacts,
                                         out CharacterContactPositionState state, out CharacterContact supportContact)
         {
-            float maxDepth = -float.MaxValue;
+            sfloat maxDepth = -sfloat.MaxValue;
             int deepestIndex = -1;
             if (tractionContacts.Count > 0)
             {
@@ -255,7 +256,7 @@ namespace BEPUphysics.Character
                 //It's too deep.
                 state = CharacterContactPositionState.TooDeep;
             }
-            else if (maxDepth < 0)
+            else if (maxDepth < sfloat.Zero)
             {
                 //The depth is negative, meaning it's separated.  This shouldn't happen with the initial implementation of the character controller,
                 //but this case could conceivably occur in other usages of a system like this (or in a future version of the character),

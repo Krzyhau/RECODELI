@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.Manifolds;
@@ -170,7 +171,7 @@ namespace BEPUphysics
         {
             if (SubPoolTriangleShape == null)
                 SubPoolTriangleShape = new UnsafeResourcePool<TriangleShape>();
-            triangle.collisionMargin = 0;
+            triangle.collisionMargin = sfloat.Zero;
             triangle.sidedness = TriangleSidedness.DoubleSided;
             SubPoolTriangleShape.GiveBack(triangle);
         }

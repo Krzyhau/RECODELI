@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms.GJK;
@@ -117,7 +118,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, float dt)
+        public override void UpdateTimeOfImpact(Collidable requester, sfloat dt)
         {
             var overlap = BroadPhaseOverlap;
             var meshMode = mobileMesh.entity == null ? PositionUpdateMode.Discrete : mobileMesh.entity.PositionUpdateMode;
@@ -160,17 +161,17 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
                 }
                 Vector3.Multiply(ref velocity, dt, out velocity);
-                float velocitySquared = velocity.LengthSquared();
+                sfloat velocitySquared = velocity.LengthSquared();
 
                 var minimumRadius = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
-                timeOfImpact = 1;
+                timeOfImpact = sfloat.One;
                 if (minimumRadius * minimumRadius < velocitySquared)
                 {
                     TriangleSidedness sidedness = mobileMesh.Shape.Sidedness;
                     Matrix3x3 orientation;
                     Matrix3x3.CreateFromQuaternion(ref mobileMesh.worldTransform.Orientation, out orientation);
                     var triangle = PhysicsThreadResources.GetTriangle();
-                    triangle.collisionMargin = 0;
+                    triangle.collisionMargin = sfloat.Zero;
                     //Spherecast against all triangles to find the earliest time.
                     for (int i = 0; i < MeshManifold.overlappedTriangles.Count; i++)
                     {
@@ -200,12 +201,12 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                                 Vector3.Subtract(ref triangle.vC, ref triangle.vA, out AC);
                                 Vector3 normal;
                                 Vector3.Cross(ref AB, ref AC, out normal);
-                                float dot;
+                                sfloat dot;
                                 Vector3.Dot(ref normal, ref rayHit.Normal, out dot);
                                 //Only perform sweep if the object is in danger of hitting the object.
                                 //Triangles can be one sided, so check the impact normal against the triangle normal.
-                                if (sidedness == TriangleSidedness.Counterclockwise && dot < 0 ||
-                                    sidedness == TriangleSidedness.Clockwise && dot > 0)
+                                if (sidedness == TriangleSidedness.Counterclockwise && dot < sfloat.Zero ||
+                                    sidedness == TriangleSidedness.Clockwise && dot > sfloat.Zero)
                                 {
                                     timeOfImpact = rayHit.T;
                                 }
@@ -230,8 +231,8 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         {
             info.Contact = MeshManifold.contacts.Elements[index];
             //Find the contact's normal and friction forces.
-            info.FrictionImpulse = 0;
-            info.NormalImpulse = 0;
+            info.FrictionImpulse = sfloat.Zero;
+            info.NormalImpulse = sfloat.Zero;
             for (int i = 0; i < contactConstraint.frictionConstraints.Count; i++)
             {
                 if (contactConstraint.frictionConstraints.Elements[i].PenetrationConstraint.contact == info.Contact)

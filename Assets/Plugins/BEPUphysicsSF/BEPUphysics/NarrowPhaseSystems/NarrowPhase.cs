@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
@@ -182,31 +183,31 @@ namespace BEPUphysics.NarrowPhaseSystems
         /// <summary>
         /// Gets the time used in updating the pair handler states.
         /// </summary>
-        public double PairUpdateTime
+        public sfloat PairUpdateTime
         {
             get
             {
-                return (endPairs - startPairs) / (double)Stopwatch.Frequency;
+                return (endPairs - startPairs) / (sfloat)Stopwatch.Frequency;
             }
         }
         /// <summary>
         /// Gets the time used in scanning for out of date pairs.
         /// </summary>
-        public double StaleOverlapRemovalTime
+        public sfloat StaleOverlapRemovalTime
         {
             get
             {
-                return (endStale - endPairs) / (double)Stopwatch.Frequency;
+                return (endStale - endPairs) / (sfloat)Stopwatch.Frequency;
             }
         }
         /// <summary>
         /// Gets the time used in flushing new pairs into the simulation.
         /// </summary>
-        public double FlushNewPairsTime
+        public sfloat FlushNewPairsTime
         {
             get
             {
-                return (endFlushNew - endStale) / (double)Stopwatch.Frequency;
+                return (endFlushNew - endStale) / (sfloat)Stopwatch.Frequency;
             }
         }
 

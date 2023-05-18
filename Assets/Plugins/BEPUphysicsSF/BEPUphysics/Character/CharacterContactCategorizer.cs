@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using System.Diagnostics;
 using BEPUphysics.BroadPhaseEntries;
@@ -15,20 +16,20 @@ namespace BEPUphysics.Character
     /// </summary>
     public class CharacterContactCategorizer
     {
-        private float tractionThreshold;
-        private float supportThreshold;
-        private float headThreshold;
+        private sfloat tractionThreshold;
+        private sfloat supportThreshold;
+        private sfloat headThreshold;
         /// <summary>
         /// Gets or sets the value compared against the result of dot(outward facing contact normal, character down direction) to determine if a character has traction because of a contact.
         /// A value near 1 implies that the character will have traction only when the support normal is almost aligned with the character's vertical axis.
         /// A value near epsilon implies that the character can walk up extremely steep slopes with traction.
         /// </summary>
-        public float TractionThreshold
+        public sfloat TractionThreshold
         {
             get { return tractionThreshold; }
             set
             {
-                if (value < Toolbox.BigEpsilon || value > 1)
+                if (value < Toolbox.BigEpsilon || value > sfloat.One)
                     throw new ArgumentException("Traction threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
                 tractionThreshold = value;
             }
@@ -40,12 +41,12 @@ namespace BEPUphysics.Character
         /// A value near epsilon implies that the character will consider very steep surfaces as supports.
         /// Should be less than or equal to the TractionThreshold.
         /// </summary>
-        public float SupportThreshold
+        public sfloat SupportThreshold
         {
             get { return supportThreshold; }
             set
             {
-                if (value < Toolbox.BigEpsilon || value > 1)
+                if (value < Toolbox.BigEpsilon || value > sfloat.One)
                     throw new ArgumentException("Support threshold values must range from " + Toolbox.BigEpsilon + " to 1, inclusive.");
                 supportThreshold = value;
             }
@@ -56,12 +57,12 @@ namespace BEPUphysics.Character
         /// A value near -1 implies that the contact will only be considered a 'head' contact when the support normal is almost aligned with the character's vertical axis.
         /// A value near -epsilon implies that almost all upper contacts will be considered head contacts.
         /// </summary>
-        public float HeadThreshold
+        public sfloat HeadThreshold
         {
             get { return headThreshold; }
             set
             {
-                if (value < -1 || value > -Toolbox.BigEpsilon)
+                if (value < sfloat.MinusOne || value > -Toolbox.BigEpsilon)
                     throw new ArgumentException("Head threshold values must range from -1 to " + -Toolbox.BigEpsilon + ", inclusive.");
                 headThreshold = value;
             }
@@ -70,18 +71,18 @@ namespace BEPUphysics.Character
         /// <summary>
         /// Gets or sets the maximum slope that a character can have traction on.
         /// </summary>
-        public float MaximumTractionSlope
+        public sfloat MaximumTractionSlope
         {
-            get { return (float)Math.Acos(TractionThreshold); }
-            set { TractionThreshold = (float)Math.Cos(value); }
+            get { return libm.acosf(TractionThreshold); }
+            set { TractionThreshold = libm.cosf(value); }
         }
         /// <summary>
         /// Gets or sets the maximum slope that a character can be supported by.
         /// </summary>
-        public float MaximumSupportSlope
+        public sfloat MaximumSupportSlope
         {
-            get { return (float)Math.Acos(SupportThreshold); }
-            set { SupportThreshold = (float)Math.Cos(value); }
+            get { return libm.acosf(SupportThreshold); }
+            set { SupportThreshold = libm.cosf(value); }
         }
 
         /// <summary>
@@ -92,13 +93,15 @@ namespace BEPUphysics.Character
         /// <param name="headThreshold">Value compared against the result of dot(outward facing contact normal, character down direction) to determine if a contact is on top of the character.
         /// A value near -1 implies that the contact will only be considered a 'head' contact when the support normal is almost aligned with the character's vertical axis.
         /// A value near -epsilon implies that almost all upper contacts will be considered head contacts.</param>
-        public CharacterContactCategorizer(float maximumTractionSlope, float maximumSupportSlope, float headThreshold = -.01f)
+        public CharacterContactCategorizer(sfloat maximumTractionSlope, sfloat maximumSupportSlope, sfloat headThreshold)
         {
             MaximumTractionSlope = maximumTractionSlope;
             MaximumSupportSlope = maximumSupportSlope;
             HeadThreshold = headThreshold;
             Debug.Assert(SupportThreshold <= TractionThreshold, "The character's support threshold should be no higher than the traction threshold for the traction threshold to be meaningful.");
         }
+        public CharacterContactCategorizer(sfloat maximumTractionSlope, sfloat maximumSupportSlope) 
+            : this(maximumTractionSlope, maximumSupportSlope, -(sfloat).01f) { }
 
         /// <summary>
         /// Takes a collision pair and distributes its contacts into categories according to the categorizer's thresholds.
@@ -129,14 +132,14 @@ namespace BEPUphysics.Character
                 //If we were to use such a speculative contact for support, the character would find supports
                 //in situations where it should not.
                 //This can actually be useful in some situations, but keep it disabled by default.
-                if (contactInfo.Pair.CollisionRule != CollisionRule.Normal || characterContact.Contact.PenetrationDepth < 0)
+                if (contactInfo.Pair.CollisionRule != CollisionRule.Normal || characterContact.Contact.PenetrationDepth < sfloat.Zero)
                     continue;
 
-                float dot;
+                sfloat dot;
                 Vector3 offset;
                 Vector3.Subtract(ref characterContact.Contact.Position, ref characterCollidable.worldTransform.Position, out offset);
                 Vector3.Dot(ref characterContact.Contact.Normal, ref offset, out dot);
-                if (dot < 0)
+                if (dot < sfloat.Zero)
                 {
                     //The normal should face outward.
                     Vector3.Negate(ref characterContact.Contact.Normal, out characterContact.Contact.Normal);

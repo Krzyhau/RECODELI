@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
@@ -99,7 +100,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, float dt)
+        public override void UpdateTimeOfImpact(Collidable requester, sfloat dt)
         {
             var overlap = BroadPhaseOverlap;
             var triangleMode = triangle.entity == null ? PositionUpdateMode.Discrete : triangle.entity.PositionUpdateMode;
@@ -139,10 +140,10 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                     Vector3.Subtract(ref triangle.entity.linearVelocity, ref convex.entity.linearVelocity, out velocity);
                 }
                 Vector3.Multiply(ref velocity, dt, out velocity);
-                float velocitySquared = velocity.LengthSquared();
+                sfloat velocitySquared = velocity.LengthSquared();
 
                 var minimumRadiusA = convex.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
-                timeOfImpact = 1;
+                timeOfImpact = sfloat.One;
                 if (minimumRadiusA * minimumRadiusA < velocitySquared)
                 {
                     //Spherecast A against B.
@@ -159,10 +160,10 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                             Vector3 normal;
                             Vector3.Cross(ref AB, ref AC, out normal);
 
-                            float dot;
+                            sfloat dot;
                             Vector3.Dot(ref rayHit.Normal, ref normal, out dot);
-                            if (triangle.Shape.sidedness == TriangleSidedness.Counterclockwise && dot < 0 ||
-                                triangle.Shape.sidedness == TriangleSidedness.Clockwise && dot > 0)
+                            if (triangle.Shape.sidedness == TriangleSidedness.Counterclockwise && dot < sfloat.Zero ||
+                                triangle.Shape.sidedness == TriangleSidedness.Clockwise && dot > sfloat.Zero)
                             {
                                 timeOfImpact = rayHit.T;
                             }
@@ -185,7 +186,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 //    {
                 //        if (triangle.Shape.sidedness != TriangleSidedness.DoubleSided)
                 //        {
-                //            float dot;
+                //            sfloat dot;
                 //            Vector3.Dot(ref rayHit.Normal, ref normal, out dot);
                 //            if (dot > 0)
                 //            {
@@ -205,8 +206,8 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 //from a previous frame where CCD took place and a contact should have been created
                 //to deal with interpenetrating velocity.  Sometimes that contact isn't sufficient,
                 //but it's good enough.
-                if (timeOfImpact == 0)
-                    timeOfImpact = 1;
+                if (timeOfImpact == sfloat.Zero)
+                    timeOfImpact = sfloat.One;
             }
 
         }

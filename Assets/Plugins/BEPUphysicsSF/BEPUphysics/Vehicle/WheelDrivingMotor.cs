@@ -3,6 +3,7 @@ using BEPUphysics.Entities;
  
 using BEPUphysics.Materials;
 using BEPUutilities;
+using SoftFloat;
 
 namespace BEPUphysics.Vehicle
 {
@@ -31,35 +32,35 @@ namespace BEPUphysics.Vehicle
         /// <param name="usingKineticFriction">True if the friction coefficients passed into the blender are kinetic coefficients, false otherwise.</param>
         /// <param name="wheel">Wheel being blended.</param>
         /// <returns>Blended friction coefficient.</returns>
-        public static float BlendFriction(float wheelFriction, float materialFriction, bool usingKineticFriction, Wheel wheel)
+        public static sfloat BlendFriction(sfloat wheelFriction, sfloat materialFriction, bool usingKineticFriction, Wheel wheel)
         {
             return wheelFriction * materialFriction;
         }
 
         #endregion
 
-        internal float accumulatedImpulse;
+        internal sfloat accumulatedImpulse;
 
-        //float linearBX, linearBY, linearBZ;
-        internal float angularAX, angularAY, angularAZ;
-        internal float angularBX, angularBY, angularBZ;
+        //sfloat linearBX, linearBY, linearBZ;
+        internal sfloat angularAX, angularAY, angularAZ;
+        internal sfloat angularBX, angularBY, angularBZ;
         internal bool isActive = true;
-        internal float linearAX, linearAY, linearAZ;
-        private float currentFrictionCoefficient;
+        internal sfloat linearAX, linearAY, linearAZ;
+        private sfloat currentFrictionCoefficient;
         internal Vector3 forceAxis;
-        private float gripFriction;
+        private sfloat gripFriction;
         private WheelFrictionBlender gripFrictionBlender = DefaultGripFrictionBlender;
-        private float maxMotorForceDt;
-        private float maximumBackwardForce = float.MaxValue;
-        private float maximumForwardForce = float.MaxValue;
+        private sfloat maxMotorForceDt;
+        private sfloat maximumBackwardForce = sfloat.MaxValue;
+        private sfloat maximumForwardForce = sfloat.MaxValue;
         internal SolverSettings solverSettings = new SolverSettings();
-        private float targetSpeed;
+        private sfloat targetSpeed;
         private Wheel wheel;
         internal int numIterationsAtZeroImpulse;
         private Entity vehicleEntity, supportEntity;
 
         //Inverse effective mass matrix
-        internal float velocityToImpulse;
+        internal sfloat velocityToImpulse;
         private bool supportIsDynamic;
 
         /// <summary>
@@ -68,7 +69,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="gripFriction">Friction coefficient of the wheel.  Blended with the ground's friction coefficient and normal force to determine a maximum force.</param>
         /// <param name="maximumForwardForce">Maximum force that the wheel motor can apply when driving forward (a target speed greater than zero).</param>
         /// <param name="maximumBackwardForce">Maximum force that the wheel motor can apply when driving backward (a target speed less than zero).</param>
-        public WheelDrivingMotor(float gripFriction, float maximumForwardForce, float maximumBackwardForce)
+        public WheelDrivingMotor(sfloat gripFriction, sfloat maximumForwardForce, sfloat maximumBackwardForce)
         {
             GripFriction = gripFriction;
             MaximumForwardForce = maximumForwardForce;
@@ -84,7 +85,7 @@ namespace BEPUphysics.Vehicle
         /// Gets the coefficient of grip friction between the wheel and support.
         /// This coefficient is the blended result of the supporting entity's friction and the wheel's friction.
         /// </summary>
-        public float BlendedCoefficient
+        public sfloat BlendedCoefficient
         {
             get { return currentFrictionCoefficient; }
         }
@@ -102,10 +103,10 @@ namespace BEPUphysics.Vehicle
         /// This coefficient and the supporting entity's coefficient of friction will be 
         /// taken into account to determine the used coefficient at any given time.
         /// </summary>
-        public float GripFriction
+        public sfloat GripFriction
         {
             get { return gripFriction; }
-            set { gripFriction = MathHelper.Max(value, 0); }
+            set { gripFriction = MathHelper.Max(value, sfloat.Zero); }
         }
 
         /// <summary>
@@ -120,7 +121,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum force that the wheel motor can apply when driving backward (a target speed less than zero).
         /// </summary>
-        public float MaximumBackwardForce
+        public sfloat MaximumBackwardForce
         {
             get { return maximumBackwardForce; }
             set { maximumBackwardForce = value; }
@@ -129,7 +130,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the maximum force that the wheel motor can apply when driving forward (a target speed greater than zero).
         /// </summary>
-        public float MaximumForwardForce
+        public sfloat MaximumForwardForce
         {
             get { return maximumForwardForce; }
             set { maximumForwardForce = value; }
@@ -138,7 +139,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the target speed of this wheel.
         /// </summary>
-        public float TargetSpeed
+        public sfloat TargetSpeed
         {
             get { return targetSpeed; }
             set { targetSpeed = value; }
@@ -147,7 +148,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets the force this wheel's motor is applying.
         /// </summary>
-        public float TotalImpulse
+        public sfloat TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -177,11 +178,11 @@ namespace BEPUphysics.Vehicle
         /// Gets the relative velocity between the ground and wheel.
         /// </summary>
         /// <returns>Relative velocity between the ground and wheel.</returns>
-        public float RelativeVelocity
+        public sfloat RelativeVelocity
         {
             get
             {
-                float velocity = 0;
+                sfloat velocity = sfloat.Zero;
                 if (vehicleEntity != null)
                     velocity += vehicleEntity.linearVelocity.X * linearAX + vehicleEntity.linearVelocity.Y * linearAY + vehicleEntity.linearVelocity.Z * linearAZ +
                                   vehicleEntity.angularVelocity.X * angularAX + vehicleEntity.angularVelocity.Y * angularAY + vehicleEntity.angularVelocity.Z * angularAZ;
@@ -192,26 +193,26 @@ namespace BEPUphysics.Vehicle
             }
         }
 
-        internal float ApplyImpulse()
+        internal sfloat ApplyImpulse()
         {
             //Compute relative velocity
-            float lambda = (RelativeVelocity
+            sfloat lambda = (RelativeVelocity
                             - targetSpeed) //Add in the extra goal speed
                            * velocityToImpulse; //convert to impulse
 
 
             //Clamp accumulated impulse
-            float previousAccumulatedImpulse = accumulatedImpulse;
+            sfloat previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse += lambda;
             //Don't brake, and take into account the motor's maximum force.
-            if (targetSpeed > 0)
-                accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, 0, maxMotorForceDt); //MathHelper.Min(MathHelper.Max(accumulatedImpulse, 0), myMaxMotorForceDt);
-            else if (targetSpeed < 0)
-                accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, maxMotorForceDt, 0); //MathHelper.Max(MathHelper.Min(accumulatedImpulse, 0), myMaxMotorForceDt);
+            if (targetSpeed > sfloat.Zero)
+                accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, sfloat.Zero, maxMotorForceDt); //MathHelper.Min(MathHelper.Max(accumulatedImpulse, 0), myMaxMotorForceDt);
+            else if (targetSpeed < sfloat.Zero)
+                accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, maxMotorForceDt, sfloat.Zero); //MathHelper.Max(MathHelper.Min(accumulatedImpulse, 0), myMaxMotorForceDt);
             else
-                accumulatedImpulse = 0;
+                accumulatedImpulse = sfloat.Zero;
             //Friction
-            float maxForce = currentFrictionCoefficient * wheel.suspension.accumulatedImpulse;
+            sfloat maxForce = currentFrictionCoefficient * wheel.suspension.accumulatedImpulse;
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse, maxForce, -maxForce);
             lambda = accumulatedImpulse - previousAccumulatedImpulse;
 
@@ -249,7 +250,7 @@ namespace BEPUphysics.Vehicle
             return lambda;
         }
 
-        internal void PreStep(float dt)
+        internal void PreStep(sfloat dt)
         {
             vehicleEntity = wheel.Vehicle.Body;
             supportEntity = wheel.SupportingEntity;
@@ -274,10 +275,10 @@ namespace BEPUphysics.Vehicle
             angularBZ = (linearAX * wheel.rb.Y) - (linearAY * wheel.rb.X);
 
             //Compute inverse effective mass matrix
-            float entryA, entryB;
+            sfloat entryA, entryB;
 
             //these are the transformed coordinates
-            float tX, tY, tZ;
+            sfloat tX, tY, tZ;
             if (vehicleEntity.isDynamic)
             {
                 tX = angularAX * vehicleEntity.inertiaTensorInverse.M11 + angularAY * vehicleEntity.inertiaTensorInverse.M21 + angularAZ * vehicleEntity.inertiaTensorInverse.M31;
@@ -286,7 +287,7 @@ namespace BEPUphysics.Vehicle
                 entryA = tX * angularAX + tY * angularAY + tZ * angularAZ + vehicleEntity.inverseMass;
             }
             else
-                entryA = 0;
+                entryA = sfloat.Zero;
 
             if (supportIsDynamic)
             {
@@ -296,14 +297,14 @@ namespace BEPUphysics.Vehicle
                 entryB = tX * angularBX + tY * angularBY + tZ * angularBZ + supportEntity.inverseMass;
             }
             else
-                entryB = 0;
+                entryB = sfloat.Zero;
 
-            velocityToImpulse = -1 / (entryA + entryB); //Softness?
+            velocityToImpulse = sfloat.MinusOne / (entryA + entryB); //Softness?
 
             currentFrictionCoefficient = gripFrictionBlender(gripFriction, wheel.supportMaterial.kineticFriction, true, wheel);
 
             //Compute the maximum force
-            if (targetSpeed > 0)
+            if (targetSpeed > sfloat.Zero)
                 maxMotorForceDt = maximumForwardForce * dt;
             else
                 maxMotorForceDt = -maximumBackwardForce * dt;

@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUutilities;
  
 
@@ -12,7 +13,7 @@ namespace BEPUphysics.CollisionTests
         /// <summary>
         /// Amount of penetration between the two objects.
         /// </summary>
-        public float PenetrationDepth;
+        public sfloat PenetrationDepth;
 
         /// <summary>
         /// Identifier used to link contact data with existing contacts and categorize members of a manifold.

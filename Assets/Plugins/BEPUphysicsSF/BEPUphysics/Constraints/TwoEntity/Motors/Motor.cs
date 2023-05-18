@@ -1,33 +1,35 @@
-﻿namespace BEPUphysics.Constraints.TwoEntity.Motors
+﻿using SoftFloat;
+
+namespace BEPUphysics.Constraints.TwoEntity.Motors
 {
     /// <summary>
     /// Superclass of constraints which do work and change the velocity of connected entities, but have no specific position target.
     /// </summary>
     public abstract class Motor : TwoEntityConstraint
     {
-        protected float maxForceDt = float.MaxValue;
-        protected float maxForceDtSquared = float.MaxValue;
+        protected sfloat maxForceDt = sfloat.MaxValue;
+        protected sfloat maxForceDtSquared = sfloat.MaxValue;
 
         /// <summary>
         /// Softness divided by the timestep to maintain timestep independence.
         /// </summary>
-        internal float usedSoftness;
+        internal sfloat usedSoftness;
 
         /// <summary>
         /// Computes the maxForceDt and maxForceDtSquared fields.
         /// </summary>
-        protected void ComputeMaxForces(float maxForce, float dt)
+        protected void ComputeMaxForces(sfloat maxForce, sfloat dt)
         {
             //Determine maximum force
-            if (maxForce < float.MaxValue)
+            if (maxForce < sfloat.MaxValue)
             {
                 maxForceDt = maxForce * dt;
                 maxForceDtSquared = maxForceDt * maxForceDt;
             }
             else
             {
-                maxForceDt = float.MaxValue;
-                maxForceDtSquared = float.MaxValue;
+                maxForceDt = sfloat.MaxValue;
+                maxForceDtSquared = sfloat.MaxValue;
             }
         }
     }

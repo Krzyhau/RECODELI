@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using System.Diagnostics;
 using BEPUutilities.ResourceManagement;
@@ -105,7 +106,7 @@ namespace BEPUutilities.DataStructures
 
         private void Resize(int newObjectPoolIndex, int newTablePoolIndex)
         {
-            //Just double the size of the set.
+            //Just sfloat the size of the set.
             var oldSet = this;
             this = new QuickSet<T>(elementPool, tablePool, newObjectPoolIndex, newTablePoolIndex - newObjectPoolIndex);
             for (int i = oldSet.count - 1; i >= 0; --i)

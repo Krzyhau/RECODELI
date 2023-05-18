@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Diagnostics;
 
 namespace BEPUutilities
@@ -9,13 +10,13 @@ namespace BEPUutilities
     public static class MathChecker
     {
         /// <summary>
-        /// Checks a single float for validity.  Separate from the extension method to avoid throwing exceptions deep in a call tree.
+        /// Checks a single sfloat for validity.  Separate from the extension method to avoid throwing exceptions deep in a call tree.
         /// </summary>
         /// <param name="f">Value to validate.</param>
         /// <returns>True if the value is invalid, false if it is valid.</returns>
-        private static bool IsInvalid(float f)
+        private static bool IsInvalid(sfloat f)
         {
-            return float.IsNaN(f) || float.IsInfinity(f);
+            return f.IsNaN() || f.IsInfinity();
         }
 
         /// <summary>
@@ -23,7 +24,7 @@ namespace BEPUutilities
         /// This is only run when the CHECKMATH symbol is defined.
         /// </summary>
         [Conditional("CHECKMATH")]
-        public static void Validate(this float f)
+        public static void Validate(this sfloat f)
         {
             if (IsInvalid(f))
             {

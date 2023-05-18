@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.Constraints.SingleEntity;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
@@ -99,7 +100,7 @@ namespace BEPUphysics.Paths.PathFollowing
         /// <param name="end">Final position.</param>
         /// <param name="dt">Time over which the angular velocity is to be applied.</param>
         /// <returns>Angular velocity to reach the goal in time.</returns>
-        public static Vector3 GetLinearVelocity(Vector3 start, Vector3 end, float dt)
+        public static Vector3 GetLinearVelocity(Vector3 start, Vector3 end, sfloat dt)
         {
             Vector3 offset;
             Vector3.Subtract(ref end, ref start, out offset);
@@ -127,7 +128,7 @@ namespace BEPUphysics.Paths.PathFollowing
         /// Called automatically by the space.
         /// </summary>
         /// <param name="dt">Simulation timestep.</param>
-        void IDuringForcesUpdateable.Update(float dt)
+        void IDuringForcesUpdateable.Update(sfloat dt)
         {
             if (Entity != LinearMotor.Entity)
                 throw new InvalidOperationException(

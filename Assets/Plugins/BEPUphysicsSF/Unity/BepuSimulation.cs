@@ -1,3 +1,4 @@
+using SoftFloat;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,9 +30,9 @@ namespace BEPUphysics.Unity
             space.TimeStepSettings = new TimeStepSettings()
             {
                 MaximumTimeStepsPerFrame = maxStepsPerFrame,
-                TimeStepDuration = timeStep
+                TimeStepDuration = (sfloat)timeStep
             };
-            space.ForceUpdater.Gravity = new BEPUutilities.Vector3(0, -9.81f, 0);
+            space.ForceUpdater.Gravity = new BEPUutilities.Vector3(sfloat.Zero, (sfloat)(-9.81f), sfloat.Zero);
 
             rigidbodies = GetComponentsInChildren<BepuRigidbody>().ToList();
 

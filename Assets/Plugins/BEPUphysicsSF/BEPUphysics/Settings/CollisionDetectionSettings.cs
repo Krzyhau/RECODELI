@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 namespace BEPUphysics.Settings
 {
     ///<summary>
@@ -8,7 +9,7 @@ namespace BEPUphysics.Settings
     {
 
 
-        internal static float ContactInvalidationLengthSquared = .01f;
+        internal static sfloat ContactInvalidationLengthSquared = (sfloat).01f;
 
         /// <summary>
         /// For persistent manifolds, contacts are represented by an offset in local space of two colliding bodies.
@@ -18,11 +19,11 @@ namespace BEPUphysics.Settings
         /// If the world is smaller or larger than 'normal' for the engine, adjusting this value proportionally can improve contact caching behavior.
         /// The default value of .1f works well for worlds that operate on the order of 1 unit.
         /// </summary>
-        public static float ContactInvalidationLength
+        public static sfloat ContactInvalidationLength
         {
             get
             {
-                return (float)Math.Sqrt(ContactInvalidationLengthSquared);
+                return libm.sqrtf(ContactInvalidationLengthSquared);
             }
             set
             {
@@ -31,17 +32,17 @@ namespace BEPUphysics.Settings
         }
 
 
-        internal static float ContactMinimumSeparationDistanceSquared = .0009f;
+        internal static sfloat ContactMinimumSeparationDistanceSquared = (sfloat).0009f;
         /// <summary>
         /// In persistent manifolds, if two contacts are too close together, then 
         /// the system will not use one of them.  This avoids redundant constraints.
         /// Defaults to .03f.
         /// </summary>
-        public static float ContactMinimumSeparationDistance
+        public static sfloat ContactMinimumSeparationDistance
         {
             get
             {
-                return (float)Math.Sqrt(ContactMinimumSeparationDistanceSquared);
+                return libm.sqrtf(ContactMinimumSeparationDistanceSquared);
             }
             set
             {
@@ -49,21 +50,21 @@ namespace BEPUphysics.Settings
             }
         }
 
-        internal static float nonconvexNormalDotMinimum = .99f;
+        internal static sfloat nonconvexNormalDotMinimum = (sfloat).99f;
         /// <summary>
         /// In regular convex manifolds, two contacts are considered redundant if their positions are too close together.  
         /// In nonconvex manifolds, the normal must also be tested, since a contact in the same location could have a different normal.
         /// This property is the minimum angle in radians between normals below which contacts are considered redundant.
         /// </summary>
-        public static float NonconvexNormalAngleDifferenceMinimum
+        public static sfloat NonconvexNormalAngleDifferenceMinimum
         {
             get
             {
-                return (float)Math.Acos(nonconvexNormalDotMinimum);
+                return libm.acosf(nonconvexNormalDotMinimum);
             }
             set
             {
-                nonconvexNormalDotMinimum = (float)Math.Cos(value);
+                nonconvexNormalDotMinimum = libm.cosf(value);
             }
         }
 
@@ -71,20 +72,20 @@ namespace BEPUphysics.Settings
         /// The default amount of allowed penetration into the margin before position correcting impulses will be applied.
         /// Defaults to .01f.
         /// </summary>
-        public static float AllowedPenetration = .01f;
+        public static sfloat AllowedPenetration = (sfloat).01f;
 
         /// <summary>
         /// Default collision margin around objects.  Margins help prevent objects from interpenetrating and improve stability.
         /// Defaults to .04f.
         /// </summary>
-        public static float DefaultMargin = .04f;
+        public static sfloat DefaultMargin = (sfloat).04f;
 
-        internal static float maximumContactDistance = .1f;
+        internal static sfloat maximumContactDistance = (sfloat).1f;
         /// <summary>
         /// Maximum distance between the surfaces defining a contact point allowed before removing the contact.
         /// Defaults to .1f.
         /// </summary>
-        public static float MaximumContactDistance
+        public static sfloat MaximumContactDistance
         {
             get
             {
@@ -92,7 +93,7 @@ namespace BEPUphysics.Settings
             }
             set
             {
-                if (value >= 0)
+                if (value >= sfloat.Zero)
                     maximumContactDistance = value;
                 else
                     throw new ArgumentException("Distance must be nonnegative.");

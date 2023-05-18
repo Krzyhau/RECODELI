@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUutilities.DataStructures;
 
 namespace BEPUutilities.ResourceManagement

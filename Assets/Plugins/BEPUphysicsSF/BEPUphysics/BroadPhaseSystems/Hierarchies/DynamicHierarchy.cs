@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities.DataStructures;
@@ -56,21 +57,21 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         /// <summary>
         /// Gets the time used in refitting the acceleration structure and making any necessary incremental improvements.
         /// </summary>
-        public double RefitTime
+        public sfloat RefitTime
         {
             get
             {
-                return (endRefit - startRefit) / (double)Stopwatch.Frequency;
+                return (endRefit - startRefit) / (sfloat)Stopwatch.Frequency;
             }
         }
         /// <summary>
         /// Gets the time used in testing the tree against itself to find overlapping pairs. 
         /// </summary>
-        public double OverlapTime
+        public sfloat OverlapTime
         {
             get
             {
-                return (endOverlap - endRefit) / (double)Stopwatch.Frequency;
+                return (endOverlap - endRefit) / (sfloat)Stopwatch.Frequency;
             }
         }
         long startRefit, endRefit;
@@ -225,7 +226,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (offset.X * offset.Y * offset.Z == 0)
+            if (offset.X * offset.Y * offset.Z == sfloat.Zero)
                 entry.UpdateBoundingBox();
             //Could buffer additions to get a better construction in the tree.
             var node = leafNodes.Take();
@@ -326,17 +327,17 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         /// Useful for comparing against other trees.
         /// </summary>
         /// <returns>Cost of the tree.</returns>
-        public float MeasureCostMetric()
+        public sfloat MeasureCostMetric()
         {
             if (root != null)
             {
                 var offset = root.BoundingBox.Max - root.BoundingBox.Min;
                 var volume = offset.X * offset.Y * offset.Z;
-                if (volume < 1e-9f)
-                    return 0;
+                if (volume < (sfloat)1e-9f)
+                    return sfloat.Zero;
                 return root.MeasureSubtreeCost() / volume;
             }
-            return 0;
+            return sfloat.Zero;
         }
         #endregion
     }

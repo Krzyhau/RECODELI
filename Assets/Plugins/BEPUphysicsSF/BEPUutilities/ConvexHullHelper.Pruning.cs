@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using System.Collections.Generic;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
@@ -47,7 +48,7 @@ namespace BEPUutilities
         /// <param name="points">List of points to prune.</param>
         public static void RemoveRedundantPoints(IList<Vector3> points)
         {
-            RemoveRedundantPoints(points, .001);
+            RemoveRedundantPoints(points, (sfloat).001);
         }
 
         /// <summary>
@@ -55,7 +56,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(IList<Vector3> points, double cellSize)
+        public static void RemoveRedundantPoints(IList<Vector3> points, sfloat cellSize)
         {
             var rawPoints = CommonResources.GetVectorList();
             rawPoints.AddRange(points);
@@ -74,7 +75,7 @@ namespace BEPUutilities
         /// <param name="points">List of points to prune.</param>
         public static void RemoveRedundantPoints(RawList<Vector3> points)
         {
-            RemoveRedundantPoints(points, .001);
+            RemoveRedundantPoints(points, (sfloat).001);
         }
 
         /// <summary>
@@ -82,7 +83,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="points">List of points to prune.</param>
         /// <param name="cellSize">Size of cells to determine redundancy.</param>
-        public static void RemoveRedundantPoints(RawList<Vector3> points, double cellSize)
+        public static void RemoveRedundantPoints(RawList<Vector3> points, sfloat cellSize)
         {
             var set = BlockedCellSets.Take();
             for (int i = points.Count - 1; i >= 0; --i)
@@ -90,9 +91,9 @@ namespace BEPUutilities
                 var element = points.Elements[i];
                 var cell = new BlockedCell
                 {
-                    X = (int)Math.Floor(element.X / cellSize),
-                    Y = (int)Math.Floor(element.Y / cellSize),
-                    Z = (int)Math.Floor(element.Z / cellSize) 
+                    X = (int)libm.floorf(element.X / cellSize),
+                    Y = (int)libm.floorf(element.Y / cellSize),
+                    Z = (int)libm.floorf(element.Z / cellSize) 
                 };
                 if (set.Contains(cell))
                 {

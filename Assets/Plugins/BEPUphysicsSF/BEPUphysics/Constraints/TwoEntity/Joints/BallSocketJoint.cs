@@ -1,4 +1,5 @@
 using System;
+using SoftFloat;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -204,17 +205,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
         /// <summary>
         /// Calculates necessary information for velocity solving.
-        /// Called by preStep(float dt)
+        /// Called by preStep(sfloat dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(float dt)
+        public override void Update(sfloat dt)
         {
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
 
 
-            float errorReductionParameter;
-            springSettings.ComputeErrorReductionAndSoftness(dt, 1 / dt, out errorReductionParameter, out softness);
+            sfloat errorReductionParameter;
+            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReductionParameter, out softness);
 
             //Mass Matrix
             Matrix3x3 k;
@@ -265,10 +266,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Multiply(ref error, -errorReductionParameter, out biasVelocity);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            float length = biasVelocity.LengthSquared();
+            sfloat length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                float multiplier = maxCorrectiveVelocity / (float)Math.Sqrt(length);
+                sfloat multiplier = maxCorrectiveVelocity / libm.sqrtf(length);
                 biasVelocity.X *= multiplier;
                 biasVelocity.Y *= multiplier;
                 biasVelocity.Z *= multiplier;
@@ -315,7 +316,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override float SolveIteration()
+        public override sfloat SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();
@@ -366,9 +367,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref tbImpulse);
             }
 
-            return (Math.Abs(lambda.X) +
-                    Math.Abs(lambda.Y) +
-                    Math.Abs(lambda.Z));
+            return (sfloat.Abs(lambda.X) +
+                    sfloat.Abs(lambda.Y) +
+                    sfloat.Abs(lambda.Z));
         }
     }
 }

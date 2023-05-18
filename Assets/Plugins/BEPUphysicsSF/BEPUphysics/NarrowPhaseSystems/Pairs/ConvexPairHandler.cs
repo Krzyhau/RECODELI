@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
@@ -34,7 +35,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, float dt)
+        public override void UpdateTimeOfImpact(Collidable requester, sfloat dt)
         {
             var collidableA = CollidableA as ConvexCollidable;
             var collidableB = CollidableB as ConvexCollidable;
@@ -77,10 +78,10 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                     Vector3.Subtract(ref collidableB.entity.linearVelocity, ref collidableA.entity.linearVelocity, out velocity);
                 }
                 Vector3.Multiply(ref velocity, dt, out velocity);
-                float velocitySquared = velocity.LengthSquared();
+                sfloat velocitySquared = velocity.LengthSquared();
 
                 var minimumRadiusA = collidableA.Shape.MinimumRadius * MotionSettings.CoreShapeScaling;
-                timeOfImpact = 1;
+                timeOfImpact = sfloat.One;
                 if (minimumRadiusA * minimumRadiusA < velocitySquared)
                 {
                     //Spherecast A against B.
@@ -104,8 +105,8 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
                 //from a previous frame where CCD took place and a contact should have been created
                 //to deal with interpenetrating velocity.  Sometimes that contact isn't sufficient,
                 //but it's good enough.
-                if (timeOfImpact == 0)
-                    timeOfImpact = 1;
+                if (timeOfImpact == sfloat.Zero)
+                    timeOfImpact = sfloat.One;
             }
 
         }

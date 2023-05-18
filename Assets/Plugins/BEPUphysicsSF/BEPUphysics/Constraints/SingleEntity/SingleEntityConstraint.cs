@@ -10,7 +10,7 @@ namespace BEPUphysics.Constraints.SingleEntity
     {
         /// <summary>
         /// Number of frames so far at effectively zero corrective impulse.
-        /// Set to zero during every preStep(float dt) call and incremented by checkForEarlyOutIterations(Vector3 impulse).
+        /// Set to zero during every preStep(sfloat dt) call and incremented by checkForEarlyOutIterations(Vector3 impulse).
         /// </summary>
         protected int iterationsAtZeroImpulse;
 

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUutilities.DataStructures;
+using SoftFloat;
 
 namespace BEPUphysics.Constraints.Collision
 {
@@ -168,7 +169,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public sealed override void Update(float dt)
+        public sealed override void Update(sfloat dt)
         {
             for (int i = 0; i < penetrationConstraints.Count; i++)
                 UpdateUpdateable(penetrationConstraints.Elements[i], dt);
@@ -196,7 +197,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public sealed override float SolveIteration()
+        public sealed override sfloat SolveIteration()
         {
 
             int activeConstraints = 0;
@@ -208,7 +209,7 @@ namespace BEPUphysics.Constraints.Collision
 
             isActiveInSolver = activeConstraints > 0;
 
-            return solverSettings.minimumImpulse + 1; //Never let the system deactivate due to low impulses; solver group takes care of itself.
+            return solverSettings.minimumImpulse + sfloat.One; //Never let the system deactivate due to low impulses; solver group takes care of itself.
         }
 
     }

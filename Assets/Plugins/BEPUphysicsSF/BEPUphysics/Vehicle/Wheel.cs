@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.Entities;
 using BEPUphysics.UpdateableSystems;
 
@@ -25,7 +26,7 @@ namespace BEPUphysics.Vehicle
         internal WheelDrivingMotor drivingMotor;
 
 
-        internal Vector3 localForwardDirection = new Vector3(0, 0, -1);
+        internal Vector3 localForwardDirection = new Vector3(sfloat.Zero, sfloat.Zero, sfloat.MinusOne);
 
         internal Vector3 normal;
         internal WheelShape shape;
@@ -298,7 +299,7 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void PreStep(float dt)
+        internal void PreStep(sfloat dt)
         {
             Matrix.CreateFromAxisAngle(ref suspension.localDirection, shape.steeringAngle, out shape.steeringTransform);
             Matrix.TransformNormal(ref localForwardDirection, ref shape.steeringTransform, out worldForwardDirection);
@@ -339,10 +340,10 @@ namespace BEPUphysics.Vehicle
                 drivingMotor.isActive = false;
                 brake.isActive = false;
 
-                suspension.accumulatedImpulse = 0;
-                slidingFriction.accumulatedImpulse = 0;
-                drivingMotor.accumulatedImpulse = 0;
-                brake.accumulatedImpulse = 0;
+                suspension.accumulatedImpulse = sfloat.Zero;
+                slidingFriction.accumulatedImpulse = sfloat.Zero;
+                drivingMotor.accumulatedImpulse = sfloat.Zero;
+                brake.accumulatedImpulse = sfloat.Zero;
             }
         }
 
@@ -368,7 +369,7 @@ namespace BEPUphysics.Vehicle
             if (suspension.isActive)
             {
                 if (++suspension.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Math.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
+                    if (sfloat.Abs(suspension.ApplyImpulse()) < suspension.solverSettings.minimumImpulse)
                     {
                         suspension.numIterationsAtZeroImpulse++;
                         if (suspension.numIterationsAtZeroImpulse > suspension.solverSettings.minimumIterationCount)
@@ -390,7 +391,7 @@ namespace BEPUphysics.Vehicle
             if (slidingFriction.isActive)
             {
                 if (++slidingFriction.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Math.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
+                    if (sfloat.Abs(slidingFriction.ApplyImpulse()) < slidingFriction.solverSettings.minimumImpulse)
                     {
                         slidingFriction.numIterationsAtZeroImpulse++;
                         if (slidingFriction.numIterationsAtZeroImpulse > slidingFriction.solverSettings.minimumIterationCount)
@@ -412,7 +413,7 @@ namespace BEPUphysics.Vehicle
             if (drivingMotor.isActive)
             {
                 if (++drivingMotor.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Math.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
+                    if (sfloat.Abs(drivingMotor.ApplyImpulse()) < drivingMotor.solverSettings.minimumImpulse)
                     {
                         drivingMotor.numIterationsAtZeroImpulse++;
                         if (drivingMotor.numIterationsAtZeroImpulse > drivingMotor.solverSettings.minimumIterationCount)
@@ -434,7 +435,7 @@ namespace BEPUphysics.Vehicle
             if (brake.isActive)
             {
                 if (++brake.solverSettings.currentIterations <= suspension.solverSettings.maximumIterationCount)
-                    if (Math.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
+                    if (sfloat.Abs(brake.ApplyImpulse()) < brake.solverSettings.minimumImpulse)
                     {
                         brake.numIterationsAtZeroImpulse++;
                         if (brake.numIterationsAtZeroImpulse > brake.solverSettings.minimumIterationCount)
@@ -501,17 +502,17 @@ namespace BEPUphysics.Vehicle
         }
 
 
-        internal void UpdateAtEndOfFrame(float dt)
+        internal void UpdateAtEndOfFrame(sfloat dt)
         {
             shape.UpdateWorldTransform();
         }
 
-        internal void UpdateAtEndOfUpdate(float dt)
+        internal void UpdateAtEndOfUpdate(sfloat dt)
         {
             shape.UpdateSpin(dt);
         }
 
-        internal void UpdateDuringForces(float dt)
+        internal void UpdateDuringForces(sfloat dt)
         {
             suspension.ComputeWorldSpaceData();
             shape.UpdateDetectorPosition();

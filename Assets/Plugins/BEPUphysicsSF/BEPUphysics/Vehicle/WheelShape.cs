@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
@@ -16,23 +17,23 @@ namespace BEPUphysics.Vehicle
     /// </summary>
     public abstract class WheelShape : ICollisionRulesOwner
     {
-        private float airborneWheelAcceleration = 40;
+        private sfloat airborneWheelAcceleration = (sfloat)40;
 
 
-        private float airborneWheelDeceleration = 4;
-        private float brakeFreezeWheelDeceleration = 40;
+        private sfloat airborneWheelDeceleration = (sfloat)4;
+        private sfloat brakeFreezeWheelDeceleration = (sfloat)40;
 
         /// <summary>
         /// Collects collision pairs from the environment.
         /// </summary>
-        protected internal Box detector = new Box(Vector3.Zero, 0, 0, 0);
+        protected internal Box detector = new Box(Vector3.Zero, sfloat.Zero, sfloat.Zero, sfloat.Zero);
 
         protected internal Matrix localGraphicTransform;
-        protected float spinAngle;
+        protected sfloat spinAngle;
 
 
-        protected float spinVelocity;
-        internal float steeringAngle;
+        protected sfloat spinVelocity;
+        internal sfloat steeringAngle;
 
         internal Matrix steeringTransform;
         protected internal Wheel wheel;
@@ -52,36 +53,36 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the graphical radius of the wheel.
         /// </summary>
-        public abstract float Radius { get; set; }
+        public abstract sfloat Radius { get; set; }
 
         /// <summary>
         /// Gets or sets the rate at which the wheel's spinning velocity increases when accelerating and airborne.
         /// This is a purely graphical effect.
         /// </summary>
-        public float AirborneWheelAcceleration
+        public sfloat AirborneWheelAcceleration
         {
             get { return airborneWheelAcceleration; }
-            set { airborneWheelAcceleration = Math.Abs(value); }
+            set { airborneWheelAcceleration = sfloat.Abs(value); }
         }
 
         /// <summary>
         /// Gets or sets the rate at which the wheel's spinning velocity decreases when the wheel is airborne and its motor is idle.
         /// This is a purely graphical effect.
         /// </summary>
-        public float AirborneWheelDeceleration
+        public sfloat AirborneWheelDeceleration
         {
             get { return airborneWheelDeceleration; }
-            set { airborneWheelDeceleration = Math.Abs(value); }
+            set { airborneWheelDeceleration = sfloat.Abs(value); }
         }
 
         /// <summary>
         /// Gets or sets the rate at which the wheel's spinning velocity decreases when braking.
         /// This is a purely graphical effect.
         /// </summary>
-        public float BrakeFreezeWheelDeceleration
+        public sfloat BrakeFreezeWheelDeceleration
         {
             get { return brakeFreezeWheelDeceleration; }
-            set { brakeFreezeWheelDeceleration = Math.Abs(value); }
+            set { brakeFreezeWheelDeceleration = sfloat.Abs(value); }
         }
 
         /// <summary>
@@ -112,7 +113,7 @@ namespace BEPUphysics.Vehicle
         /// This changes each frame based on the relative velocity between the
         /// support and the wheel.
         /// </summary>
-        public float SpinAngle
+        public sfloat SpinAngle
         {
             get { return spinAngle; }
             set { spinAngle = value; }
@@ -123,7 +124,7 @@ namespace BEPUphysics.Vehicle
         /// between the support and the wheel.  Whenever the wheel is in contact with
         /// the ground, the spin velocity will be each frame.
         /// </summary>
-        public float SpinVelocity
+        public sfloat SpinVelocity
         {
             get { return spinVelocity; }
             set { spinVelocity = value; }
@@ -132,7 +133,7 @@ namespace BEPUphysics.Vehicle
         /// <summary>
         /// Gets or sets the current steering angle of this wheel.
         /// </summary>
-        public float SteeringAngle
+        public sfloat SteeringAngle
         {
             get { return steeringAngle; }
             set { steeringAngle = value; }
@@ -186,7 +187,7 @@ namespace BEPUphysics.Vehicle
         /// Updates the spin velocity and spin angle for the shape.
         /// </summary>
         /// <param name="dt">Simulation timestep.</param>
-        internal void UpdateSpin(float dt)
+        internal void UpdateSpin(sfloat dt)
         {
             if (wheel.HasSupport && !(wheel.brake.IsBraking && FreezeWheelsWhileBraking))
             {
@@ -196,38 +197,38 @@ namespace BEPUphysics.Vehicle
             else if (wheel.HasSupport && wheel.brake.IsBraking && FreezeWheelsWhileBraking)
             {
                 //On the ground, braking
-                float deceleratedValue = 0;
-                if (spinVelocity > 0)
-                    deceleratedValue = Math.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, 0);
-                else if (spinVelocity < 0)
-                    deceleratedValue = Math.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, 0);
+                sfloat deceleratedValue = sfloat.Zero;
+                if (spinVelocity > sfloat.Zero)
+                    deceleratedValue = sfloat.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, sfloat.Zero);
+                else if (spinVelocity < sfloat.Zero)
+                    deceleratedValue = sfloat.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, sfloat.Zero);
 
                 spinVelocity = wheel.drivingMotor.RelativeVelocity / Radius;
 
-                if (Math.Abs(deceleratedValue) < Math.Abs(spinVelocity))
+                if (sfloat.Abs(deceleratedValue) < sfloat.Abs(spinVelocity))
                     spinVelocity = deceleratedValue;
             }
-            else if (!wheel.HasSupport && wheel.drivingMotor.TargetSpeed != 0)
+            else if (!wheel.HasSupport && wheel.drivingMotor.TargetSpeed != sfloat.Zero)
             {
                 //Airborne and accelerating, increase spin velocity.
-                float maxSpeed = Math.Abs(wheel.drivingMotor.TargetSpeed) / Radius;
-                spinVelocity = MathHelper.Clamp(spinVelocity + Math.Sign(wheel.drivingMotor.TargetSpeed) * airborneWheelAcceleration * dt, -maxSpeed, maxSpeed);
+                sfloat maxSpeed = sfloat.Abs(wheel.drivingMotor.TargetSpeed) / Radius;
+                spinVelocity = MathHelper.Clamp(spinVelocity + (sfloat)wheel.drivingMotor.TargetSpeed.Sign() * airborneWheelAcceleration * dt, -maxSpeed, maxSpeed);
             }
             else if (!wheel.HasSupport && wheel.Brake.IsBraking)
             {
                 //Airborne and braking
-                if (spinVelocity > 0)
-                    spinVelocity = Math.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, 0);
-                else if (spinVelocity < 0)
-                    spinVelocity = Math.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, 0);
+                if (spinVelocity > sfloat.Zero)
+                    spinVelocity = sfloat.Max(spinVelocity - brakeFreezeWheelDeceleration * dt, sfloat.Zero);
+                else if (spinVelocity < sfloat.Zero)
+                    spinVelocity = sfloat.Min(spinVelocity + brakeFreezeWheelDeceleration * dt, sfloat.Zero);
             }
             else if (!wheel.HasSupport)
             {
                 //Just idly slowing down.
-                if (spinVelocity > 0)
-                    spinVelocity = Math.Max(spinVelocity - airborneWheelDeceleration * dt, 0);
-                else if (spinVelocity < 0)
-                    spinVelocity = Math.Min(spinVelocity + airborneWheelDeceleration * dt, 0);
+                if (spinVelocity > sfloat.Zero)
+                    spinVelocity = sfloat.Max(spinVelocity - airborneWheelDeceleration * dt, sfloat.Zero);
+                else if (spinVelocity < sfloat.Zero)
+                    spinVelocity = sfloat.Min(spinVelocity + airborneWheelDeceleration * dt, sfloat.Zero);
             }
             spinAngle += spinVelocity * dt;
         }
@@ -242,7 +243,7 @@ namespace BEPUphysics.Vehicle
         /// <param name="entity">Entity supporting the wheel, if any.</param>
         /// <param name="material">Material of the support.</param>
         /// <returns>Whether or not any support was found.</returns>
-        protected internal abstract bool FindSupport(out Vector3 location, out Vector3 normal, out float suspensionLength, out Collidable supportCollidable, out Entity entity, out Material material);
+        protected internal abstract bool FindSupport(out Vector3 location, out Vector3 normal, out sfloat suspensionLength, out Collidable supportCollidable, out Entity entity, out Material material);
 
         /// <summary>
         /// Initializes the detector entity and any other necessary logic.

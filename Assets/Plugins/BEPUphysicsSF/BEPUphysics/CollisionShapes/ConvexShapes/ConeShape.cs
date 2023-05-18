@@ -1,4 +1,5 @@
 ﻿using System;
+using SoftFloat;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
@@ -11,11 +12,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
     public class ConeShape : ConvexShape
     {
 
-        float height;
+        sfloat height;
         ///<summary>
         /// Gets or sets the height of the cone.
         ///</summary>
-        public float Height
+        public sfloat Height
         {
             get { return height; }
             set
@@ -25,11 +26,11 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             }
         }
 
-        float radius;
+        sfloat radius;
         ///<summary>
         /// Gets or sets the radius of the cone base.
         ///</summary>
-        public float Radius
+        public sfloat Radius
         {
             get { return radius; }
             set
@@ -44,7 +45,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///</summary>
         ///<param name="height">Height of the cone.</param>
         ///<param name="radius">Radius of the cone base.</param>
-        public ConeShape(float height, float radius)
+        public ConeShape(sfloat height, sfloat radius)
         {
             this.height = height;
             this.radius = radius;
@@ -58,7 +59,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="height">Height of the cone.</param>
         ///<param name="radius">Radius of the cone base.</param>
         /// <param name="description">Cached information about the shape. Assumed to be correct; no extra processing or validation is performed.</param>
-        public ConeShape(float height, float radius, ConvexShapeDescription description)
+        public ConeShape(sfloat height, sfloat radius, ConvexShapeDescription description)
         {
             this.height = height;
             this.radius = radius;
@@ -81,22 +82,22 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="radius">Radius of the cone base.</param>
         ///<param name="collisionMargin">Collision margin of the shape.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(float height, float radius, float collisionMargin)
+        public static ConvexShapeDescription ComputeDescription(sfloat height, sfloat radius, sfloat collisionMargin)
         {
             ConvexShapeDescription description;
-            description.EntityShapeVolume.Volume = (float)(.333333 * Math.PI * radius * radius * height);
+            description.EntityShapeVolume.Volume = ((sfloat).333333 * sfloat.Pi * radius * radius * height);
 
             description.EntityShapeVolume.VolumeDistribution = new Matrix3x3();
-            float diagValue = (.1f * height * height + .15f * radius * radius);
+            sfloat diagValue = ((sfloat).1f * height * height + (sfloat).15f * radius * radius);
             description.EntityShapeVolume.VolumeDistribution.M11 = diagValue;
-            description.EntityShapeVolume.VolumeDistribution.M22 = .3f * radius * radius;
+            description.EntityShapeVolume.VolumeDistribution.M22 = (sfloat).3f * radius * radius;
             description.EntityShapeVolume.VolumeDistribution.M33 = diagValue;
 
-            description.MaximumRadius = (float)(collisionMargin + Math.Max(.75 * height, Math.Sqrt(.0625f * height * height + radius * radius)));
+            description.MaximumRadius = (sfloat)(collisionMargin + sfloat.Max((sfloat).75 * height, libm.sqrtf((sfloat).0625f * height * height + radius * radius)));
 
-            double denominator = radius / height;
-            denominator = denominator / Math.Sqrt(denominator * denominator + 1);
-            description.MinimumRadius = (float)(collisionMargin + Math.Min(.25f * height, denominator * .75 * height));
+            sfloat denominator = radius / height;
+            denominator = denominator / libm.sqrtf(denominator * denominator + sfloat.One);
+            description.MinimumRadius = (sfloat)(collisionMargin + sfloat.Min((sfloat).25f * height, denominator * (sfloat).75 * height));
 
             description.CollisionMargin = collisionMargin;
             return description;
@@ -111,22 +112,22 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
             //Is it the tip of the cone?
-            float sinThetaSquared = radius * radius / (radius * radius + height * height);
+            sfloat sinThetaSquared = radius * radius / (radius * radius + height * height);
             //If d.Y * d.Y / d.LengthSquared >= sinthetaSquared
-            if (direction.Y > 0 && direction.Y * direction.Y >= direction.LengthSquared() * sinThetaSquared)
+            if (direction.Y > sfloat.Zero && direction.Y * direction.Y >= direction.LengthSquared() * sinThetaSquared)
             {
-                extremePoint = new Vector3(0, .75f * height, 0);
+                extremePoint = new Vector3(sfloat.Zero, (sfloat).75f * height, sfloat.Zero);
                 return;
             }
             //Is it a bottom edge of the cone?
-            float horizontalLengthSquared = direction.X * direction.X + direction.Z * direction.Z;
+            sfloat horizontalLengthSquared = direction.X * direction.X + direction.Z * direction.Z;
             if (horizontalLengthSquared > Toolbox.Epsilon)
             {
-                var radOverSigma = radius / Math.Sqrt(horizontalLengthSquared);
-                extremePoint = new Vector3((float)(radOverSigma * direction.X), -.25f * height, (float)(radOverSigma * direction.Z));
+                var radOverSigma = radius / libm.sqrtf(horizontalLengthSquared);
+                extremePoint = new Vector3((sfloat)(radOverSigma * direction.X), -(sfloat).25f * height, (sfloat)(radOverSigma * direction.Z));
             }
             else // It's pointing almost straight down...
-                extremePoint = new Vector3(0, -.25f * height, 0);
+                extremePoint = new Vector3(sfloat.Zero, -(sfloat).25f * height, sfloat.Zero);
 
 
         }
