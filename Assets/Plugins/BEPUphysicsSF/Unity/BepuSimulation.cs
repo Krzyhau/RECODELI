@@ -1,3 +1,4 @@
+using BEPUphysics.BroadPhaseEntries;
 using SoftFloat;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace BEPUphysics.Unity
         [SerializeField] private int maxStepsPerFrame;
         [SerializeField] private int solverIterationLimit;
         [SerializeField] private bool activateOnAwake;
+        [SerializeField] private Vector3 gravity = Vector3.down * 9.81f;
 
         private bool initialised = false;
         private float timeSinceLastStep;
@@ -38,20 +40,33 @@ namespace BEPUphysics.Unity
                 MaximumTimeStepsPerFrame = maxStepsPerFrame,
                 TimeStepDuration = (sfloat)timeStep
             };
-            space.ForceUpdater.Gravity = new BEPUutilities.Vector3(sfloat.Zero, (sfloat)(-9.81f), sfloat.Zero);
+            space.ForceUpdater.Gravity = gravity.ToBEPU();
 
-            rigidbodies = GetComponentsInChildren<IBepuEntity>().ToList();
-
-            foreach (var rigidbody in rigidbodies)
-            {
-                rigidbody.Initialize(this);
-            }
-            rigidbodies = rigidbodies.Where(rigidbody => rigidbody.Initialized).ToList();
+            InitializeRigidbodiesAndColliders();
 
             initialised = true;
             if (activateOnAwake) Active = true;
 
             Debug.Log($"Initialised BepuSimulation. Rigidbodies count: {rigidbodies.Count}");
+        }
+        private void InitializeRigidbodiesAndColliders()
+        {
+            // initialize custom-made rigidbodies
+            rigidbodies = new List<IBepuEntity>();
+            foreach(Transform child in transform)
+            {
+                if (!child.TryGetComponent<IBepuEntity>(out var bepuEntity)) continue;
+                bepuEntity.Initialize(this);
+                if (!bepuEntity.Initialized) continue;
+                rigidbodies.Add(bepuEntity);
+            }
+
+            // initialize static colliders
+            //var staticCollidersWithoutRigidbodies = GetComponentsInChildren<Collider>()
+            //    .Where(collider => collider.GetComponent<BepuRigidbody>() == null)
+            //    .Select(collider => collider.ToBEPUCollideable(true)).ToList();
+
+            //space.Add(new StaticGroup(staticCollidersWithoutRigidbodies));
         }
 
         private void Update()

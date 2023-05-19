@@ -1,19 +1,18 @@
-using BEPUphysics.CollisionShapes.ConvexShapes;
+
 using BEPUphysics.Entities;
-using BEPUphysics.Entities.Prefabs;
-using BEPUutilities;
 using SoftFloat;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using BEPUphysics.CollisionShapes;
+using BEPUphysics.Materials;
+using BepuPhysics.Unity;
 
 using UVector3 = UnityEngine.Vector3;
 using UQuaternion = UnityEngine.Quaternion;
 using BVector3 = BEPUutilities.Vector3;
 using BQuaternion = BEPUutilities.Quaternion;
-using System.Linq;
-using BEPUphysics.CollisionShapes;
-using BEPUphysics.BroadPhaseEntries;
+
 
 namespace BEPUphysics.Unity
 {
@@ -21,6 +20,13 @@ namespace BEPUphysics.Unity
     {
         [SerializeField] private float mass = 1.0f;
         [SerializeField] private bool kinematic = false;
+        [Header("Material")]
+        [SerializeField] private float kineticFriction = (float)MaterialManager.DefaultKineticFriction;
+        [SerializeField] private float staticFriction = (float)MaterialManager.DefaultStaticFriction;
+        [SerializeField] private float bounciness = (float)MaterialManager.DefaultBounciness;
+        [Header("Constraints")]
+        [SerializeField] private BepuPhysicsAxisConstraints fixedPosition;
+        [SerializeField] private BepuPhysicsAxisConstraints fixedRotation;
 
         private BepuSimulation simulation;
         private Entity physicsEntity;
@@ -28,12 +34,10 @@ namespace BEPUphysics.Unity
         private UQuaternion previousRenderRotation;
         private UVector3 previousLocalScale;
 
-        private UVector3 previousPhysicsPosition;
-        private UVector3 currentPhysicsPosition;
-        private UQuaternion previousPhysicsRotation = UQuaternion.identity;
-        private UQuaternion currentPhysicsRotation = UQuaternion.identity;
-
-        private BVector3 localOffset;
+        private BVector3 previousPhysicsPosition;
+        private BVector3 currentPhysicsPosition;
+        private BQuaternion previousPhysicsRotation = BQuaternion.Identity;
+        private BQuaternion currentPhysicsRotation = BQuaternion.Identity;
 
         public float Mass
         {
@@ -41,7 +45,7 @@ namespace BEPUphysics.Unity
             set
             {
                 mass = value;
-                if(Entity != null) Entity.Mass = (sfloat)value;
+                if (Entity != null) Entity.Mass = (sfloat)value;
             }
         }
         public bool Kinematic
@@ -61,6 +65,14 @@ namespace BEPUphysics.Unity
         public BepuSimulation Simulation => simulation;
         public bool Initialized => Entity != null;
 
+        private void Awake()
+        {
+            if (transform.parent.GetComponent<BepuSimulation>() == null)
+            {
+                Debug.LogWarning($"BepuRigidbody {gameObject} has to be a direct child of BepuSimulation!");
+            }
+        }
+
         private void LateUpdate()
         {
             if (Entity == null) return;
@@ -76,27 +88,24 @@ namespace BEPUphysics.Unity
 
         private void SyncTransform()
         {
-            if(previousRenderPosition != transform.position || previousRenderRotation != transform.rotation)
+            if(previousRenderPosition != transform.localPosition || previousRenderRotation != transform.localRotation)
             {
-                physicsEntity.Orientation = transform.rotation.ToBEPU();
-                currentPhysicsRotation = physicsEntity.Orientation.ToUnity();
-                previousPhysicsRotation = physicsEntity.Orientation.ToUnity();
+                physicsEntity.Orientation = transform.localRotation.ToBEPU();
+                currentPhysicsRotation = physicsEntity.Orientation;
+                previousPhysicsRotation = physicsEntity.Orientation;
 
-                var offset = BQuaternion.Transform(localOffset * transform.lossyScale.ToBEPU(), physicsEntity.Orientation);
-                physicsEntity.Position = transform.position.ToBEPU() + offset;
-                currentPhysicsPosition = physicsEntity.Position.ToUnity();
-                previousPhysicsPosition = physicsEntity.Position.ToUnity();
+                physicsEntity.Position = transform.localPosition.ToBEPU();
+                currentPhysicsPosition = physicsEntity.Position;
+                previousPhysicsPosition = physicsEntity.Position;
             }
             else
             {
-                var offset = BQuaternion.Transform(localOffset * transform.lossyScale.ToBEPU(), physicsEntity.Orientation);
-                transform.position = UVector3.Lerp(previousPhysicsPosition, currentPhysicsPosition, simulation.InterpolationTime);
-                transform.position -= offset.ToUnity();
-                transform.rotation = UQuaternion.Lerp(previousPhysicsRotation, currentPhysicsRotation, simulation.InterpolationTime);
+                transform.localPosition = UVector3.Lerp(previousPhysicsPosition.ToUnity(), currentPhysicsPosition.ToUnity(), simulation.InterpolationTime);
+                transform.localRotation = UQuaternion.Lerp(previousPhysicsRotation.ToUnity(), currentPhysicsRotation.ToUnity(), simulation.InterpolationTime);
             }
 
-            previousRenderPosition = transform.position;
-            previousRenderRotation = transform.rotation;
+            previousRenderPosition = transform.localPosition;
+            previousRenderRotation = transform.localRotation;
         }
 
         private void OnDestroy()
@@ -121,48 +130,34 @@ namespace BEPUphysics.Unity
             this.simulation = simulation;
 
 
-            var collider = GetComponent<Collider>();
+            var colliders = GetComponents<Collider>();
 
-            var scale = transform.lossyScale.ToBEPU();
-            switch (collider)
+            var shapeEntries = new List<CompoundShapeEntry>();
+            foreach (var collider in colliders)
             {
-                case BoxCollider boxCollider:
-                    var boxSize = scale * boxCollider.size.ToBEPU();
-                    physicsEntity = new Box(BVector3.Zero, boxSize.X, boxSize.Y, boxSize.Z);
-                    localOffset = boxCollider.center.ToBEPU();
-                    break;
-                case SphereCollider sphereCollider:
-                    if (scale.X != scale.Y || scale.X != scale.Z)
-                    {
-                        Debug.LogWarning($"Non-uniform scale for SphereCollider {gameObject}! {scale.X} {scale.Y} {scale.Z}");
-                    }
-                    var sphereRadius = (scale.X + scale.Y + scale.Z) / (sfloat)3.0f * (sfloat)sphereCollider.radius;
-                    physicsEntity = new Sphere(BVector3.Zero, sphereRadius);
-                    localOffset = sphereCollider.center.ToBEPU();
-                    break;
-                case MeshCollider meshCollider:
-                    var mesh = meshCollider.sharedMesh;
-                    var vertices = mesh.vertices
-                        .Select(vertex => vertex.ToBEPU() * scale)
-                        .ToArray();
-                    var indices = mesh.GetIndices(0);
-                    var defaultTransform = new AffineTransform(BVector3.One, BQuaternion.Identity, BVector3.Zero);
-                    physicsEntity = new MobileMesh(vertices, indices, defaultTransform, MobileMeshSolidity.DoubleSided);
-                    break;
+                var collidable = collider.ToBEPUCollideable();
+                if (collidable == null) continue;
+                shapeEntries.Add(new CompoundShapeEntry(
+                    collidable.Shape,
+                    collidable.WorldTransform
+                ));
             }
 
-            if (physicsEntity == null)
+            if (shapeEntries.Count() == 0)
             {
-                if(collider != null)
-                {
-                    Debug.LogWarning($"BepuRigidbody in game object {gameObject} has unsupported collider type {collider.GetType().Name}!");
-                }
-                else
-                {
-                    Debug.LogWarning($"BepuRigidbody in game object {gameObject} doesn't have a collider!");
-                }
+                Debug.LogWarning($"BepuRigidbody in game object {gameObject} doesn't have a collider!");
                 return;
             }
+
+            physicsEntity = new Entity(new CompoundShape(shapeEntries));
+            physicsEntity.Tag = this;
+            physicsEntity.CollisionInformation.Tag = this;
+            physicsEntity.Material = new Materials.Material
+            {
+                StaticFriction = (sfloat)staticFriction,
+                KineticFriction = (sfloat)kineticFriction,
+                Bounciness = (sfloat)bounciness
+            };
 
             simulation.PhysicsSpace.Add(physicsEntity);
 
@@ -176,10 +171,51 @@ namespace BEPUphysics.Unity
 
         public void PostPhysicsUpdate()
         {
+            // apply position constrains
+            if (fixedPosition.X)
+            {
+                Entity.position.X = currentPhysicsPosition.X;
+                Entity.linearVelocity.X = sfloat.Zero;
+            }
+            if (fixedPosition.Y)
+            {
+                Entity.position.Y = currentPhysicsPosition.Y;
+                Entity.linearVelocity.Y = sfloat.Zero;
+            }
+            if (fixedPosition.Z)
+            {
+                Entity.position.Z = currentPhysicsPosition.Z;
+                Entity.linearVelocity.Z = sfloat.Zero;
+            }
+
+            // apply rotation constrains
+            if (fixedRotation.Any)
+            {
+                var lastEulerAngles = currentPhysicsRotation.EulerAngles();
+                var eulerAngles = Entity.Orientation.EulerAngles();
+                if (fixedRotation.X)
+                {
+                    eulerAngles.X = lastEulerAngles.X;
+                    Entity.angularVelocity.X = sfloat.Zero;
+                }
+                if (fixedRotation.Y)
+                {
+                    eulerAngles.Y = lastEulerAngles.Y;
+                    Entity.angularVelocity.Y = sfloat.Zero;
+                }
+                if (fixedRotation.Z)
+                {
+                    eulerAngles.Z = lastEulerAngles.Z;
+                    Entity.angularVelocity.Z = sfloat.Zero;
+                }
+                Entity.Orientation = BQuaternion.CreateFromYawPitchRoll(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+            }
+
+            // cache previous and current physics positions for rendering
             previousPhysicsPosition = currentPhysicsPosition;
             previousPhysicsRotation = currentPhysicsRotation;
-            currentPhysicsPosition = Entity.Position.ToUnity();
-            currentPhysicsRotation = Entity.Orientation.ToUnity();
+            currentPhysicsPosition = Entity.Position;
+            currentPhysicsRotation = Entity.Orientation;
         }
     }
 }

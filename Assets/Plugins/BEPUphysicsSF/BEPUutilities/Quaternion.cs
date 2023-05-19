@@ -143,6 +143,17 @@ namespace BEPUutilities
         }
 
 
+        /// <summary>
+        /// Converts a quaternion to euler angles.
+        /// </summary>
+        public Vector3 EulerAngles()
+        {
+            return new Vector3(
+                libm.atan2f(sfloat.Two * (W * X + Y * Z), sfloat.One - sfloat.Two * (X * X + Y * Y)),
+                sfloat.Two * libm.atan2f(libm.sqrtf(sfloat.One + sfloat.Two * (W * Y - X * Z)), libm.sqrtf(sfloat.One - sfloat.Two * (W * Y - X * Z))) - sfloat.PiOverTwo,
+                libm.atan2f(sfloat.Two * (W * Z + X * Y), sfloat.One - sfloat.Two * (Y * Y + Z * Z))
+            );
+        }
 
 
         /// <summary>
