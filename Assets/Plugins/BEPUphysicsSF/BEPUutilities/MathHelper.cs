@@ -107,5 +107,22 @@ namespace BEPUutilities
         {
             return radians * ((sfloat)180f / Pi);
         }
+
+        /// <summary>
+        /// Moves a value current towards target.
+        /// </summary>
+        /// <param name="current">The current value.</param>
+        /// <param name="target">The value to move towards.</param>
+        /// <param name="maxDelta">The maximum change that should be applied to the value.</param>
+        /// <returns>Degrees equivalent to the input radians.</returns>
+        public static sfloat MoveTowards(sfloat current, sfloat target, sfloat maxDelta)
+        {
+            if (sfloat.Abs(target - current) <= maxDelta)
+            {
+                return target;
+            }
+
+            return current + (sfloat)(target - current).Sign() * maxDelta;
+        }
     }
 }

@@ -20,7 +20,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public abstract object Clone();
 
         public abstract bool Equals(RobotInstruction other);
-        public abstract IEnumerator Execute(RobotController controller);
+        public abstract IEnumerator<int> Execute(RobotController controller);
 
         public abstract string[] ParameterToStrings();
         public abstract void SetParameterFromStrings(string[] paramStrings);
@@ -104,9 +104,10 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 && Parameter.Equals(((RobotInstruction<T>)other).Parameter);
         }
 
-        public override IEnumerator Execute(RobotController controller)
+        public override IEnumerator<int> Execute(RobotController controller)
         {
-            yield return ((RobotAction<T>)Action).Execute(controller, this);
+            var actionExecution = ((RobotAction<T>)Action).Execute(controller, this);
+            while (actionExecution.MoveNext()) yield return actionExecution.Current;
             UpdateProgress(1.0f);
         }
 

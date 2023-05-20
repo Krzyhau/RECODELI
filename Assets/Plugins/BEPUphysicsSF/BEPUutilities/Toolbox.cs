@@ -33,7 +33,7 @@ namespace BEPUutilities
         /// <summary>
         /// Reference for a vector with dimensions (0,0,1).
         /// </summary>
-        public static Vector3 BackVector = Vector3.Backward;
+        public static Vector3 BackVector = Vector3.Forward;
 
         /// <summary>
         /// Reference for a vector with dimensions (0,-1,0).
@@ -43,7 +43,7 @@ namespace BEPUutilities
         /// <summary>
         /// Reference for a vector with dimensions (0,0,-1).
         /// </summary>
-        public static Vector3 ForwardVector = Vector3.Forward;
+        public static Vector3 ForwardVector = Vector3.Backward;
 
         /// <summary>
         /// Refers to the identity quaternion.

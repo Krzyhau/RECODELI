@@ -6163,9 +6163,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 boxFace.V4 = candidate;
 
                 if (zDot < sfloat.Zero)
-                    boxFace.Normal = orientation.Forward;
-                else
                     boxFace.Normal = orientation.Backward;
+                else
+                    boxFace.Normal = orientation.Forward;
 
                 boxFace.Width = halfWidth * sfloat.Two;
                 boxFace.Height = halfHeight * sfloat.Two;

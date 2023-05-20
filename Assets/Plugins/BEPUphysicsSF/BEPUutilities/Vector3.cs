@@ -97,6 +97,16 @@ namespace BEPUutilities
         }
 
         /// <summary>
+        /// Gets a string representation of the vector with given format.
+        /// </summary>
+        /// <param name="format">Format of numbers in the string.</param>
+        /// <returns>String representing the vector.</returns>
+        public string ToString(string format)
+        {
+            return "{" + X.ToString(format) + ", " + Y.ToString(format) + ", " + Z.ToString(format) + "}";
+        }
+
+        /// <summary>
         /// Computes the dot product of two vectors.
         /// </summary>
         /// <param name="a">First vector in the product.</param>
@@ -489,9 +499,9 @@ namespace BEPUutilities
         }
 
         /// <summary>
-        /// Gets the forward vector (0,0,-1).
+        /// Gets the back vector (0,0,-1).
         /// </summary>
-        public static Vector3 Forward
+        public static Vector3 Backward
         {
             get
             {
@@ -505,9 +515,9 @@ namespace BEPUutilities
         }
 
         /// <summary>
-        /// Gets the back vector (0,0,1).
+        /// Gets the forward vector (0,0,1).
         /// </summary>
-        public static Vector3 Backward
+        public static Vector3 Forward
         {
             get
             {
@@ -758,6 +768,29 @@ namespace BEPUutilities
             Vector3 toReturn;
             Hermite(ref value1, ref tangent1, ref value2, ref tangent2, interpolationAmount, out toReturn);
             return toReturn;
+        }
+
+
+        /// <summary>
+        /// Moves from one vector to another by given step.
+        /// </summary>
+        /// <param name="current">Starting location of the move.</param>
+        /// <param name="target">Ending location of the move.</param>
+        /// <param name="maxDistanceDelta">Amount to move.</param>
+        /// <returns>Moved vector.</returns>
+        public static Vector3 MoveTowards(Vector3 current, Vector3 target, sfloat maxDistanceDelta)
+        {
+            sfloat num = target.X - current.X;
+            sfloat num2 = target.Y - current.Y;
+            sfloat num3 = target.Z - current.Z;
+            sfloat num4 = num * num + num2 * num2 + num3 * num3;
+            if (num4 == sfloat.Zero || (maxDistanceDelta >= sfloat.Zero && num4 <= maxDistanceDelta * maxDistanceDelta))
+            {
+                return target;
+            }
+
+            sfloat num5 = libm.sqrtf(num4);
+            return new Vector3(current.X + num / num5 * maxDistanceDelta, current.Y + num2 / num5 * maxDistanceDelta, current.Z + num3 / num5 * maxDistanceDelta);
         }
     }
 }

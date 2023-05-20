@@ -13,8 +13,8 @@ namespace RecoDeli.Scripts.Prototyping
     {
         private struct PhysicsSampleFrame
         {
-            public Vector3 Position;
-            public Vector3 Rotation;
+            public BEPUutilities.Vector3 Position;
+            public BEPUutilities.Vector3 Rotation;
         }
 
         private Dictionary<float, PhysicsSampleFrame> firstPhysicsLog = new Dictionary<float, PhysicsSampleFrame>();
@@ -27,7 +27,7 @@ namespace RecoDeli.Scripts.Prototyping
 
         private int verificationCount = 0;
 
-        private void FixedUpdate()
+        private void LateUpdate()
         {
             if(simulationManager.PlayingSimulation && !logging && !verifying && !failed)
             {
@@ -69,10 +69,10 @@ namespace RecoDeli.Scripts.Prototyping
                 return;
             }
 
-            var robotPos = simulationManager.RobotController.Rigidbody.position;
-            var robotRot = simulationManager.RobotController.Rigidbody.rotation.eulerAngles;
+            var robotPos = simulationManager.RobotController.Rigidbody.Entity.Position;
+            var robotRot = simulationManager.RobotController.Rigidbody.Entity.Orientation.EulerAngles;
 
-            if (logging)
+            if (logging && !firstPhysicsLog.ContainsKey(simulationManager.SimulationTime))
             {
                 firstPhysicsLog.Add(simulationManager.SimulationTime, new PhysicsSampleFrame
                 {

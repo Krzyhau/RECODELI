@@ -175,7 +175,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         {
             jacobianX = rACrossProduct.Right;
             jacobianY = rACrossProduct.Up;
-            jacobianZ = rACrossProduct.Forward;
+            jacobianZ = rACrossProduct.Backward;
         }
 
         /// <summary>
@@ -188,7 +188,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         {
             jacobianX = rBCrossProduct.Right;
             jacobianY = rBCrossProduct.Up;
-            jacobianZ = rBCrossProduct.Forward;
+            jacobianZ = rBCrossProduct.Backward;
         }
 
         /// <summary>

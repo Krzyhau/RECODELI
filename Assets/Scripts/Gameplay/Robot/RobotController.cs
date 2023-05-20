@@ -1,16 +1,23 @@
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.Entities;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
+using BEPUphysics.Unity;
 using RecoDeli.Scripts.Prototyping;
+using SoftFloat;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
-    public class RobotController : MonoBehaviour
+    public class RobotController : MonoBehaviour, IBepuEntityListener
     {
         [SerializeField] private float rotationSpeed;
-        [SerializeField] private AnimationCurve rotationCurve;
         [SerializeField] private float propulsionForce;
         [SerializeField] private float propulsionRotationDrag;
+
+        private IEnumerator<int> currentInstructionExecution = null;
+        private int currentInstructionWaitTicks = 0;
 
         public int CurrentInstructionIndex { get; private set; }
         public bool ExecutingInstructions { get; private set; }
@@ -24,36 +31,19 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public float RotationSpeed => rotationSpeed;
         public float PropulsionForce => propulsionForce;
         public float PropulsionRotationDrag => propulsionRotationDrag;
-        public AnimationCurve RotationCurve => rotationCurve;
 
-        public Rigidbody Rigidbody { get; private set; }
+        public BepuRigidbody Rigidbody { get; private set; }
         public GoalBox ReachedGoalBox { get; set; }
 
         private void Awake()
         {
-            Rigidbody = GetComponent<Rigidbody>();
+            Rigidbody = GetComponent<BepuRigidbody>();
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
-            //Rigidbody.angularDrag = RotationMethodSelector.ShouldUseDragMethod ? 0.1f : 0.0f;
+            //Debug.Log(Rigidbody.Entity.Orientation.EulerAngles * (sfloat)Mathf.Rad2Deg); 
         }
-
-        private IEnumerator CommandExecutionCoroutine()
-        {
-            if (CurrentInstructions.Count == 0) yield break;
-            ExecutingInstructions = true;
-            CurrentInstructionIndex = 0;
-            yield return new WaitForFixedUpdate();
-            while (CurrentInstructionIndex < CurrentInstructions.Count)
-            {
-                yield return CurrentInstruction.Execute(this);
-                CurrentInstructionIndex++;
-            }
-            ExecutingInstructions = false;
-            CurrentInstructionIndex = -1;
-        }
-
 
         public bool ExecuteCommands(List<RobotInstruction> commands)
         {
@@ -67,9 +57,55 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         {
             if (ExecutingInstructions || CurrentInstructions.Count < 0) return false;
 
-            StartCoroutine(CommandExecutionCoroutine());
+            if (CurrentInstructions.Count != 0)
+            {
+                ExecutingInstructions = true;
+                CurrentInstructionIndex = 0;
+                currentInstructionWaitTicks = 0;
+                currentInstructionExecution = CurrentInstruction.Execute(this);
+            }
 
             return true;
+        }
+
+        public void StopExecution()
+        {
+            ExecutingInstructions = false;
+            CurrentInstructionIndex = -1;
+        }
+
+        public void BepuUpdate()
+        {
+            if (!ExecutingInstructions) return;
+
+            PerformInstructionStep();
+
+            if (currentInstructionExecution == null) StopExecution();
+        }
+
+        private void PerformInstructionStep()
+        {
+            if (!ExecutingInstructions) return;
+
+            if (currentInstructionWaitTicks > 0) currentInstructionWaitTicks--;
+            while (currentInstructionExecution != null && currentInstructionWaitTicks == 0)
+            {
+                while (currentInstructionExecution.MoveNext())
+                {
+                    currentInstructionWaitTicks = currentInstructionExecution.Current;
+                    if (currentInstructionWaitTicks > 0) return; // wait for next step
+                }
+
+                // instruction ended
+                currentInstructionWaitTicks = 0;
+                currentInstructionExecution = null;
+                CurrentInstructionIndex++;
+
+                if (CurrentInstruction != null)
+                {
+                    currentInstructionExecution = CurrentInstruction.Execute(this);
+                }
+            }
         }
     }
 }

@@ -1,5 +1,8 @@
+using BEPUphysics.Unity;
 using RecoDeli.Scripts.Prototyping;
+using SoftFloat;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
@@ -13,28 +16,30 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             movementDirection = direction;
         }
 
-        public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
+        public override IEnumerator<int> Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            var absParameter = Mathf.Abs(instruction.Parameter);
-            var finalMovementDir = Mathf.Sign(instruction.Parameter) * movementDirection;
-            for (float t = 0; t < absParameter; t += Time.fixedDeltaTime)
+            var robotEntity = controller.Rigidbody.Entity;
+
+            var deltaTime = controller.Rigidbody.Simulation.TimeStep;
+
+            var parameter = (sfloat)instruction.Parameter;
+            var absParameter = sfloat.Abs(parameter);
+            var finalMovementDir = (sfloat)parameter.Sign() * (sfloat)movementDirection;
+            for (sfloat t = sfloat.Zero; t < absParameter; t += deltaTime)
             {
-                yield return new WaitForFixedUpdate();
-                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, absParameter - t);
-                var flyingForce = controller.transform.forward * finalMovementDir * controller.PropulsionForce * accelerationStep;
-                controller.Rigidbody.AddForce(flyingForce, ForceMode.VelocityChange);
+                yield return 1;
 
+                var accelerationStep = sfloat.Min(deltaTime, absParameter - t);
+                var flyingForce = robotEntity.OrientationMatrix.Forward * finalMovementDir * (sfloat)controller.PropulsionForce * accelerationStep;
+                robotEntity.LinearVelocity += flyingForce;
                 
-                controller.Rigidbody.angularVelocity = Vector3.MoveTowards(
-                    controller.Rigidbody.angularVelocity,
-                    Vector3.zero,
-                    controller.PropulsionRotationDrag * Time.fixedDeltaTime
+                robotEntity.AngularVelocity = BEPUutilities.Vector3.MoveTowards(
+                    robotEntity.AngularVelocity,
+                    BEPUutilities.Vector3.Zero,
+                    (sfloat)controller.PropulsionRotationDrag * deltaTime
                 );
-                
-
-                instruction.UpdateProgress(t / absParameter);
+                instruction.UpdateProgress((float)(t / absParameter));
             }
-            yield return new WaitForFixedUpdate();
         }
     }
 }

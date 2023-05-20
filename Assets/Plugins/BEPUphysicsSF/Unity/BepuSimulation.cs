@@ -1,5 +1,6 @@
 using BEPUphysics.BroadPhaseEntries;
 using SoftFloat;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,10 @@ namespace BEPUphysics.Unity
 {
     public class BepuSimulation : MonoBehaviour
     {
-        [SerializeField] private float timeStep;
-        [SerializeField] private int maxStepsPerFrame;
-        [SerializeField] private int solverIterationLimit;
-        [SerializeField] private bool activateOnAwake;
+        [SerializeField] private float timeStep = 0.02f;
+        [SerializeField] private float maxUpdateRealTimeWindow = 0.1f;
+        [SerializeField] private int solverIterationLimit = 6;
+        [SerializeField] private bool activateOnAwake = false;
         [SerializeField] private Vector3 gravity = Vector3.down * 9.81f;
 
         private bool initialised = false;
@@ -27,9 +28,14 @@ namespace BEPUphysics.Unity
         public Space PhysicsSpace => space;
         public float InterpolationTime => timeSinceLastStep / timeStep;
         public sfloat SimulationTime => simulationTime;
+        public sfloat TimeStep => (sfloat)timeStep;
 
-        private void Awake() => Initialize();
-        private void Initialize()
+        private void Awake()
+        {
+            if(activateOnAwake) Initialize();
+        }
+
+        public void Initialize()
         {
             if (initialised) return;
 
@@ -39,7 +45,7 @@ namespace BEPUphysics.Unity
 
             space.TimeStepSettings = new TimeStepSettings()
             {
-                MaximumTimeStepsPerFrame = maxStepsPerFrame,
+                MaximumTimeStepsPerFrame = 1,
                 TimeStepDuration = (sfloat)timeStep
             };
             space.ForceUpdater.Gravity = gravity.ToBEPU();
@@ -73,10 +79,11 @@ namespace BEPUphysics.Unity
 
         private void Update()
         {
-            if (!Active) return;
+            if (!initialised || !Active) return;
 
             timeSinceLastStep += Time.deltaTime;
-            int updates = 0;
+            var updateBeginTime = DateTime.Now;
+
             while (timeSinceLastStep > timeStep)
             {
                 Profiler.BeginSample("BEPUphysics Simulation Step");
@@ -88,8 +95,9 @@ namespace BEPUphysics.Unity
                 simulationTime += (sfloat)timeStep;
 
                 timeSinceLastStep -= timeStep;
-                updates++;
-                if(updates >= maxStepsPerFrame)
+
+                var duration = DateTime.Now - updateBeginTime;
+                if(duration.TotalSeconds > maxUpdateRealTimeWindow)
                 {
                     timeSinceLastStep %= timeStep;
                     break;

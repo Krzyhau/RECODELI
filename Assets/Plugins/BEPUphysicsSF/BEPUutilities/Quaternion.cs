@@ -1,5 +1,6 @@
 ﻿using System;
 using SoftFloat;
+using UnityEngine;
 
 namespace BEPUutilities
 {
@@ -146,13 +147,17 @@ namespace BEPUutilities
         /// <summary>
         /// Converts a quaternion to euler angles.
         /// </summary>
-        public Vector3 EulerAngles()
+        public Vector3 EulerAngles
         {
-            return new Vector3(
-                libm.atan2f(sfloat.Two * (W * X + Y * Z), sfloat.One - sfloat.Two * (X * X + Y * Y)),
-                sfloat.Two * libm.atan2f(libm.sqrtf(sfloat.One + sfloat.Two * (W * Y - X * Z)), libm.sqrtf(sfloat.One - sfloat.Two * (W * Y - X * Z))) - sfloat.PiOverTwo,
-                libm.atan2f(sfloat.Two * (W * Z + X * Y), sfloat.One - sfloat.Two * (Y * Y + Z * Z))
-            );
+            get
+            {
+                ExtractYawPitchRollFromQuaternion(this, out var yaw, out var pitch, out var roll);
+                return new Vector3(yaw, pitch, roll);
+            }
+            set
+            {
+                CreateFromYawPitchRoll(value.X, value.Y, value.Z, out this);
+            }
         }
 
 
@@ -744,6 +749,21 @@ namespace BEPUutilities
             q.Z = (sfloat)(cosYawCosPitch * sinRoll - sinYawSinPitch * cosRoll);
             q.W = (sfloat)(cosYawCosPitch * cosRoll + sinYawSinPitch * sinRoll);
 
+        }
+
+        /// <summary>
+        /// Extracts yaw, pitch, and roll from Quaternion.
+        /// </summary>
+        /// <param name="q">Quaternion representing the yaw, pitch, and roll.</param>
+        /// <param name="yaw">Yaw of the rotation.</param>
+        /// <param name="pitch">Pitch of the rotation.</param>
+        /// <param name="roll">Roll of the rotation.</param>
+        public static void ExtractYawPitchRollFromQuaternion(Quaternion q, out sfloat yaw, out sfloat pitch, out sfloat roll)
+        {
+            pitch = libm.atan2f(sfloat.Two * (q.Y * q.Z + q.W * q.X), q.W * q.W - q.X * q.X - q.Y * q.Y + q.Z * q.Z);
+            var sinp = -sfloat.Two * (q.X * q.Z - q.W * q.Y);
+            yaw = (sfloat.Abs(sinp) >= sfloat.One) ? (sfloat)sinp.Sign() * sfloat.PiOverTwo: libm.asinf(-sfloat.Two * (q.X * q.Z - q.W * q.Y));
+            roll = libm.atan2f(sfloat.Two * (q.X * q.Y + q.W * q.Z), q.W * q.W + q.X * q.X - q.Y * q.Y - q.Z * q.Z);
         }
 
         /// <summary>

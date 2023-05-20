@@ -4839,9 +4839,9 @@ GameObject:
   - component: {fileID: 8981212265956852568}
   - component: {fileID: 7980407736166485923}
   - component: {fileID: 7007505904328881502}
-  - component: {fileID: 3133705437553592106}
   - component: {fileID: 135211074319281182}
   - component: {fileID: 8432929156939280074}
+  - component: {fileID: 7842847738035837434}
   m_Layer: 0
   m_Name: GoalBox
   m_TagString: Untagged
@@ -4856,7 +4856,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8833187539203078982}
-  m_LocalRotation: {x: -0.7071068, y: 0, z: -0, w: 0.7071067}
+  m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
   m_LocalPosition: {x: -11.84, y: 0, z: -8.92}
   m_LocalScale: {x: 0.4, y: 0.4, z: 0.4}
   m_ConstrainProportionsScale: 0
@@ -4864,7 +4864,7 @@ Transform:
   - {fileID: 2696523047030593861}
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
 --- !u!33 &7980407736166485923
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -4915,33 +4915,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &3133705437553592106
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8833187539203078982}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 4
-  m_CollisionDetection: 1
 --- !u!65 &135211074319281182
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -4978,4 +4951,31 @@ MonoBehaviour:
   OnRobotCollection:
     m_PersistentCalls:
       m_Calls: []
-  isFinalGoalBox: 0
+  isFinalGoalBox: 1
+--- !u!114 &7842847738035837434
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833187539203078982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  kinematic: 0
+  angularDamping: 0
+  linearDamping: 0
+  kineticFriction: 0.8
+  staticFriction: 1
+  bounciness: 0
+  fixedPosition:
+    X: 0
+    Y: 1
+    Z: 0
+  fixedRotation:
+    X: 0
+    Y: 0
+    Z: 0

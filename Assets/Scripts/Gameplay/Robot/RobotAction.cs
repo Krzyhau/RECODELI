@@ -52,7 +52,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     {
         public abstract string[] ParameterToStrings(T param);
         public abstract T ParameterFromStrings(string[] paramStrings);
-        public abstract IEnumerator Execute(RobotController controller, RobotInstruction<T> instruction);
+        public abstract IEnumerator<int> Execute(RobotController controller, RobotInstruction<T> instruction);
         public override Type GetParameterType()
         {
             return typeof(T);

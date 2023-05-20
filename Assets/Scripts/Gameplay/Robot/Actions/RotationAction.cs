@@ -1,65 +1,48 @@
+using BEPUphysics.Unity;
+using BEPUutilities;
 using RecoDeli.Scripts.Prototyping;
+using SoftFloat;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class RotationAction : RobotActionSingle
     {
-
         private float rotationDirection;
-        private bool autoRotationMode;
 
-        public RotationAction(float direction, bool autoRotation) : base() 
+        public RotationAction(float direction) : base() 
         {
             rotationDirection = direction;
-            autoRotationMode = autoRotation;
         }
 
-        public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
+        public override IEnumerator<int> Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            if (autoRotationMode)
-            {
-                yield return AutoRotationMode(controller, instruction);
-                yield break;
-            }
+            var robotEntity = controller.Rigidbody.Entity;
+            var deltaTime = controller.Rigidbody.Simulation.TimeStep;
+            var rawParameter = (sfloat)instruction.Parameter;
 
-            var parameter = Mathf.Abs(instruction.Parameter);
-            var direction = rotationDirection * Mathf.Sign(instruction.Parameter);
+            var direction = (sfloat)rotationDirection * (sfloat)rawParameter.Sign();
+            var parameter = libm.sqrtf(sfloat.Abs(rawParameter) * sfloat.Two);
 
-            for (float t = 0; t < parameter; t += Time.fixedDeltaTime)
-            {
-                var accelerationStep = Mathf.Min(Time.fixedDeltaTime, parameter - t);
-                var rotationAcceleration = (direction * controller.RotationSpeed) * accelerationStep;
-                controller.Rigidbody.angularVelocity += new Vector3(0.0f, Mathf.Deg2Rad * rotationAcceleration, 0.0f);
+            var stepCounts = (parameter / deltaTime);
 
-                if (parameter - t < Time.fixedDeltaTime) break;
-                yield return new WaitForFixedUpdate();
-                instruction.UpdateProgress(t / parameter);
-            }
-        }
-
-        private IEnumerator AutoRotationMode(RobotController controller, RobotInstruction<float> instruction)
-        {
-            var direction = rotationDirection * Mathf.Sign(instruction.Parameter);
-            var parameter = Mathf.Sqrt(Mathf.Abs(instruction.Parameter) * 2.0f);
-
-            var stepCounts = (parameter / Time.fixedDeltaTime);
-
-            float t = Time.fixedDeltaTime;
+            sfloat t = deltaTime;
 
             // robot needs to rotate with certain velocity at given time in order to stop perfectly at given angle
-            for (int step = 0; step <= stepCounts + 1; step++)
+            for (sfloat step = sfloat.Zero; step <= stepCounts + sfloat.One; step += sfloat.One)
             {
-                float currentAngularVelocity = controller.Rigidbody.angularVelocity.y * Mathf.Rad2Deg;
-                float desiredAngularVelocity = direction * controller.RotationSpeed * Mathf.Max(0.0f, parameter - t);
+                sfloat currentAngularVelocity = MathHelper.ToDegrees(robotEntity.AngularVelocity.Y);
+                sfloat desiredAngularVelocity = direction * (sfloat)controller.RotationSpeed * sfloat.Max(sfloat.Zero, parameter - t);
 
-                float newAngularVelocity = Mathf.MoveTowards(currentAngularVelocity, desiredAngularVelocity, controller.RotationSpeed * Time.fixedDeltaTime);
-                controller.Rigidbody.angularVelocity = new Vector3(0, Mathf.Deg2Rad * newAngularVelocity, 0);
+                sfloat newAngularVelocity = MathHelper.MoveTowards(currentAngularVelocity, desiredAngularVelocity, (sfloat)controller.RotationSpeed * deltaTime);
+                robotEntity.AngularVelocity = new BEPUutilities.Vector3(sfloat.Zero, MathHelper.ToRadians(newAngularVelocity), sfloat.Zero);
 
-                yield return new WaitForFixedUpdate();
-                instruction.UpdateProgress(step / stepCounts);
-                t += Time.fixedDeltaTime;
+
+                yield return 1;
+                instruction.UpdateProgress((float)(step / stepCounts));
+                t += deltaTime;
             }
         }
     }

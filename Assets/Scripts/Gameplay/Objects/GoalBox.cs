@@ -1,12 +1,13 @@
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
+using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay.Robot;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
 namespace RecoDeli.Scripts.Gameplay
 {
-    public class GoalBox : MonoBehaviour
+    public class GoalBox : MonoBehaviour, IBepuEntityListener
     {
         public UnityEvent OnRobotCollection;
 
@@ -16,10 +17,13 @@ namespace RecoDeli.Scripts.Gameplay
 
         public bool IsFinalGoalBox => isFinalGoalBox;
 
-        private void OnCollisionEnter(Collision collision)
+        public void BepuUpdate() { }
+
+        public void OnBepuCollisionEnter(Collidable other, CollidablePairHandler info)
         {
             if (collected) return;
-            if (collision.collider.TryGetComponent(out RobotController controller))
+            if (!(other.Tag is IBepuEntity)) return;
+            if ((other.Tag as IBepuEntity).GameObject.TryGetComponent(out RobotController controller))
             {
                 OnRobotCollection.Invoke();
 
@@ -29,7 +33,9 @@ namespace RecoDeli.Scripts.Gameplay
                 }
                 collected = true;
             }
-            
         }
+
+        public void OnBepuCollisionExit(Collidable other, CollidablePairHandler info) { }
+        public void OnBepuCollisionStay(Collidable other, CollidablePairHandler info) { }
     }
 }

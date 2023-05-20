@@ -11,7 +11,9 @@ GameObject:
   - component: {fileID: 3166591421440040544}
   - component: {fileID: 726558182806329254}
   - component: {fileID: 8128267926988672169}
-  - component: {fileID: 3317328846564749588}
+  - component: {fileID: 5363832028683448966}
+  - component: {fileID: 1384813474625350050}
+  - component: {fileID: 4423190581456679094}
   m_Layer: 0
   m_Name: Space Rock 1
   m_TagString: Untagged
@@ -26,7 +28,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6992307425892573771}
-  m_LocalRotation: {x: -0.11184051, y: -0.6982061, z: 0.698206, w: 0.111840636}
+  m_LocalRotation: {x: -0.111840725, y: -0.698206, z: 0.698206, w: 0.111840725}
   m_LocalPosition: {x: 0.08527231, y: -0.9479718, z: -8.249999}
   m_LocalScale: {x: 3, y: 3, z: 3}
   m_ConstrainProportionsScale: 0
@@ -84,8 +86,35 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &3317328846564749588
-MeshCollider:
+--- !u!114 &5363832028683448966
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6992307425892573771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  kinematic: 1
+  angularDamping: 0.15
+  linearDamping: 0.03
+  kineticFriction: 0.8
+  staticFriction: 1
+  bounciness: 0
+  fixedPosition:
+    X: 0
+    Y: 1
+    Z: 0
+  fixedRotation:
+    X: 0
+    Y: 0
+    Z: 0
+--- !u!136 &1384813474625350050
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +131,29 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 50056287690978015, guid: 9052e3ca43afb4c4a83488995ae095d4, type: 3}
+  serializedVersion: 2
+  m_Radius: 1.18
+  m_Height: 5.27
+  m_Direction: 1
+  m_Center: {x: -0.08, y: 0.4784445, z: 0.17390004}
+--- !u!135 &4423190581456679094
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6992307425892573771}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Radius: 1.46
+  m_Center: {x: 0.07364863, y: 0.4784445, z: 0.17390004}

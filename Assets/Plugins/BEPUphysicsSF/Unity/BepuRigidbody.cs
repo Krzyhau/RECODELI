@@ -67,6 +67,8 @@ namespace BEPUphysics.Unity
         }
         public Entity Entity => physicsEntity;
         public BepuSimulation Simulation => simulation;
+        
+        public GameObject GameObject => gameObject;
         public bool Initialized => Entity != null;
 
         private void Awake()
@@ -165,10 +167,11 @@ namespace BEPUphysics.Unity
             physicsEntity.AngularDamping = (sfloat)angularDamping;
             physicsEntity.LinearDamping = (sfloat)linearDamping;
 
-            RegisterEvents();
             simulation.PhysicsSpace.Add(physicsEntity);
 
+            RegisterEvents();
             OnValidate();
+            SyncTransform();
         }
 
         private void RegisterEvents()
@@ -226,24 +229,33 @@ namespace BEPUphysics.Unity
             // apply rotation constrains
             if (fixedRotation.Any)
             {
-                var lastEulerAngles = currentPhysicsRotation.EulerAngles();
-                var eulerAngles = Entity.Orientation.EulerAngles();
+                var rotationDelta = BQuaternion.Inverse(currentPhysicsRotation) * Entity.Orientation;
+                BQuaternion.GetAxisAngleFromQuaternion(ref rotationDelta, out var axis, out var angle);
+
                 if (fixedRotation.X)
                 {
-                    eulerAngles.X = lastEulerAngles.X;
+                    axis.X = sfloat.Zero;
                     Entity.angularVelocity.X = sfloat.Zero;
                 }
                 if (fixedRotation.Y)
                 {
-                    eulerAngles.Y = lastEulerAngles.Y;
+                    axis.Y = sfloat.Zero;
                     Entity.angularVelocity.Y = sfloat.Zero;
                 }
                 if (fixedRotation.Z)
                 {
-                    eulerAngles.Z = lastEulerAngles.Z;
+                    axis.Z = sfloat.Zero;
                     Entity.angularVelocity.Z = sfloat.Zero;
                 }
-                Entity.Orientation = BQuaternion.CreateFromYawPitchRoll(eulerAngles.X, eulerAngles.Y, eulerAngles.Z);
+                rotationDelta = BQuaternion.Identity;
+                var axisLength = axis.Length();
+                if (axisLength > sfloat.Zero)
+                {
+                    angle *= axisLength;
+                    axis.Normalize();
+                    rotationDelta = BQuaternion.CreateFromAxisAngle(axis, angle);
+                }
+                Entity.Orientation = rotationDelta * currentPhysicsRotation;
             }
 
             // cache previous and current physics positions for rendering

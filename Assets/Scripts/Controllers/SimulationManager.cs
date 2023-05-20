@@ -1,3 +1,4 @@
+using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.UI;
@@ -14,7 +15,7 @@ namespace RecoDeli.Scripts.Controllers
 {
     public class SimulationManager : MonoBehaviour
     {
-        [SerializeField] private Transform simulationGroup;
+        [SerializeField] private BepuSimulation simulationGroup;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
         [SerializeField] private InstructionEditor instructionEditor;
@@ -32,22 +33,19 @@ namespace RecoDeli.Scripts.Controllers
 
         private bool paused = false;
         private bool playingSimulation = false;
-        private Transform simulationInstance;
-        private Scene simulationScene;
+        private BepuSimulation simulationInstance;
         private string simulationGroupName;
 
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
-        private float simulationTime;
-        private int simulationIndex;
-
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
         public InstructionEditor InstructionEditor => instructionEditor;
+        public BepuSimulation PhysicsSimulationInstance => simulationInstance;
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
-        public float SimulationTime => simulationTime;
+        public float SimulationTime => (float)simulationInstance.SimulationTime;
 
         private void Awake()
         {
@@ -77,7 +75,10 @@ namespace RecoDeli.Scripts.Controllers
                     instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                     lastInstruction = RobotController.CurrentInstructionIndex;
                 }
-
+                if (!endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
+                {
+                    SimulationSuccessful();
+                }
             }
 
             if (!paused)
@@ -86,20 +87,6 @@ namespace RecoDeli.Scripts.Controllers
             }
 
             UpdateGlitching();
-        }
-
-        private void FixedUpdate()
-        {
-            if (playingSimulation)
-            {
-                simulationTime += Time.fixedDeltaTime;
-                //simulationScene.GetPhysicsScene().Simulate(Time.fixedDeltaTime);
-            }
-
-            if (playingSimulation && !endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
-            {
-                SimulationSuccessful();
-            }
         }
 
         private void SimulationSuccessful()
@@ -123,7 +110,7 @@ namespace RecoDeli.Scripts.Controllers
 
         public void PlayInstructions()
         {
-            simulationTime = 0.0f;
+            simulationInstance.Active = true;
             instructionEditor.HighlightInstruction(0);
             instructionEditor.SetPlaybackState(true);
             RobotController.ExecuteCommands(instructionEditor.GetRobotInstructionsList());
@@ -161,24 +148,13 @@ namespace RecoDeli.Scripts.Controllers
             }
 
             simulationInstance = Instantiate(simulationGroup);
-            simulationInstance.name = simulationGroupName + " (Instance)";
+            simulationInstance.transform.name = simulationGroupName + " (Instance)";
             simulationInstance.gameObject.SetActive(true);
+            simulationInstance.Initialize();
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
             GoalBox = simulationInstance.GetComponentsInChildren<GoalBox>().Where(box => box.IsFinalGoalBox).FirstOrDefault();
-
-            //if (simulationScene.isLoaded)
-            //{
-            //    SceneManager.UnloadSceneAsync(simulationScene);
-            //}
-            simulationIndex++;
-            //simulationScene = SceneManager.CreateScene(
-            //    $"Simulation Scene {simulationIndex}", 
-            //    new CreateSceneParameters(LocalPhysicsMode.Physics3D)
-            //);
-            //simulationScene = SceneManager.CreateScene( $"Simulation Scene {simulationIndex}");
-            //SceneManager.MoveGameObjectToScene(simulationInstance.gameObject, simulationScene);
         }
 
         public void PauseSimulation()

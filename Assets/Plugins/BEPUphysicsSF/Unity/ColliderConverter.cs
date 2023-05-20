@@ -58,7 +58,7 @@ namespace BEPUphysics.Unity
                     {
                         0 => BVector3.Right * scale.X,
                         1 => BVector3.Up * scale.Y,
-                        2 => BVector3.Forward * scale.Z,
+                        2 => BVector3.Backward * scale.Z,
                         _ => BVector3.Zero
                     };
                     var halfHeight = (sfloat)capsuleCollider.height * sfloat.Half;

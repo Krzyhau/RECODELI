@@ -1,3 +1,4 @@
+using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using System.Collections;
@@ -85,8 +86,8 @@ namespace RecoDeli.Scripts.Controllers
             desiredCameraRotation = Quaternion.Euler(30, 0, 0);
 
 
-            robot.Rigidbody.isKinematic = true;
-            goalBox.GetComponent<Rigidbody>().isKinematic = true;
+            robot.Rigidbody.Kinematic = true;
+            goalBox.GetComponent<BepuRigidbody>().Kinematic = true;
             controlledCamera.enabled = false;
 
             robot.enabled = false;

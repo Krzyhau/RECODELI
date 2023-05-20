@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 579164158148602411}
   - component: {fileID: 6184875400669459711}
   - component: {fileID: 5197620349902121401}
-  - component: {fileID: 2952013039854561587}
   - component: {fileID: 8238815954974463489}
+  - component: {fileID: 349421176210550056}
   m_Layer: 0
   m_Name: Wooden Box
   m_TagString: Untagged
@@ -85,33 +85,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!54 &2952013039854561587
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
-  serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_CenterOfMass: {x: 0, y: 0, z: 0}
-  m_InertiaTensor: {x: 1, y: 1, z: 1}
-  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ImplicitCom: 1
-  m_ImplicitTensor: 1
-  m_UseGravity: 0
-  m_IsKinematic: 0
-  m_Interpolate: 1
-  m_Constraints: 4
-  m_CollisionDetection: 1
 --- !u!65 &8238815954974463489
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -133,3 +106,30 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 4, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &349421176210550056
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 116299969606427933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  kinematic: 0
+  angularDamping: 0
+  linearDamping: 0
+  kineticFriction: 0.8
+  staticFriction: 1
+  bounciness: 0
+  fixedPosition:
+    X: 0
+    Y: 1
+    Z: 0
+  fixedRotation:
+    X: 0
+    Y: 0
+    Z: 0

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 6497930304839895288}
   - component: {fileID: 6730362524002062820}
   - component: {fileID: 2720860300888416087}
-  - component: {fileID: 8889206330734178041}
+  - component: {fileID: 1731676471809089217}
+  - component: {fileID: 5777640290606222188}
   m_Layer: 0
   m_Name: Space Rock 2
   m_TagString: Untagged
@@ -26,7 +27,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1988193785846949339}
-  m_LocalRotation: {x: 0.032141462, y: -0.706376, z: 0.7063759, w: -0.032141514}
+  m_LocalRotation: {x: 0.03213802, y: -0.7063761, z: 0.7063761, w: -0.03213802}
   m_LocalPosition: {x: 26.866121, y: 1.7615271, z: -0.00000011920929}
   m_LocalScale: {x: 4, y: 4, z: 4}
   m_ConstrainProportionsScale: 0
@@ -84,8 +85,35 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &8889206330734178041
-MeshCollider:
+--- !u!114 &1731676471809089217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988193785846949339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  kinematic: 1
+  angularDamping: 0.15
+  linearDamping: 0.03
+  kineticFriction: 0.8
+  staticFriction: 1
+  bounciness: 0
+  fixedPosition:
+    X: 0
+    Y: 1
+    Z: 0
+  fixedRotation:
+    X: 0
+    Y: 0
+    Z: 0
+--- !u!136 &5777640290606222188
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -102,7 +130,8 @@ MeshCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 1
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 50056287690978015, guid: 83a4f176ee70ee543ba8e90d0eea7889, type: 3}
+  serializedVersion: 2
+  m_Radius: 1.4881643
+  m_Height: 5.626576
+  m_Direction: 1
+  m_Center: {x: 0.015203355, y: 0.4255614, z: 0.20246452}

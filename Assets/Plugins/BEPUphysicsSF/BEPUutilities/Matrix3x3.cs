@@ -94,9 +94,9 @@ namespace BEPUutilities
 
 
         /// <summary>
-        /// Gets or sets the backward vector of the matrix.
+        /// Gets or sets the forward vector of the matrix.
         /// </summary>
-        public Vector3 Backward
+        public Vector3 Forward
         {
             get
             {
@@ -144,9 +144,9 @@ namespace BEPUutilities
         }
 
         /// <summary>
-        /// Gets or sets the forward vector of the matrix.
+        /// Gets or sets the backward vector of the matrix.
         /// </summary>
-        public Vector3 Forward
+        public Vector3 Backward
         {
             get
             {

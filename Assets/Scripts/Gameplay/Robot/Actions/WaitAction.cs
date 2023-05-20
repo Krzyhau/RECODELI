@@ -1,5 +1,8 @@
 using UnityEngine;
 using System.Collections;
+using SoftFloat;
+using BEPUphysics.Unity;
+using System.Collections.Generic;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
@@ -8,16 +11,15 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public override string Name => "WAIT";
         public override RobotThrusterFlag ThrustersState => RobotThrusterFlag.None;
 
-        public override IEnumerator Execute(RobotController controller, RobotInstruction<float> instruction)
+        public override IEnumerator<int> Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            float remainingTime = instruction.Parameter;
-            while(remainingTime > 0)
+            sfloat remainingTime = (sfloat)instruction.Parameter;
+            while(remainingTime > sfloat.Zero)
             {
-                yield return new WaitForFixedUpdate();
-                remainingTime -= Time.fixedDeltaTime;
-                instruction.UpdateProgress(1.0f - remainingTime / instruction.Parameter);
+                yield return 1;
+                remainingTime -= controller.Rigidbody.Simulation.TimeStep;
+                instruction.UpdateProgress(1.0f - (float)(remainingTime / (sfloat)instruction.Parameter));
             }
-            yield return new WaitForFixedUpdate();
         }
     }
 }
