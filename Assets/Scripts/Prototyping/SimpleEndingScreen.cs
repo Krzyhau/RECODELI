@@ -12,7 +12,7 @@ namespace RecoDeli.Scripts.Prototyping
         [SerializeField] private SimulationManager simulationManager;
         private void OnEnable()
         {
-            var simulationTime = simulationManager.SimulationTime;
+            var simulationTime = simulationManager.LastCompletionTime;
             var instructionCount = simulationManager.RobotController.CurrentInstructions.Count;
             valuesText.text = $"{simulationTime:0.000}\n{instructionCount}";
         }

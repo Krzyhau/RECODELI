@@ -85,9 +85,15 @@ namespace RecoDeli.Scripts.Controllers
             desiredCameraPosition = robotTargetPosition + new Vector3(0, 3, -10);
             desiredCameraRotation = Quaternion.Euler(30, 0, 0);
 
-
+            robot.StopExecution();
             robot.Rigidbody.Kinematic = true;
-            goalBox.GetComponent<BepuRigidbody>().Kinematic = true;
+            robot.Rigidbody.Entity.LinearVelocity = BEPUutilities.Vector3.Zero;
+            robot.Rigidbody.Entity.AngularVelocity = BEPUutilities.Vector3.Zero;
+            var goalBoxRigid = goalBox.GetComponent<BepuRigidbody>();
+            goalBoxRigid.Kinematic = true;
+            goalBoxRigid.Entity.LinearVelocity = BEPUutilities.Vector3.Zero;
+            goalBoxRigid.Entity.AngularVelocity = BEPUutilities.Vector3.Zero;
+
             controlledCamera.enabled = false;
 
             robot.enabled = false;
@@ -105,7 +111,7 @@ namespace RecoDeli.Scripts.Controllers
             controlledCamera.transform.position = startCameraPosition;
             controlledCamera.transform.rotation = startCameraRotation;
 
-            // robota i goalboxa nie trzeba bo one i tak s¹ usuwane przy resecie symulacji
+            // don't have to reset robot and goalbox because that's part of the simulation
 
             mainUiGroupToHide.interactable = true;
             mainUiGroupToHide.alpha = 1.0f;

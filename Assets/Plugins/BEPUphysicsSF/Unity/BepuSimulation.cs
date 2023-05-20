@@ -24,6 +24,10 @@ namespace BEPUphysics.Unity
         private Space space;
         private List<IBepuEntity> rigidbodies = new List<IBepuEntity>();
 
+        public Action OnInitialized;
+        public Action OnPhysicsUpdate;
+        public Action OnPostPhysicsUpdate;
+
         public bool Active { get; set; }
         public Space PhysicsSpace => space;
         public float InterpolationTime => timeSinceLastStep / timeStep;
@@ -56,6 +60,8 @@ namespace BEPUphysics.Unity
             if (activateOnAwake) Active = true;
 
             Debug.Log($"Initialised BepuSimulation. Rigidbodies count: {rigidbodies.Count}");
+
+            if (OnInitialized != null) OnInitialized.Invoke();
         }
         private void InitializeRigidbodiesAndColliders()
         {
@@ -88,8 +94,10 @@ namespace BEPUphysics.Unity
             {
                 Profiler.BeginSample("BEPUphysics Simulation Step");
                 foreach (var rigidbody in rigidbodies) rigidbody.PhysicsUpdate();
+                if (OnPhysicsUpdate != null) OnPhysicsUpdate.Invoke();
                 space.Update();
                 foreach (var rigidbody in rigidbodies) rigidbody.PostPhysicsUpdate();
+                if (OnPostPhysicsUpdate != null) OnPostPhysicsUpdate.Invoke();
                 Profiler.EndSample();
 
                 simulationTime += (sfloat)timeStep;

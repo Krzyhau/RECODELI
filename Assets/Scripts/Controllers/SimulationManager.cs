@@ -33,6 +33,7 @@ namespace RecoDeli.Scripts.Controllers
 
         private bool paused = false;
         private bool playingSimulation = false;
+        private bool finishedSimulation = false;
         private BepuSimulation simulationInstance;
         private string simulationGroupName;
 
@@ -41,11 +42,13 @@ namespace RecoDeli.Scripts.Controllers
 
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
+        public float LastCompletionTime { get; private set; }
         public InstructionEditor InstructionEditor => instructionEditor;
         public BepuSimulation PhysicsSimulationInstance => simulationInstance;
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => (float)simulationInstance.SimulationTime;
+        
 
         private void Awake()
         {
@@ -68,29 +71,36 @@ namespace RecoDeli.Scripts.Controllers
 
         private void Update()
         {
-            if (playingSimulation)
-            {
-                if(lastInstruction < RobotController.CurrentInstructionIndex)
-                {
-                    instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
-                    lastInstruction = RobotController.CurrentInstructionIndex;
-                }
-                if (!endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
-                {
-                    SimulationSuccessful();
-                }
-            }
-
-            if (!paused)
+            if (!paused && playingSimulation && !finishedSimulation)
             {
                 Time.timeScale = timescaleBar.Timescale;
+            }
+            else
+            {
+                Time.timeScale = 1.0f;
             }
 
             UpdateGlitching();
         }
 
+        private void BepuUpdate()
+        {
+            if (!playingSimulation) return;
+
+            if (lastInstruction < RobotController.CurrentInstructionIndex)
+            {
+                instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                lastInstruction = RobotController.CurrentInstructionIndex;
+            }
+            if (!endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
+            {
+                SimulationSuccessful();
+            }
+        }
+
         private void SimulationSuccessful()
         {
+            LastCompletionTime = SimulationTime;
             endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
 
             Time.timeScale = 1.0f;
@@ -98,6 +108,7 @@ namespace RecoDeli.Scripts.Controllers
             playAmbient.mute = true;
             idleAmbient.mute = false;
             successSound.Play();
+            finishedSimulation = true;
         }
 
         private void UpdateGlitching()
@@ -131,6 +142,7 @@ namespace RecoDeli.Scripts.Controllers
             }
 
             playingSimulation = false;
+            finishedSimulation = false;
             paused = false;
 
             instructionEditor.SetPlaybackState(false);
@@ -151,6 +163,7 @@ namespace RecoDeli.Scripts.Controllers
             simulationInstance.transform.name = simulationGroupName + " (Instance)";
             simulationInstance.gameObject.SetActive(true);
             simulationInstance.Initialize();
+            simulationInstance.OnPostPhysicsUpdate += BepuUpdate;
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
