@@ -42,6 +42,8 @@ namespace BEPUphysics.Unity
         private BQuaternion previousPhysicsRotation = BQuaternion.Identity;
         private BQuaternion currentPhysicsRotation = BQuaternion.Identity;
 
+        private BVector3 massCenterOffset;
+
         private IBepuEntityListener[] listeners;
         public float Mass
         {
@@ -100,13 +102,17 @@ namespace BEPUphysics.Unity
                 currentPhysicsRotation = physicsEntity.Orientation;
                 previousPhysicsRotation = physicsEntity.Orientation;
 
-                physicsEntity.Position = transform.localPosition.ToBEPU();
+                var offset = BQuaternion.Transform(massCenterOffset, physicsEntity.Orientation);
+
+                physicsEntity.Position = transform.localPosition.ToBEPU() + offset;
                 currentPhysicsPosition = physicsEntity.Position;
                 previousPhysicsPosition = physicsEntity.Position;
             }
             else
             {
+                var offset = BQuaternion.Transform(massCenterOffset, physicsEntity.Orientation);
                 transform.localPosition = UVector3.Lerp(previousPhysicsPosition.ToUnity(), currentPhysicsPosition.ToUnity(), simulation.InterpolationTime);
+                transform.localPosition -= offset.ToUnity();
                 transform.localRotation = UQuaternion.Lerp(previousPhysicsRotation.ToUnity(), currentPhysicsRotation.ToUnity(), simulation.InterpolationTime);
             }
 
@@ -155,7 +161,7 @@ namespace BEPUphysics.Unity
                 return;
             }
 
-            physicsEntity = new Entity(new CompoundShape(shapeEntries));
+            physicsEntity = new Entity(new CompoundShape(shapeEntries, out massCenterOffset));
             physicsEntity.Tag = this;
             physicsEntity.CollisionInformation.Tag = this;
             physicsEntity.Material = new Materials.Material

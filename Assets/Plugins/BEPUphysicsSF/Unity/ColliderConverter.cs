@@ -51,24 +51,26 @@ namespace BEPUphysics.Unity
                 case CapsuleCollider capsuleCollider:
                     if (scale.X != scale.Y || scale.X != scale.Z)
                     {
-                        Debug.LogWarning($"Non-uniform scale for SphereCollider {collider.gameObject}! {scale.X} {scale.Y} {scale.Z}");
+                        Debug.LogWarning($"Non-uniform scale for CapsuleCollider {collider.gameObject}! {scale.X} {scale.Y} {scale.Z}");
                     }
-                    var capsuleRadius = (scale.X + scale.Y + scale.Z) / (sfloat)3.0f * (sfloat)capsuleCollider.radius;
+                    var size = (scale.X + scale.Y + scale.Z) / (sfloat)3.0f;
+                    var capsuleRadius = (sfloat)capsuleCollider.radius;
                     var offsetAxis = capsuleCollider.direction switch
                     {
                         0 => BVector3.Right * scale.X,
                         1 => BVector3.Up * scale.Y,
-                        2 => BVector3.Backward * scale.Z,
+                        2 => BVector3.Forward * scale.Z,
                         _ => BVector3.Zero
                     };
                     var halfHeight = (sfloat)capsuleCollider.height * sfloat.Half;
                     var halfHeightMinusRadius = sfloat.Max(sfloat.Zero, halfHeight - capsuleRadius);
                     var center = capsuleCollider.center.ToBEPU() * scale;
-                    var start = center + offsetAxis * halfHeightMinusRadius;
-                    var end = center - offsetAxis * halfHeightMinusRadius;
-                    var capsule = new Capsule(start, end, capsuleRadius);
-                    var capsuleCollideable = capsule.CollisionInformation;
-                    capsuleCollideable.WorldTransform = new RigidTransform(capsule.Position, capsule.Orientation);
+                    var start = -offsetAxis * halfHeightMinusRadius;
+                    var end = offsetAxis * halfHeightMinusRadius;
+                    Capsule.GetCapsuleInformation(ref start, ref end, out var orientation, out var length);
+                    var capsuleCollideable = new ConvexCollidable<CapsuleShape>(new CapsuleShape(length, capsuleRadius * size));
+                    capsuleCollideable.WorldTransform = new RigidTransform(center, orientation);
+
                     return capsuleCollideable;
             }
 
