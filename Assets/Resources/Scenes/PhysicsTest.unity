@@ -174,12 +174,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1
   kinematic: 0
+  angularDamping: 0
+  linearDamping: 0
   kineticFriction: 0.8
   staticFriction: 1
   bounciness: 0
   fixedPosition:
     X: 0
-    Y: 0
+    Y: 1
     Z: 0
   fixedRotation:
     X: 0
@@ -521,6 +523,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 0
   kinematic: 1
+  angularDamping: 0.15
+  linearDamping: 0.03
   kineticFriction: 0.8
   staticFriction: 1
   bounciness: 0
@@ -612,6 +616,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 1
   kinematic: 0
+  angularDamping: 0.15
+  linearDamping: 0.03
   kineticFriction: 0.8
   staticFriction: 1
   bounciness: 0
@@ -1068,6 +1074,7 @@ MonoBehaviour:
   maxStepsPerFrame: 3
   solverIterationLimit: 6
   activateOnAwake: 1
+  gravity: {x: 0, y: -9.81, z: 0}
 --- !u!4 &543450652931505962
 Transform:
   m_ObjectHideFlags: 0
@@ -1167,6 +1174,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mass: 10
   kinematic: 1
+  angularDamping: 0.15
+  linearDamping: 0.03
   kineticFriction: 0.8
   staticFriction: 1
   bounciness: 0

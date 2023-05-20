@@ -5,7 +5,7 @@ using UnityEngine.UIElements;
 using UnityEditor;
 using System;
 
-namespace BepuPhysics.Unity
+namespace BEPUphysics.Unity
 {
     [Serializable]
     public struct BepuPhysicsAxisConstraints

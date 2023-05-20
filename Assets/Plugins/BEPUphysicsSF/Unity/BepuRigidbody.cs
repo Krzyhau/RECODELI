@@ -6,13 +6,14 @@ using UnityEngine;
 using System.Linq;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.Materials;
-using BepuPhysics.Unity;
 
 using UVector3 = UnityEngine.Vector3;
 using UQuaternion = UnityEngine.Quaternion;
 using BVector3 = BEPUutilities.Vector3;
 using BQuaternion = BEPUutilities.Quaternion;
-
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
 
 namespace BEPUphysics.Unity
 {
@@ -20,6 +21,8 @@ namespace BEPUphysics.Unity
     {
         [SerializeField] private float mass = 1.0f;
         [SerializeField] private bool kinematic = false;
+        [SerializeField] private float angularDamping = .15f;
+        [SerializeField] private float linearDamping = .03f;
         [Header("Material")]
         [SerializeField] private float kineticFriction = (float)MaterialManager.DefaultKineticFriction;
         [SerializeField] private float staticFriction = (float)MaterialManager.DefaultStaticFriction;
@@ -39,6 +42,7 @@ namespace BEPUphysics.Unity
         private BQuaternion previousPhysicsRotation = BQuaternion.Identity;
         private BQuaternion currentPhysicsRotation = BQuaternion.Identity;
 
+        private IBepuEntityListener[] listeners;
         public float Mass
         {
             get { return mass; }
@@ -158,15 +162,46 @@ namespace BEPUphysics.Unity
                 KineticFriction = (sfloat)kineticFriction,
                 Bounciness = (sfloat)bounciness
             };
+            physicsEntity.AngularDamping = (sfloat)angularDamping;
+            physicsEntity.LinearDamping = (sfloat)linearDamping;
 
+            RegisterEvents();
             simulation.PhysicsSpace.Add(physicsEntity);
 
             OnValidate();
         }
 
+        private void RegisterEvents()
+        {
+            if (physicsEntity == null) return;
+
+            physicsEntity.CollisionInformation.Events.InitialCollisionDetected += OnBepuCollisionEnter;
+            physicsEntity.CollisionInformation.Events.PairTouched += OnBepuCollisionStay;
+            physicsEntity.CollisionInformation.Events.CollisionEnded += OnBepuCollisionExit;
+
+            listeners = GetComponents<IBepuEntityListener>();
+        }
+
+        private void OnBepuCollisionEnter(EntityCollidable self, Collidable other, CollidablePairHandler pair)
+        {
+            foreach (var listener in listeners) listener.OnBepuCollisionEnter(other, pair);
+        }
+
+        private void OnBepuCollisionStay(EntityCollidable self, Collidable other, CollidablePairHandler pair)
+        {
+            foreach (var listener in listeners) listener.OnBepuCollisionStay(other, pair);
+        }
+
+        private void OnBepuCollisionExit(EntityCollidable self, Collidable other, CollidablePairHandler pair)
+        {
+            foreach (var listener in listeners) listener.OnBepuCollisionExit(other, pair);
+        }
+
+
+
         public void PhysicsUpdate()
         {
-
+            foreach (var listener in listeners) listener.BepuUpdate();
         }
 
         public void PostPhysicsUpdate()

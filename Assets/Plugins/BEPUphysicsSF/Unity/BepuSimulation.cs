@@ -18,6 +18,7 @@ namespace BEPUphysics.Unity
 
         private bool initialised = false;
         private float timeSinceLastStep;
+        private sfloat simulationTime;
 
         private Space space;
         private List<IBepuEntity> rigidbodies = new List<IBepuEntity>();
@@ -25,6 +26,7 @@ namespace BEPUphysics.Unity
         public bool Active { get; set; }
         public Space PhysicsSpace => space;
         public float InterpolationTime => timeSinceLastStep / timeStep;
+        public sfloat SimulationTime => simulationTime;
 
         private void Awake() => Initialize();
         private void Initialize()
@@ -82,6 +84,8 @@ namespace BEPUphysics.Unity
                 space.Update();
                 foreach (var rigidbody in rigidbodies) rigidbody.PostPhysicsUpdate();
                 Profiler.EndSample();
+
+                simulationTime += (sfloat)timeStep;
 
                 timeSinceLastStep -= timeStep;
                 updates++;

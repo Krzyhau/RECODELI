@@ -14,7 +14,6 @@ using BQuaternion = BEPUutilities.Quaternion;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using log4net.Util;
 
 namespace BEPUphysics.Unity
 {
