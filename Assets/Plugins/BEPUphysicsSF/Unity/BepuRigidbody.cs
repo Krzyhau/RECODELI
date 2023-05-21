@@ -122,22 +122,23 @@ namespace BEPUphysics.Unity
 
         private void OnDestroy()
         {
-            ClearPhysicsEntity();
+            Deinitialize();
         }
 
-        private void ClearPhysicsEntity()
+        public void Deinitialize()
         {
             if (Initialized)
             {
-                Entity.Space.Remove(Entity);
+                Simulation.RemoveEntity(this);
                 physicsEntity = null;
+                simulation = null;
             }
         }
 
         public void Initialize(BepuSimulation simulation)
         {
             // deinitialize previous state of the entity
-            ClearPhysicsEntity();
+            Deinitialize();
 
             this.simulation = simulation;
 
@@ -206,7 +207,12 @@ namespace BEPUphysics.Unity
             foreach (var listener in listeners) listener.OnBepuCollisionExit(other, pair);
         }
 
-
+        // destroys the game object, but ensures physics object is removed immediately
+        public void DeinitializeAndDestroyGameObject()
+        {
+            Deinitialize();
+            Destroy(gameObject);
+        }
 
         public void PhysicsUpdate()
         {

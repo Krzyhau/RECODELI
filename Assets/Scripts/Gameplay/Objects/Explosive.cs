@@ -91,9 +91,9 @@ namespace RecoDeli.Scripts.Gameplay
                 rigidbody.Entity.LinearVelocity += pushVector;
             }
 
-            Instantiate(explosionParticle, transform.position, Quaternion.identity);
+            Instantiate(explosionParticle, transform.position, Quaternion.identity, transform.parent);
 
-            Destroy(gameObject);
+            Rigidbody.DeinitializeAndDestroyGameObject();
         }
 
         private void OnDrawGizmosSelected()

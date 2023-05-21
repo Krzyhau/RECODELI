@@ -1,18 +1,8 @@
-using BEPUphysics.BroadPhaseEntries;
 using SoftFloat;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
-
-using BEPUphysics.Entities;
-using BEPUphysics.Entities.Prefabs;
-using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using BEPUphysics.NarrowPhaseSystems;
-using BEPUphysics.CollisionRuleManagement;
-using UnityEngine.UIElements;
 
 namespace BEPUphysics.Unity
 {
@@ -119,6 +109,12 @@ namespace BEPUphysics.Unity
                     break;
                 }
             }
+        }
+
+        public void RemoveEntity(IBepuEntity entity)
+        {
+            rigidbodies.Remove(entity);
+            PhysicsSpace.Remove(entity.Entity);
         }
     }
 }
