@@ -5,6 +5,7 @@ using RecoDeli.Scripts.UI;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.Rendering;
@@ -77,7 +78,7 @@ namespace RecoDeli.Scripts.Controllers
             }
             else
             {
-                Time.timeScale = 1.0f;
+                Time.timeScale = paused ? 0.0f : 1.0f;
             }
 
             UpdateGlitching();
@@ -103,6 +104,7 @@ namespace RecoDeli.Scripts.Controllers
             LastCompletionTime = SimulationTime;
             endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
 
+            paused = false;
             Time.timeScale = 1.0f;
 
             playAmbient.mute = true;
