@@ -86,19 +86,24 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public void BepuUpdate()
         {
-            if (!ExecutingInstructions) return;
-
             var linearVelociotyPreInstruction = Rigidbody.Entity.LinearVelocity;
             var angularVelociotyPreInstruction = Rigidbody.Entity.AngularVelocity;
 
-            PerformInstructionStep();
+            HandleInstructionExecution();
 
             LinearAcceleration = Rigidbody.Entity.LinearVelocity - linearVelociotyPreInstruction;
             AngularAcceleration = Rigidbody.Entity.AngularVelocity - angularVelociotyPreInstruction;
 
-            if (currentInstructionExecution == null) StopExecution();
-
             thrusterController.UpdateThrusters(this);
+        }
+
+        private void HandleInstructionExecution()
+        {
+            if (!ExecutingInstructions) return;
+
+            PerformInstructionStep();
+
+            if (currentInstructionExecution == null) StopExecution();
         }
 
         private void PerformInstructionStep()

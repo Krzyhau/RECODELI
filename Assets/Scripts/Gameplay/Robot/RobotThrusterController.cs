@@ -55,9 +55,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private void SwitchParticleSystem(ParticleSystem particles, bool newState)
         {
-            var oldState = particles.isPlaying;
+            var oldState = particles.isEmitting;
 
-            if (newState == oldState)  return;
+            if (newState == oldState) return;
 
             if (newState) particles.Play();
             else particles.Stop();

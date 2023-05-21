@@ -24,7 +24,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             var rawParameter = (sfloat)instruction.Parameter;
 
             var direction = (sfloat)rotationDirection * (sfloat)rawParameter.Sign();
-            var parameter = libm.sqrtf(sfloat.Abs(rawParameter) * sfloat.Two);
+            var parameter = libm.sqrtf(sfloat.Abs(rawParameter) * sfloat.Two) - deltaTime;
 
             var stepCounts = (parameter / deltaTime);
 
