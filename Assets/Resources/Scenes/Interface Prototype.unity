@@ -4938,6 +4938,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Gameplay Interface
       objectReference: {fileID: 0}
+    - target: {fileID: 8465991619549983605, guid: b072f79dcc7a12b48a58fc579ddb6095,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8605273873463046703, guid: b072f79dcc7a12b48a58fc579ddb6095,
         type: 3}
       propertyPath: m_AnchorMax.y
