@@ -1,4 +1,3 @@
-using ClipboardLinkWebGL;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Utils;
 using System;
@@ -527,7 +526,7 @@ namespace RecoDeli.Scripts.UI
 
             if (selectedBars.Any())
             {
-                ClipboardLink.Content = RobotInstruction.ListToString(
+                GUIUtility.systemCopyBuffer = RobotInstruction.ListToString(
                     selectedBars.Select(bar=>bar.Instruction).ToList()
                 );
             }
@@ -535,7 +534,7 @@ namespace RecoDeli.Scripts.UI
 
         public void Paste()
         {
-            var clipboard = ClipboardLink.Content;
+            var clipboard = GUIUtility.systemCopyBuffer;
             if (RobotInstruction.IsValidListString(clipboard))
             {
                 AddInstructions(RobotInstruction.StringToList(clipboard));
