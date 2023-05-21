@@ -12,9 +12,14 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public class RobotController : MonoBehaviour, IBepuEntityListener
     {
+        [SerializeField] private RobotThrusterController thrusterController;
+
+        [Header("Properties")]
         [SerializeField] private float rotationSpeed;
         [SerializeField] private float propulsionForce;
         [SerializeField] private float propulsionRotationDrag;
+        [SerializeField] private float thrusterRepulsionForce;
+        [SerializeField] private float thrusterRepulsionMaxDistance;
 
         private IEnumerator<int> currentInstructionExecution = null;
         private int currentInstructionWaitTicks = 0;
@@ -28,9 +33,14 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public List<RobotInstruction> CurrentInstructions { get; set; }
 
+        public BEPUutilities.Vector3 LinearAcceleration { get; set; }
+        public BEPUutilities.Vector3 AngularAcceleration { get; set; }
+
         public float RotationSpeed => rotationSpeed;
         public float PropulsionForce => propulsionForce;
         public float PropulsionRotationDrag => propulsionRotationDrag;
+        public float ThrusterRepulsionForce => thrusterRepulsionForce;
+        public float ThrusterRepulsionMaxDistance => thrusterRepulsionMaxDistance;
 
         public BepuRigidbody Rigidbody { get; private set; }
         public GoalBox ReachedGoalBox { get; set; }
@@ -78,9 +88,17 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         {
             if (!ExecutingInstructions) return;
 
+            var linearVelociotyPreInstruction = Rigidbody.Entity.LinearVelocity;
+            var angularVelociotyPreInstruction = Rigidbody.Entity.AngularVelocity;
+
             PerformInstructionStep();
 
+            LinearAcceleration = Rigidbody.Entity.LinearVelocity - linearVelociotyPreInstruction;
+            AngularAcceleration = Rigidbody.Entity.AngularVelocity - angularVelociotyPreInstruction;
+
             if (currentInstructionExecution == null) StopExecution();
+
+            thrusterController.UpdateThrusters(this);
         }
 
         private void PerformInstructionStep()

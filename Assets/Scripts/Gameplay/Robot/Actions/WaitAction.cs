@@ -9,7 +9,6 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     public class WaitAction : RobotActionSingle
     {
         public override string Name => "WAIT";
-        public override RobotThrusterFlag ThrustersState => RobotThrusterFlag.None;
 
         public override IEnumerator<int> Execute(RobotController controller, RobotInstruction<float> instruction)
         {

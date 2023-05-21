@@ -9,7 +9,6 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     public abstract class RobotAction
     {
         public abstract string Name { get; }
-        public abstract RobotThrusterFlag ThrustersState { get; }
         public abstract Type GetParameterType();
         public abstract int ParameterStringCount { get; }
 

@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 1
+  mass: 2
   kinematic: 0
   angularDamping: 0
   linearDamping: 0

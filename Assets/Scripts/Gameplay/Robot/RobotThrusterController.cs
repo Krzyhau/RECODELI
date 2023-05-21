@@ -1,3 +1,7 @@
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.Unity;
+using SoftFloat;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
@@ -9,29 +13,46 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         [SerializeField] private ParticleSystem backLeftThruster;
         [SerializeField] private ParticleSystem backRightThruster;
 
-        [SerializeField] private RobotController controller;
         [SerializeField] private AudioSource thrusterAudio;
 
-        private void FixedUpdate()
-        {
-            SwitchParticleSystem(frontLeftThruster, RobotThrusterFlag.FrontLeft);
-            SwitchParticleSystem(frontRightThruster, RobotThrusterFlag.FrontRight);
-            SwitchParticleSystem(backLeftThruster, RobotThrusterFlag.BackLeft);
-            SwitchParticleSystem(backRightThruster, RobotThrusterFlag.BackRight);
+        [SerializeField] private float linearThreshold;
+        [SerializeField] private float angularThreshold;
+        [SerializeField] private Vector3 thrusterAbsoluteOffset;
 
-            if(GetThrusterFlags() > 0 && !thrusterAudio.isPlaying)
+        public void UpdateThrusters(RobotController controller)
+        {
+            sfloat forwardMovement = BEPUutilities.Vector3.Dot(controller.LinearAcceleration, controller.Rigidbody.Entity.OrientationMatrix.Forward);
+            sfloat yawRotation = controller.AngularAcceleration.Y;
+
+            bool frontLeftState = forwardMovement < -(sfloat)linearThreshold || yawRotation < -(sfloat)angularThreshold;
+            bool frontRightState = forwardMovement < -(sfloat)linearThreshold || yawRotation > (sfloat)angularThreshold;
+            bool backLeftState = forwardMovement > (sfloat)linearThreshold || yawRotation > (sfloat)angularThreshold;
+            bool backRightState = forwardMovement > (sfloat)linearThreshold || yawRotation < -(sfloat)angularThreshold;
+
+            bool any = frontLeftState || frontRightState || backLeftState || backRightState;
+
+            SwitchParticleSystem(frontLeftThruster, frontLeftState);
+            SwitchParticleSystem(frontRightThruster, frontRightState);
+            SwitchParticleSystem(backLeftThruster, backLeftState);
+            SwitchParticleSystem(backRightThruster, backRightState);
+
+            if(any && !thrusterAudio.isPlaying)
             {
                 thrusterAudio.Play();
             }
-            else if(GetThrusterFlags() == 0 && thrusterAudio.isPlaying)
+            else if(!any && thrusterAudio.isPlaying)
             {
                 thrusterAudio.Stop();
             }
+
+            if (frontLeftState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3(sfloat.MinusOne, sfloat.Zero, sfloat.One));
+            if (frontRightState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3(sfloat.One, sfloat.Zero, sfloat.One));
+            if (backLeftState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3(sfloat.MinusOne, sfloat.Zero, sfloat.MinusOne));
+            if (backRightState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3(sfloat.One, sfloat.Zero, sfloat.MinusOne));
         }
 
-        private void SwitchParticleSystem(ParticleSystem particles, RobotThrusterFlag particleFlag)
+        private void SwitchParticleSystem(ParticleSystem particles, bool newState)
         {
-            var newState = (GetThrusterFlags() & particleFlag) > 0;
             var oldState = particles.isPlaying;
 
             if (newState == oldState)  return;
@@ -40,15 +61,33 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             else particles.Stop();
         }
 
-        private RobotThrusterFlag GetThrusterFlags()
+        private void HandleThrusterRepulsion(RobotController controller, BEPUutilities.Vector3 normalizedOffset)
         {
-            if (controller.CurrentInstruction != null)
+            var maxPushForce = (sfloat)controller.ThrusterRepulsionForce;
+            var maxDistance = (sfloat)controller.ThrusterRepulsionMaxDistance;
+            if (maxPushForce <= sfloat.Zero || maxDistance <= sfloat.Zero) return;
+
+            var offset = normalizedOffset * thrusterAbsoluteOffset.ToBEPU();
+
+            var robotEntity = controller.Rigidbody.Entity;
+
+            var worldPosition = BEPUutilities.Quaternion.Transform(offset, robotEntity.Orientation) + robotEntity.Position;
+            var worldDirection = BEPUutilities.Quaternion.Transform(new BEPUutilities.Vector3(sfloat.Zero, sfloat.Zero, normalizedOffset.Z), robotEntity.Orientation);
+
+            var raycastRay = new BEPUutilities.Ray(worldPosition, worldDirection);
+            var hits = new List<BEPUphysics.RayCastResult>();
+            robotEntity.Space.RayCast(raycastRay, maxDistance, hits);
+
+            foreach(var hit in hits)
             {
-                return controller.CurrentInstruction.Action.ThrustersState;
-            }
-            else
-            {
-                return RobotThrusterFlag.None;
+                var entityCollision = (hit.HitObject as EntityCollidable);
+                if (entityCollision == null || entityCollision.Entity == null || entityCollision.Entity == robotEntity) continue;
+
+                var distance = (hit.HitData.Location - worldPosition).Length();
+
+                var pushVelocity = worldDirection * ((sfloat.One - distance / maxDistance) * maxPushForce);
+
+                entityCollision.Entity.ApplyImpulse(hit.HitData.Location, pushVelocity);
             }
         }
     }

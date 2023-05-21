@@ -5,6 +5,21 @@ namespace BEPUphysics.Unity
 {
     public static class ConversionHelper
     {
+        public static UnityEngine.Vector2 ToUnity(this BEPUutilities.Vector2 vector)
+        {
+            return new UnityEngine.Vector2(
+                (float)vector.X,
+                (float)vector.Y
+            );
+        }
+
+        public static BEPUutilities.Vector2 ToBEPU(this UnityEngine.Vector2 vector)
+        {
+            return new BEPUutilities.Vector2(
+                (sfloat)vector.x,
+                (sfloat)vector.y
+            );
+        }
         public static UnityEngine.Vector3 ToUnity(this BEPUutilities.Vector3 vector)
         {
             return new UnityEngine.Vector3(
