@@ -2,32 +2,43 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
+using BEPUphysics.Unity;
+using SoftFloat;
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
 
 namespace RecoDeli.Scripts.Gameplay
 {
-    public class Explosive : MonoBehaviour
+    public class Explosive : MonoBehaviour, IBepuEntityListener
     {
         [SerializeField] private ParticleSystem explosionParticle;
         [SerializeField] private MeshRenderer glowingIndicatorMesh;
         [SerializeField] private AudioSource indicatorBeepingSound;
         [SerializeField] private float indicationMaxSpeed;
+        [SerializeField] private float indicationMinDistance;
         [SerializeField] private float explosionForce;
         [SerializeField] private float explosionRadius;
 
         private float indicationCycle;
         private bool currentIndicationState = false;
 
-        private void Update()
+        public BepuRigidbody Rigidbody { get; private set; }
+
+        private void Awake()
+        {
+            Rigidbody = GetComponent<BepuRigidbody>();
+        }
+
+        public void Update()
         {
             UpdateIndicator();
         }
 
         private void UpdateIndicator()
         {
-            var closestRigidbodyInRangeDistances = Physics.OverlapSphere(transform.position, explosionRadius)
-                .Select(collider => collider.attachedRigidbody)
-                .Where(r => r != null && r.gameObject != gameObject)
-                .Select(r => (r.position - transform.position).magnitude)
+            var closestRigidbodyInRangeDistances = Rigidbody.Simulation.Rigidbodies
+                .Where(r => r != null && r.GameObject != gameObject && r.Entity.IsDynamic)
+                .Select(r => (float)(r.Entity.Position - Rigidbody.Entity.Position).Length())
                 .OrderBy(r => r);
 
             if (closestRigidbodyInRangeDistances.Count() == 0)
@@ -36,9 +47,9 @@ namespace RecoDeli.Scripts.Gameplay
             }
             else
             {
-                var minDistance = closestRigidbodyInRangeDistances.First();
-                var indicationIncrement = Mathf.Lerp(indicationMaxSpeed * Time.deltaTime, 0.0f, minDistance/explosionRadius);
-                indicationCycle += Mathf.Min(indicationIncrement, 0.5f);
+                var minDistance = closestRigidbodyInRangeDistances.First() - indicationMinDistance;
+                var indicationIncrement = Mathf.Lerp(indicationMaxSpeed, 0.0f, minDistance/explosionRadius);
+                indicationCycle += Mathf.Min(indicationIncrement * Time.deltaTime, 0.5f);
 
                 if (indicationCycle > 1.0f)
                 {
@@ -59,19 +70,25 @@ namespace RecoDeli.Scripts.Gameplay
             }
         }
 
-        private void OnCollisionEnter(Collision collision)
+        public void OnBepuCollisionEnter(Collidable other, CollidablePairHandler info)
         {
-            var rigidbodiesInRange = Physics.OverlapSphere(transform.position, explosionRadius)
-                .Select(collider => collider.attachedRigidbody)
-                .Where(r => r != null && r.gameObject != gameObject)
+            var rigidbodiesInRange = Rigidbody.Simulation.Rigidbodies
+                .Where(r => r != null && r.GameObject != gameObject && r.Entity.IsDynamic)
                 .ToList();
 
             foreach(var rigidbody in rigidbodiesInRange)
             {
-                var delta = (rigidbody.position - transform.position);
-                var pushVector = Vector3.Lerp(delta.normalized * explosionForce, Vector2.zero, delta.magnitude / explosionRadius);
+                var delta = (rigidbody.Entity.Position - Rigidbody.Entity.Position);
+                var distance = delta.Length();
+                if (distance > (sfloat)explosionRadius) continue;
 
-                rigidbody.AddForce(pushVector, ForceMode.Impulse);
+                var pushVector = BEPUutilities.Vector3.Lerp(
+                    delta.Normalized() * (sfloat)explosionForce,
+                    BEPUutilities.Vector3.Zero,
+                    distance / (sfloat)explosionRadius
+                );
+
+                rigidbody.Entity.LinearVelocity += pushVector;
             }
 
             Instantiate(explosionParticle, transform.position, Quaternion.identity);

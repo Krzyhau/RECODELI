@@ -7,6 +7,13 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.Profiling;
 
+using BEPUphysics.Entities;
+using BEPUphysics.Entities.Prefabs;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.NarrowPhaseSystems;
+using BEPUphysics.CollisionRuleManagement;
+using UnityEngine.UIElements;
+
 namespace BEPUphysics.Unity
 {
     public class BepuSimulation : MonoBehaviour
@@ -33,6 +40,7 @@ namespace BEPUphysics.Unity
         public float InterpolationTime => timeSinceLastStep / timeStep;
         public sfloat SimulationTime => simulationTime;
         public sfloat TimeStep => (sfloat)timeStep;
+        public List<IBepuEntity> Rigidbodies => rigidbodies;
 
         private void Awake()
         {

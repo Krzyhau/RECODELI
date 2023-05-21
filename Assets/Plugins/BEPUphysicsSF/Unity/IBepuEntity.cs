@@ -1,4 +1,5 @@
 
+using BEPUphysics.Entities;
 using UnityEngine;
 
 namespace BEPUphysics.Unity
@@ -6,6 +7,7 @@ namespace BEPUphysics.Unity
     public interface IBepuEntity
     {
         bool Initialized { get; }
+        Entity Entity { get; }
         BepuSimulation Simulation { get; }
         GameObject GameObject { get; }
         void Initialize(BepuSimulation simulation);

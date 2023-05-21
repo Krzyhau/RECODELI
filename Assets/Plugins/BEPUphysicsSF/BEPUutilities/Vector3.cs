@@ -88,6 +88,16 @@ namespace BEPUutilities
         }
 
         /// <summary>
+        /// Returns a normalized vector.
+        /// </summary>
+        public Vector3 Normalized()
+        {
+            var v = new Vector3(X, Y, Z);
+            v.Normalize();
+            return v;
+        }
+
+        /// <summary>
         /// Gets a string representation of the vector.
         /// </summary>
         /// <returns>String representing the vector.</returns>

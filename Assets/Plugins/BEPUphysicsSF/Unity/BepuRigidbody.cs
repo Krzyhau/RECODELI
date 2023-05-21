@@ -210,11 +210,15 @@ namespace BEPUphysics.Unity
 
         public void PhysicsUpdate()
         {
+            if (!Initialized) return;
+
             foreach (var listener in listeners) listener.BepuUpdate();
         }
 
         public void PostPhysicsUpdate()
         {
+            if (!Initialized) return;
+
             // apply position constrains
             if (fixedPosition.X)
             {
