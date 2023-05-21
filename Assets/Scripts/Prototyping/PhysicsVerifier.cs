@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TMPro;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Prototyping
@@ -20,6 +21,7 @@ namespace RecoDeli.Scripts.Prototyping
         private Dictionary<float, PhysicsSampleFrame> firstPhysicsLog = new Dictionary<float, PhysicsSampleFrame>();
         private List<RobotInstruction> testedRobotInstructions = new List<RobotInstruction>();
         [SerializeField] private SimulationManager simulationManager;
+        [SerializeField] private TMP_Text errorLogText;
 
         private bool logging = false;
         private bool verifying = false;
@@ -56,15 +58,19 @@ namespace RecoDeli.Scripts.Prototyping
                 if (logging)
                 {
                     Debug.Log("Simulation log ended.");
+                    errorLogText.text = "";
                 }
                 if (verifying)
                 {
                     Debug.Log($"Verification no. {verificationCount} ended.");
+                    errorLogText.text = "";
                 }
 
                 logging = false;
                 verifying = false;
                 failed = false;
+
+                
 
                 return;
             }
@@ -88,11 +94,13 @@ namespace RecoDeli.Scripts.Prototyping
                 {
                     if(sample.Position != robotPos || sample.Rotation != robotRot)
                     {
-                        Debug.Log(
-                            $"Inconsistency in robot's position detected at {simulationManager.SimulationTime}!\n" + 
-                            $"Expected position: {sample.Position.ToString("F10")}, got: {robotPos.ToString("F10")}\n"+
-                            $"Expected rotation: {sample.Rotation.ToString("F10")}, got {robotRot.ToString("F10")}"
-                        );
+                        var errorLog =
+                            $"Inconsistency in robot's position detected at {simulationManager.SimulationTime}!\n" +
+                            $"Expected position: {sample.Position.ToString("F6")}, got: {robotPos.ToString("F6")}\n" +
+                            $"Expected rotation: {sample.Rotation.ToString("F6")}, got {robotRot.ToString("F6")}";
+
+                        Debug.LogWarning(errorLog);
+                        errorLogText.text = errorLog;
 
                         failed = true;
                     }

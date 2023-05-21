@@ -24,10 +24,12 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             sfloat forwardMovement = BEPUutilities.Vector3.Dot(controller.LinearAcceleration, controller.Rigidbody.Entity.OrientationMatrix.Forward);
             sfloat yawRotation = controller.AngularAcceleration.Y;
 
-            bool frontLeftState = forwardMovement < -(sfloat)linearThreshold || yawRotation < -(sfloat)angularThreshold;
-            bool frontRightState = forwardMovement < -(sfloat)linearThreshold || yawRotation > (sfloat)angularThreshold;
-            bool backLeftState = forwardMovement > (sfloat)linearThreshold || yawRotation > (sfloat)angularThreshold;
-            bool backRightState = forwardMovement > (sfloat)linearThreshold || yawRotation < -(sfloat)angularThreshold;
+            bool noMovement = sfloat.Abs(forwardMovement) < (sfloat)linearThreshold;
+
+            bool frontLeftState = forwardMovement < -(sfloat)linearThreshold || (noMovement && yawRotation < -(sfloat)angularThreshold);
+            bool frontRightState = forwardMovement < -(sfloat)linearThreshold || (noMovement && yawRotation > (sfloat)angularThreshold);
+            bool backLeftState = forwardMovement > (sfloat)linearThreshold || (noMovement && yawRotation > (sfloat)angularThreshold);
+            bool backRightState = forwardMovement > (sfloat)linearThreshold || (noMovement && yawRotation < -(sfloat)angularThreshold);
 
             bool any = frontLeftState || frontRightState || backLeftState || backRightState;
 
