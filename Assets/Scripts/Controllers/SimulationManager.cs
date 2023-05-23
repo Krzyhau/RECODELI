@@ -16,11 +16,11 @@ namespace RecoDeli.Scripts.Controllers
 {
     public class SimulationManager : MonoBehaviour
     {
+        [SerializeField] private DroneCameraController droneCamera;
         [SerializeField] private BepuSimulation simulationGroup;
+        [SerializeField] private UserInterface userInterface;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
-        [SerializeField] private InstructionEditor instructionEditor;
-        [SerializeField] private TimescaleBar timescaleBar;
         [SerializeField] private string levelSelectScene;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
@@ -44,8 +44,10 @@ namespace RecoDeli.Scripts.Controllers
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
         public float LastCompletionTime { get; private set; }
-        public InstructionEditor InstructionEditor => instructionEditor;
+        public UserInterface UserInterface => userInterface;
+        public DroneCameraController DroneCamera => droneCamera;
         public BepuSimulation PhysicsSimulationInstance => simulationInstance;
+        public EndingController EndingController => endingController;
         public bool PlayingSimulation => playingSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => (float)simulationInstance.SimulationTime;
@@ -74,7 +76,7 @@ namespace RecoDeli.Scripts.Controllers
         {
             if (!paused && playingSimulation && !finishedSimulation)
             {
-                Time.timeScale = timescaleBar.Timescale;
+                Time.timeScale = userInterface.TimescaleBar.Timescale;
             }
             else
             {
@@ -90,7 +92,7 @@ namespace RecoDeli.Scripts.Controllers
 
             if (lastInstruction < RobotController.CurrentInstructionIndex)
             {
-                instructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                userInterface.InstructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                 lastInstruction = RobotController.CurrentInstructionIndex;
             }
             if (!endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
@@ -124,9 +126,10 @@ namespace RecoDeli.Scripts.Controllers
         public void PlayInstructions()
         {
             simulationInstance.Active = true;
-            instructionEditor.HighlightInstruction(0);
-            instructionEditor.SetPlaybackState(true);
-            RobotController.ExecuteCommands(instructionEditor.GetRobotInstructionsList());
+            userInterface.InstructionEditor.HighlightInstruction(0);
+            userInterface.InstructionEditor.SetPlaybackState(true);
+            var instructionSet = userInterface.InstructionEditor.GetRobotInstructionsList();
+            RobotController.ExecuteCommands(instructionSet);
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
             lastInstruction = -1;
@@ -147,8 +150,8 @@ namespace RecoDeli.Scripts.Controllers
             finishedSimulation = false;
             paused = false;
 
-            instructionEditor.SetPlaybackState(false);
-            instructionEditor.HighlightInstruction(-1);
+            userInterface.InstructionEditor.SetPlaybackState(false);
+            userInterface.InstructionEditor.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
 
             restartSound.Play();

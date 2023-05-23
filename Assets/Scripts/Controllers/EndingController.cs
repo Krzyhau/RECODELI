@@ -10,13 +10,11 @@ namespace RecoDeli.Scripts.Controllers
 {
     public class EndingController : MonoBehaviour
     {
+        [SerializeField] private SimulationManager simulationManager;
+
         [SerializeField] private float animationLength;
         [SerializeField] private AnimationCurve animationCurve;
         [SerializeField] private AnimationCurve hudBlinkingCurve;
-        [SerializeField] private DroneCameraController controlledCamera;
-        [SerializeField] private CanvasGroup mainUiGroupToHide;
-
-        [SerializeField] private UnityEvent OnEndingAnimationDone;
 
         private RobotController robot;
         private GoalBox goalBox;
@@ -49,8 +47,8 @@ namespace RecoDeli.Scripts.Controllers
 
             animationState += Time.unscaledDeltaTime / animationLength;
 
-            if (animationState >= 1.0f) {
-                OnEndingAnimationDone.Invoke();
+            if (animationState >= 1.0f)
+            {
                 animationState = 1.0f;
             }
 
@@ -60,10 +58,16 @@ namespace RecoDeli.Scripts.Controllers
             robot.transform.rotation = Quaternion.Lerp(robotStartRotation, robotTargetRotation, t);
             goalBox.transform.rotation = Quaternion.Lerp(goalBoxStartRotation, goalBoxTargetRotation, t);
 
-            controlledCamera.transform.position = Vector3.Lerp(startCameraPosition, desiredCameraPosition, t);
-            controlledCamera.transform.rotation = Quaternion.Lerp(startCameraRotation, desiredCameraRotation, t);
+            simulationManager.DroneCamera.transform.position = Vector3.Lerp(startCameraPosition, desiredCameraPosition, t);
+            simulationManager.DroneCamera.transform.rotation = Quaternion.Lerp(startCameraRotation, desiredCameraRotation, t);
 
-            mainUiGroupToHide.alpha = 1.0f - hudBlinkingCurve.Evaluate(animationState);
+            simulationManager.UserInterface.GameplayInterface.alpha = 1.0f - hudBlinkingCurve.Evaluate(animationState);
+
+            if (animationState >= 1.0f)
+            {
+                simulationManager.UserInterface.GameplayInterface.alpha = 0.0f;
+                simulationManager.UserInterface.EndingInterface.gameObject.SetActive(true);
+            }
         }
 
         public void StartEnding(RobotController robot, GoalBox goalBox)
@@ -79,8 +83,8 @@ namespace RecoDeli.Scripts.Controllers
             robotTargetRotation = Quaternion.Euler(0, 180, 0);
             goalBoxTargetRotation = Quaternion.identity;
 
-            startCameraPosition = controlledCamera.transform.position;
-            startCameraRotation = controlledCamera.transform.rotation;
+            startCameraPosition = simulationManager.DroneCamera.transform.position;
+            startCameraRotation = simulationManager.DroneCamera.transform.rotation;
 
             desiredCameraPosition = robotTargetPosition + new Vector3(0, 3, -10);
             desiredCameraRotation = Quaternion.Euler(30, 0, 0);
@@ -94,11 +98,11 @@ namespace RecoDeli.Scripts.Controllers
             goalBoxRigid.Entity.LinearVelocity = BEPUutilities.Vector3.Zero;
             goalBoxRigid.Entity.AngularVelocity = BEPUutilities.Vector3.Zero;
 
-            controlledCamera.enabled = false;
+            simulationManager.DroneCamera.enabled = false;
 
             robot.enabled = false;
 
-            mainUiGroupToHide.interactable = false;
+            simulationManager.UserInterface.GameplayInterface.interactable = false;
 
             animationState = 0.0f;
             started = true;
@@ -108,15 +112,15 @@ namespace RecoDeli.Scripts.Controllers
         {
             if (!started) return;
 
-            controlledCamera.transform.position = startCameraPosition;
-            controlledCamera.transform.rotation = startCameraRotation;
+            simulationManager.DroneCamera.transform.position = startCameraPosition;
+            simulationManager.DroneCamera.transform.rotation = startCameraRotation;
 
             // don't have to reset robot and goalbox because that's part of the simulation
 
-            mainUiGroupToHide.interactable = true;
-            mainUiGroupToHide.alpha = 1.0f;
+            simulationManager.UserInterface.GameplayInterface.interactable = true;
+            simulationManager.UserInterface.GameplayInterface.alpha = 1.0f;
 
-            controlledCamera.enabled = true;
+            simulationManager.DroneCamera.enabled = true;
             started = false;
             animationState = 0.0f;
         }
