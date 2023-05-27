@@ -75,7 +75,7 @@ namespace BEPUphysics.Unity
 
         private void Awake()
         {
-            if (transform.parent.GetComponent<BepuSimulation>() == null)
+            if (transform.parent == null || transform.parent.GetComponent<BepuSimulation>() == null)
             {
                 Debug.LogWarning($"BepuRigidbody {gameObject} has to be a direct child of BepuSimulation!");
             }

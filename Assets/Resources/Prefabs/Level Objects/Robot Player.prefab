@@ -44,11 +44,12 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3840430530390865490}
+  - component: {fileID: -1318549932277984436}
   - component: {fileID: 1300663991107002564}
   - component: {fileID: 9055473269963545}
   - component: {fileID: 1193227764216509081}
   m_Layer: 0
-  m_Name: RobotPlayer
+  m_Name: Robot Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -70,6 +71,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &-1318549932277984436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170812366097013797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Recovery Robot
+  LimitRotation: 0
 --- !u!65 &1300663991107002564
 BoxCollider:
   m_ObjectHideFlags: 0

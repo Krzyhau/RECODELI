@@ -52,14 +52,16 @@ namespace RecoDeli.Scripts.Controllers
         public bool PausedSimulation => paused;
         public float SimulationTime => (float)simulationInstance.SimulationTime;
         
+        public static SimulationManager Instance { get; private set; }
 
         private void Awake()
         {
-            simulationGroupName = simulationGroup.name;
-            simulationGroup.name += " (Original)";
-            simulationGroup.gameObject.SetActive(false);
+            Instance = this;
 
-            RestartSimulation();
+            if (simulationGroup && simulationGroup.gameObject.activeSelf)
+            {
+                SetPhysicsSimulation(simulationGroup);
+            }
         }
         private void OnEnable()
         {
@@ -70,6 +72,11 @@ namespace RecoDeli.Scripts.Controllers
         {
             currentGlitchingForce = 0.0f;
             UpdateGlitching();
+        }
+
+        private void Start()
+        {
+            RestartSimulation();
         }
 
         private void Update()
@@ -140,7 +147,15 @@ namespace RecoDeli.Scripts.Controllers
 
         public void RestartSimulation()
         {
-            if (!playingSimulation && simulationInstance != null) return;
+            if(simulationGroup == null)
+            {
+                Debug.LogWarning("Simulation manager has no physics simulation linked");
+            }
+            if (!playingSimulation && simulationInstance != null)
+            {
+                // simulation has already been reset
+                return;
+            }
             if (endingController.EndingInProgress)
             {
                 endingController.RevertEnding();
@@ -186,9 +201,18 @@ namespace RecoDeli.Scripts.Controllers
             paused = false;
         }
 
-        public void LeaveToLevelSelect()
+        public void SetPhysicsSimulation(BepuSimulation simulation)
         {
-            SceneManager.LoadScene(levelSelectScene);
+            simulationGroup = simulation;
+
+            if (Application.isPlaying)
+            {
+                simulationGroupName = simulationGroup.name;
+                simulationGroup.name += " (Original)";
+                simulationGroup.gameObject.SetActive(false);
+
+                RestartSimulation();
+            }
         }
     }
 }

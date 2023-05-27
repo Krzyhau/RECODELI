@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 757308178270268937}
+  - component: {fileID: -4394683380973340796}
   - component: {fileID: 1578164504007801799}
   - component: {fileID: 2713162293641410798}
   - component: {fileID: 3786050476746742936}
@@ -35,6 +36,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -4.679, y: 5.783, z: 180}
+--- !u!114 &-4394683380973340796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7401868294429738719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Ship Tunnel
+  LimitRotation: 0
 --- !u!33 &1578164504007801799
 MeshFilter:
   m_ObjectHideFlags: 0

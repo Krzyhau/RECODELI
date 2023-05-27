@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &116299969606427933
+--- !u!1 &5644762888482532414
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,63 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 579164158148602411}
-  - component: {fileID: 6184875400669459711}
-  - component: {fileID: 5197620349902121401}
-  - component: {fileID: 8238815954974463489}
-  - component: {fileID: 349421176210550056}
+  - component: {fileID: 9195589695181121035}
+  - component: {fileID: -3192910971197107344}
+  - component: {fileID: 3415745748881788960}
+  - component: {fileID: 7806109129557567824}
+  - component: {fileID: 2597235045455695217}
+  - component: {fileID: 1933216210424588659}
   m_Layer: 0
-  m_Name: Wooden Box
+  m_Name: Cardboard Box 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &579164158148602411
+--- !u!4 &9195589695181121035
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
+  m_GameObject: {fileID: 5644762888482532414}
   m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
-  m_LocalPosition: {x: 9.75, y: 0, z: 9.5}
-  m_LocalScale: {x: 3, y: 3, z: 3}
+  m_LocalPosition: {x: -11.84, y: 0, z: -8.92}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
---- !u!33 &6184875400669459711
+--- !u!114 &-3192910971197107344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5644762888482532414}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Cardboard Box
+  LimitRotation: 0
+--- !u!33 &3415745748881788960
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
-  m_Mesh: {fileID: 3511704399212770276, guid: 3b26050bf04b75648ab081aacec8e74c, type: 3}
---- !u!23 &5197620349902121401
+  m_GameObject: {fileID: 5644762888482532414}
+  m_Mesh: {fileID: 656816909286024795, guid: f073033dd73e6874aa53b8abd6314e7f, type: 3}
+--- !u!23 &7806109129557567824
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
+  m_GameObject: {fileID: 5644762888482532414}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -63,7 +78,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 8bb92239e8ab6ae4bb8af7dafb09e974, type: 2}
+  - {fileID: 2100000, guid: 82bf93b98558eba4bab1fcc507e9ecd0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,13 +100,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!65 &8238815954974463489
+--- !u!65 &2597235045455695217
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
+  m_GameObject: {fileID: 5644762888482532414}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -106,19 +121,19 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 4, y: 4, z: 4}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &349421176210550056
+--- !u!114 &1933216210424588659
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 116299969606427933}
+  m_GameObject: {fileID: 5644762888482532414}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mass: 2
+  mass: 1
   kinematic: 0
   angularDamping: 0
   linearDamping: 0

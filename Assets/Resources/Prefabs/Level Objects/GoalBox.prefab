@@ -4837,6 +4837,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8981212265956852568}
+  - component: {fileID: 728956316345900240}
   - component: {fileID: 7980407736166485923}
   - component: {fileID: 7007505904328881502}
   - component: {fileID: 135211074319281182}
@@ -4865,6 +4866,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
+--- !u!114 &728956316345900240
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8833187539203078982}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Golden Goal Box
+  LimitRotation: 0
 --- !u!33 &7980407736166485923
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -147,6 +147,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 599887124262163376}
+  - component: {fileID: -9066123145122464318}
   - component: {fileID: 8191126043342511475}
   - component: {fileID: 2833737417814106832}
   - component: {fileID: 1667132398268469428}
@@ -176,6 +177,20 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
+--- !u!114 &-9066123145122464318
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3516432938692399475}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Explosive
+  LimitRotation: 0
 --- !u!33 &8191126043342511475
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -243,6 +258,7 @@ MonoBehaviour:
   glowingIndicatorMesh: {fileID: 4275985656205304399}
   indicatorBeepingSound: {fileID: 354070065890552030}
   indicationMaxSpeed: 5
+  indicationMinDistance: 0
   explosionForce: 50
   explosionRadius: 30
 --- !u!65 &6538254088761228613

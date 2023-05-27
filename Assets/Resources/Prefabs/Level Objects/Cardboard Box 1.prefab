@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1988193785846949339
+--- !u!1 &1934411282559861723
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,48 +8,63 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 6497930304839895288}
-  - component: {fileID: 6730362524002062820}
-  - component: {fileID: 2720860300888416087}
-  - component: {fileID: 1731676471809089217}
-  - component: {fileID: 5777640290606222188}
+  - component: {fileID: 519786236758336911}
+  - component: {fileID: 7021048655534242419}
+  - component: {fileID: 5023953628830990498}
+  - component: {fileID: 6239294664892411025}
+  - component: {fileID: 4174755479117888081}
+  - component: {fileID: 8144832553626238373}
   m_Layer: 0
-  m_Name: Space Rock 2
+  m_Name: Cardboard Box 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &6497930304839895288
+--- !u!4 &519786236758336911
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988193785846949339}
-  m_LocalRotation: {x: 0.03213802, y: -0.7063761, z: 0.7063761, w: -0.03213802}
-  m_LocalPosition: {x: 26.866121, y: 1.7615271, z: -0.00000011920929}
-  m_LocalScale: {x: 4, y: 4, z: 4}
+  m_GameObject: {fileID: 1934411282559861723}
+  m_LocalRotation: {x: -0.7069834, y: 0, z: 0, w: 0.7072302}
+  m_LocalPosition: {x: -3.5, y: 0, z: 2.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 13
-  m_LocalEulerAnglesHint: {x: 95.20999, y: -90, z: 90}
---- !u!33 &6730362524002062820
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
+--- !u!114 &7021048655534242419
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934411282559861723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f96f377ce0b8a540aca1603bcc23e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Name: Carboard Box Wide
+  LimitRotation: 0
+--- !u!33 &5023953628830990498
 MeshFilter:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988193785846949339}
-  m_Mesh: {fileID: 50056287690978015, guid: 83a4f176ee70ee543ba8e90d0eea7889, type: 3}
---- !u!23 &2720860300888416087
+  m_GameObject: {fileID: 1934411282559861723}
+  m_Mesh: {fileID: 656816909286024795, guid: 0dd32c0fd2f082342a56be442258dd63, type: 3}
+--- !u!23 &6239294664892411025
 MeshRenderer:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988193785846949339}
+  m_GameObject: {fileID: 1934411282559861723}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -63,7 +78,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fd5ad45760de4a04c87e40b90f38ccc9, type: 2}
+  - {fileID: 2100000, guid: 82bf93b98558eba4bab1fcc507e9ecd0, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -85,40 +100,13 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1731676471809089217
-MonoBehaviour:
+--- !u!65 &4174755479117888081
+BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988193785846949339}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  mass: 1
-  kinematic: 1
-  angularDamping: 0.15
-  linearDamping: 0.03
-  kineticFriction: 0.8
-  staticFriction: 1
-  bounciness: 0
-  fixedPosition:
-    X: 0
-    Y: 1
-    Z: 0
-  fixedRotation:
-    X: 0
-    Y: 0
-    Z: 0
---- !u!136 &5777640290606222188
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988193785846949339}
+  m_GameObject: {fileID: 1934411282559861723}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -130,8 +118,33 @@ CapsuleCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 1.4881643
-  m_Height: 5.626576
-  m_Direction: 1
-  m_Center: {x: 0.015203355, y: 0.4255614, z: 0.20246452}
+  serializedVersion: 3
+  m_Size: {x: 8, y: 4, z: 4}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8144832553626238373
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934411282559861723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba3e7ef00a868d4285bee3f2e5de273, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mass: 1
+  kinematic: 0
+  angularDamping: 0
+  linearDamping: 0
+  kineticFriction: 0.8
+  staticFriction: 1
+  bounciness: 0
+  fixedPosition:
+    X: 0
+    Y: 1
+    Z: 0
+  fixedRotation:
+    X: 0
+    Y: 0
+    Z: 0
