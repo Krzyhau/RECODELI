@@ -49,6 +49,7 @@ namespace RecoDeli.Scripts.Controllers
         public BepuSimulation PhysicsSimulationInstance => simulationInstance;
         public EndingController EndingController => endingController;
         public bool PlayingSimulation => playingSimulation;
+        public bool FinishedSimulation => finishedSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => (float)simulationInstance.SimulationTime;
         

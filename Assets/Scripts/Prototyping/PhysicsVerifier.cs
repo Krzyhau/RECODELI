@@ -31,7 +31,7 @@ namespace RecoDeli.Scripts.Prototyping
 
         private void LateUpdate()
         {
-            if(simulationManager.PlayingSimulation && !logging && !verifying && !failed)
+            if(simulationManager.PlayingSimulation && !simulationManager.FinishedSimulation && !logging && !verifying && !failed)
             {
                 if (AreTestedInstructionsDifferent())
                 {
@@ -53,7 +53,7 @@ namespace RecoDeli.Scripts.Prototyping
                 }
             }
 
-            if (!simulationManager.PlayingSimulation)
+            if (!simulationManager.PlayingSimulation || simulationManager.FinishedSimulation)
             {
                 if (logging)
                 {
