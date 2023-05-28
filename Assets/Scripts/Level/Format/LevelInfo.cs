@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace RecoDeli.Scripts.Gameplay.Level.Format
+namespace RecoDeli.Scripts.Level.Format
 {
     [Serializable]
     public class LevelInfo

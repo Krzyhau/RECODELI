@@ -4,7 +4,7 @@ using System.IO;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace RecoDeli.Scripts.Gameplay.Level.Format
+namespace RecoDeli.Scripts.Level.Format
 {
     [Serializable]
     public class LevelData

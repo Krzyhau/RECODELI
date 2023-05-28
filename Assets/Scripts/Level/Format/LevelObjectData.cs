@@ -10,7 +10,7 @@ using System.Xml.Serialization;
 using BEPUphysics.Unity;
 using UnityEditor;
 
-namespace RecoDeli.Scripts.Gameplay.Level.Format
+namespace RecoDeli.Scripts.Level.Format
 {
     [Serializable]
     [XmlType("Object")]

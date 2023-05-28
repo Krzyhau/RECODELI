@@ -1,4 +1,4 @@
-﻿namespace RecoDeli.Scripts.Gameplay.Level
+﻿namespace RecoDeli.Scripts.Level
 {
     public interface ILevelObjectComponent
     {

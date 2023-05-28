@@ -1,8 +1,8 @@
 using BEPUphysics.Paths;
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Controllers;
-using RecoDeli.Scripts.Gameplay.Level;
-using RecoDeli.Scripts.Gameplay.Level.Format;
+using RecoDeli.Scripts.Level;
+using RecoDeli.Scripts.Level.Format;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -11,7 +11,7 @@ using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-namespace RecoDeli.Scripts.Gameplay.Level
+namespace RecoDeli.Scripts.Level
 {
     [ExecuteAlways]
     public class LevelLoader : MonoBehaviour

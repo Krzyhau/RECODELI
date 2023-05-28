@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RecoDeli.Scripts.Gameplay.Level
+namespace RecoDeli.Scripts.Level
 {
     public static class LevelFormatSettings
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RecoDeli.Scripts.Gameplay.Level
+namespace RecoDeli.Scripts.Level
 {
     [AttributeUsage(AttributeTargets.Property)]
     internal class LevelObjectPropertyAttribute : Attribute

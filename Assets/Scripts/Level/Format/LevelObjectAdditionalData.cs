@@ -7,7 +7,7 @@ using UnityEngine;
 using System.Linq;
 using System.Reflection;
 
-namespace RecoDeli.Scripts.Gameplay.Level.Format
+namespace RecoDeli.Scripts.Level.Format
 {
     [Serializable]
     public class LevelObjectAdditionalData : Dictionary<string, object>, IXmlSerializable

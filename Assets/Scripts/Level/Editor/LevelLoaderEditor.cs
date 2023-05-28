@@ -1,10 +1,10 @@
-﻿using RecoDeli.Scripts.Gameplay.Level.Format;
+﻿using RecoDeli.Scripts.Level.Format;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
 using UnityEngine;
 
-namespace RecoDeli.Scripts.Gameplay.Level
+namespace RecoDeli.Scripts.Level
 {
     [CustomEditor(typeof(LevelLoader))]
     public class LevelLoaderEditor : Editor

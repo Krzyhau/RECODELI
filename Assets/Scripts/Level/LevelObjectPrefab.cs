@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace RecoDeli.Scripts.Gameplay.Level
+namespace RecoDeli.Scripts.Level
 {
     public class LevelObjectPrefab : MonoBehaviour
     {
