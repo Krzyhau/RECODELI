@@ -21,7 +21,6 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private UserInterface userInterface;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
-        [SerializeField] private string levelSelectScene;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;

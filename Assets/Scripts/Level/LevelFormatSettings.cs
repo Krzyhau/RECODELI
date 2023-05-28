@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RecoDeli.Scripts.Settings;
 
 namespace RecoDeli.Scripts.Level
 {
     public static class LevelFormatSettings
     {
-        public static readonly string Extension = ".rdlvl";
-        public static readonly string ObjectPrefabsPath = "Prefabs/Level Objects/";
-        public static readonly string LevelsDirectoryPath = "Levels/";
+        public static string Extension => RecoDeliGame.LevelFormatExtension;
+        public static string ObjectPrefabsPath => RecoDeliGame.LevelObjectPrefabsPath;
+        public static string LevelsDirectoryPath => RecoDeliGame.LevelsDirectoryPath;
 
     }
 }

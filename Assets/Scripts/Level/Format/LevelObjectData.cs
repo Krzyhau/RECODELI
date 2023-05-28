@@ -27,6 +27,12 @@ namespace RecoDeli.Scripts.Level.Format
         private static LevelObjectPrefab[] levelObjectPrefabs;
         static LevelObjectData()
         {
+            LoadLevelObjectPrefabs();
+        }
+
+        public static void LoadLevelObjectPrefabs(bool forceReload = false)
+        {
+            if (!forceReload && levelObjectPrefabs != null) return;
             levelObjectPrefabs = Resources.LoadAll<LevelObjectPrefab>(LevelFormatSettings.ObjectPrefabsPath);
         }
 

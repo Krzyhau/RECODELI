@@ -77,10 +77,6 @@ namespace RecoDeli.Scripts.UI
 
         private void Awake()
         {
-            // this is needed to prevent comma from being used as decimal indicator in some countries.
-            // TODO: move it somewhere else once a fitting place is made
-            System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
             canvasContainer = instructionsContainer.GetComponentInParent<Canvas>();
 
             undoList = new List<RobotInstructionListCopy>();
