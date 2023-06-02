@@ -17,7 +17,7 @@ namespace RecoDeli.Scripts.Settings
 
         public override void OnActivate(string searchContext, VisualElement rootElement)
         {
-            RecoDeliGame.instance.Save();
+            RecoDeliGame.instance.SaveConfiguration();
             serializedObject = new SerializedObject(RecoDeliGame.instance);
         }
 
@@ -42,7 +42,7 @@ namespace RecoDeli.Scripts.Settings
             if (EditorGUI.EndChangeCheck())
             {
                 serializedObject.ApplyModifiedProperties();
-                RecoDeliGame.instance.Save();
+                RecoDeliGame.instance.SaveConfiguration();
             }
         }
 

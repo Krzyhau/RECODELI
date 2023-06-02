@@ -1,3 +1,4 @@
+using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
 using System;
 using System.Collections;
@@ -5,6 +6,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace RecoDeli.Scripts.Settings
 {
@@ -24,23 +26,34 @@ namespace RecoDeli.Scripts.Settings
         public static string LevelFormatExtension => instance.levelFormatExtension;
         public static string LevelObjectPrefabsPath => instance.levelObjectPrefabsPath;
         public static string LevelsDirectoryPath => instance.levelsDirectoryPath;
+        private void OnEnable()
+        {
+            hideFlags &= ~HideFlags.NotEditable;
+
+            // make sure to reload level object prefabs at the start
+            LevelObjectData.LoadLevelObjectPrefabs();
+        }
+
+        public void SaveConfiguration()
+        {
+            Save(true);
+        }
 
         static RecoDeliGame()
         {
             // this is needed to prevent comma from being used as decimal indicator in some countries.
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
         }
-        private void OnEnable()
-        {
-            hideFlags &= ~HideFlags.NotEditable;
 
-            // make sure to reload level object prefabs at the start
-            LevelObjectData.LoadLevelObjectPrefabs(); 
+        public static void OpenLevel(string levelName)
+        {
+            LevelLoader.LevelToLoad = levelName;
+            SceneManager.LoadScene(GameplaySceneName);
         }
 
-        public void Save()
+        public static void OpenSimpleLevelList()
         {
-            Save(true);
+            SceneManager.LoadScene(SimpleMapListSceneName);
         }
     }
 }
