@@ -138,6 +138,7 @@ namespace RecoDeli.Scripts.Level
             foreach(var objectData in levelData.Objects)
             {
                 var objectGameObject = objectData.ToGameObject(levelContainer);
+                if (objectGameObject == null) continue;
                 Undo.RegisterCreatedObjectUndo(objectGameObject, "Load Level Object for the level");
             }
 

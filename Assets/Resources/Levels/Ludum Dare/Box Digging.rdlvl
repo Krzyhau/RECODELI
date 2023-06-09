@@ -1,0 +1,291 @@
+<LevelData>
+  <Info>
+    <CameraPosition>
+      <x>-5</x>
+      <y>29.3</y>
+      <z>-15.5</z>
+    </CameraPosition>
+  </Info>
+  <Objects>
+    <Object>
+      <PrefabName>Recovery Robot</PrefabName>
+      <Position>
+        <x>-20</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>-0</x>
+        <y>0.7071068</y>
+        <z>-0</z>
+        <w>0.7071068</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Carboard Box Wide</PrefabName>
+      <Position>
+        <x>-1.99180222</x>
+        <y>0</y>
+        <z>3.80752563</z>
+      </Position>
+      <Rotation>
+        <x>-0.7069834</x>
+        <y>-0</y>
+        <z>-0</z>
+        <w>0.7072302</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Cardboard Box</PrefabName>
+      <Position>
+        <x>-1.26</x>
+        <y>0</y>
+        <z>-4.56</z>
+      </Position>
+      <Rotation>
+        <x>-0.6442871</x>
+        <y>0.291365921</y>
+        <z>0.291365921</z>
+        <w>0.6442871</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Cardboard Box</PrefabName>
+      <Position>
+        <x>10.5157433</x>
+        <y>0</y>
+        <z>-7.21788025</z>
+      </Position>
+      <Rotation>
+        <x>-0.4360517</x>
+        <y>-0.5566499</y>
+        <z>-0.5566493</z>
+        <w>0.436052054</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Carboard Box Wide</PrefabName>
+      <Position>
+        <x>5.25</x>
+        <y>0</y>
+        <z>-7.46</z>
+      </Position>
+      <Rotation>
+        <x>-0.55039835</x>
+        <y>0.443874419</y>
+        <z>0.4437189</z>
+        <w>0.5505913</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-30.4</x>
+        <y>0</y>
+        <z>34.4</z>
+      </Position>
+      <Rotation>
+        <x>-0.45129016</x>
+        <y>-0.338957578</y>
+        <z>0.0275335554</z>
+        <w>0.825037539</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-17.7</x>
+        <y>0</y>
+        <z>-17.8</z>
+      </Position>
+      <Rotation>
+        <x>0.0259928759</x>
+        <y>0.137916937</y>
+        <z>0.499184519</z>
+        <w>0.8550545</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Golden Goal Box</PrefabName>
+      <Position>
+        <x>9.43</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>-0.7486274</x>
+        <y>0.238910288</y>
+        <z>0.351479679</z>
+        <w>0.5088624</w>
+      </Rotation>
+      <Scale>
+        <x>0.4</x>
+        <y>0.4</y>
+        <z>0.4</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Cardboard Box</PrefabName>
+      <Position>
+        <x>7.241422</x>
+        <y>0</y>
+        <z>6.319853</z>
+      </Position>
+      <Rotation>
+        <x>-0.7071046</x>
+        <y>0.00174557057</y>
+        <z>0.00174557057</z>
+        <w>0.7071046</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Cardboard Box</PrefabName>
+      <Position>
+        <x>17.88485</x>
+        <y>0</y>
+        <z>5.7532444</z>
+      </Position>
+      <Rotation>
+        <x>-0.66287154</x>
+        <y>-0.246173188</y>
+        <z>-0.246173158</z>
+        <w>0.662871659</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-10.1</x>
+        <y>0</y>
+        <z>34.5</z>
+      </Position>
+      <Rotation>
+        <x>0.2782764</x>
+        <y>0.5454032</y>
+        <z>0.389289021</z>
+        <w>0.6881509</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>17.8</x>
+        <y>0</y>
+        <z>34</z>
+      </Position>
+      <Rotation>
+        <x>-0.27587676</x>
+        <y>-0.5687311</y>
+        <z>-0.340238154</z>
+        <w>0.696186</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-37.2</x>
+        <y>0</y>
+        <z>-6.8</z>
+      </Position>
+      <Rotation>
+        <x>0.368962079</x>
+        <y>0.22015056</y>
+        <z>0.290156</z>
+        <w>0.8551084</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-39.4</x>
+        <y>0</y>
+        <z>15.3</z>
+      </Position>
+      <Rotation>
+        <x>-0.549879849</x>
+        <y>-0.814053059</y>
+        <z>0.0243208688</z>
+        <w>0.185360014</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+  </Objects>
+</LevelData>

@@ -1,0 +1,151 @@
+<LevelData>
+  <Info>
+    <CameraPosition>
+      <x>-4.33</x>
+      <y>32.56</y>
+      <z>-18.61</z>
+    </CameraPosition>
+  </Info>
+  <Objects>
+    <Object>
+      <PrefabName>Cardboard Box</PrefabName>
+      <Position>
+        <x>-45.2</x>
+        <y>0.0526490435</y>
+        <z>13.9</z>
+      </Position>
+      <Rotation>
+        <x>0.304777235</x>
+        <y>0.840199232</y>
+        <z>-0.385474741</z>
+        <w>-0.229314908</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Recovery Robot</PrefabName>
+      <Position>
+        <x>-20</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>-0</x>
+        <y>0.7071068</y>
+        <z>-0</z>
+        <w>0.7071068</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Golden Goal Box</PrefabName>
+      <Position>
+        <x>9.43</x>
+        <y>0</y>
+        <z>0</z>
+      </Position>
+      <Rotation>
+        <x>-0.7486274</x>
+        <y>0.238910288</y>
+        <z>0.351479679</z>
+        <w>0.5088624</w>
+      </Rotation>
+      <Scale>
+        <x>0.399999946</x>
+        <y>0.399999946</y>
+        <z>0.399999976</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>21.7</x>
+        <y>0</y>
+        <z>22.5</z>
+      </Position>
+      <Rotation>
+        <x>-0.607477665</x>
+        <y>0.04667623</y>
+        <z>0.361683667</z>
+        <w>0.705675066</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Space Rock 1</PrefabName>
+      <Position>
+        <x>-45.3</x>
+        <y>-0.9479718</y>
+        <z>29.8</z>
+      </Position>
+      <Rotation>
+        <x>-0.111840509</x>
+        <y>-0.6982061</y>
+        <z>0.698206</z>
+        <w>0.111840636</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Carboard Box Wide</PrefabName>
+      <Position>
+        <x>-32.1</x>
+        <y>0.0146698356</y>
+        <z>24.4568138</z>
+      </Position>
+      <Rotation>
+        <x>-0.427110732</x>
+        <y>-0.22959356</y>
+        <z>-0.02625732</z>
+        <w>0.8741704</w>
+      </Rotation>
+      <Scale>
+        <x>1</x>
+        <y>1</y>
+        <z>1</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Space Rock 2</PrefabName>
+      <Position>
+        <x>11</x>
+        <y>1.76152706</y>
+        <z>-17.3</z>
+      </Position>
+      <Rotation>
+        <x>0.410499275</x>
+        <y>-0.6106527</y>
+        <z>0.575752</z>
+        <w>0.356515646</w>
+      </Rotation>
+      <Scale>
+        <x>4</x>
+        <y>4</y>
+        <z>4</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+  </Objects>
+</LevelData>

@@ -11,6 +11,10 @@ namespace RecoDeli.Scripts.Prototyping
 {
     public class DebugLevelSelection : MonoBehaviour
     {
+        [SerializeField] private CanvasGroup ownCanvasGroup;
+        [SerializeField] private CanvasGroup loadingScreenCanvasGroup;
+        [SerializeField] private TMP_Text loadingScreenText;
+
         [SerializeField] private RectTransform mainLevelsListContainer;
         [SerializeField] private RectTransform customLevelsListContainer;
         [SerializeField] private Button levelSelectionButtonPrefab;
@@ -46,10 +50,23 @@ namespace RecoDeli.Scripts.Prototyping
             var button = Instantiate(levelSelectionButtonPrefab, container);
             button.GetComponentInChildren<TMP_Text>().text = levelName.ToUpper();
 
-            button.onClick.AddListener(() => {
-                levelSelectionSound.Play();
-                RecoDeliGame.OpenLevel(levelName);
-            });
+            button.onClick.AddListener(() => LoadLevel(levelName));
+        }
+
+        private void LoadLevel(string levelName)
+        {
+            StartCoroutine(LoadLevelCoroutine(levelName));
+        }
+        private IEnumerator LoadLevelCoroutine(string levelName)
+        {
+            levelSelectionSound.Play();
+            ownCanvasGroup.alpha = 0.0f;
+            loadingScreenCanvasGroup.alpha = 1.0f;
+            loadingScreenText.text = levelName.ToUpper();
+
+            yield return 0;
+
+            RecoDeliGame.OpenLevel(levelName);
         }
     }
 }
