@@ -50,7 +50,7 @@ namespace RecoDeli.Scripts.Controllers
         public bool PlayingSimulation => playingSimulation;
         public bool FinishedSimulation => finishedSimulation;
         public bool PausedSimulation => paused;
-        public float SimulationTime => (float)simulationInstance.SimulationTime;
+        public float SimulationTime => simulationInstance != null ? (float)simulationInstance.SimulationTime : 0.00f;
         
         public static SimulationManager Instance { get; private set; }
 
@@ -132,6 +132,8 @@ namespace RecoDeli.Scripts.Controllers
 
         public void PlayInstructions()
         {
+            Assert.IsNotNull(RobotController, "Cannot play instructions without a robot within a simulation!");
+
             simulationInstance.Active = true;
             userInterface.InstructionEditor.HighlightInstruction(0);
             userInterface.InstructionEditor.SetPlaybackState(true);

@@ -1,7 +1,9 @@
 ﻿using RecoDeli.Scripts.Level.Format;
+using RecoDeli.Scripts.Settings;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Callbacks;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Level
@@ -156,7 +158,15 @@ namespace RecoDeli.Scripts.Level
             if (!path.EndsWith(LevelFormatSettings.Extension)) return false;
             var levelsEditorPath = LevelLoader.GetLevelsDirectoryPath();
             if (!path.StartsWith(levelsEditorPath)) return false;
+
             var levelLoader = GameObject.FindObjectOfType<LevelLoader>();
+            if (levelLoader == null)
+            {
+                // attempt to change scene into the gameplay one
+                EditorSceneManager.OpenScene("Assets/Resources/Scenes/" + RecoDeliGame.GameplaySceneName + ".unity");
+                levelLoader = GameObject.FindObjectOfType<LevelLoader>();
+            }
+
             if (levelLoader == null)
             {
                 Debug.LogWarning("Can't open level file - no LevelLoader instance in current scene.");

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameplaySceneName: Gameplay
-  simpleMapListSceneName: Simple Map List
+  simpleMapListSceneName: DebugLevelSelection
   levelFormatExtension: .rdlvl
   levelObjectPrefabsPath: Prefabs/Level Objects/
   levelsDirectoryPath: Levels/
