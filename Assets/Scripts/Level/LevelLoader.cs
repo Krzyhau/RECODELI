@@ -6,23 +6,22 @@ using RecoDeli.Scripts.Level.Format;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace RecoDeli.Scripts.Level
 {
-    [ExecuteAlways]
     public class LevelLoader : MonoBehaviour
     {
-        [SerializeField] private SimulationManager simulationManager;
-        [SerializeField] private BepuSimulation levelContainer;
+        [SerializeField] protected SimulationManager simulationManager;
+        [SerializeField] protected BepuSimulation levelContainer;
 
         [SerializeField] private string levelPath;
 
         public string LevelEditorPath { get => levelPath; set => levelPath = value; }
         public static string LevelToLoad { get; set; }
+
+        public bool IsEmptyLevel => (LevelToLoad == "" || LevelToLoad == null) && levelContainer.transform.childCount == 0;
 
         private void Awake()
         {
@@ -31,27 +30,12 @@ namespace RecoDeli.Scripts.Level
             LoadLevel();
         }
 
-        private void OnEnable()
-        {
-            EditorSceneManager.sceneSaving += OnSceneSaving;
-        }
-
-        private void OnDisable()
-        {
-            EditorSceneManager.sceneSaving -= OnSceneSaving;
-        }
-
-        private void OnSceneSaving(Scene scene, string path)
-        {
-            SaveCurrentLevel();
-        }
-
         public static string GetLevelsDirectoryPath()
         {
             return $"{Application.dataPath}{(Application.isEditor ? "/Resources" : "")}/{LevelFormatSettings.LevelsDirectoryPath}";
         }
 
-        public void SaveCurrentLevel()
+        public virtual void SaveCurrentLevel()
         {
             if (levelPath == null || levelPath.Length == 0) return;
 
@@ -70,7 +54,7 @@ namespace RecoDeli.Scripts.Level
             var filePath = $"{GetLevelsDirectoryPath()}{levelPath}{LevelFormatSettings.Extension}";
 
             File.WriteAllText(filePath, levelText);
-            AssetDatabase.Refresh();
+
             Debug.Log($"Level {levelPath} has been saved.");
         }
 
@@ -98,7 +82,6 @@ namespace RecoDeli.Scripts.Level
 
         public void LoadLevel(string path)
         {
-            Undo.RecordObject(this, "Level Loader");
             LevelToLoad = path;
             LoadLevel();
         }
@@ -119,50 +102,44 @@ namespace RecoDeli.Scripts.Level
                 Debug.LogError($"Could not load level \"{LevelToLoad}\".");
                 return;
             }
-            levelPath = LevelToLoad;
+            
             var levelData = LevelData.FromXML(levelTxt);
             LoadLevel(levelData);
         }
 
-        public void LoadLevel(LevelData levelData) 
+        public virtual void LoadLevel(LevelData levelData) 
         {
-            // clear all previous objects
-            for (int i = levelContainer.transform.childCount - 1; i >= 0; i--)
-            {
-                Undo.DestroyObjectImmediate(levelContainer.transform.GetChild(i).gameObject);
-            }
+            levelPath = LevelToLoad;
 
-            // set camera position
+            ClearLevelObjects();
+
             simulationManager.DroneCamera.transform.position = levelData.Info.CameraPosition;
 
             foreach(var objectData in levelData.Objects)
             {
                 var objectGameObject = objectData.ToGameObject(levelContainer);
                 if (objectGameObject == null) continue;
-                Undo.RegisterCreatedObjectUndo(objectGameObject, "Load Level Object for the level");
             }
-
-            Undo.SetCurrentGroupName($"Load level {LevelToLoad}");
-            Undo.IncrementCurrentGroup();
 
             simulationManager.SetPhysicsSimulation(levelContainer);
         }
 
-        public void MakeEmptyLevel()
+        public virtual void MakeEmptyLevel()
         {
-            if ((LevelToLoad == "" || LevelToLoad == null) && levelContainer.transform.childCount == 0) return;
-
-            Undo.RecordObject(this, "Level Loader");
+            if (IsEmptyLevel) return;
 
             LevelToLoad = "";
             levelPath = "";
 
+            ClearLevelObjects();
+        }
+
+        protected virtual void ClearLevelObjects()
+        {
             for (int i = levelContainer.transform.childCount - 1; i >= 0; i--)
             {
-                Undo.DestroyObjectImmediate(levelContainer.transform.GetChild(i).gameObject);
+                DestroyImmediate(levelContainer.transform.GetChild(i).gameObject);
             }
-
-            Undo.SetCurrentGroupName($"Create empty level");
         }
     }
 }

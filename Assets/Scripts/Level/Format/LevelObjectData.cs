@@ -65,15 +65,8 @@ namespace RecoDeli.Scripts.Level.Format
             var prefabInfo = levelObjectPrefabs.Where(p=>p.Name == PrefabName).FirstOrDefault();
             if (prefabInfo == null) return null;
 
-            GameObject instance = null;
-            if (Application.isPlaying)
-            {
-                instance = GameObject.Instantiate(prefabInfo.gameObject, levelContainer.transform).gameObject;
-            }
-            else
-            {
-                instance = PrefabUtility.InstantiatePrefab(prefabInfo.gameObject, levelContainer.transform) as GameObject;
-            }
+            GameObject instance = InstantiatePrefab(prefabInfo.gameObject, levelContainer.transform);
+
             instance.transform.name = prefabInfo.Name;
             instance.transform.position = Position;
             instance.transform.rotation = new Quaternion(
@@ -87,6 +80,18 @@ namespace RecoDeli.Scripts.Level.Format
             LevelObjectAdditionalData.Apply(instance.gameObject, AdditionalData);
 
             return instance;
+        }
+
+
+        private GameObject InstantiatePrefab(GameObject prefab, Transform parent)
+        {
+#if UNITY_EDITOR
+            if (!Application.isPlaying)
+            {
+                return PrefabUtility.InstantiatePrefab(prefab, parent) as GameObject;
+            }
+#endif
+            return GameObject.Instantiate(prefab, parent).gameObject;
         }
     }
 }

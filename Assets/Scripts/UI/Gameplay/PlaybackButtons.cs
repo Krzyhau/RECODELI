@@ -61,7 +61,9 @@ namespace RecoDeli.Scripts.UI
             var timeString = time.ToString(timerFormat);
             var timeSegments = timeString.Split('.');
 
-            var timerString = $"<mspace={monospaceSize}em>{timeSegments[0]}</mspace>.<mspace={monospaceSize}em>{timeSegments[1]}</mspace>";
+            var milliseconds = timeSegments.Length > 1 ? timeSegments[1] : "0";
+
+            var timerString = $"<mspace={monospaceSize}em>{timeSegments[0]}</mspace>.<mspace={monospaceSize}em>{milliseconds}</mspace>";
             timerText.text = timerString;
         }
     }

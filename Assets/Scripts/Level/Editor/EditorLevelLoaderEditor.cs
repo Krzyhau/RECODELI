@@ -8,17 +8,17 @@ using UnityEngine;
 
 namespace RecoDeli.Scripts.Level
 {
-    [CustomEditor(typeof(LevelLoader))]
-    public class LevelLoaderEditor : Editor
+    [CustomEditor(typeof(EditorLevelLoader))]
+    public class EditorLevelLoaderEditor : Editor
     {
         private string helpText = "";
         private double helpTextTime = 0.0;
         private MessageType helpTextType;
 
-        private LevelLoader levelLoader;
+        private EditorLevelLoader levelLoader;
         void OnEnable()
         {
-            levelLoader = (LevelLoader)target;
+            levelLoader = (EditorLevelLoader)target;
         }
 
         public override void OnInspectorGUI()
