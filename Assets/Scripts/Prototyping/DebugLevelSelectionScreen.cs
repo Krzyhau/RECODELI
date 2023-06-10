@@ -3,6 +3,7 @@ using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.Utils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -42,7 +43,15 @@ namespace RecoDeli.Scripts.Prototyping
 
         private void CreateCustomLevelsButtons()
         {
-            //customLevelsListContainer.transform.Clear();
+            var customLevelsList = LevelLoader.GetLevelFilesList().Where(level => !mainLevelsList.Contains(level));
+            if (customLevelsList.Count() > 0)
+            {
+                customLevelsListContainer.transform.Clear();
+            }
+            foreach (var levelName in customLevelsList)
+            {
+                CreateLevelButton(levelName, customLevelsListContainer);
+            }
         }
 
         private void CreateLevelButton(string levelName, RectTransform container)

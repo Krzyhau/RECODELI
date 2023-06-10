@@ -6,6 +6,7 @@ using RecoDeli.Scripts.Level.Format;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,7 +33,29 @@ namespace RecoDeli.Scripts.Level
 
         public static string GetLevelsDirectoryPath()
         {
-            return $"{Application.dataPath}{(Application.isEditor ? "/Resources" : "")}/{LevelFormatSettings.LevelsDirectoryPath}";
+            if (Application.isEditor)
+            {
+                return $"{Application.dataPath}/Resources/{LevelFormatSettings.LevelsDirectoryPath}";
+            }
+            else
+            {
+                return $"{Application.dataPath}/../{LevelFormatSettings.LevelsDirectoryPath}";
+            }
+        }
+
+        public static List<string> GetLevelFilesList()
+        {
+            var path = GetLevelsDirectoryPath();
+
+            if (!Directory.Exists(path))
+            {
+                Debug.Log($"Levels directory ({path}) doesn't exist and it will be automatically created.");
+                Directory.CreateDirectory(path);
+            }
+
+            return Directory.EnumerateFiles(path, $"*{LevelFormatSettings.Extension}", SearchOption.AllDirectories)
+                .Select(p => p.Replace("\\", "/").Replace(path, "").Replace(LevelFormatSettings.Extension, ""))
+                .ToList();
         }
 
         public virtual void SaveCurrentLevel()
