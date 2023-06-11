@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ac4bb8fe7d648fe428875bb79d1bdfa5, type: 3}
+  m_Name: RecoDeliSettings
+  m_EditorClassIdentifier: 
+  GameplaySceneName: Gameplay
+  SimpleMapListSceneName: DebugLevelSelection
+  LevelObjectPrefabsPath: Prefabs/Level Objects/
+  LevelsDirectoryPath: Levels/
+  MainAudioMixerGroup: {fileID: 24300002, guid: 96a2894bd3e352d45bf249f654af22ec,
+    type: 2}
+  MusicAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
+    type: 2}
+  LevelFileThumbnail: {fileID: 2800000, guid: fbc1b6576392b82448eeb2b670d9a147, type: 3}

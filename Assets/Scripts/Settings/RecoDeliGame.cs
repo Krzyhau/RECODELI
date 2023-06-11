@@ -7,31 +7,29 @@ namespace RecoDeli.Scripts.Settings
 {
     public class RecoDeliGame
     {
-
-        public const string GameplaySceneName = "Gameplay";
-        public const string SimpleMapListSceneName = "DebugLevelList";
-        public const string LevelFormatExtension = ".rdlvl";
-        public const string LevelObjectPrefabsPath = "Prefabs/Level Objects/";
-        public const string LevelsDirectoryPath = "Levels/";
+        public static RecoDeliSettings Settings => RecoDeliSettings.Instance;
 
         static RecoDeliGame()
         {
+            SettingsProvider.ApplySettings();
+
             // this is needed to prevent comma from being used as decimal indicator in some countries.
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 
             // make sure to reload level object prefabs at the start
             LevelObjectData.LoadLevelObjectPrefabs();
+
         }
 
         public static void OpenLevel(string levelName)
         {
             LevelLoader.LevelToLoad = levelName;
-            SceneManager.LoadScene(GameplaySceneName);
+            SceneManager.LoadScene(Settings.GameplaySceneName);
         }
 
         public static void OpenSimpleLevelList()
         {
-            SceneManager.LoadScene(SimpleMapListSceneName);
+            SceneManager.LoadScene(Settings.SimpleMapListSceneName);
         }
     }
 }

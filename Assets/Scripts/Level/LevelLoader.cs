@@ -3,6 +3,7 @@ using BEPUphysics.Unity;
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
+using RecoDeli.Scripts.Settings;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -35,11 +36,11 @@ namespace RecoDeli.Scripts.Level
         {
             if (Application.isEditor)
             {
-                return $"{Application.dataPath}/Resources/{LevelFormatSettings.LevelsDirectoryPath}";
+                return $"{Application.dataPath}/Resources/{RecoDeliGame.Settings.LevelsDirectoryPath}";
             }
             else
             {
-                return $"{Application.dataPath}/../{LevelFormatSettings.LevelsDirectoryPath}";
+                return $"{Application.dataPath}/../{RecoDeliGame.Settings.LevelsDirectoryPath}";
             }
         }
 
@@ -53,8 +54,8 @@ namespace RecoDeli.Scripts.Level
                 Directory.CreateDirectory(path);
             }
 
-            return Directory.EnumerateFiles(path, $"*{LevelFormatSettings.Extension}", SearchOption.AllDirectories)
-                .Select(p => p.Replace("\\", "/").Replace(path, "").Replace(LevelFormatSettings.Extension, ""))
+            return Directory.EnumerateFiles(path, $"*{RecoDeliSettings.LevelFormatExtension}", SearchOption.AllDirectories)
+                .Select(p => p.Replace("\\", "/").Replace(path, "").Replace(RecoDeliSettings.LevelFormatExtension, ""))
                 .ToList();
         }
 
@@ -74,7 +75,7 @@ namespace RecoDeli.Scripts.Level
 
             var levelText = levelData.ToXML();
 
-            var filePath = $"{GetLevelsDirectoryPath()}{levelPath}{LevelFormatSettings.Extension}";
+            var filePath = $"{GetLevelsDirectoryPath()}{levelPath}{RecoDeliSettings.LevelFormatExtension}";
 
             File.WriteAllText(filePath, levelText);
 
@@ -83,7 +84,7 @@ namespace RecoDeli.Scripts.Level
 
         private bool TryLoadLevelString(string path, out string level)
         {
-            var resourcePath = $"{LevelFormatSettings.LevelsDirectoryPath}{path}";
+            var resourcePath = $"{RecoDeliGame.Settings.LevelsDirectoryPath}{path}";
             var levelAsset = Resources.Load<TextAsset>(resourcePath);
             
             if(levelAsset != null)
@@ -92,7 +93,7 @@ namespace RecoDeli.Scripts.Level
                 return true;
             }
 
-            var realFilePath = $"{GetLevelsDirectoryPath()}{path}{LevelFormatSettings.Extension}";
+            var realFilePath = $"{GetLevelsDirectoryPath()}{path}{RecoDeliSettings.LevelFormatExtension}";
             if (File.Exists(realFilePath))
             {
                 level = File.ReadAllText(realFilePath);

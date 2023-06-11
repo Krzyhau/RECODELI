@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Xml.Serialization;
 using BEPUphysics.Unity;
 using UnityEditor;
+using RecoDeli.Scripts.Settings;
 
 namespace RecoDeli.Scripts.Level.Format
 {
@@ -33,7 +34,7 @@ namespace RecoDeli.Scripts.Level.Format
         public static void LoadLevelObjectPrefabs(bool forceReload = false)
         {
             if (!forceReload && levelObjectPrefabs != null) return;
-            levelObjectPrefabs = Resources.LoadAll<LevelObjectPrefab>(LevelFormatSettings.ObjectPrefabsPath);
+            levelObjectPrefabs = Resources.LoadAll<LevelObjectPrefab>(RecoDeliGame.Settings.LevelObjectPrefabsPath);
         }
 
         public LevelObjectData()

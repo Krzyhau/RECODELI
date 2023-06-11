@@ -89,14 +89,14 @@ namespace RecoDeli.Scripts.Level
             string levelsEditorPath = LevelLoader.GetLevelsDirectoryPath();
             string levelPath = EditorUtility.OpenFilePanel(
                 "Open level file",
-                levelsEditorPath, 
-                LevelFormatSettings.Extension.Replace(".", "")
+                levelsEditorPath,
+                RecoDeliSettings.LevelFormatExtension.Replace(".", "")
             );
 
             if (levelPath.Length == 0) return;
-            if (!levelPath.EndsWith(LevelFormatSettings.Extension))
+            if (!levelPath.EndsWith(RecoDeliSettings.LevelFormatExtension))
             {
-                ShowHelpBox("Cannot load a level file that doesn't end with extension " + LevelFormatSettings.Extension, MessageType.Error);
+                ShowHelpBox("Cannot load a level file that doesn't end with extension " + RecoDeliSettings.LevelFormatExtension, MessageType.Error);
                 return;
             }
 
@@ -106,7 +106,7 @@ namespace RecoDeli.Scripts.Level
                 return;
             }
 
-            var levelName = levelPath.Substring(levelsEditorPath.Length).Replace(LevelFormatSettings.Extension, "");
+            var levelName = levelPath.Substring(levelsEditorPath.Length).Replace(RecoDeliSettings.LevelFormatExtension, "");
 
             levelLoader.LoadLevel(levelName);
             ShowHelpBox($"Loaded level {levelName}.");
@@ -125,13 +125,13 @@ namespace RecoDeli.Scripts.Level
                 "Save level",
                 levelsEditorPath,
                 "Level",
-                LevelFormatSettings.Extension.Replace(".", "")
+                RecoDeliSettings.LevelFormatExtension.Replace(".", "")
             );
 
             if (levelPath.Length == 0) return;
-            if (!levelPath.EndsWith(LevelFormatSettings.Extension))
+            if (!levelPath.EndsWith(RecoDeliSettings.LevelFormatExtension))
             {
-                ShowHelpBox("Cannot save a level to a file that doesn't end with extension " + LevelFormatSettings.Extension, MessageType.Error);
+                ShowHelpBox("Cannot save a level to a file that doesn't end with extension " + RecoDeliSettings.LevelFormatExtension, MessageType.Error);
                 return;
             }
 
@@ -141,7 +141,7 @@ namespace RecoDeli.Scripts.Level
                 return;
             }
 
-            var levelName = levelPath.Substring(levelsEditorPath.Length).Replace(LevelFormatSettings.Extension, "");
+            var levelName = levelPath.Substring(levelsEditorPath.Length).Replace(RecoDeliSettings.LevelFormatExtension, "");
 
             levelLoader.LevelEditorPath = levelName;
             LevelLoader.LevelToLoad = levelName;
@@ -155,7 +155,7 @@ namespace RecoDeli.Scripts.Level
         {
             var asset = EditorUtility.InstanceIDToObject(instanceID);
             var path = Application.dataPath + AssetDatabase.GetAssetPath(asset).Replace("Assets", "");
-            if (!path.EndsWith(LevelFormatSettings.Extension)) return false;
+            if (!path.EndsWith(RecoDeliSettings.LevelFormatExtension)) return false;
             var levelsEditorPath = LevelLoader.GetLevelsDirectoryPath();
             if (!path.StartsWith(levelsEditorPath)) return false;
 
@@ -163,7 +163,7 @@ namespace RecoDeli.Scripts.Level
             if (levelLoader == null)
             {
                 // attempt to change scene into the gameplay one
-                EditorSceneManager.OpenScene("Assets/Resources/Scenes/" + RecoDeliGame.GameplaySceneName + ".unity");
+                EditorSceneManager.OpenScene("Assets/Resources/Scenes/" + RecoDeliGame.Settings.GameplaySceneName + ".unity");
                 levelLoader = GameObject.FindObjectOfType<LevelLoader>();
             }
 
@@ -173,7 +173,7 @@ namespace RecoDeli.Scripts.Level
                 return true;
             }
 
-            var levelName = path.Substring(levelsEditorPath.Length).Replace(LevelFormatSettings.Extension, "");
+            var levelName = path.Substring(levelsEditorPath.Length).Replace(RecoDeliSettings.LevelFormatExtension, "");
 
             Debug.Log($"Attempting to load level {levelName}");
             levelLoader.LoadLevel(levelName);
