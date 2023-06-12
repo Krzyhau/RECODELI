@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8128267926988672169}
   - component: {fileID: 5363832028683448966}
   - component: {fileID: 1384813474625350050}
+  - component: {fileID: 705101820644056326}
   - component: {fileID: 4423190581456679094}
   m_Layer: 0
   m_Name: Space Rock 1
@@ -147,10 +148,33 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.18
-  m_Height: 5.27
+  m_Radius: 1.06
+  m_Height: 4.62
   m_Direction: 1
-  m_Center: {x: -0.08, y: 0.4784445, z: 0.17390004}
+  m_Center: {x: 0.12, y: 0.16, z: 0.22}
+--- !u!136 &705101820644056326
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6992307425892573771}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.06
+  m_Height: 4.62
+  m_Direction: 1
+  m_Center: {x: -0.18, y: 0.75, z: -0.03}
 --- !u!135 &4423190581456679094
 SphereCollider:
   m_ObjectHideFlags: 0

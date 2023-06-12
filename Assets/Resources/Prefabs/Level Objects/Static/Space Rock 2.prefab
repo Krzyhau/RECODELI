@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 2720860300888416087}
   - component: {fileID: 1731676471809089217}
   - component: {fileID: 5777640290606222188}
+  - component: {fileID: 5370201310058570668}
   m_Layer: 0
   m_Name: Space Rock 2
   m_TagString: Untagged
@@ -146,7 +147,30 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1.4881643
-  m_Height: 5.626576
+  m_Radius: 1.13
+  m_Height: 5.4
   m_Direction: 1
-  m_Center: {x: 0.015203355, y: 0.4255614, z: 0.20246452}
+  m_Center: {x: 0.015203355, y: 0.49, z: 0.20246452}
+--- !u!136 &5370201310058570668
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988193785846949339}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 1.43
+  m_Height: 4.44
+  m_Direction: 1
+  m_Center: {x: 0.015203355, y: 0.64, z: 0.07}
