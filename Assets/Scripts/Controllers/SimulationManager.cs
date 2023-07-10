@@ -18,7 +18,7 @@ namespace RecoDeli.Scripts.Controllers
     {
         [SerializeField] private DroneCameraController droneCamera;
         [SerializeField] private BepuSimulation simulationGroup;
-        [SerializeField] private UserInterface userInterface;
+        [SerializeField] private SimulationInterface simulationInterface;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
         [Header("Glitching")]
@@ -43,7 +43,7 @@ namespace RecoDeli.Scripts.Controllers
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
         public float LastCompletionTime { get; private set; }
-        public UserInterface UserInterface => userInterface;
+        public SimulationInterface Interface => simulationInterface;
         public DroneCameraController DroneCamera => droneCamera;
         public BepuSimulation PhysicsSimulationInstance => simulationInstance;
         public EndingController EndingController => endingController;
@@ -83,7 +83,7 @@ namespace RecoDeli.Scripts.Controllers
         {
             if (!paused && playingSimulation && !finishedSimulation)
             {
-                Time.timeScale = userInterface.TimescaleBar.Timescale;
+                Time.timeScale = simulationInterface.TimescaleBar.Timescale;
             }
             else
             {
@@ -99,7 +99,7 @@ namespace RecoDeli.Scripts.Controllers
 
             if (lastInstruction < RobotController.CurrentInstructionIndex)
             {
-                userInterface.InstructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
+                simulationInterface.InstructionEditor.HighlightInstruction(RobotController.CurrentInstructionIndex);
                 lastInstruction = RobotController.CurrentInstructionIndex;
             }
             if (!endingController.EndingInProgress && RobotController.ReachedGoalBox != null)
@@ -135,9 +135,9 @@ namespace RecoDeli.Scripts.Controllers
             Assert.IsNotNull(RobotController, "Cannot play instructions without a robot within a simulation!");
 
             simulationInstance.Active = true;
-            userInterface.InstructionEditor.HighlightInstruction(0);
-            userInterface.InstructionEditor.SetPlaybackState(true);
-            var instructionSet = userInterface.InstructionEditor.GetRobotInstructionsList();
+            simulationInterface.InstructionEditor.HighlightInstruction(0);
+            simulationInterface.InstructionEditor.SetPlaybackState(true);
+            var instructionSet = simulationInterface.InstructionEditor.GetRobotInstructionsList();
             RobotController.ExecuteCommands(instructionSet);
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
@@ -167,8 +167,8 @@ namespace RecoDeli.Scripts.Controllers
             finishedSimulation = false;
             paused = false;
 
-            userInterface.InstructionEditor.SetPlaybackState(false);
-            userInterface.InstructionEditor.HighlightInstruction(-1);
+            simulationInterface.InstructionEditor.SetPlaybackState(false);
+            simulationInterface.InstructionEditor.HighlightInstruction(-1);
             currentGlitchingForce = glitchingForce;
 
             restartSound.Play();
@@ -201,6 +201,10 @@ namespace RecoDeli.Scripts.Controllers
         public void ResumeSimulation()
         {
             paused = false;
+            if (!playingSimulation)
+            {
+                PlayInstructions();
+            }
         }
 
         public void SetPhysicsSimulation(BepuSimulation simulation)

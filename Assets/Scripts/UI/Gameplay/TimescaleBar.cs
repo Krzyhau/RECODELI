@@ -2,37 +2,38 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
 {
     public class TimescaleBar : MonoBehaviour
     {
-        [SerializeField] private Scrollbar scrollbar;
-        [SerializeField] private TMP_Text text;
         [SerializeField] private List<float> timescaleValues;
         [SerializeField] private bool overrideTimescale;
 
-        public float Timescale => timescaleValues[Mathf.FloorToInt(timescaleValues.Count * Mathf.Clamp(scrollbar.value, 0.0f, 0.999f))];
+        private Slider slider;
 
-        private void OnEnable() => scrollbar.onValueChanged.AddListener(OnValueChanged);
-        private void OnDisable() => scrollbar.onValueChanged.RemoveListener(OnValueChanged);
+        public float Timescale => timescaleValues[Mathf.FloorToInt(timescaleValues.Count * Mathf.Clamp(slider.value, 0.0f, 0.999f))];
 
-        private void Awake()
+        public void Initialize(UIDocument gameplayInterface)
         {
-            scrollbar.numberOfSteps = timescaleValues.Count;
+            slider = gameplayInterface.rootVisualElement.Q<Slider>("timescale-slider");
+            slider.RegisterValueChangedCallback(f => OnValueChanged());
         }
 
-        private void OnValueChanged(float value)
+        private void ClampSliderValueToStep()
         {
-            scrollbar.numberOfSteps = timescaleValues.Count;
+            var steps = (float)timescaleValues.Count - 1.0f;
+            slider.value = Mathf.Round(slider.value * steps) / steps;
+        }
 
-            if (overrideTimescale)
-            {
-                Time.timeScale = Timescale;
-            }
+        private void OnValueChanged()
+        {
+            ClampSliderValueToStep();
 
-            text.text = $"{Mathf.RoundToInt(Timescale * 100.0f)}%";
+            slider.label = $"{Mathf.RoundToInt(Timescale * 100.0f)}%";
+
+            if (overrideTimescale) Time.timeScale = Timescale;
         }
     }
 }

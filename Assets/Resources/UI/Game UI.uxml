@@ -1,0 +1,61 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#retro" />
+    <ui:VisualElement name="main-container" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; justify-content: space-between; align-self: stretch;">
+        <ui:VisualElement name="drone-view-window" picking-mode="Ignore" class="window" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-self: stretch; justify-content: space-between; left: auto; right: auto;">
+            <ui:VisualElement name="title-bar" class="title-bar" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; height: 40px; flex-direction: row;">
+                <ui:VisualElement name="drone-view-icon" class="title-icon" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 40px;" />
+                <ui:Label tabindex="-1" text="Live Drone View" display-tooltip-when-elided="true" name="drone-view-label" class="title text" style="-unity-font: resource(&apos;Fonts/SpaceGrotesk/SpaceGrotesk-Medium&apos;); -unity-font-definition: initial; color: rgb(255, 255, 255);" />
+                <ui:VisualElement name="camera-control-buttons" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-self: flex-end; flex-direction: row; justify-content: flex-end;">
+                    <ui:Button text="" display-tooltip-when-elided="true" name="focus-on-drone-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="focus-on-goal-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="drone-view" picking-mode="Ignore" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);" />
+        </ui:VisualElement>
+        <ui:VisualElement name="instruction-editor-window" class="window" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-self: stretch; width: auto; max-width: 400px;">
+            <ui:VisualElement name="title-bar" class="title-bar" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); justify-content: flex-start; height: 40px; flex-direction: row;">
+                <ui:VisualElement name="instruction-editor-icon" class="title-icon" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); width: 40px;" />
+                <ui:Label tabindex="-1" text="Instruction Editor" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/SpaceGrotesk/SpaceGrotesk-Medium&apos;); color: rgb(255, 255, 255);" />
+                <ui:VisualElement name="menu-buttons" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); align-self: flex-end; flex-direction: row; justify-content: flex-end;">
+                    <ui:Button text="" display-tooltip-when-elided="true" name="menu-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="instruction-editor" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
+                <ui:VisualElement name="add-instruction-menu" style="flex-grow: 1;">
+                    <ui:Label tabindex="-1" text="Add Instruction" display-tooltip-when-elided="true" name="add-instruction-label" style="-unity-text-align: upper-center; -unity-font-definition: initial; -unity-font: resource(&apos;Fonts/SpaceGrotesk/SpaceGrotesk-Medium&apos;); color: rgb(255, 255, 255);" />
+                    <ui:VisualElement name="add-instruction-list" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);" />
+                    <ui:Button text="Cancel" display-tooltip-when-elided="true" name="add-cancel-button" class="button" />
+                </ui:VisualElement>
+                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="0" style="flex-grow: 1;" />
+                <ui:VisualElement name="editor-buttons" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); height: 40px; flex-direction: row; justify-content: space-between;">
+                    <ui:Button text="+" display-tooltip-when-elided="true" name="add-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="delete-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="copy-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="paste-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="undo-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    <ui:Button text="" display-tooltip-when-elided="true" name="redo-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                </ui:VisualElement>
+                <ui:VisualElement name="playback-controls" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); height: auto; flex-direction: row; flex-wrap: wrap; justify-content: space-between;">
+                    <ui:VisualElement name="playback-buttons" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; justify-content: space-around;">
+                        <ui:Button text="" display-tooltip-when-elided="true" name="restart-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                        <ui:Button text="" display-tooltip-when-elided="true" name="play-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                        <ui:Button text="" display-tooltip-when-elided="true" name="pause-button" class="button" style="-unity-font-definition: initial; -unity-font: resource(&apos;Fonts/FontAwesome/Font Awesome 6 Free-Solid-900&apos;);" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="playback-info" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); -unity-font-definition: initial; -unity-font: resource(&apos;Fonts/SpaceGrotesk/SpaceGrotesk-Regular&apos;);">
+                        <ui:VisualElement name="time-container" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; justify-content: space-between;">
+                            <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="time-label" class="text" style="color: rgb(255, 255, 255);" />
+                            <ui:Label tabindex="-1" text="0.000" display-tooltip-when-elided="true" name="time-text" class="text value" style="color: rgb(255, 255, 255);" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="instruction-count-container" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0); flex-direction: row; justify-content: space-between;">
+                            <ui:Label tabindex="-1" text="Instructions" display-tooltip-when-elided="true" name="instructions-label" class="text" style="color: rgb(255, 255, 255);" />
+                            <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="instructions-text" class="text value" style="color: rgb(255, 255, 255);" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="timescale-controls" style="flex-grow: 0; background-color: rgba(0, 0, 0, 0); flex-direction: row; width: 100%;">
+                        <ui:Slider picking-mode="Ignore" label="100%" value="0.5" high-value="1" name="timescale-slider" style="flex-grow: 1; flex-direction: row; color: rgb(255, 255, 255); -unity-font-definition: initial; -unity-font: resource(&apos;Fonts/SpaceGrotesk/SpaceGrotesk-Medium&apos;);" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

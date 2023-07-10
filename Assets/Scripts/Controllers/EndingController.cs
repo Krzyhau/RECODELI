@@ -61,12 +61,12 @@ namespace RecoDeli.Scripts.Controllers
             simulationManager.DroneCamera.transform.position = Vector3.Lerp(startCameraPosition, desiredCameraPosition, t);
             simulationManager.DroneCamera.transform.rotation = Quaternion.Lerp(startCameraRotation, desiredCameraRotation, t);
 
-            simulationManager.UserInterface.GameplayInterface.alpha = 1.0f - hudBlinkingCurve.Evaluate(animationState);
+            // simulationManager.UserInterface.GameplayInterface.alpha = 1.0f - hudBlinkingCurve.Evaluate(animationState);
 
             if (animationState >= 1.0f)
             {
-                simulationManager.UserInterface.GameplayInterface.alpha = 0.0f;
-                simulationManager.UserInterface.EndingInterface.gameObject.SetActive(true);
+                // simulationManager.UserInterface.GameplayInterface.alpha = 0.0f;
+                // simulationManager.UserInterface.EndingInterface.gameObject.SetActive(true);
             }
         }
 
@@ -102,7 +102,7 @@ namespace RecoDeli.Scripts.Controllers
 
             robot.enabled = false;
 
-            simulationManager.UserInterface.GameplayInterface.interactable = false;
+            // simulationManager.UserInterface.GameplayInterface.interactable = false;
 
             animationState = 0.0f;
             started = true;
@@ -117,8 +117,8 @@ namespace RecoDeli.Scripts.Controllers
 
             // don't have to reset robot and goalbox because that's part of the simulation
 
-            simulationManager.UserInterface.GameplayInterface.interactable = true;
-            simulationManager.UserInterface.GameplayInterface.alpha = 1.0f;
+            // simulationManager.UserInterface.GameplayInterface.interactable = true;
+            // simulationManager.UserInterface.GameplayInterface.alpha = 1.0f;
 
             simulationManager.DroneCamera.enabled = true;
             started = false;

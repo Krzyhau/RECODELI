@@ -2,7 +2,7 @@ using RecoDeli.Scripts.Controllers;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
 {
@@ -11,30 +11,21 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private SimulationManager simulationManager;
 
         [Header("Main Windows")]
-        [SerializeField] private CanvasGroup gameplayInterface;
-        [SerializeField] private CanvasGroup menuInterface;
-        [SerializeField] private CanvasGroup endingInterface;
+        [SerializeField] private UIDocument gameplayInterface;
+        [SerializeField] private UIDocument menuInterface;
+        [SerializeField] private UIDocument endingInterface;
 
         [Header("Components")]
         [SerializeField] private InstructionEditor instructionEditor;
         [SerializeField] private TimescaleBar timescaleBar;
-        [SerializeField] private Button focusOnRobotButton;
-        [SerializeField] private Button focusOnPayloadButton;
 
 
-        public CanvasGroup GameplayInterface => gameplayInterface;
-        public CanvasGroup MenuInterface => menuInterface;
-        public CanvasGroup EndingInterface => endingInterface;
+        public UIDocument GameplayInterface => gameplayInterface;
+        public UIDocument MenuInterface => menuInterface;
+        public UIDocument EndingInterface => endingInterface;
 
         public SimulationManager SimulationManager => simulationManager;
         public InstructionEditor InstructionEditor => instructionEditor;
         public TimescaleBar TimescaleBar => timescaleBar;
-
-
-        private void Awake()
-        {
-            focusOnRobotButton.onClick.AddListener(simulationManager.DroneCamera.FollowRobot);
-            focusOnPayloadButton.onClick.AddListener(simulationManager.DroneCamera.FollowPackage);
-        }
     }
 }
