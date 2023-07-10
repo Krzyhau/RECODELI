@@ -1,0 +1,477 @@
+#main-container {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    -unity-font-definition: initial;
+    -unity-font: resource('Fonts/SpaceGrotesk/SpaceGrotesk-Medium');
+    font-size: 18px;
+    flex-direction: row;
+    flex-grow: 1;
+    color: rgb(255, 255, 255);
+}
+
+TextField {
+    --unity-cursor-color: rgb(180, 180, 180);
+}
+
+.title-icon {
+    display: none;
+}
+
+.icon-label {
+    -unity-font: resource('Fonts/FontAwesome/Font Awesome 6 Free-Solid-900');
+}
+
+.full-text-label {
+}
+
+Button {
+    color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.7);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    height: 40px;
+    flex-direction: row;
+    justify-content: center;
+}
+
+Button:hover {
+    background-color: rgba(51, 51, 51, 0.7);
+}
+
+Button:active {
+    background-color: rgba(26, 26, 26, 0.7);
+}
+
+Slider #unity-tracker {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    position: relative;
+    height: 100%;
+    top: 0;
+}
+
+Slider #unity-dragger {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    top: 0;
+    bottom: 0;
+    height: 100%;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    width: 25px;
+}
+
+#instruction-editor > .disabled {
+    display: none;
+}
+
+#drone-view-window {
+    margin-right: 10px;
+    flex-grow: 1;
+}
+
+.title-bar Button {
+    margin-left: 10px;
+    width: 50px;
+}
+
+.title-bar {
+    margin-bottom: 10px;
+    flex-direction: row;
+}
+
+.title {
+    border-left-color: rgb(128, 128, 128);
+    border-right-color: rgb(128, 128, 128);
+    border-top-color: rgb(128, 128, 128);
+    border-bottom-color: rgb(128, 128, 128);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 40px;
+    -unity-text-align: middle-center;
+    padding-left: 20px;
+    padding-top: 5px;
+    padding-right: 20px;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.title-control-buttons {
+    flex-grow: 1;
+    justify-content: flex-end;
+    flex-direction: row;
+}
+
+.title-control-buttons > * > #icon-label {
+    -unity-text-align: middle-center;
+    width: 100%;
+    height: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.title-control-buttons > * > #full-text-label {
+    display: none;
+}
+
+#drone-view {
+    border-left-color: rgba(255, 255, 255, 0.5);
+    border-right-color: rgba(255, 255, 255, 0.5);
+    border-top-color: rgba(255, 255, 255, 0.5);
+    border-bottom-color: rgba(255, 255, 255, 0.5);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    flex-grow: 1;
+}
+
+#instruction-editor-window {
+    max-width: 400px;
+    flex-shrink: 0;
+}
+
+#instruction-editor {
+    flex-grow: 1;
+}
+
+#instructions {
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    flex-grow: 1;
+}
+
+#no-instructions-label {
+    -unity-text-align: upper-center;
+    color: rgba(255, 255, 255, 0.5);
+    display: none;
+}
+
+.no-instructions #no-instructions-label {
+    display: flex;
+}
+
+#instructions #unity-content-container {
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+}
+
+#editor-buttons {
+    margin-bottom: 20px;
+    margin-top: 10px;
+    flex-shrink: 0;
+    flex-direction: row;
+}
+
+#editor-buttons > * {
+    flex-direction: row;
+    justify-content: center;
+    flex-shrink: 2;
+}
+
+#editor-buttons > * > #full-text-label {
+    display: none;
+}
+
+#editor-buttons > #add-button {
+    flex-grow: 1;
+    margin-right: 10px;
+}
+
+#editor-buttons > #add-button > #full-text-label {
+    display: flex;
+}
+
+#editor-buttons > #delete-button {
+    margin-right: 10px;
+}
+
+#editor-buttons > #paste-button {
+    margin-right: 10px;
+}
+
+#playback-controls {
+    flex-shrink: 0;
+}
+
+#playback-buttons {
+    flex-direction: row;
+}
+
+#playback-buttons > * {
+    flex-shrink: 2;
+    flex-grow: 1;
+    width: 33%;
+}
+
+#playback-info {
+    position: absolute;
+    width: 200px;
+    left: -230px;
+}
+
+#playback-info > * {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#add-instruction-menu {
+    background-color: rgba(0, 0, 0, 0.77);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-shrink: 1;
+    flex-grow: 1;
+}
+
+#add-instruction-label {
+    -unity-text-align: upper-center;
+}
+
+#add-instruction-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-grow: 0;
+    width: 100%;
+}
+
+#add-instruction-list > Button {
+    width: 185px;
+    margin-bottom: 10px;
+    justify-content: flex-start;
+    display: flex;
+    flex-grow: 0;
+}
+
+.instruction-bar {
+    flex-direction: row;
+    height: 45px;
+    width: 100%;
+    -unity-font-definition: initial;
+    -unity-font: resource('Fonts/SpaceGrotesk/SpaceGrotesk-Medium');
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: rgb(255, 255, 255);
+    margin-bottom: 10px;
+}
+
+.instruction-bar > #progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.instruction-bar > #progress > #unity-progress-bar {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    min-height: 100%;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    overflow: hidden;
+}
+
+.instruction-bar > #progress > #unity-progress-bar > VisualElement {
+    background-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    position: absolute;
+    left: -3px;
+    top: -3px;
+    right: -3px;
+    bottom: -3px;
+}
+
+.instruction-bar > #progress .unity-progress-bar__progress {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.instruction-bar > #progress Label {
+    display: none;
+}
+
+.instruction-bar > #grabbing-handle {
+    width: 50%;
+    flex-direction: row;
+}
+
+.instruction-bar #handle-character {
+    height: 100%;
+    margin-left: 5px;
+    margin-right: 5px;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    -unity-text-align: middle-left;
+    font-size: 32px;
+}
+
+.instruction-bar > #parameters {
+    width: 50%;
+}
+
+.instruction-bar > #parameters > * {
+    border-left-width: 2px;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.instruction-bar > #parameters Label {
+    display: none;
+}
+
+.instruction-bar #unity-text-input {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#timescale-slider {
+    border-left-color: rgb(128, 128, 128);
+    border-right-color: rgb(128, 128, 128);
+    border-top-color: rgb(128, 128, 128);
+    border-bottom-color: rgb(128, 128, 128);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    background-color: rgba(0, 0, 0, 0.7);
+    height: 40px;
+    flex-direction: row;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#timescale-slider > Label {
+    -unity-text-align: middle-center;
+    position: relative;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    width: 100px;
+    min-width: 0;
+}
+
+#timescale-slider > .unity-slider__input {
+    margin-right: 10px;
+    margin-top: 7px;
+    margin-bottom: 5px;
+    height: 20px;
+    min-height: 0;
+}

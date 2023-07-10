@@ -1,25 +1,32 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public abstract class RobotActionSingle : RobotAction<float>
     {
-        public override int ParameterStringCount => 1;
-        public override string[] ParameterToStrings(float param)
+        public override int InputParametersCount => 1;
+        public override string InputParameterToString(int parameterIndex, float param)
         {
-            return new string[] { param.ToString() };
-        }
-        public override float ParameterFromStrings(string[] paramStrings)
-        {
-            if (paramStrings.Length > 0 && float.TryParse(paramStrings[0], out float value))
+            if (parameterIndex == 0)
             {
-                return value;
+                return param.ToString();
             }
-            return 0.0f;
+            else return "";
+        }
+        public override void ApplyInputParameterFromString(ref float parameter, int parameterIndex, string paramString)
+        {
+            if (parameterIndex > 0 || !float.TryParse(paramString, out parameter))
+            {
+                parameter = 0.0f;
+            }
+        }
+        public override Type GetParameterInputType(int parameterIndex)
+        {
+            if (parameterIndex == 0)
+            {
+                return typeof(float);
+            }
+            else return null;
         }
     }
 }

@@ -10,7 +10,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     {
         public abstract string Name { get; }
         public abstract Type GetParameterType();
-        public abstract int ParameterStringCount { get; }
+        public abstract Type GetParameterInputType(int parameterIndex);
+        public abstract int InputParametersCount { get; }
 
         public static readonly List<RobotAction> List;
 
@@ -41,7 +42,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public static RobotInstruction CreateInstruction(string name, string[] parameters)
         {
             var instruction = GetByName(name).CreateInstruction();
-            instruction.SetParameterFromStrings(parameters);
+            for(int i=0; i < Math.Min(parameters.Length, instruction.Action.InputParametersCount); i++){
+                instruction.SetInputParameterFromString(i, parameters[i]);
+            }
             return instruction;
         }
 
@@ -49,8 +52,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
     public abstract class RobotAction<T> : RobotAction where T : IEquatable<T>
     {
-        public abstract string[] ParameterToStrings(T param);
-        public abstract T ParameterFromStrings(string[] paramStrings);
+        public abstract string InputParameterToString(int parameterIndex, T param);
+        public abstract void ApplyInputParameterFromString(ref T parameter, int parameterIndex, string paramStrings);
         public abstract IEnumerator<int> Execute(RobotController controller, RobotInstruction<T> instruction);
         public override Type GetParameterType()
         {

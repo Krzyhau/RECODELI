@@ -118,9 +118,10 @@ namespace RecoDeli.Scripts.UI
             HandleKeyboardShortcuts();
 
             // use no-instructions class only if there's no instruction present in the list.
-            if ((instructionBars.Count == 0) != instructionsContainer.ClassListContains("no-instructions"))
+            bool noInstructions = (instructionBars.Count == 0);
+            if (noInstructions != instructionsContainer.ClassListContains("no-instructions"))
             {
-                instructionsContainer.ToggleInClassList("no-instructions");
+                instructionsContainer.EnableInClassList("no-instructions", noInstructions);
             }
         }
 
@@ -439,7 +440,7 @@ namespace RecoDeli.Scripts.UI
 
         public void DeleteSelected()
         {
-            var selectedBars = instructionBars.Where(bar => bar.Selected);
+            var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
 
             if (selectedBars.Any())
             {

@@ -22,8 +22,8 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public abstract bool Equals(RobotInstruction other);
         public abstract IEnumerator<int> Execute(RobotController controller);
 
-        public abstract string[] ParameterToStrings();
-        public abstract void SetParameterFromStrings(string[] paramStrings);
+        public abstract string GetInputParameterAsString(int parameterIndex);
+        public abstract void SetInputParameterFromString(int parameterIndex, string paramString);
 
 
         public void UpdateProgress(float progress)
@@ -35,11 +35,14 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         {
             string encodedText = CLIPBOARD_HEADER;
 
-            foreach (var bar in instructions)
+            foreach (var instruction in instructions)
             {
-                var instructionName = bar.Action.Name;
-                var parameters = bar.ParameterToStrings();
-                encodedText += $"\n{instructionName};{string.Join(';', parameters)}";
+                var instructionName = instruction.Action.Name;
+                encodedText += $"\n{instructionName}";
+                for(int i=0; i < instruction.Action.InputParametersCount; i++)
+                {
+                    encodedText += $";{instruction.GetInputParameterAsString(i)}";
+                }
             }
 
             return encodedText;
@@ -111,14 +114,16 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             UpdateProgress(1.0f);
         }
 
-        public override string[] ParameterToStrings()
+        public override string GetInputParameterAsString(int parameterIndex)
         {
-            return ((RobotAction<T>)Action).ParameterToStrings(Parameter);
+            return ((RobotAction<T>)Action).InputParameterToString(parameterIndex, Parameter);
         }
 
-        public override void SetParameterFromStrings(string[] paramStrings)
+        public override void SetInputParameterFromString(int parameterIndex, string paramString)
         {
-            Parameter = ((RobotAction<T>)Action).ParameterFromStrings(paramStrings);
+            var newParam = Parameter;
+            ((RobotAction<T>)Action).ApplyInputParameterFromString(ref newParam, parameterIndex, paramString);
+            Parameter = newParam;
         }
     }
 }

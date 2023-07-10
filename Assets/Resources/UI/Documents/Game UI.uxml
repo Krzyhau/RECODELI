@@ -1,0 +1,100 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Stylesheets/Retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#Retro" />
+    <ui:VisualElement name="main-container" picking-mode="Ignore">
+        <ui:VisualElement name="drone-view-window" picking-mode="Ignore" class="window">
+            <ui:VisualElement name="title-bar" class="title-bar">
+                <ui:VisualElement name="drone-view-icon" class="title-icon" />
+                <ui:Label tabindex="-1" text="Live Drone View" display-tooltip-when-elided="true" name="drone-view-label" class="title text" />
+                <ui:VisualElement name="camera-control-buttons" class="title-control-buttons">
+                    <ui:Button display-tooltip-when-elided="true" name="focus-on-drone-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="FOCUS ON DRONE" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="focus-on-goal-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="FOCUS ON GOAL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="drone-view" picking-mode="Ignore" />
+        </ui:VisualElement>
+        <ui:VisualElement name="instruction-editor-window" class="window">
+            <ui:VisualElement name="title-bar" class="title-bar">
+                <ui:VisualElement name="instruction-editor-icon" class="title-icon" />
+                <ui:Label tabindex="-1" text="Instruction Editor" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" />
+                <ui:VisualElement name="menu-buttons" class="title-control-buttons">
+                    <ui:Button display-tooltip-when-elided="true" name="menu-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="MENU" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="instruction-editor">
+                <ui:VisualElement name="add-instruction-menu">
+                    <ui:Label tabindex="-1" text="ADD INSTRUCTION" display-tooltip-when-elided="true" name="add-instruction-label" />
+                    <ui:VisualElement name="add-instruction-list" />
+                    <ui:Button display-tooltip-when-elided="true" name="add-cancel-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="CANCEL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="0">
+                    <ui:Label tabindex="-1" text="NO INSTRUCTIONS" display-tooltip-when-elided="true" name="no-instructions-label" />
+                </ui:ScrollView>
+                <ui:VisualElement name="editor-buttons">
+                    <ui:Button display-tooltip-when-elided="true" name="add-button" class="button">
+                        <ui:Label tabindex="-1" text="+" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="ADD" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button text="&#10;" display-tooltip-when-elided="true" name="delete-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="DELETE" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="copy-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="COPY" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="paste-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="PASTE" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="undo-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="UNDO" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="redo-button" class="button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="REDO" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:VisualElement name="playback-controls">
+                    <ui:VisualElement name="playback-buttons">
+                        <ui:Button display-tooltip-when-elided="true" name="restart-button" class="button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="RESTART" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                        </ui:Button>
+                        <ui:Button display-tooltip-when-elided="true" name="play-button" class="button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="PLAY" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                        </ui:Button>
+                        <ui:Button display-tooltip-when-elided="true" name="pause-button" class="button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="PAUSE" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="playback-info">
+                        <ui:VisualElement name="time-container">
+                            <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="time-label" class="text" />
+                            <ui:Label tabindex="-1" text="0.000" display-tooltip-when-elided="true" name="time-text" class="text value" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="instruction-count-container">
+                            <ui:Label tabindex="-1" text="Instructions" display-tooltip-when-elided="true" name="instructions-label" class="text" />
+                            <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="instructions-text" class="text value" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="100%" value="0.5" high-value="1" name="timescale-slider" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
