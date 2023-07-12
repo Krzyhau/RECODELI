@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
@@ -14,9 +12,21 @@ namespace RecoDeli.Scripts.UI
 
         private RenderTexture suppliedRenderTexture;
 
+        private PanelRenderTextureSupplier instance;
+
+        private void Start()
+        {
+            if (instance != null)
+            {
+                Debug.LogError("Only one instance of PanelRenderTextureSupplier can exist at a time.");
+            }
+
+            instance = this;
+        }
+
         public void Update()
         {
-            if(linkedPanelSettings == null || imageTextureDisplayer == null)
+            if(instance != this || linkedPanelSettings == null || imageTextureDisplayer == null)
             {
                 return;
             }
