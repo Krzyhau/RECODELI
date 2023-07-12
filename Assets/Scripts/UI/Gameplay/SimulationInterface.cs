@@ -1,8 +1,5 @@
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.UI;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Timeline;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -31,7 +28,7 @@ namespace RecoDeli.Scripts
         private Button focusOnGoalButton;
 
         private Button menuButton;
-        public float InstructionEditorWidth => instructionEditorContainer.worldBound.width;
+        public float InstructionEditorWidth => CalculateInstructionEditorWidth();
 
         public UIDocument Document => interfaceDocument;
         public InstructionEditor InstructionEditor => instructionEditor;
@@ -81,6 +78,7 @@ namespace RecoDeli.Scripts
         {
             UpdateTimer();
             UpdateInstructions();
+            UpdateInterfaceClasses();
         }
 
         private void UpdateTimer()
@@ -100,6 +98,24 @@ namespace RecoDeli.Scripts
         {
             // TODO: when instruction editor is refactored, change placeholder to actual instructon count
             instructionsLabel.text = "0";
+        }
+
+        private void UpdateInterfaceClasses()
+        {
+            var rootElement = interfaceDocument.rootVisualElement;
+
+            rootElement.EnableInClassList("playing", simulationManager.PlayingSimulation);
+            rootElement.EnableInClassList("paused", simulationManager.PausedSimulation);
+            rootElement.EnableInClassList("finished", simulationManager.FinishedSimulation);
+        }
+
+        private float CalculateInstructionEditorWidth()
+        {
+            if (instructionEditorContainer == null) return 0;
+            float result = instructionEditorContainer.worldBound.width;
+            if (float.IsNaN(result)) return 0.0f;
+            var scale = RuntimePanelUtils.ScreenToPanel(instructionEditorContainer.panel, Vector2.up).y;
+            return result / scale;
         }
     }
 }

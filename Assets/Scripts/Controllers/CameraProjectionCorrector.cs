@@ -7,9 +7,7 @@ namespace RecoDeli.Scripts.Controllers
     public class CameraProjectionCorrector : MonoBehaviour
     {
         [SerializeField] private Camera controlledCamera;
-        [SerializeField] private RectTransform instructionsEditorRect;
-
-        private Canvas instructionEditorCanvas;
+        [SerializeField] private SimulationInterface simulationInterface;
 
         private void Update()
         {
@@ -18,20 +16,16 @@ namespace RecoDeli.Scripts.Controllers
 
         private void RecalculateCameraProjection()
         {
-            if (instructionsEditorRect == null)
+            if (simulationInterface == null)
             {
                 return;
-            }
-            if (instructionEditorCanvas == null)
-            {
-                instructionEditorCanvas = instructionsEditorRect.GetComponentInParent<Canvas>();
             }
 
             var near = controlledCamera.nearClipPlane;
             var far = controlledCamera.farClipPlane;
             var fovScale = Mathf.Tan(Mathf.Deg2Rad * controlledCamera.fieldOfView * 0.5f) * near;
 
-            var editorWidth = instructionsEditorRect.sizeDelta.x * instructionEditorCanvas.scaleFactor;
+            var editorWidth = simulationInterface.InstructionEditorWidth;
             var screenWidth = controlledCamera.pixelWidth;
             var offset = (editorWidth / screenWidth);
 

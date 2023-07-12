@@ -10,7 +10,7 @@ namespace RecoDeli.Scripts.Prototyping
 {
     public class SimpleEndingScreen : MonoBehaviour
     {
-        [SerializeField] private UserInterface userInterface;
+        //[SerializeField] private UserInterface userInterface;
         [SerializeField] private TMP_Text valuesText;
         [SerializeField] private Button retryButton;
 
@@ -22,16 +22,16 @@ namespace RecoDeli.Scripts.Prototyping
 
         private void OnEnable()
         {
-            var simulationTime = userInterface.SimulationManager.LastCompletionTime;
-            var instructionCount = userInterface.SimulationManager.RobotController.CurrentInstructions.Count;
-            valuesText.text = $"{simulationTime:0.000}\n{instructionCount}";
+            //var simulationTime = userInterface.SimulationManager.LastCompletionTime;
+            //var instructionCount = userInterface.SimulationManager.RobotController.CurrentInstructions.Count;
+            //valuesText.text = $"{simulationTime:0.000}\n{instructionCount}";
         }
 
         private void RetryAction()
         {
-            userInterface.SimulationManager.EndingController.RevertEnding();
-            userInterface.SimulationManager.RestartSimulation();
-            userInterface.EndingInterface.gameObject.SetActive(false);
+            //userInterface.SimulationManager.EndingController.RevertEnding();
+            //userInterface.SimulationManager.RestartSimulation();
+            //userInterface.EndingInterface.gameObject.SetActive(false);
         }
     }
 }

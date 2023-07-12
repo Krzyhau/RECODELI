@@ -1,13 +1,9 @@
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Utils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Text;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
@@ -15,27 +11,24 @@ namespace RecoDeli.Scripts.UI
 {
     public class InstructionEditor : MonoBehaviour
     {
-        [SerializeField] private VisualTreeAsset instructionBarDocument;
+        [SerializeField] private AddInstructionMenu addInstructionMenu;
 
-        [SerializeField] private float barsPadding;
-        [SerializeField] private float barsPositionInterpolation;
+        [Header("Settings")]
         [SerializeField] private int maxUndoHistory;
-        [SerializeField] private List<string> validActionsList;
+        [SerializeField] private float focusZoneEdgesSize;
+        [SerializeField] private float grabScrollMaxSpeed;
 
+        private VisualElement instructionEditorContainer;
         private ScrollView instructionsContainer;
 
-        private VisualElement addInstructionMenu;
-        private VisualElement addInstructionList;
-
         private Button addButton;
-        private Button addCancelButton;
         private Button deleteButton;
         private Button undoButton;
         private Button redoButton;
         private Button copyButton;
         private Button pasteButton;
 
-        private List<InstructionBar> instructionBars;
+        private List<InstructionBar> instructionBars = new();
 
         private struct RobotInstructionListCopy
         {
@@ -44,143 +37,100 @@ namespace RecoDeli.Scripts.UI
             public List<int> SelectionIndices;
         }
 
-        private List<RobotInstructionListCopy> undoList;
-        private List<RobotInstructionListCopy> redoList;
+        private List<RobotInstructionListCopy> undoList = new();
+        private List<RobotInstructionListCopy> redoList = new();
 
-        private List<InstructionBar> grabbedInstructions = new List<InstructionBar>();
+        private List<InstructionBar> grabbedInstructions = new();
         private bool grabbing;
-        private bool mouseOverClickZone;
-        private bool clickedInClickZone;
-        private bool addInstructionMenuActive;
-        private bool addInstructionMenuWasActive;
         private InstructionBar lastClickedInstructionBar;
-        private float buttonBasedMousePosition;
         private bool playingInstructions;
-        private Canvas canvasContainer;
         private float prePlayScrollPosition;
+
+        private bool mouseOverList;
+        private bool mouseHeldOnList;
+        private float mouseListBasedPosition;
 
         public bool Grabbing => grabbing;
 
         public void Initialize(UIDocument gameDocument)
         {
+            instructionEditorContainer = gameDocument.rootVisualElement.Q<VisualElement>("instruction-editor");
             instructionsContainer = gameDocument.rootVisualElement.Q<ScrollView>("instructions");
-            addInstructionMenu = gameDocument.rootVisualElement.Q<VisualElement>("add-instruction-menu");
-            addInstructionList = gameDocument.rootVisualElement.Q<VisualElement>("add-instruction-list");
 
             addButton = gameDocument.rootVisualElement.Q<Button>("add-button");
-            addCancelButton = gameDocument.rootVisualElement.Q<Button>("add-cancel-button");
             deleteButton = gameDocument.rootVisualElement.Q<Button>("delete-button");
             undoButton = gameDocument.rootVisualElement.Q<Button>("undo-button");
             redoButton = gameDocument.rootVisualElement.Q<Button>("redo-button");
             copyButton = gameDocument.rootVisualElement.Q<Button>("copy-button");
             pasteButton = gameDocument.rootVisualElement.Q<Button>("paste-button");
 
-            addButton.clicked += () => SetAddInstructionMenuActive(true);
-            addCancelButton.clicked += () => SetAddInstructionMenuActive(false);
+            addButton.clicked += () => { addInstructionMenu.Opened = true; };
             deleteButton.clicked += DeleteSelected;
             undoButton.clicked += Undo;
             redoButton.clicked += Redo;
             copyButton.clicked += CopySelected;
             pasteButton.clicked += Paste;
 
-            //instructionsContainer.RegisterCallback<MouseMoveEvent>((e) => { Debug.Log(e.mousePosition); });
+            instructionsContainer.contentContainer.RegisterCallback<MouseMoveEvent>((e) => OnMouseOverList(e));
+            instructionsContainer.contentContainer.RegisterCallback<MouseLeaveEvent>((e) => OnMouseLeaveList(e));
 
-            SetAddInstructionMenuActive(false);
-
-            CreateAddInstructionMenu();
-        }
-
-        private void Awake()
-        {
-            instructionBars = new List<InstructionBar>();
-
-            undoList = new List<RobotInstructionListCopy>();
-            redoList = new List<RobotInstructionListCopy>();
+            addInstructionMenu.Initialize(this, gameDocument);
         }
 
         private void Update()
         {
-            RecalculateButtonBasedMousePosition();
-            UpdateBarsPosition();
-
-            if (!addInstructionMenuWasActive && !playingInstructions)
+            if (!addInstructionMenu.Opened && !playingInstructions)
             {
                 UpdateBarsSelection();
                 HandleBarGrabbing();
             }
-            if (addInstructionMenuWasActive && !addInstructionMenuActive)
-            {
-                addInstructionMenuWasActive = false;
-            }
-
-            UpdateButtons();
 
             HandleKeyboardShortcuts();
 
-            // use no-instructions class only if there's no instruction present in the list.
-            bool noInstructions = (instructionBars.Count == 0);
-            if (noInstructions != instructionsContainer.ClassListContains("no-instructions"))
+            UpdateEditorButtonsState();
+
+            foreach (var instructionBar in instructionBars)
             {
-                instructionsContainer.EnableInClassList("no-instructions", noInstructions);
+                instructionBar.Update();
             }
+
+            instructionEditorContainer.EnableInClassList("no-instructions", instructionBars.Count == 0);
         }
 
-        private void CreateAddInstructionMenu()
+        private void OnMouseOverList(MouseMoveEvent evt)
         {
-            foreach(var actionName in validActionsList)
+            mouseOverList = true;
+         
+            // calculate list-based mouse position (aka. over which element vertically mouse currently hovers)
+
+            var yPosition = Mathf.Max(0.0f, evt.localMousePosition.y - instructionsContainer.contentContainer.resolvedStyle.paddingTop);
+
+            var currentPosition = 0.0f;
+            var buttonIndex = 0;
+
+            foreach (var bar in instructionBars)
             {
-                var instruction = RobotAction.CreateInstruction(actionName);
-                var button = new Button(() => AddInstruction(instruction));
-                button.text = actionName;
-                button.AddToClassList("button");
-                addInstructionList.Add(button);
+                var barStyle = bar.resolvedStyle;
+                var height = barStyle.marginTop + barStyle.marginBottom + barStyle.height;
+
+                if (yPosition >= currentPosition && yPosition < currentPosition + height)
+                {
+                    float innerFactor = (yPosition - currentPosition) / height;
+                    mouseListBasedPosition = buttonIndex + innerFactor;
+                    return;
+                }
+
+                currentPosition += height;
+                buttonIndex++;
             }
+
+            mouseListBasedPosition = buttonIndex;
         }
 
-        private void RecalculateButtonBasedMousePosition()
+        private void OnMouseLeaveList(MouseLeaveEvent evt)
         {
-            //var mouseInRect = RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            //    instructionsContainer, Input.mousePosition, canvasContainer.worldCamera, out var mousePosInRect
-            //);
-            //if (!mouseInRect) return;
-
-            //var yPosition = -mousePosInRect.y;
-
-            //if (yPosition < 0)
-            //{
-            //    buttonBasedMousePosition = 0;
-            //    return;
-            //}
-
-            //float currentPosition = -barsPadding * 0.5f;
-            //float buttonIndex = 0;
-            //foreach (RectTransform child in instructionsContainer)
-            //{
-            //    var height = barsPadding + child.sizeDelta.y;
-
-            //    if (yPosition >= currentPosition && yPosition < currentPosition + height)
-            //    {
-            //        float innerFactor = (yPosition - currentPosition) / height;
-            //        buttonBasedMousePosition = buttonIndex + innerFactor;
-            //        return;
-            //    }
-
-            //    currentPosition += height;
-            //    buttonIndex++;
-            //}
-
-            //buttonBasedMousePosition = buttonIndex;
-        }
-
-        private void UpdateBarsPosition()
-        {
-            float currentPosition = 0;
-            foreach (InstructionBar bar in instructionBars)
-            {
-                //var newPosition = Vector2.down * currentPosition;
-                //bar.Element.style.top = Vector2.Lerp(bar.Element.style.top.value, newPosition, barsPositionInterpolation * Time.unscaledDeltaTime);
-                //currentPosition += child.sizeDelta.y + barsPadding;
-            }
+            mouseOverList = false;
+            // keep the last list-based position so that grabbing doesn't do anything weird
         }
 
         private void UpdateBarsSelection()
@@ -188,122 +138,146 @@ namespace RecoDeli.Scripts.UI
             bool multipleSelection = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             bool rangeSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
-            //bool overClickZone = EventSystem.current.IsPointerOverGameObject(validClickArea.gameObject);
+            if (Input.GetMouseButtonDown(0) && mouseOverList)
+            {
+                InstructionBar clickedBar = instructionBars
+                    .Where(bar => bar.IsPointerHoveringOnHandle())
+                    .FirstOrDefault();
 
-            //if (Input.GetMouseButtonDown(0) && overClickZone)
-            //{
-            //    InstructionBar clickedBar = EnumerateBars()
-            //        .Where(bar => bar.IsPointerHoveringOnHandle())
-            //        .FirstOrDefault();
+                // unselect all when needed
+                if ((clickedBar == null || !clickedBar.Selected) && !multipleSelection && !rangeSelection)
+                {
+                    foreach (var bar in instructionBars)
+                    {
+                        bar.Selected = false;
+                    }
+                }
 
-            //    // unselect all when needed
-            //    if ((clickedBar == null || !clickedBar.Selected) && !multipleSelection && !rangeSelection)
-            //    {
-            //        foreach (InstructionBar bar in EnumerateBars())
-            //        {
-            //            bar.Selected = false;
-            //        }
-            //    }
+                // find out what to select
+                if (clickedBar != null)
+                {
+                    if (lastClickedInstructionBar == null || !lastClickedInstructionBar.Selected)
+                    {
+                        lastClickedInstructionBar = instructionBars.Where(bar => bar.Selected).FirstOrDefault();
+                    }
 
-            //    // find out what to select
-            //    if (clickedBar != null)
-            //    {
-            //        if (lastClickedInstructionBar == null || !lastClickedInstructionBar.Selected)
-            //        {
-            //            lastClickedInstructionBar = EnumerateBars().Where(bar => bar.Selected).FirstOrDefault();
-            //        }
+                    if (rangeSelection && lastClickedInstructionBar != null)
+                    {
+                        int startPos = instructionBars.IndexOf(lastClickedInstructionBar);
+                        int endPos = instructionBars.IndexOf(clickedBar);
+                        int step = startPos > endPos ? -1 : 1;
+                        for (int i = startPos; i != endPos; i += step)
+                        {
+                            if (i < 0 || i >= instructionBars.Count) break;
+                            instructionBars[i].Selected = true;
+                        }
+                    }
 
-            //        if (rangeSelection && lastClickedInstructionBar != null)
-            //        {
-            //            int startPos = lastClickedInstructionBar.transform.GetSiblingIndex();
-            //            int endPos = clickedBar.transform.GetSiblingIndex();
-            //            int step = startPos > endPos ? -1 : 1;
-            //            for (int i = startPos; i != endPos; i += step)
-            //            {
-            //                GetBar(i).Selected = true;
-            //            }
-            //        }
+                    if (multipleSelection || !clickedBar.Selected)
+                    {
+                        clickedBar.Selected = !clickedBar.Selected;
+                    }
 
-            //        if (multipleSelection || !clickedBar.Selected)
-            //        {
-            //            clickedBar.Selected = !clickedBar.Selected;
-            //        }
+                    lastClickedInstructionBar = clickedBar;
+                }
+                else
+                {
+                    lastClickedInstructionBar = null;
+                }
+            }
 
-            //        lastClickedInstructionBar = clickedBar;
-            //    }
-            //}
-
-            //// unselect other buttons
-            //if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection && overClickZone)
-            //{
-            //    foreach (InstructionBar bar in EnumerateBars())
-            //    {
-            //        if (bar != lastClickedInstructionBar) bar.Selected = false;
-            //    }
-            //}
+            // unselect other buttons
+            if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection && mouseOverList)
+            {
+                foreach (var bar in instructionBars)
+                {
+                    if (bar != lastClickedInstructionBar) bar.Selected = false;
+                }
+            }
 
         }
 
         private void HandleBarGrabbing()
         {
-            //bool overClickZone = EventSystem.current.IsPointerOverGameObject(validClickArea.gameObject);
+            if (Input.GetMouseButtonDown(0))
+            {
+                mouseHeldOnList = mouseOverList;
+            }
 
-            //if (Input.GetMouseButtonDown(0))
-            //{
-            //    clickedInClickZone = overClickZone;
-            //}
+            if (
+                Input.GetMouseButton(0) && !grabbing && mouseHeldOnList &&
+                lastClickedInstructionBar != null && lastClickedInstructionBar.Selected
+            )
+            {
+                if (!lastClickedInstructionBar.IsPointerHoveringOnHandle())
+                {
+                    var selectedBars = instructionBars.Where(bar => bar.Selected);
 
-            //if (Input.GetMouseButton(0) && lastClickedInstructionBar != null && !grabbing && clickedInClickZone)
-            //{
-            //    if (!lastClickedInstructionBar.IsPointerHoveringOnHandle())
-            //    {
-            //        var selectedBars = EnumerateBars().Where(bar => bar.Selected);
+                    if (selectedBars.Any())
+                    {
+                        grabbing = true;
+                        grabbedInstructions = selectedBars.ToList();
+                        StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+                    }
+                }
+            }
 
-            //        if (selectedBars.Any())
-            //        {
-            //            grabbing = true;
-            //            grabbedInstructions = selectedBars.ToList();
-            //            StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => bar.transform.GetSiblingIndex()).Average()));
-            //        }
-            //    }
-            //}
+            if (Input.GetMouseButtonUp(0) && grabbing)
+            {
+                grabbing = false;
+                grabbedInstructions.Clear();
+                mouseHeldOnList = false;
+            }
 
-            //if (Input.GetMouseButtonUp(0) && grabbing)
-            //{
-            //    grabbing = false;
-            //    grabbedInstructions.Clear();
-            //}
+            if (grabbing)
+            {
+                int newPos = Mathf.FloorToInt(mouseListBasedPosition);
+                int oldPos = instructionBars.IndexOf(lastClickedInstructionBar);
 
-            //if (grabbing)
-            //{
-            //    int newPos = Mathf.FloorToInt(buttonBasedMousePosition);
-            //    int oldPos = lastClickedInstructionBar.transform.GetSiblingIndex();
+                int minPos = newPos - grabbedInstructions.IndexOf(lastClickedInstructionBar);
+                int maxPos = minPos + grabbedInstructions.Count - 1;
 
-            //    int minPos = newPos - grabbedInstructions.IndexOf(lastClickedInstructionBar);
-            //    int maxPos = minPos + grabbedInstructions.Count - 1;
+                if (newPos != oldPos && minPos >= 0 && maxPos < instructionsContainer.childCount)
+                {
+                    // temporarily "remove" grabbed instructions so they can be moved
+                    foreach (var bar in grabbedInstructions)
+                    {
+                        instructionsContainer.Remove(bar);
+                        instructionBars.Remove(bar);
+                    }
 
-            //    if (newPos != oldPos && minPos >= 0 && maxPos < instructionsContainer.childCount)
-            //    {
-            //        // move all grabbed bars to the very end first so they don't get mixed up later
-            //        foreach (var bar in grabbedInstructions)
-            //        {
-            //            bar.transform.SetSiblingIndex(instructionsContainer.childCount - 1);
-            //        }
+                    int currPos = minPos;
 
-            //        int currPos = minPos;
+                    foreach (var bar in grabbedInstructions)
+                    {
+                        instructionsContainer.Insert(currPos, bar);
+                        instructionBars.Insert(currPos, bar);
+                        currPos++;
+                    }
+                }
 
-            //        foreach (var bar in grabbedInstructions)
-            //        {
-            //            bar.transform.SetSiblingIndex(currPos);
-            //            currPos++;
-            //        }
-            //    }
-            //}
+                // scroll list up or down if near the edge
+                var mousePosition = Input.mousePosition;
+                mousePosition.y = Screen.height - mousePosition.y;
+                var mouseLocalPosition = instructionsContainer.WorldToLocal(
+                    RuntimePanelUtils.ScreenToPanel(instructionsContainer.panel, mousePosition)
+                );
+
+                var halfListHeight = instructionsContainer.localBound.height * 0.5f;
+                var midDistance = mouseLocalPosition.y - halfListHeight;
+                var edgeSpeed = Math.Clamp((Math.Abs(midDistance) - (halfListHeight - focusZoneEdgesSize)), 0.0f, 1.0f);
+                edgeSpeed *= Math.Sign(midDistance) / focusZoneEdgesSize;
+
+                if(edgeSpeed != 0.0f)
+                {
+                    instructionsContainer.scrollOffset += Vector2.up * edgeSpeed * grabScrollMaxSpeed;
+                }
+            }
         }
 
-        private void UpdateButtons()
+        private void UpdateEditorButtonsState()
         {
-            if (addInstructionMenuActive || playingInstructions)
+            if (addInstructionMenu.Opened || playingInstructions)
             {
                 addButton.SetEnabled(false);
                 deleteButton.SetEnabled(false);
@@ -325,11 +299,11 @@ namespace RecoDeli.Scripts.UI
 
         private void HandleKeyboardShortcuts()
         {
-            if (!addInstructionMenuActive && !playingInstructions && !EventSystem.current.HasInputFieldSelected())
+            if (!addInstructionMenu.Opened && !playingInstructions && !EventSystem.current.HasInputFieldSelected())
             {
                 if (Input.GetKeyDown(KeyCode.A))
                 {
-                    foreach (var bar in instructionBars) bar.Selected = true;
+                    SetAllBarsSelected(true);
                 }
                 else if (Input.GetKeyDown(KeyCode.C))
                 {
@@ -350,18 +324,18 @@ namespace RecoDeli.Scripts.UI
 
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    foreach (var bar in instructionBars) bar.Selected = false;
+                    SetAllBarsSelected(false);
                 }
                 if (Input.GetKeyDown(KeyCode.Delete))
                 {
                     DeleteSelected();
                 }
             }
-            else if(addInstructionMenuActive)
+            else if(addInstructionMenu.Opened)
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    SetAddInstructionMenuActive(false);
+                    addInstructionMenu.Opened = false;
                 }
             }
         }
@@ -369,31 +343,34 @@ namespace RecoDeli.Scripts.UI
 
         private InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
         {
+            if (instruction == null)
+            {
+                return null;
+            }
+
             var bar = new InstructionBar();
 
-            //bar.transform.SetSiblingIndex(index);
-            //float buttonPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * index;
-            //bar.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -buttonPosition);
-
             bar.Selected = true;
-            bar.Instruction = (RobotInstruction)instruction.Clone();
+            bar.Instruction = instruction.Clone() as RobotInstruction;
 
-            instructionsContainer.Add(bar.Element);
-            instructionBars.Add(bar);
+            instructionsContainer.Insert(index, bar);
+            instructionBars.Insert(index, bar);
 
             return bar;
         }
 
         private void DeleteInstructionBar(InstructionBar bar)
         {
-            instructionsContainer.Remove(bar.Element);
+            instructionsContainer.Remove(bar);
             instructionBars.Remove(bar);
         }
 
-        private void DeleteInstructionBarAt(int index)
+        private void SetAllBarsSelected(bool selected)
         {
-            if (index < 0 || index >= instructionBars.Count) return;
-            DeleteInstructionBar(instructionBars[index]);
+            foreach(var bar in instructionBars)
+            {
+                bar.Selected = selected;
+            }
         }
 
         private void StoreUndoOperation(int focusPosition)
@@ -435,7 +412,7 @@ namespace RecoDeli.Scripts.UI
 
                 addIndex++;
             }
-            SetAddInstructionMenuActive(false);
+            addInstructionMenu.Opened = false;
         }
 
         public void DeleteSelected()
@@ -444,15 +421,7 @@ namespace RecoDeli.Scripts.UI
 
             if (selectedBars.Any())
             {
-                var barToSelectAfterwards = selectedBars.Select(bar => instructionBars.IndexOf(bar)).Min() - 1;
-                if (barToSelectAfterwards < 0)
-                {
-                    var nonSelectedBars = instructionBars.Where(bar => !bar.Selected);
-                    if (nonSelectedBars.Any())
-                    {
-                        barToSelectAfterwards = nonSelectedBars.Select(bar => instructionBars.IndexOf(bar)).Min();
-                    }
-                }
+                var barToSelectAfterwards = Math.Max(0, selectedBars.Select(bar => instructionBars.IndexOf(bar)).Min());
 
                 var focusIndex = selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average();
                 StoreUndoOperation(Mathf.RoundToInt((float)focusIndex));
@@ -462,8 +431,9 @@ namespace RecoDeli.Scripts.UI
                     DeleteInstructionBar(bar);
                 }
 
-                if (barToSelectAfterwards >= 0)
+                if (barToSelectAfterwards >= 0 && instructionBars.Count > 0)
                 {
+                    barToSelectAfterwards = Math.Min(barToSelectAfterwards, instructionBars.Count - 1);
                     instructionBars[barToSelectAfterwards].Selected = true;
                 }
             }
@@ -483,7 +453,7 @@ namespace RecoDeli.Scripts.UI
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });
 
-            foreach (var bar in instructionBars)
+            foreach (var bar in instructionBars.ToList())
             {
                 DeleteInstructionBar(bar);
             }
@@ -500,8 +470,7 @@ namespace RecoDeli.Scripts.UI
 
             grabbing = false;
 
-            //float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * focusPos;
-            //scrollingHandler.InterpolateToPosition(buttonFocusPosition);
+            FocusOnInstruction(focusPos);
         }
 
         public void Redo()
@@ -517,7 +486,7 @@ namespace RecoDeli.Scripts.UI
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });
 
-            foreach (var bar in instructionBars)
+            foreach (var bar in instructionBars.ToList())
             {
                 DeleteInstructionBar(bar);
             }
@@ -535,8 +504,7 @@ namespace RecoDeli.Scripts.UI
 
             grabbing = false;
 
-            //float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * focusPos;
-            //scrollingHandler.InterpolateToPosition(buttonFocusPosition);
+            FocusOnInstruction(focusPos);
         }
 
         public void CopySelected()
@@ -560,33 +528,39 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public void SetAddInstructionMenuActive(bool active)
+        public void FocusOnInstruction(int instructionIndex)
         {
-            instructionsContainer.EnableInClassList("disabled", active);
-            addInstructionMenu.EnableInClassList("disabled", !active);
+            if (instructionBars.Count == 0) return;
+            var bar = instructionBars[Math.Clamp(instructionIndex, 0, instructionBars.Count)];
 
-            addInstructionMenuActive = active;
-            if (active) addInstructionMenuWasActive = true;
+            // make instruction appear in the middle of the scrolling container
+            var barPos = bar.localBound.y;
+            var targetYScroll = barPos - instructionsContainer.localBound.height * 0.5f;
+            instructionsContainer.scrollOffset = Vector2.up * targetYScroll;
         }
 
         public void AddInstruction(RobotInstruction instruction) => AddInstructions(new List<RobotInstruction>(){ instruction });
 
         public void HighlightInstruction(int instructionIndex)
         {
+            if (instructionsContainer == null) return;
+
             if (instructionIndex == -1)
             {
-                //scrollingHandler.InterpolateToPosition(prePlayScrollPosition, true);
+                instructionsContainer.scrollOffset = Vector2.up * prePlayScrollPosition;
             }
             else
             {
-                //float buttonFocusPosition = (instructionBarPrefab.GetComponent<RectTransform>().sizeDelta.y + barsPadding) * instructionIndex;
-                //scrollingHandler.InterpolateToPosition(buttonFocusPosition);
+                FocusOnInstruction(instructionIndex);
             }
         }
 
         public void SetPlaybackState(bool state)
         {
             playingInstructions = state;
+
+            if (instructionsContainer == null) return;
+
             if (!state)
             {
                 foreach (var bar in instructionBars)
@@ -599,8 +573,8 @@ namespace RecoDeli.Scripts.UI
 
             if (state)
             {
-                SetAddInstructionMenuActive(false);
-                //prePlayScrollPosition = scrollingHandler.CurrentScrollPosition;
+                addInstructionMenu.Opened = false;
+                prePlayScrollPosition = instructionsContainer.scrollOffset.y;
                 foreach (var bar in instructionBars)
                 {
                     bar.Selected = false;
@@ -608,9 +582,9 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public List<RobotInstruction> GetRobotInstructionsList()
+        public RobotInstruction[] GetRobotInstructionsList()
         {
-            return instructionBars.Select(bar => bar.Instruction).ToList();
+            return instructionBars.Select(bar => bar.Instruction).ToArray();
         }
     }
 }

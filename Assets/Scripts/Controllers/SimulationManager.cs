@@ -1,16 +1,9 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
-using RecoDeli.Scripts.UI;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Unity.VisualScripting.Antlr3.Runtime;
 using UnityEngine;
 using UnityEngine.Assertions;
-using UnityEngine.Rendering;
-using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace RecoDeli.Scripts.Controllers
 {
@@ -57,7 +50,6 @@ namespace RecoDeli.Scripts.Controllers
         private void Awake()
         {
             Instance = this;
-
             if (simulationGroup && simulationGroup.gameObject.activeSelf)
             {
                 SetPhysicsSimulation(simulationGroup);
@@ -65,7 +57,7 @@ namespace RecoDeli.Scripts.Controllers
         }
         private void OnEnable()
         {
-
+            
         }
 
         private void OnDisable()

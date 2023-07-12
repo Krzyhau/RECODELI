@@ -27,11 +27,11 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public int CurrentInstructionIndex { get; private set; }
         public bool ExecutingInstructions { get; private set; }
         public RobotInstruction CurrentInstruction => 
-            (ExecutingInstructions && CurrentInstructionIndex >= 0 && CurrentInstructionIndex < CurrentInstructions.Count)
+            (ExecutingInstructions && CurrentInstructionIndex >= 0 && CurrentInstructionIndex < CurrentInstructions.Length)
             ? CurrentInstructions[CurrentInstructionIndex] 
             : null;
 
-        public List<RobotInstruction> CurrentInstructions { get; set; }
+        public RobotInstruction[] CurrentInstructions { get; set; }
 
         public BEPUutilities.Vector3 LinearAcceleration { get; set; }
         public BEPUutilities.Vector3 AngularAcceleration { get; set; }
@@ -55,7 +55,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             //Debug.Log(Rigidbody.Entity.Orientation.EulerAngles * (sfloat)Mathf.Rad2Deg); 
         }
 
-        public bool ExecuteCommands(List<RobotInstruction> commands)
+        public bool ExecuteCommands(RobotInstruction[] commands)
         {
             if (ExecutingInstructions) return false;
 
@@ -65,9 +65,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public bool ExecuteCommands()
         {
-            if (ExecutingInstructions || CurrentInstructions.Count < 0) return false;
+            if (ExecutingInstructions || CurrentInstructions.Length < 0) return false;
 
-            if (CurrentInstructions.Count != 0)
+            if (CurrentInstructions.Length != 0)
             {
                 ExecutingInstructions = true;
                 CurrentInstructionIndex = 0;

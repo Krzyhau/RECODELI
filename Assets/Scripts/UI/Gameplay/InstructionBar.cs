@@ -5,9 +5,11 @@ using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
 {
-    public class InstructionBar
+    public class InstructionBar : VisualElement
     {
-        private VisualElement barContainer;
+        public new class UxmlFactory : UxmlFactory<InstructionBar, UxmlTraits> { }
+        public new class UxmlTraits : VisualElement.UxmlTraits { }
+
         private VisualElement grabbingHandle;
         private Label label;
         private ProgressBar progressBar;
@@ -24,15 +26,15 @@ namespace RecoDeli.Scripts.UI
 
         public bool Selected
         {
-            get { return selected; }
+            get => selected;
             set {
                 selected = value;
-                barContainer.EnableInClassList("selected", selected);
+                EnableInClassList("selected", selected);
             }
         }
         public RobotInstruction Instruction
         {
-            get { return instruction; }
+            get => instruction;
             set
             {
                 instruction = value;
@@ -40,7 +42,6 @@ namespace RecoDeli.Scripts.UI
                 ConstructInputFields();
             }
         }
-        public VisualElement Element => barContainer;
 
         public InstructionBar()
         {
@@ -49,21 +50,20 @@ namespace RecoDeli.Scripts.UI
 
         private void ConstructBase()
         {
-            barContainer = new VisualElement();
-            barContainer.name = "instruction-bar";
-            barContainer.AddToClassList("instruction-bar");
+            this.name = "instruction-bar";
+            this.AddToClassList("instruction-bar");
 
             progressBar = new ProgressBar();
             progressBar.name = "progress";
             progressBar.lowValue = 0.0f;
             progressBar.highValue = 1.0f;
-            barContainer.Add(progressBar);
+            this.Add(progressBar);
 
             grabbingHandle = new VisualElement();
             grabbingHandle.name = "grabbing-handle";
             grabbingHandle.RegisterCallback<MouseEnterEvent>(e => { hoveringOverHandle = true;});
             grabbingHandle.RegisterCallback<MouseLeaveEvent>(e => { hoveringOverHandle = false;});
-            barContainer.Add(grabbingHandle);
+            this.Add(grabbingHandle);
 
             var handleCharacter = new Label();
             handleCharacter.name = "handle-character";
@@ -76,7 +76,7 @@ namespace RecoDeli.Scripts.UI
 
             textFieldsContainer = new VisualElement();
             textFieldsContainer.name = "parameters";
-            barContainer.Add(textFieldsContainer);
+            this.Add(textFieldsContainer);
         }
 
         private void ConstructInputFields()
@@ -121,21 +121,34 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public void UpdateProgressBar()
+        public void Update()
+        {
+            UpdateProgressBar();
+        }
+
+        private void UpdateProgressBar()
         {
             if (progressBar == null) return;
             
-            if(progressInterpStateTarget != instruction.Progress)
+            if(progressInterpStateTarget < instruction.Progress)
             {
                 progressInterpState = progressInterpStateTarget;
                 progressInterpStateTarget = instruction.Progress;
 
                 progressInterpCalcSpeed = (progressInterpStateTarget - progressInterpState) / Time.fixedDeltaTime;
             }
+            else if(progressInterpStateTarget > instruction.Progress)
+            {
+                progressInterpState = instruction.Progress;
+                progressInterpStateTarget = instruction.Progress;
+                progressInterpCalcSpeed = 0.0f;
+            }
 
-            progressInterpState = Mathf.MoveTowards(progressInterpState, progressInterpStateTarget, progressInterpCalcSpeed * Time.deltaTime);
-            progressBar.value = progressInterpState;
-            
+            progressBar.value = progressInterpState = Mathf.MoveTowards(
+                progressInterpState, 
+                progressInterpStateTarget, 
+                progressInterpCalcSpeed * Time.deltaTime
+            );
         }
 
         public bool IsPointerHoveringOnHandle()

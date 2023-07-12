@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
@@ -42,7 +43,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public static RobotInstruction CreateInstruction(string name, string[] parameters)
         {
             var instruction = GetByName(name).CreateInstruction();
-            for(int i=0; i < Math.Min(parameters.Length, instruction.Action.InputParametersCount); i++){
+            for(int i=0; i < Mathf.Min(parameters.Length, instruction.Action.InputParametersCount); i++){
                 instruction.SetInputParameterFromString(i, parameters[i]);
             }
             return instruction;

@@ -26,9 +26,13 @@ TextField {
 .full-text-label {
 }
 
+.unity-disabled {
+    opacity: 1;
+}
+
 Button {
     color: rgb(255, 255, 255);
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.95);
     border-left-color: rgb(255, 255, 255);
     border-right-color: rgb(255, 255, 255);
     border-top-color: rgb(255, 255, 255);
@@ -52,6 +56,15 @@ Button:hover {
 
 Button:active {
     background-color: rgba(26, 26, 26, 0.7);
+}
+
+Button.unity-disabled {
+    border-left-color: rgb(128, 128, 128);
+    border-right-color: rgb(128, 128, 128);
+    border-top-color: rgb(128, 128, 128);
+    border-bottom-color: rgb(128, 128, 128);
+    color: rgb(128, 128, 128);
+    background-color: rgba(0, 0, 0, 0.7);
 }
 
 Slider #unity-tracker {
@@ -87,10 +100,6 @@ Slider #unity-dragger {
     width: 25px;
 }
 
-#instruction-editor > .disabled {
-    display: none;
-}
-
 #drone-view-window {
     margin-right: 10px;
     flex-grow: 1;
@@ -115,7 +124,7 @@ Slider #unity-dragger {
     border-right-width: 2px;
     border-top-width: 2px;
     border-bottom-width: 2px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.95);
     height: 40px;
     -unity-text-align: middle-center;
     padding-left: 20px;
@@ -181,25 +190,83 @@ Slider #unity-dragger {
     border-right-width: 2px;
     border-top-width: 2px;
     border-bottom-width: 2px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.9);
     flex-grow: 1;
 }
 
+#instruction-editor.adding-instruction #instructions {
+    display: none;
+}
+
 #no-instructions-label {
-    -unity-text-align: upper-center;
+    -unity-text-align: middle-center;
     color: rgba(255, 255, 255, 0.5);
     display: none;
+    position: absolute;
+    width: 100%;
+    height: 60px;
 }
 
 .no-instructions #no-instructions-label {
     display: flex;
 }
 
+#instruction-editor.adding-instruction #no-instructions-label {
+    display: none;
+}
+
 #instructions #unity-content-container {
     padding-left: 15px;
     padding-right: 15px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    min-height: 100%;
+    transition-property: translate;
+    transition-timing-function: linear;
+    transition-duration: 0.1s;
+}
+
+#add-instruction-menu {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    flex-shrink: 1;
+    flex-grow: 1;
+    display: none;
+}
+
+#instruction-editor.adding-instruction #add-instruction-menu {
+    display: flex;
+}
+
+#add-instruction-label {
+    -unity-text-align: upper-center;
+}
+
+#add-instruction-list {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    flex-grow: 1;
+    width: 100%;
+}
+
+#add-instruction-list > Button {
+    width: 180px;
+    margin-bottom: 10px;
+    justify-content: flex-start;
+    display: flex;
+    flex-grow: 0;
 }
 
 #editor-buttons {
@@ -236,69 +303,6 @@ Slider #unity-dragger {
     margin-right: 10px;
 }
 
-#playback-controls {
-    flex-shrink: 0;
-}
-
-#playback-buttons {
-    flex-direction: row;
-}
-
-#playback-buttons > * {
-    flex-shrink: 2;
-    flex-grow: 1;
-    width: 33%;
-}
-
-#playback-info {
-    position: absolute;
-    width: 200px;
-    left: -230px;
-}
-
-#playback-info > * {
-    flex-direction: row;
-    justify-content: space-between;
-}
-
-#add-instruction-menu {
-    background-color: rgba(0, 0, 0, 0.77);
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    flex-shrink: 1;
-    flex-grow: 1;
-}
-
-#add-instruction-label {
-    -unity-text-align: upper-center;
-}
-
-#add-instruction-list {
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    flex-grow: 0;
-    width: 100%;
-}
-
-#add-instruction-list > Button {
-    width: 185px;
-    margin-bottom: 10px;
-    justify-content: flex-start;
-    display: flex;
-    flex-grow: 0;
-}
-
 .instruction-bar {
     flex-direction: row;
     height: 45px;
@@ -315,7 +319,11 @@ Slider #unity-dragger {
     border-bottom-width: 2px;
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(255, 255, 255);
-    margin-bottom: 10px;
+    margin-bottom: 5px;
+    margin-top: 5px;
+    transition-property: translate;
+    transition-duration: 0.5s;
+    transition-timing-function: ease-out;
 }
 
 .instruction-bar > #progress {
@@ -373,7 +381,7 @@ Slider #unity-dragger {
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    background-color: rgba(255, 255, 255, 0.5);
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .instruction-bar > #progress Label {
@@ -383,6 +391,10 @@ Slider #unity-dragger {
 .instruction-bar > #grabbing-handle {
     width: 50%;
     flex-direction: row;
+}
+
+.instruction-bar.selected > #grabbing-handle {
+    background-color: rgba(255, 255, 255, 0.15);
 }
 
 .instruction-bar #handle-character {
@@ -431,6 +443,104 @@ Slider #unity-dragger {
     background-color: rgba(0, 0, 0, 0);
 }
 
+#playback-controls {
+    flex-shrink: 0;
+}
+
+#playback-buttons {
+    flex-direction: row-reverse;
+}
+
+#playback-buttons > * {
+    flex-shrink: 2;
+    flex-grow: 1;
+    width: 33%;
+}
+
+#playback-info {
+    position: absolute;
+    left: 150px;
+    right: 150px;
+}
+
+#playback-info > * {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#instruction-count-container {
+    display: none;
+}
+
+#time-label {
+    display: none;
+}
+
+#time-container {
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.9);
+    -unity-text-align: upper-center;
+    flex-direction: row;
+    justify-content: center;
+    border-left-color: rgb(128, 128, 128);
+    border-right-color: rgb(128, 128, 128);
+    border-top-color: rgb(128, 128, 128);
+    border-bottom-color: rgb(128, 128, 128);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    height: 100%;
+    display: none;
+}
+
+.playing #time-container {
+    display: flex;
+}
+
+#restart-button {
+    display: none;
+    margin-left: 60px;
+}
+
+#pause-button {
+    display: none;
+    margin-right: 60px;
+}
+
+.playing #restart-button {
+    display: flex;
+}
+
+.playing #pause-button {
+    display: flex;
+}
+
+.playing #play-button {
+    display: none;
+}
+
+.paused #play-button {
+    display: flex;
+    margin-right: 60px;
+}
+
+.paused #pause-button {
+    display: none;
+}
+
+#play-button #alt-text-label {
+    display: none;
+}
+
+.paused #play-button #alt-text-label {
+    display: flex;
+}
+
+.paused #play-button #full-text-label {
+    display: none;
+}
+
 #timescale-slider {
     border-left-color: rgb(128, 128, 128);
     border-right-color: rgb(128, 128, 128);
@@ -440,7 +550,7 @@ Slider #unity-dragger {
     border-right-width: 2px;
     border-top-width: 2px;
     border-bottom-width: 2px;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: rgba(0, 0, 0, 0.9);
     height: 40px;
     flex-direction: row;
     margin-left: 0;

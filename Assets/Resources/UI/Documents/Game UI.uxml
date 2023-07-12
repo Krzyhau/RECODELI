@@ -4,7 +4,7 @@
         <ui:VisualElement name="drone-view-window" picking-mode="Ignore" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
                 <ui:VisualElement name="drone-view-icon" class="title-icon" />
-                <ui:Label tabindex="-1" text="Live Drone View" display-tooltip-when-elided="true" name="drone-view-label" class="title text" />
+                <ui:Label tabindex="-1" text="LIVE DRONE VIEW" display-tooltip-when-elided="true" name="drone-view-label" class="title text" />
                 <ui:VisualElement name="camera-control-buttons" class="title-control-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="focus-on-drone-button" class="button">
                         <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
@@ -21,7 +21,7 @@
         <ui:VisualElement name="instruction-editor-window" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
                 <ui:VisualElement name="instruction-editor-icon" class="title-icon" />
-                <ui:Label tabindex="-1" text="Instruction Editor" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" />
+                <ui:Label tabindex="-1" text="INSTRUCTION EDITOR" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" />
                 <ui:VisualElement name="menu-buttons" class="title-control-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="menu-button" class="button">
                         <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
@@ -38,9 +38,8 @@
                         <ui:Label tabindex="-1" text="CANCEL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>
                 </ui:VisualElement>
-                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="0">
-                    <ui:Label tabindex="-1" text="NO INSTRUCTIONS" display-tooltip-when-elided="true" name="no-instructions-label" />
-                </ui:ScrollView>
+                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="1000" style="background-color: rgba(0, 0, 0, 0.95);" />
+                <ui:Label tabindex="-1" text="NO INSTRUCTIONS" display-tooltip-when-elided="true" name="no-instructions-label" />
                 <ui:VisualElement name="editor-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="add-button" class="button">
                         <ui:Label tabindex="-1" text="+" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
@@ -75,7 +74,8 @@
                         </ui:Button>
                         <ui:Button display-tooltip-when-elided="true" name="play-button" class="button">
                             <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
-                            <ui:Label tabindex="-1" text="PLAY" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                            <ui:Label tabindex="-1" text="RUN INSTRUCTIONS" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                            <ui:Label tabindex="-1" text="RESUME" display-tooltip-when-elided="true" name="alt-text-label" class="full-text-label" />
                         </ui:Button>
                         <ui:Button display-tooltip-when-elided="true" name="pause-button" class="button">
                             <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
@@ -84,11 +84,11 @@
                     </ui:VisualElement>
                     <ui:VisualElement name="playback-info">
                         <ui:VisualElement name="time-container">
-                            <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="time-label" class="text" />
+                            <ui:Label tabindex="-1" text="Time" display-tooltip-when-elided="true" name="time-label" class="text label" />
                             <ui:Label tabindex="-1" text="0.000" display-tooltip-when-elided="true" name="time-text" class="text value" />
                         </ui:VisualElement>
                         <ui:VisualElement name="instruction-count-container">
-                            <ui:Label tabindex="-1" text="Instructions" display-tooltip-when-elided="true" name="instructions-label" class="text" />
+                            <ui:Label tabindex="-1" text="Instructions" display-tooltip-when-elided="true" name="instructions-label" class="text label" />
                             <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="instructions-text" class="text value" />
                         </ui:VisualElement>
                     </ui:VisualElement>
