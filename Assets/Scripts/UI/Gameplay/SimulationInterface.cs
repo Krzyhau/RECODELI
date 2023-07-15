@@ -11,6 +11,7 @@ namespace RecoDeli.Scripts
         [SerializeField] private SimulationManager simulationManager;
         [SerializeField] private InstructionEditor instructionEditor;
         [SerializeField] private TimescaleBar timescaleBar;
+        [SerializeField] private EndingInterface endingInterface;
 
         [Header("Settings")]
         [SerializeField] private string timerFormat = "0.000";
@@ -28,16 +29,24 @@ namespace RecoDeli.Scripts
         private Button focusOnGoalButton;
 
         private Button menuButton;
+
+        private float cachedInstructionEditorWidth;
+
         public float InstructionEditorWidth => CalculateInstructionEditorWidth();
 
         public UIDocument Document => interfaceDocument;
         public InstructionEditor InstructionEditor => instructionEditor;
-
         public TimescaleBar TimescaleBar => timescaleBar;
+        public SimulationManager SimulationManager => simulationManager;
 
 
         private void OnEnable()
         {
+            // for clarity in editor, some UI elements could be disabled
+            // so reenable them here
+            instructionEditor.gameObject.SetActive(true);
+            endingInterface.gameObject.SetActive(true);
+
             timescaleSlider = Document.rootVisualElement.Q<Slider>("timescale-slider");
             instructionEditorContainer = Document.rootVisualElement.Q<VisualElement>("instruction-editor-window");
 
@@ -57,6 +66,8 @@ namespace RecoDeli.Scripts
 
             SetupPlaybackButtons();
             SetupMiscellaneousButtons();
+
+            ShowEndingInterface(false);
         }
 
         private void SetupPlaybackButtons()
@@ -78,7 +89,7 @@ namespace RecoDeli.Scripts
         {
             UpdateTimer();
             UpdateInstructions();
-            UpdateInterfaceClasses();
+            UpdateGameInterfaceClasses();
         }
 
         private void UpdateTimer()
@@ -100,7 +111,7 @@ namespace RecoDeli.Scripts
             instructionsLabel.text = "0";
         }
 
-        private void UpdateInterfaceClasses()
+        private void UpdateGameInterfaceClasses()
         {
             var rootElement = interfaceDocument.rootVisualElement;
 
@@ -111,11 +122,24 @@ namespace RecoDeli.Scripts
 
         private float CalculateInstructionEditorWidth()
         {
-            if (instructionEditorContainer == null) return 0;
+            if (instructionEditorContainer == null || instructionEditorContainer.worldBound.width == 0.0f)
+            {
+                return cachedInstructionEditorWidth;
+            }
             float result = instructionEditorContainer.worldBound.width;
-            if (float.IsNaN(result)) return 0.0f;
+            if (float.IsNaN(result))
+            {
+                return cachedInstructionEditorWidth;
+            }
             var scale = RuntimePanelUtils.ScreenToPanel(instructionEditorContainer.panel, Vector2.up).y;
-            return result / scale;
+            cachedInstructionEditorWidth = result / scale;
+            return cachedInstructionEditorWidth;
+        }
+
+        public void ShowEndingInterface(bool show)
+        {
+            endingInterface.ShowInterface(show);
+            interfaceDocument.rootVisualElement.SetEnabled(!show);
         }
     }
 }

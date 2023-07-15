@@ -13,6 +13,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
     public class RobotController : MonoBehaviour, IBepuEntityListener
     {
         [SerializeField] private RobotThrusterController thrusterController;
+        [SerializeField] private Animator modelAnimator;
 
         [Header("Properties")]
         [SerializeField] private float rotationSpeed;
@@ -44,6 +45,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public BepuRigidbody Rigidbody { get; private set; }
         public GoalBox ReachedGoalBox { get; set; }
+        public Animator ModelAnimator => modelAnimator;
 
         private void Awake()
         {

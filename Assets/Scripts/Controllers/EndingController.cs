@@ -1,10 +1,6 @@
 using BEPUphysics.Unity;
-using RecoDeli.Scripts.Gameplay;
-using RecoDeli.Scripts.Gameplay.Robot;
-using System.Collections;
-using System.Collections.Generic;
+using RecoDeli.Scripts.UI;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace RecoDeli.Scripts.Controllers
 {
@@ -12,82 +8,84 @@ namespace RecoDeli.Scripts.Controllers
     {
         [SerializeField] private SimulationManager simulationManager;
 
+        [SerializeField] private Vector3 packageOffset;
+        [SerializeField] private Vector3 endingCameraOffset;
+        [SerializeField] private Vector3 endingCameraEulerAngles;
         [SerializeField] private float animationLength;
         [SerializeField] private AnimationCurve animationCurve;
-        [SerializeField] private AnimationCurve hudBlinkingCurve;
-
-        private RobotController robot;
-        private GoalBox goalBox;
 
         private Vector3 robotStartPosition;
         private Quaternion robotStartRotation;
-        private Quaternion goalBoxStartRotation;
-
-        private Vector3 startCameraPosition;
-        private Quaternion startCameraRotation;
+        private Vector3 goalBoxStartLocalPosition;
+        private Quaternion goalBoxStartLocalRotation;
+        private Vector3 cameraStartPosition;
+        private Quaternion cameraStartRotation;
 
         private Vector3 robotTargetPosition;
         private Quaternion robotTargetRotation;
-        private Quaternion goalBoxTargetRotation;
-
-        private Vector3 desiredCameraPosition;
-        private Quaternion desiredCameraRotation;
+        private Vector3 goalBoxTargetLocalPosition;
+        private Quaternion goalBoxTargetLocalRotation;
+        private Vector3 cameraTargetPosition;
+        private Quaternion cameraTargetRotation;
 
         private bool started = false;
-        private float animationState = 0.0f;
+        private bool finalizing = false;
+        private float animationFirstPhaseState = 0.0f;
 
-        public bool IsAnimating => started && animationState < 1.0f;
         public bool EndingInProgress => started;
+        public bool IsAnimating => EndingInProgress && animationFirstPhaseState < 1.0f;
+
+        public SimulationManager SimulationManager => simulationManager;
 
         private void Update()
         {
-            if (!EndingInProgress) return;
-
-            if (animationState >= 1.0f) return;
-
-            animationState += Time.unscaledDeltaTime / animationLength;
-
-            if (animationState >= 1.0f)
-            {
-                animationState = 1.0f;
-            }
-
-            var t = animationCurve.Evaluate(animationState);
-
-            robot.transform.position = Vector3.Lerp(robotStartPosition, robotTargetPosition, t);
-            robot.transform.rotation = Quaternion.Lerp(robotStartRotation, robotTargetRotation, t);
-            goalBox.transform.rotation = Quaternion.Lerp(goalBoxStartRotation, goalBoxTargetRotation, t);
-
-            simulationManager.DroneCamera.transform.position = Vector3.Lerp(startCameraPosition, desiredCameraPosition, t);
-            simulationManager.DroneCamera.transform.rotation = Quaternion.Lerp(startCameraRotation, desiredCameraRotation, t);
-
-            // simulationManager.UserInterface.GameplayInterface.alpha = 1.0f - hudBlinkingCurve.Evaluate(animationState);
-
-            if (animationState >= 1.0f)
-            {
-                // simulationManager.UserInterface.GameplayInterface.alpha = 0.0f;
-                // simulationManager.UserInterface.EndingInterface.gameObject.SetActive(true);
-            }
+            AnimateFirstPhase();
         }
 
-        public void StartEnding(RobotController robot, GoalBox goalBox)
+        private void AnimateFirstPhase()
         {
-            this.robot = robot;
-            this.goalBox = goalBox;
+            if (!IsAnimating) return;
+
+            animationFirstPhaseState += Time.unscaledDeltaTime / animationLength;
+
+            if (animationFirstPhaseState >= 1.0f)
+            {
+                animationFirstPhaseState = 1.0f;
+            }
+
+            var t = animationCurve.Evaluate(animationFirstPhaseState);
+
+            simulationManager.RobotController.transform.position = Vector3.Lerp(robotStartPosition, robotTargetPosition, t);
+            simulationManager.RobotController.transform.rotation = Quaternion.Lerp(robotStartRotation, robotTargetRotation, t);
+            simulationManager.GoalBox.transform.localPosition = Vector3.Lerp(goalBoxStartLocalPosition, goalBoxTargetLocalPosition, t);
+            simulationManager.GoalBox.transform.localRotation = Quaternion.Lerp(goalBoxStartLocalRotation, goalBoxTargetLocalRotation, t);
+
+            simulationManager.DroneCamera.transform.position = Vector3.Lerp(cameraStartPosition, cameraTargetPosition, t);
+            simulationManager.DroneCamera.transform.rotation = Quaternion.Lerp(cameraStartRotation, cameraTargetRotation, t);
+        }
+
+        public void StartEnding()
+        {
+            var robot = simulationManager.RobotController;
+            var goalBox = simulationManager.GoalBox;
+
+            goalBox.transform.parent = robot.ModelAnimator.transform;
 
             robotStartPosition = robot.transform.position;
             robotStartRotation = robot.transform.rotation;
-            goalBoxStartRotation = goalBox.transform.rotation;
+            goalBoxStartLocalPosition = goalBox.transform.localPosition;
+            goalBoxStartLocalRotation = goalBox.transform.localRotation;
 
-            robotTargetPosition = goalBox.transform.position + Vector3.up * 3f;
+            robotTargetPosition = goalBox.transform.position - packageOffset;
             robotTargetRotation = Quaternion.Euler(0, 180, 0);
-            goalBoxTargetRotation = Quaternion.identity;
+            goalBoxTargetLocalPosition = packageOffset;
+            goalBoxTargetLocalRotation = Quaternion.identity;
 
-            startCameraPosition = simulationManager.DroneCamera.transform.position;
-            startCameraRotation = simulationManager.DroneCamera.transform.rotation;
+            cameraStartPosition = simulationManager.DroneCamera.transform.position;
+            cameraStartRotation = simulationManager.DroneCamera.transform.rotation;
 
-            desiredCameraPosition = robotTargetPosition + new Vector3(0, 3, -10);
-            desiredCameraRotation = Quaternion.Euler(30, 0, 0);
+            cameraTargetPosition = robotTargetPosition + endingCameraOffset;
+            cameraTargetRotation = Quaternion.Euler(endingCameraEulerAngles);
 
             robot.StopExecution();
             robot.Rigidbody.Kinematic = true;
@@ -102,27 +100,36 @@ namespace RecoDeli.Scripts.Controllers
 
             robot.enabled = false;
 
-            // simulationManager.UserInterface.GameplayInterface.interactable = false;
+            simulationManager.Interface.ShowEndingInterface(true);
 
-            animationState = 0.0f;
+            animationFirstPhaseState = 0.0f;
             started = true;
         }
 
         public void RevertEnding()
         {
-            if (!started) return;
+            if (!EndingInProgress) return;
 
-            simulationManager.DroneCamera.transform.position = startCameraPosition;
-            simulationManager.DroneCamera.transform.rotation = startCameraRotation;
+            // just have to reset the camera
+            // all game entities will be reset with the simulation
 
-            // don't have to reset robot and goalbox because that's part of the simulation
-
-            // simulationManager.UserInterface.GameplayInterface.interactable = true;
-            // simulationManager.UserInterface.GameplayInterface.alpha = 1.0f;
+            simulationManager.DroneCamera.transform.position = cameraStartPosition;
+            simulationManager.DroneCamera.transform.rotation = cameraStartRotation;
 
             simulationManager.DroneCamera.enabled = true;
+
+            simulationManager.Interface.ShowEndingInterface(false);
+
+
             started = false;
-            animationState = 0.0f;
+            animationFirstPhaseState = 0.0f;
+        }
+
+        public void FinalizeEnding()
+        {
+            finalizing = true;
+
+            // TODO: robot animation and back to map list
         }
     }
 }

@@ -103,7 +103,7 @@ namespace RecoDeli.Scripts.Controllers
         private void SimulationSuccessful()
         {
             LastCompletionTime = SimulationTime;
-            endingController.StartEnding(RobotController, RobotController.ReachedGoalBox);
+            endingController.StartEnding();
 
             paused = false;
             Time.timeScale = 1.0f;

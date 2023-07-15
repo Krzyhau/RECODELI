@@ -69,7 +69,7 @@ Transform:
   m_Children:
   - {fileID: 4934729488299878775}
   m_Father: {fileID: 0}
-  m_RootOrder: -1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &-1318549932277984436
 MonoBehaviour:
@@ -146,6 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   thrusterController: {fileID: 7270585792316866489}
+  modelAnimator: {fileID: 6261297769857955075}
   rotationSpeed: 180
   propulsionForce: 10
   propulsionRotationDrag: 1

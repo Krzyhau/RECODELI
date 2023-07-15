@@ -1,4 +1,17 @@
-#main-container {
+:root {
+    width: 100%;
+    height: 100%;
+}
+
+.unity-ui-document__root {
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.main-container {
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 10px;
@@ -9,10 +22,20 @@
     flex-direction: row;
     flex-grow: 1;
     color: rgb(255, 255, 255);
+    position: absolute;
+    left: 0;
+    top: 0;
+    right: 0;
+    bottom: 0;
 }
 
 TextField {
     --unity-cursor-color: rgb(180, 180, 180);
+}
+
+Label {
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .title-icon {
@@ -48,6 +71,7 @@ Button {
     height: 40px;
     flex-direction: row;
     justify-content: center;
+    -unity-text-align: middle-center;
 }
 
 Button:hover {
@@ -81,41 +105,43 @@ Slider #unity-tracker {
     top: 0;
 }
 
+Slider #unity-drag-container {
+    background-color: rgb(128, 128, 128);
+    flex-grow: 1;
+}
+
 Slider #unity-dragger {
+    width: 20px;
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    height: 100%;
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
     top: 0;
-    bottom: 0;
-    height: 100%;
     border-left-width: 0;
     border-right-width: 0;
     border-top-width: 0;
     border-bottom-width: 0;
-    width: 25px;
 }
 
-#drone-view-window {
+.window#drone-view-window {
     margin-right: 10px;
     flex-grow: 1;
 }
 
-.title-bar Button {
-    margin-left: 10px;
-    width: 50px;
-}
-
-.title-bar {
+.window .title-bar {
     margin-bottom: 10px;
     flex-direction: row;
 }
 
-.title {
+.window .title-bar Button {
+    margin-left: 10px;
+    width: 50px;
+}
+
+.window .title {
     border-left-color: rgb(128, 128, 128);
     border-right-color: rgb(128, 128, 128);
     border-top-color: rgb(128, 128, 128);
@@ -128,7 +154,6 @@ Slider #unity-dragger {
     height: 40px;
     -unity-text-align: middle-center;
     padding-left: 20px;
-    padding-top: 5px;
     padding-right: 20px;
     margin-left: 0;
     margin-right: 0;
@@ -136,13 +161,13 @@ Slider #unity-dragger {
     margin-bottom: 0;
 }
 
-.title-control-buttons {
+.window .title-control-buttons {
     flex-grow: 1;
     justify-content: flex-end;
     flex-direction: row;
 }
 
-.title-control-buttons > * > #icon-label {
+.window .title-control-buttons > * > #icon-label {
     -unity-text-align: middle-center;
     width: 100%;
     height: 100%;
@@ -156,8 +181,21 @@ Slider #unity-dragger {
     padding-bottom: 0;
 }
 
-.title-control-buttons > * > #full-text-label {
+.window .title-control-buttons > * > #full-text-label {
     display: none;
+}
+
+.window .window-inner {
+    background-color: rgba(0, 0, 0, 0.95);
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    flex-grow: 1;
 }
 
 #drone-view {
@@ -170,15 +208,23 @@ Slider #unity-dragger {
     border-top-width: 2px;
     border-bottom-width: 2px;
     flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
 }
 
 #instruction-editor-window {
     max-width: 400px;
     flex-shrink: 0;
+    flex-grow: 0;
+    min-width: 400px;
 }
 
 #instruction-editor {
     flex-grow: 1;
+    background-color: rgba(0, 0, 0, 0);
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
 }
 
 #instructions {
@@ -267,6 +313,7 @@ Slider #unity-dragger {
     justify-content: flex-start;
     display: flex;
     flex-grow: 0;
+    -unity-text-align: middle-center;
 }
 
 #editor-buttons {
@@ -280,6 +327,7 @@ Slider #unity-dragger {
     flex-direction: row;
     justify-content: center;
     flex-shrink: 2;
+    flex-grow: 1;
 }
 
 #editor-buttons > * > #full-text-label {
@@ -461,6 +509,12 @@ Slider #unity-dragger {
     position: absolute;
     left: 150px;
     right: 150px;
+    height: 40px;
+    display: none;
+}
+
+.playing #playback-info {
+    display: flex;
 }
 
 #playback-info > * {
@@ -474,6 +528,11 @@ Slider #unity-dragger {
 
 #time-label {
     display: none;
+    -unity-text-align: middle-left;
+}
+
+#time-text {
+    -unity-text-align: middle-left;
 }
 
 #time-container {
@@ -498,46 +557,46 @@ Slider #unity-dragger {
     display: flex;
 }
 
-#restart-button {
+#playback-buttons #restart-button {
     display: none;
     margin-left: 60px;
 }
 
-#pause-button {
+#playback-buttons #pause-button {
     display: none;
     margin-right: 60px;
 }
 
-.playing #restart-button {
+.playing #playback-buttons #restart-button {
     display: flex;
 }
 
-.playing #pause-button {
+.playing #playback-buttons #pause-button {
     display: flex;
 }
 
-.playing #play-button {
+.playing #playback-buttons #play-button {
     display: none;
 }
 
-.paused #play-button {
+.paused #playback-buttons #play-button {
     display: flex;
     margin-right: 60px;
 }
 
-.paused #pause-button {
+.paused #playback-buttons #pause-button {
     display: none;
 }
 
-#play-button #alt-text-label {
+#playback-buttons #play-button #alt-text-label {
     display: none;
 }
 
-.paused #play-button #alt-text-label {
+.paused #playback-buttons #play-button #alt-text-label {
     display: flex;
 }
 
-.paused #play-button #full-text-label {
+.paused #playback-buttons #play-button #full-text-label {
     display: none;
 }
 
@@ -578,10 +637,148 @@ Slider #unity-dragger {
     min-width: 0;
 }
 
+#timescale-slider:focus Label {
+    color: rgb(255, 255, 255);
+}
+
 #timescale-slider > .unity-slider__input {
     margin-right: 10px;
     margin-top: 7px;
     margin-bottom: 5px;
     height: 20px;
     min-height: 0;
+    flex-grow: 1;
+}
+
+#ending-header {
+    flex-grow: 0;
+    -unity-text-align: upper-center;
+    font-size: 40px;
+    -unity-font-style: bold;
+    background-color: rgba(0, 0, 0, 0.95);
+    border-left-color: rgb(128, 128, 128);
+    border-right-color: rgb(128, 128, 128);
+    border-top-color: rgb(128, 128, 128);
+    border-bottom-color: rgb(128, 128, 128);
+    border-left-width: 2px;
+    border-right-width: 2px;
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    width: auto;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: auto;
+    padding-left: 60px;
+    padding-right: 60px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#ending-stats {
+    max-width: 400px;
+    flex-grow: 1;
+    min-width: 400px;
+    margin-top: 40px;
+}
+
+#ending-stats .window {
+}
+
+#leaderboards-window {
+    flex-grow: 1;
+}
+
+#leaderboards-window .window-inner {
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.tab-view .tab-view-tabs {
+    flex-direction: row;
+}
+
+.tab-view .tab-view-tabs Button {
+    flex-grow: 1;
+}
+
+.tab-view .tab-view-tabs Button.selected {
+    border-bottom-width: 0;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+}
+
+.tab-view .tab-view-tabs Button:hover.selected {
+    border-bottom-color: rgb(0, 0, 0);
+    background-color: rgba(0, 0, 0, 0.95);
+}
+
+.tab-view .tab-view-views {
+    background-color: rgba(0, 0, 0, 0.95);
+    flex-grow: 1;
+}
+
+.tab-view {
+    flex-grow: 1;
+}
+
+#ending-menu-buttons {
+    flex-direction: row;
+    margin-top: 10px;
+    justify-content: space-between;
+}
+
+#ending-menu-buttons Button {
+    flex-grow: 0;
+    width: 190px;
+}
+
+#stats-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+#stats-container > * {
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+#stats-container .stats-text {
+    -unity-font-style: bold;
+}
+
+.finished.unity-disabled #gameplay-container {
+    opacity: 0.5;
+    display: none;
+    transition-property: opacity, display;
+    transition-duration: 0s, 0s;
+    transition-timing-function: linear, linear;
+    transition-delay: 0.2s, 0.5s;
+}
+
+#ending-container {
+    display: flex;
+    transition-property: display;
+    transition-delay: 1s;
+    transition-timing-function: linear;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.unity-disabled #ending-container {
+    display: none;
+    transition-property: display;
+    transition-timing-function: linear;
+    transition-delay: 0s;
 }
