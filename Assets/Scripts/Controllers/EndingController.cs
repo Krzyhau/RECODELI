@@ -99,6 +99,7 @@ namespace RecoDeli.Scripts.Controllers
             simulationManager.DroneCamera.enabled = false;
 
             robot.enabled = false;
+            robot.ModelAnimator.SetTrigger("Celebrate");
 
             simulationManager.Interface.ShowEndingInterface(true);
 

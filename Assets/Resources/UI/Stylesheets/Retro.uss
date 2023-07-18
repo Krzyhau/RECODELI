@@ -650,6 +650,19 @@ Slider #unity-dragger {
     flex-grow: 1;
 }
 
+#ending-container {
+    display: flex;
+    transition-property: display;
+    transition-delay: 1s;
+    transition-timing-function: linear;
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    flex-direction: row;
+    align-items: flex-end;
+}
+
 #ending-header {
     flex-grow: 0;
     -unity-text-align: upper-center;
@@ -672,13 +685,17 @@ Slider #unity-dragger {
     padding-right: 60px;
     padding-top: 10px;
     padding-bottom: 10px;
+    margin-top: 0;
 }
 
 #ending-stats {
     max-width: 400px;
     flex-grow: 1;
     min-width: 400px;
-    margin-top: 40px;
+    margin-top: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-bottom: 0;
 }
 
 #ending-stats .window {
@@ -700,11 +717,7 @@ Slider #unity-dragger {
     flex-direction: row;
 }
 
-.tab-view .tab-view-tabs Button {
-    flex-grow: 1;
-}
-
-.tab-view .tab-view-tabs Button.selected {
+.tab-view .tab-view-tabs Button.unity-disabled {
     border-bottom-width: 0;
     border-left-color: rgb(255, 255, 255);
     border-right-color: rgb(255, 255, 255);
@@ -712,14 +725,22 @@ Slider #unity-dragger {
     border-bottom-color: rgb(255, 255, 255);
 }
 
-.tab-view .tab-view-tabs Button:hover.selected {
+.tab-view .tab-view-tabs Button.unity-disabled:hover {
     border-bottom-color: rgb(0, 0, 0);
     background-color: rgba(0, 0, 0, 0.95);
+}
+
+.tab-view .tab-view-tabs Button {
+    flex-grow: 1;
 }
 
 .tab-view .tab-view-views {
     background-color: rgba(0, 0, 0, 0.95);
     flex-grow: 1;
+}
+
+.tab-view .tab-view-views > .unity-disabled {
+    display: none;
 }
 
 .tab-view {
@@ -748,6 +769,8 @@ Slider #unity-dragger {
 #stats-container > * {
     flex-direction: row;
     justify-content: space-between;
+    height: 32px;
+    -unity-text-align: middle-left;
 }
 
 #stats-container .stats-text {
@@ -761,19 +784,6 @@ Slider #unity-dragger {
     transition-duration: 0s, 0s;
     transition-timing-function: linear, linear;
     transition-delay: 0.2s, 0.5s;
-}
-
-#ending-container {
-    display: flex;
-    transition-property: display;
-    transition-delay: 1s;
-    transition-timing-function: linear;
-    margin-left: 40px;
-    margin-right: 40px;
-    margin-top: 40px;
-    margin-bottom: 40px;
-    flex-direction: column;
-    align-items: flex-end;
 }
 
 .unity-disabled #ending-container {
