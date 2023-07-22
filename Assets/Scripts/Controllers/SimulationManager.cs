@@ -161,9 +161,6 @@ namespace RecoDeli.Scripts.Controllers
 
             simulationInterface.InstructionEditor.SetPlaybackState(false);
             simulationInterface.InstructionEditor.HighlightInstruction(-1);
-            currentGlitchingForce = glitchingForce;
-
-            restartSound.Play();
 
             playAmbient.mute = true;
             idleAmbient.mute = false;
@@ -171,6 +168,8 @@ namespace RecoDeli.Scripts.Controllers
             if (simulationInstance != null)
             {
                 Destroy(simulationInstance.gameObject);
+                currentGlitchingForce = glitchingForce;
+                restartSound.Play();
             }
 
             simulationInstance = Instantiate(simulationGroup);

@@ -9,7 +9,8 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private UIDocument endingDocument;
         [SerializeField] private EndingController endingController;
 
-        private VisualElement leaderboardTabView;
+        private VisualElement leaderboardTabs;
+        private VisualElement leaderboardView;
 
         private Button restartButton;
         private Button continueButton;
@@ -19,41 +20,30 @@ namespace RecoDeli.Scripts.UI
             restartButton = endingDocument.rootVisualElement.Q<Button>("restart-button");
             continueButton = endingDocument.rootVisualElement.Q<Button>("continue-button");
 
-            leaderboardTabView = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-tab-view");
-            InitializeTabView(leaderboardTabView);
+            leaderboardTabs = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-tabs");
+            leaderboardView = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-views");
+            InitializeTabs();
 
             restartButton.clicked += endingController.SimulationManager.RestartSimulation;
             continueButton.clicked += endingController.FinalizeEnding;
         }
 
-        private void InitializeTabView(VisualElement tabView)
+        private void InitializeTabs()
         {
-            var tabsContainer = tabView.Q<VisualElement>(className: "tab-view-tabs");
-            var viewsContainer = tabView.Q<VisualElement>(className: "tab-view-views");
-
-            for(int i = 0; i < tabsContainer.childCount; i++)
+            foreach(var tab in leaderboardTabs.Children())
             {
-                var tab = tabsContainer.ElementAt(i) as Button;
-                var view = viewsContainer.ElementAt(i);
-                if (tab == null || view == null) continue;
-                var index = i;
-                tab.clicked += () => ShowTab(tabView, index); 
+                if (!(tab is Button tabButton)) continue;
+                tabButton.clicked += () => ShowTab(leaderboardTabs.IndexOf(tab)); 
             }
-            ShowTab(tabView, 0);
+            ShowTab(0);
         }
 
-        private void ShowTab(VisualElement tabView, int index)
+        private void ShowTab(int index)
         {
-            var tabsContainer = tabView.Q<VisualElement>(className: "tab-view-tabs");
-            var viewsContainer = tabView.Q<VisualElement>(className: "tab-view-views");
-
-            for (int i = 0; i < tabsContainer.childCount; i++)
+            for (int i = 0; i < leaderboardTabs.childCount; i++)
             {
-                var tab = tabsContainer.ElementAt(i) as Button;
-                var view = viewsContainer.ElementAt(i);
-                if (tab == null || view == null) continue;
-                tab.SetEnabled(i != index);
-                view.SetEnabled(i == index);
+                if (!(leaderboardTabs.ElementAt(i) is Button tabButton)) continue;
+                tabButton.SetEnabled(index != i);
             }
         }
 
