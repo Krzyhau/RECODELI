@@ -12,6 +12,7 @@ namespace RecoDeli.Scripts
         [SerializeField] private InstructionEditor instructionEditor;
         [SerializeField] private TimescaleBar timescaleBar;
         [SerializeField] private EndingInterface endingInterface;
+        [SerializeField] private SaveManagementWindow saveManagementWindow;
 
         [Header("Settings")]
         [SerializeField] private string timerFormat = "0.000";
@@ -28,6 +29,7 @@ namespace RecoDeli.Scripts
         private Button focusOnDroneButton;
         private Button focusOnGoalButton;
 
+        private Button saveButton;
         private Button menuButton;
 
         private float cachedInstructionEditorWidth;
@@ -46,6 +48,7 @@ namespace RecoDeli.Scripts
             // so reenable them here
             instructionEditor.gameObject.SetActive(true);
             endingInterface.gameObject.SetActive(true);
+            saveManagementWindow.gameObject.SetActive(true);
 
             timescaleSlider = Document.rootVisualElement.Q<Slider>("timescale-slider");
             instructionEditorContainer = Document.rootVisualElement.Q<VisualElement>("instruction-editor-window");
@@ -59,6 +62,7 @@ namespace RecoDeli.Scripts
             focusOnDroneButton = Document.rootVisualElement.Q<Button>("focus-on-drone-button");
             focusOnGoalButton = Document.rootVisualElement.Q<Button>("focus-on-goal-button");
 
+            saveButton = Document.rootVisualElement.Q<Button>("save-button");
             menuButton = Document.rootVisualElement.Q<Button>("menu-button");
 
             timescaleBar.Initialize(interfaceDocument);
@@ -82,6 +86,7 @@ namespace RecoDeli.Scripts
             focusOnDroneButton.clicked += simulationManager.DroneCamera.FollowRobot;
             focusOnGoalButton.clicked += simulationManager.DroneCamera.FollowPackage;
 
+            saveButton.clicked += () => saveManagementWindow.SetDisplay(true);
             // menuButton.clicked += 
         }
 
@@ -90,6 +95,8 @@ namespace RecoDeli.Scripts
             UpdateTimer();
             UpdateInstructions();
             UpdateGameInterfaceClasses();
+
+            saveButton.SetEnabled(!simulationManager.PlayingSimulation);
         }
 
         private void UpdateTimer()

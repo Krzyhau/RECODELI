@@ -1,0 +1,28 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Stylesheets/Retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#Retro" />
+    <ui:VisualElement name="save-management-container" class="modal-container unity-disabled" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.5);">
+        <ui:VisualElement name="save-management-window" class="window">
+            <ui:VisualElement name="title-bar" class="title-bar">
+                <ui:VisualElement name="save-management-window-icon" class="title-icon" />
+                <ui:Label tabindex="-1" text="SAVE MANAGEMENT" display-tooltip-when-elided="true" name="save-management-window-label" class="title text" />
+                <ui:VisualElement name="title-bar-icons" class="title-control-buttons">
+                    <ui:Button display-tooltip-when-elided="true" name="close-button">
+                        <ui:Label tabindex="-1" text="X" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="FOCUS ON GOAL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="saves-container" picking-mode="Ignore" class="window-inner">
+                <ui:Button display-tooltip-when-elided="true" name="save-button">
+                    <ui:Label tabindex="-1" text="SLOT 1" display-tooltip-when-elided="true" />
+                </ui:Button>
+                <ui:Button display-tooltip-when-elided="true" name="save-button">
+                    <ui:Label tabindex="-1" text="SLOT 2" display-tooltip-when-elided="true" />
+                </ui:Button>
+                <ui:Button display-tooltip-when-elided="true" name="save-button">
+                    <ui:Label tabindex="-1" text="SLOT 3" display-tooltip-when-elided="true" />
+                </ui:Button>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
