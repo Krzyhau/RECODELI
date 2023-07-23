@@ -130,7 +130,7 @@ namespace RecoDeli.Scripts.Controllers
             simulationInterface.InstructionEditor.HighlightInstruction(0);
             simulationInterface.InstructionEditor.SetPlaybackState(true);
             var instructionSet = simulationInterface.InstructionEditor.GetRobotInstructionsList();
-            RobotController.ExecuteCommands(instructionSet);
+            RobotController.ExecuteCommands(instructionSet.ToArray());
             trailRecorder.StartRecording(RobotController);
             playingSimulation = true;
             lastInstruction = -1;

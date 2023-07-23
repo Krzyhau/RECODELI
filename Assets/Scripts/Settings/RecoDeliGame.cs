@@ -1,5 +1,6 @@
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
+using RecoDeli.Scripts.SaveManagement;
 using System.Globalization;
 using UnityEngine.SceneManagement;
 
@@ -18,6 +19,8 @@ namespace RecoDeli.Scripts.Settings
 
             // make sure to reload level object prefabs at the start
             LevelObjectData.LoadLevelObjectPrefabs();
+
+            SaveManager.Initialize();
 
         }
 

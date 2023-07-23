@@ -73,6 +73,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public static bool IsValidListString(string instructionsEncoded)
         {
+            if (instructionsEncoded == null) return false;
             var instructionsUnifiedNewLines = instructionsEncoded.Replace("\r\n", "\n");
             if (!instructionsUnifiedNewLines.StartsWith(CLIPBOARD_HEADER + "\n"))
             {

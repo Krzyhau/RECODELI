@@ -3,6 +3,7 @@ using BEPUphysics.Unity;
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
+using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Settings;
 using System.Collections;
 using System.Collections.Generic;
@@ -22,6 +23,7 @@ namespace RecoDeli.Scripts.Level
 
         public string LevelEditorPath { get => levelPath; set => levelPath = value; }
         public static string LevelToLoad { get; set; }
+        public static string CurrentlyLoadedLevel { get; private set; }
 
         public bool IsEmptyLevel => (LevelToLoad == "" || LevelToLoad == null) && levelContainer.transform.childCount == 0;
 
@@ -126,9 +128,13 @@ namespace RecoDeli.Scripts.Level
                 Debug.LogError($"Could not load level \"{LevelToLoad}\".");
                 return;
             }
-            
+
             var levelData = LevelData.FromXML(levelTxt);
             LoadLevel(levelData);
+            CurrentlyLoadedLevel = LevelToLoad;
+
+            // attempt to load instructions from the save file into instruction editor
+            simulationManager.Interface.InstructionEditor.TryRecoverInstructions();
         }
 
         public virtual void LoadLevel(LevelData levelData) 

@@ -1,4 +1,7 @@
+using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.Level;
+using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Utils;
 using System;
 using System.Collections.Generic;
@@ -227,6 +230,7 @@ namespace RecoDeli.Scripts.UI
                 grabbing = false;
                 grabbedInstructions.Clear();
                 mouseHeldOnList = false;
+                InstructionsListModified();
             }
 
             if (grabbing)
@@ -390,7 +394,7 @@ namespace RecoDeli.Scripts.UI
             redoList.Clear();
         }
 
-        private void AddInstructions(List<RobotInstruction> instructions)
+        public void AddInstructions(List<RobotInstruction> instructions)
         {
             var addIndex = instructionsContainer.childCount - 1;
             var selected = instructionBars.Where(bar => bar.Selected);
@@ -413,6 +417,26 @@ namespace RecoDeli.Scripts.UI
                 addIndex++;
             }
             addInstructionMenu.Opened = false;
+
+            InstructionsListModified();
+        }
+
+        private void InstructionsListModified()
+        {
+            var levelInfo = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
+
+            levelInfo.Slots[0].Instructions = GetRobotInstructionsList();
+        }
+
+        public void TryRecoverInstructions()
+        {
+            var saveLevelData = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
+            if (saveLevelData != null)
+            {
+                AddInstructions(saveLevelData.Slots[0].Instructions);
+                undoList.Clear();
+                SetAllBarsSelected(false);
+            }
         }
 
         public void DeleteSelected()
@@ -436,6 +460,8 @@ namespace RecoDeli.Scripts.UI
                     barToSelectAfterwards = Math.Min(barToSelectAfterwards, instructionBars.Count - 1);
                     instructionBars[barToSelectAfterwards].Selected = true;
                 }
+
+                InstructionsListModified();
             }
         }
 
@@ -582,9 +608,9 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public RobotInstruction[] GetRobotInstructionsList()
+        public List<RobotInstruction> GetRobotInstructionsList()
         {
-            return instructionBars.Select(bar => bar.Instruction).ToArray();
+            return instructionBars.Select(bar => bar.Instruction).ToList();
         }
     }
 }

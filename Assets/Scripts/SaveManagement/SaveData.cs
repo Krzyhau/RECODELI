@@ -1,14 +1,42 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace RecoDeli.Scripts.SaveManagement
 {
-    public struct SaveData
+    [Serializable]
+    public class SaveData
     {
         public float PlayTime;
-        public float LastModified;
 
         public List<SaveLevelInfo> LevelInfos;
 
+        public SaveData() 
+        {
+            LevelInfos = new();
+        }
 
+        public SaveLevelInfo GetLevelInfo(string levelName)
+        {
+            var level = LevelInfos.Where(info => info.LevelName == levelName).FirstOrDefault();
+            if(level == null)
+            {
+                level = new SaveLevelInfo();
+                level.LevelName = levelName;
+
+                if (levelName.Length > 0)
+                {
+                    LevelInfos.Add(level);
+                }
+            }
+            return level;
+        }
+
+        public bool IsLevelComplete(string levelName)
+        {
+            var level = GetLevelInfo(levelName);
+            
+            return level != null ? level.Completed : false;
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace RecoDeli.Scripts.Controllers
         private Quaternion cameraTargetRotation;
 
         private bool started = false;
-        private bool finalizing = false;
+        //private bool finalizing = false;
         private float animationFirstPhaseState = 0.0f;
 
         public bool EndingInProgress => started;
@@ -128,7 +128,7 @@ namespace RecoDeli.Scripts.Controllers
 
         public void FinalizeEnding()
         {
-            finalizing = true;
+            //finalizing = true;
 
             // TODO: robot animation and back to map list
         }

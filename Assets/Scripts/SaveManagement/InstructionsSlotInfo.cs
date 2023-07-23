@@ -1,8 +1,11 @@
 ﻿using RecoDeli.Scripts.Gameplay.Robot;
+using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
 
 namespace RecoDeli.Scripts.SaveManagement
 {
+    [Serializable]
     public struct InstructionsSlotInfo
     {
         public bool Completed;
@@ -11,6 +14,7 @@ namespace RecoDeli.Scripts.SaveManagement
 
         public string InstructionsData;
 
+        [XmlIgnore]
         public List<RobotInstruction> Instructions
         {
             get => RobotInstruction.StringToList(InstructionsData);

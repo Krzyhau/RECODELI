@@ -1,6 +1,9 @@
+using System;
+
 namespace RecoDeli.Scripts.SaveManagement
 {
-    public struct SaveLevelInfo
+    [Serializable]
+    public class SaveLevelInfo
     {
         public string LevelName;
 
@@ -10,6 +13,13 @@ namespace RecoDeli.Scripts.SaveManagement
         public float FastestTime;
         public int LowestInstructions;
 
-        public InstructionsSlotInfo[] InstructionsSlots;
+        public InstructionsSlotInfo[] Slots;
+
+        public SaveLevelInfo() 
+        {
+            Slots = new InstructionsSlotInfo[3];
+            Completed = false;
+            LevelName = "";
+        }
     }
 }
