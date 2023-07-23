@@ -14,6 +14,20 @@ namespace RecoDeli.Scripts.UI
 {
     public class InstructionEditor : MonoBehaviour
     {
+        private class EditorCommandState
+        {
+            public List<RobotInstruction> Instructions = new();
+            public int ButtonBasedFocusPosition;
+            public List<int> SelectionIndices = new();
+        }
+
+        private class EditorCommandStatesSlot
+        {
+            public List<EditorCommandState> Undos = new();
+            public List<EditorCommandState> Redos = new();
+        }
+
+
         [SerializeField] private AddInstructionMenu addInstructionMenu;
 
         [Header("Settings")]
@@ -33,15 +47,8 @@ namespace RecoDeli.Scripts.UI
 
         private List<InstructionBar> instructionBars = new();
 
-        private struct RobotInstructionListCopy
-        {
-            public List<RobotInstruction> Instructions;
-            public int ButtonBasedFocusPosition;
-            public List<int> SelectionIndices;
-        }
-
-        private List<RobotInstructionListCopy> undoList = new();
-        private List<RobotInstructionListCopy> redoList = new();
+        private Dictionary<int, EditorCommandStatesSlot> commandStateSlots = new();
+        private int currentSlot = 0;
 
         private List<InstructionBar> grabbedInstructions = new();
         private bool grabbing;
@@ -54,6 +61,8 @@ namespace RecoDeli.Scripts.UI
         private float mouseListBasedPosition;
 
         public bool Grabbing => grabbing;
+        public List<InstructionBar> InstructionBars => instructionBars;
+        public int CurrentSlot => currentSlot;
 
         public void Initialize(UIDocument gameDocument)
         {
@@ -294,8 +303,8 @@ namespace RecoDeli.Scripts.UI
             {
                 addButton.SetEnabled(!playingInstructions);
                 deleteButton.SetEnabled(instructionBars.Where(bar => bar.Selected).Any());
-                undoButton.SetEnabled(undoList.Count > 0);
-                redoButton.SetEnabled(redoList.Count > 0);
+                undoButton.SetEnabled(GetCurrentCommandStateSlot().Undos.Count > 0);
+                redoButton.SetEnabled(GetCurrentCommandStateSlot().Redos.Count > 0);
                 copyButton.SetEnabled(deleteButton.enabledSelf);
                 pasteButton.SetEnabled(RobotInstruction.IsValidListString(GUIUtility.systemCopyBuffer));
             }
@@ -377,24 +386,34 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
+        private EditorCommandStatesSlot GetCurrentCommandStateSlot()
+        {
+            if (!commandStateSlots.ContainsKey(currentSlot))
+            {
+                commandStateSlots[currentSlot] = new EditorCommandStatesSlot();
+            }
+            return commandStateSlots[currentSlot];
+        }
+
         private void StoreUndoOperation(int focusPosition)
         {
-            undoList.Add(new RobotInstructionListCopy
+            var slot = GetCurrentCommandStateSlot();
+            slot.Undos.Add(new EditorCommandState
             {
                 Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
                 ButtonBasedFocusPosition = focusPosition,
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });
 
-            if (undoList.Count > maxUndoHistory)
+            if (slot.Undos.Count > maxUndoHistory)
             {
-                undoList.RemoveAt(0);
+                slot.Undos.RemoveAt(0);
             }
 
-            redoList.Clear();
+            slot.Redos.Clear();
         }
 
-        public void AddInstructions(List<RobotInstruction> instructions)
+        public void AddInstructions(List<RobotInstruction> instructions, bool quiet = false)
         {
             var addIndex = instructionsContainer.childCount - 1;
             var selected = instructionBars.Where(bar => bar.Selected);
@@ -403,7 +422,10 @@ namespace RecoDeli.Scripts.UI
                 addIndex = selected.Select(bar => instructionBars.IndexOf(bar)).Max();
             }
 
-            StoreUndoOperation(addIndex + instructions.Count / 2);
+            if (!quiet)
+            {
+                StoreUndoOperation(addIndex + instructions.Count / 2);
+            }
 
             foreach (var selectedBar in selected)
             {
@@ -418,23 +440,37 @@ namespace RecoDeli.Scripts.UI
             }
             addInstructionMenu.Opened = false;
 
-            InstructionsListModified();
+            if (!quiet)
+            {
+                InstructionsListModified();
+            }
+        }
+
+        public void AddInstruction(RobotInstruction instruction, bool quiet = false)
+        {
+            AddInstructions(new List<RobotInstruction>() { instruction }, quiet);
         }
 
         private void InstructionsListModified()
         {
             var levelInfo = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
 
-            levelInfo.Slots[0].Instructions = GetRobotInstructionsList();
+            levelInfo.Slots[currentSlot].Instructions = GetRobotInstructionsList();
         }
 
-        public void TryRecoverInstructions()
+        public void LoadSaveSlot(int slot)
         {
+            foreach (var bar in instructionBars.ToList())
+            {
+                DeleteInstructionBar(bar);
+            }
+
+            currentSlot = slot;
+
             var saveLevelData = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
             if (saveLevelData != null)
             {
-                AddInstructions(saveLevelData.Slots[0].Instructions);
-                undoList.Clear();
+                AddInstructions(saveLevelData.Slots[currentSlot].Instructions, true);
                 SetAllBarsSelected(false);
             }
         }
@@ -467,12 +503,13 @@ namespace RecoDeli.Scripts.UI
 
         public void Undo()
         {
-            if (undoList.Count == 0) return;
-            var undo = undoList.Last();
+            var slot = GetCurrentCommandStateSlot();
+            if (slot.Undos.Count == 0) return;
+            var undo = slot.Undos.Last();
 
             var focusPos = undo.ButtonBasedFocusPosition;
 
-            redoList.Add(new RobotInstructionListCopy
+            slot.Redos.Add(new EditorCommandState
             {
                 Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
                 ButtonBasedFocusPosition = focusPos,
@@ -492,20 +529,23 @@ namespace RecoDeli.Scripts.UI
                 currentIndex++;
             }
 
-            undoList.RemoveAt(undoList.Count - 1);
+            slot.Undos.RemoveAt(slot.Undos.Count - 1);
 
             grabbing = false;
 
             FocusOnInstruction(focusPos);
+
+            InstructionsListModified();
         }
 
         public void Redo()
         {
-            if (redoList.Count == 0) return;
-            var redo = redoList.Last();
+            var slot = GetCurrentCommandStateSlot();
+            if (slot.Redos.Count == 0) return;
+            var redo = slot.Redos.Last();
             var focusPos = redo.ButtonBasedFocusPosition;
 
-            undoList.Add(new RobotInstructionListCopy
+            slot.Undos.Add(new EditorCommandState
             {
                 Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
                 ButtonBasedFocusPosition = focusPos,
@@ -526,11 +566,13 @@ namespace RecoDeli.Scripts.UI
                 currentIndex++;
             }
 
-            redoList.RemoveAt(redoList.Count - 1);
+            slot.Redos.RemoveAt(slot.Redos.Count - 1);
 
             grabbing = false;
 
             FocusOnInstruction(focusPos);
+
+            InstructionsListModified();
         }
 
         public void CopySelected()
@@ -557,15 +599,13 @@ namespace RecoDeli.Scripts.UI
         public void FocusOnInstruction(int instructionIndex)
         {
             if (instructionBars.Count == 0) return;
-            var bar = instructionBars[Math.Clamp(instructionIndex, 0, instructionBars.Count)];
+            var bar = instructionBars[Math.Clamp(instructionIndex, 0, instructionBars.Count - 1)];
 
             // make instruction appear in the middle of the scrolling container
             var barPos = bar.localBound.y;
             var targetYScroll = barPos - instructionsContainer.localBound.height * 0.5f;
             instructionsContainer.scrollOffset = Vector2.up * targetYScroll;
         }
-
-        public void AddInstruction(RobotInstruction instruction) => AddInstructions(new List<RobotInstruction>(){ instruction });
 
         public void HighlightInstruction(int instructionIndex)
         {
