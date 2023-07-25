@@ -13,10 +13,9 @@ namespace RecoDeli.Scripts.UI
 
         private Slider slider;
 
-        private float cachedSliderValue;
         private bool skippingNow;
 
-        public float Timescale => timescaleValues[Mathf.FloorToInt(timescaleValues.Count * Mathf.Clamp(slider.value, 0.0f, 0.999f))];
+        public float Timescale => timescaleValues[Mathf.FloorToInt(timescaleValues.Count * Mathf.Clamp(skippingNow ? 1.0f : slider.value, 0.0f, 0.999f))];
         public bool Skipping
         {
             get => skippingNow;
@@ -37,16 +36,12 @@ namespace RecoDeli.Scripts.UI
 
         private void OnValueChanged()
         {
-            if (skippingNow)
-            {
-                slider.value = 1.0f;
-                slider.label = "SKIPPING";
-                return;
-            }
-
             ClampSliderValueToStep();
 
-            slider.label = $"{Mathf.RoundToInt(Timescale * 100.0f)}%";
+            if (!skippingNow)
+            {
+                slider.label = $"{Mathf.RoundToInt(Timescale * 100.0f)}%";
+            }
 
             if (overrideTimescale) Time.timeScale = Timescale;
         }
@@ -60,15 +55,13 @@ namespace RecoDeli.Scripts.UI
 
             skippingNow = skipping;
 
+            OnValueChanged();
+
             if (skipping)
             {
-                cachedSliderValue = slider.value;
-                slider.value = 1.0f;
+                slider.label = "SKIPPING";
             }
-            else
-            {
-                slider.value = cachedSliderValue;
-            }
+            
         }
     }
 }
