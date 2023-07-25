@@ -30,7 +30,8 @@ namespace RecoDeli.Scripts
         private Button focusOnGoalButton;
 
         private Button saveButton;
-        private Button menuButton;
+        private Button settingsButton;
+        private Button exitButton;
 
         private float cachedInstructionEditorWidth;
 
@@ -63,7 +64,8 @@ namespace RecoDeli.Scripts
             focusOnGoalButton = Document.rootVisualElement.Q<Button>("focus-on-goal-button");
 
             saveButton = Document.rootVisualElement.Q<Button>("save-button");
-            menuButton = Document.rootVisualElement.Q<Button>("menu-button");
+            settingsButton = Document.rootVisualElement.Q<Button>("settings-button");
+            exitButton = Document.rootVisualElement.Q<Button>("exit-button");
 
             timescaleBar.Initialize(interfaceDocument);
             instructionEditor.Initialize(interfaceDocument);

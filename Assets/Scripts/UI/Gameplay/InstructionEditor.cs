@@ -365,6 +365,8 @@ namespace RecoDeli.Scripts.UI
 
             bar.Selected = true;
             bar.Instruction = instruction.Clone() as RobotInstruction;
+            bar.changing += () => StoreUndoOperation(index);
+            bar.changed += () => InstructionsListModified();
 
             instructionsContainer.Insert(index, bar);
             instructionBars.Insert(index, bar);
@@ -400,7 +402,7 @@ namespace RecoDeli.Scripts.UI
             var slot = GetCurrentCommandStateSlot();
             slot.Undos.Add(new EditorCommandState
             {
-                Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
+                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
                 ButtonBasedFocusPosition = focusPosition,
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });
@@ -511,7 +513,7 @@ namespace RecoDeli.Scripts.UI
 
             slot.Redos.Add(new EditorCommandState
             {
-                Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
+                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
                 ButtonBasedFocusPosition = focusPos,
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });
@@ -547,7 +549,7 @@ namespace RecoDeli.Scripts.UI
 
             slot.Undos.Add(new EditorCommandState
             {
-                Instructions = instructionBars.Select(bar => bar.Instruction).ToList(),
+                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
                 ButtonBasedFocusPosition = focusPos,
                 SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
             });

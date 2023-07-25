@@ -24,7 +24,7 @@ namespace RecoDeli.Scripts.SaveManagement
                 level = new SaveLevelInfo();
                 level.LevelName = levelName;
 
-                if (levelName.Length > 0)
+                if (levelName != null && levelName.Length > 0)
                 {
                     LevelInfos.Add(level);
                 }

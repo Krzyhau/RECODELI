@@ -133,8 +133,11 @@ namespace RecoDeli.Scripts.Level
             LoadLevel(levelData);
             CurrentlyLoadedLevel = LevelToLoad;
 
-            // attempt to load instructions from the save file into instruction editor
-            simulationManager.Interface.InstructionEditor.LoadSaveSlot(0);
+            if (Application.isPlaying)
+            {
+                // attempt to load instructions from the save file into instruction editor
+                simulationManager.Interface.InstructionEditor.LoadSaveSlot(0);
+            }
         }
 
         public virtual void LoadLevel(LevelData levelData) 

@@ -22,10 +22,17 @@ namespace RecoDeli.Scripts.Settings
             }
         }
 
+        public static string Language
+        {
+            get => PlayerPrefs.GetString("Language", "en-US");
+            set => PlayerPrefs.SetString("Language", value);
+        }
+
         public static void ApplySettings()
         {
             MasterVolume = MasterVolume;
             MusicVolume = MusicVolume;
+            Language = Language;
         }
     }
 }

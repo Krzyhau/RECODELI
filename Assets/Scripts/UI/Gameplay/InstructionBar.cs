@@ -1,4 +1,5 @@
 using RecoDeli.Scripts.Gameplay.Robot;
+using System;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -23,6 +24,9 @@ namespace RecoDeli.Scripts.UI
         private float progressInterpCalcSpeed;
 
         private RobotInstruction instruction;
+
+        public Action changing;
+        public Action changed;
 
         public bool Selected
         {
@@ -117,7 +121,9 @@ namespace RecoDeli.Scripts.UI
             }
             else
             {
+                changing?.Invoke();
                 Instruction.SetInputParameterFromString(parameterIndex, field.value.ToString());
+                changed?.Invoke();
             }
         }
 

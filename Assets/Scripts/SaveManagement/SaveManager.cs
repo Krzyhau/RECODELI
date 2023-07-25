@@ -12,6 +12,8 @@ namespace RecoDeli.Scripts.SaveManagement
         private static bool loaded;
         private static SaveData save;
 
+        private static float lastStorageTime;
+
         public static SaveData CurrentSave => save;
 
         public static string UserSaveDataPath => Application.persistentDataPath + "/SaveData.xml";
@@ -34,6 +36,8 @@ namespace RecoDeli.Scripts.SaveManagement
         public static void Load()
         {
             if (loaded) return;
+
+            lastStorageTime = Time.realtimeSinceStartup;
 
             if(!File.Exists(UserSaveDataPath))
             {
@@ -58,13 +62,15 @@ namespace RecoDeli.Scripts.SaveManagement
                 Debug.LogError($"Error while loading data: {ex.Message}. Using empty save file instead.");
                 save = new SaveData();
                 loaded = true;
-                return;
             }
         }
 
         public static void Save()
         {
             if (!loaded) return;
+
+            save.PlayTime += Time.realtimeSinceStartup - lastStorageTime;
+            lastStorageTime = Time.realtimeSinceStartup;
 
             try
             {

@@ -4,7 +4,7 @@
         <ui:VisualElement name="drone-view-window" picking-mode="Ignore" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
                 <ui:VisualElement name="drone-view-icon" class="title-icon" />
-                <ui:Label tabindex="-1" text="LIVE DRONE VIEW" display-tooltip-when-elided="true" name="drone-view-label" class="title text" />
+                <ui:Label tabindex="-1" text="LIVE VIEW" display-tooltip-when-elided="true" name="drone-view-label" class="title text" />
                 <ui:VisualElement name="camera-control-buttons" class="title-control-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="focus-on-drone-button">
                         <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
@@ -21,14 +21,18 @@
         <ui:VisualElement name="instruction-editor-window" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
                 <ui:VisualElement name="instruction-editor-icon" class="title-icon" />
-                <ui:Label tabindex="-1" text="INSTRUCTION EDITOR" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" />
+                <ui:Label tabindex="-1" text="INSTRUCTIONS" display-tooltip-when-elided="true" name="instruction-editor-label" class="text title" />
                 <ui:VisualElement name="menu-buttons" class="title-control-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="save-button">
                         <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                         <ui:Label tabindex="-1" text="SAVES" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>
-                    <ui:Button display-tooltip-when-elided="true" name="menu-button">
-                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                    <ui:Button display-tooltip-when-elided="true" name="settings-button">
+                        <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="SAVES" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                    <ui:Button display-tooltip-when-elided="true" name="exit-button">
+                        <ui:Label tabindex="-1" text="x" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                         <ui:Label tabindex="-1" text="MENU" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>
                 </ui:VisualElement>
