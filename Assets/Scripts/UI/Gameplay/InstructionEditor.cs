@@ -63,6 +63,7 @@ namespace RecoDeli.Scripts.UI
         public bool Grabbing => grabbing;
         public List<InstructionBar> InstructionBars => instructionBars;
         public int CurrentSlot => currentSlot;
+        public int SkipToInstruction { get; private set; }
 
         public void Initialize(UIDocument gameDocument)
         {
@@ -91,11 +92,8 @@ namespace RecoDeli.Scripts.UI
 
         private void Update()
         {
-            if (!addInstructionMenu.Opened && !playingInstructions)
-            {
-                UpdateBarsSelection();
-                HandleBarGrabbing();
-            }
+            UpdateBarsSelection();
+            HandleBarGrabbing();
 
             HandleKeyboardShortcuts();
 
@@ -147,6 +145,47 @@ namespace RecoDeli.Scripts.UI
 
         private void UpdateBarsSelection()
         {
+            if (addInstructionMenu.Opened)
+            {
+                return;
+            }
+
+            // during playback, only set skipping functionality
+            if (playingInstructions)
+            {
+                foreach (var bar in instructionBars)
+                {
+                    if(bar.Instruction.Progress > 0.0f)
+                    {
+                        bar.Selected = false;
+                    }
+                }
+
+                if (Input.GetMouseButtonDown(0) && mouseOverList)
+                {
+                    InstructionBar clickedBar = instructionBars
+                    .Where(bar => bar.IsPointerHoveringOnHandle())
+                    .FirstOrDefault();
+
+                    foreach (var bar in instructionBars)
+                    {
+                        bar.Selected = false;
+                    }
+
+                    if(clickedBar != null && clickedBar.Instruction.Progress == 0.0f)
+                    {
+                        clickedBar.Selected = true;
+                        SkipToInstruction = instructionBars.IndexOf(clickedBar);
+                    }
+                }
+
+                return;
+            }
+            else
+            {
+                SkipToInstruction = -1;
+            }
+
             bool multipleSelection = Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl);
             bool rangeSelection = Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift);
 
@@ -199,7 +238,7 @@ namespace RecoDeli.Scripts.UI
             }
 
             // unselect other buttons
-            if (Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection && mouseOverList)
+            if (!playingInstructions && Input.GetMouseButtonUp(0) && !grabbing && !rangeSelection && !multipleSelection && mouseOverList)
             {
                 foreach (var bar in instructionBars)
                 {
@@ -211,6 +250,11 @@ namespace RecoDeli.Scripts.UI
 
         private void HandleBarGrabbing()
         {
+            if (addInstructionMenu.Opened || playingInstructions)
+            {
+                return;
+            }
+
             if (Input.GetMouseButtonDown(0))
             {
                 mouseHeldOnList = mouseOverList;

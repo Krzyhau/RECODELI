@@ -155,6 +155,8 @@ namespace RecoDeli.Scripts.UI
                 progressInterpStateTarget, 
                 progressInterpCalcSpeed * Time.deltaTime
             );
+
+            EnableInClassList("in-progress", progressBar.value > 0);
         }
 
         public bool IsPointerHoveringOnHandle()

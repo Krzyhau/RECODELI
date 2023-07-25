@@ -441,6 +441,14 @@ Slider #unity-dragger {
     flex-direction: row;
 }
 
+.instruction-bar > #grabbing-handle:hover {
+    background-color: rgba(51, 51, 51, 0.7);
+}
+
+.instruction-bar.in-progress > #grabbing-handle:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
 .instruction-bar.selected > #grabbing-handle {
     background-color: rgba(255, 255, 255, 0.15);
 }

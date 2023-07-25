@@ -1,6 +1,7 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.UI;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
@@ -29,6 +30,7 @@ namespace RecoDeli.Scripts.Controllers
         private bool finishedSimulation = false;
         private BepuSimulation simulationInstance;
         private string simulationGroupName;
+        private bool wasPausedBeforeSkipping = false;
 
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
@@ -73,6 +75,8 @@ namespace RecoDeli.Scripts.Controllers
 
         private void Update()
         {
+            CheckSkipping();
+
             if (!paused && playingSimulation && !finishedSimulation)
             {
                 Time.timeScale = simulationInterface.TimescaleBar.Timescale;
@@ -120,6 +124,25 @@ namespace RecoDeli.Scripts.Controllers
             var subtract = Mathf.Min(glitchingFadeoutSpeed * Time.unscaledDeltaTime, Time.timeSinceLevelLoad);
             currentGlitchingForce = Mathf.Max(0.0f, currentGlitchingForce - subtract);
             glitchingMaterial.SetFloat("_Intensity", currentGlitchingForce);
+        }
+
+        private void CheckSkipping()
+        {
+            var currentIndex = RobotController.CurrentInstructionIndex;
+            var skipToIndex = simulationInterface.InstructionEditor.SkipToInstruction;
+            var skipping = currentIndex >= 0 && currentIndex < skipToIndex;
+
+            simulationInterface.TimescaleBar.Skipping = skipping;
+            if (skipping && paused)
+            {
+                ResumeSimulation();
+                wasPausedBeforeSkipping = true;
+            }
+            if(!skipping && wasPausedBeforeSkipping)
+            {
+                PauseSimulation();
+                wasPausedBeforeSkipping = false;
+            }
         }
 
         public void PlayInstructions()
