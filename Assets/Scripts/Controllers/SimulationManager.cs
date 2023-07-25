@@ -31,6 +31,7 @@ namespace RecoDeli.Scripts.Controllers
         private BepuSimulation simulationInstance;
         private string simulationGroupName;
         private bool wasPausedBeforeSkipping = false;
+        private bool didAtLeastOneLogicUpdateThisFrame = false;
 
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
@@ -73,7 +74,19 @@ namespace RecoDeli.Scripts.Controllers
             RestartSimulation();
         }
 
-        private void Update()
+        private void LateUpdate()
+        {
+            if (!didAtLeastOneLogicUpdateThisFrame)
+            {
+                LogicUpdate();
+            }
+            else
+            {
+                didAtLeastOneLogicUpdateThisFrame = false;
+            }
+        }
+
+        private void LogicUpdate()
         {
             CheckSkipping();
 
@@ -87,11 +100,15 @@ namespace RecoDeli.Scripts.Controllers
             }
 
             UpdateGlitching();
+
+            didAtLeastOneLogicUpdateThisFrame = true;
         }
 
         private void BepuUpdate()
         {
             if (!playingSimulation) return;
+
+            LogicUpdate();
 
             if (lastInstruction < RobotController.CurrentInstructionIndex)
             {
@@ -108,6 +125,7 @@ namespace RecoDeli.Scripts.Controllers
         {
             LastCompletionTime = SimulationTime;
             endingController.StartEnding();
+
 
             paused = false;
             Time.timeScale = 1.0f;
@@ -128,6 +146,12 @@ namespace RecoDeli.Scripts.Controllers
 
         private void CheckSkipping()
         {
+            if (finishedSimulation)
+            {
+                wasPausedBeforeSkipping = false;
+                return;
+            }
+
             var currentIndex = RobotController.CurrentInstructionIndex;
             var skipToIndex = simulationInterface.InstructionEditor.SkipToInstruction;
             var skipping = currentIndex >= 0 && currentIndex < skipToIndex;
@@ -181,6 +205,7 @@ namespace RecoDeli.Scripts.Controllers
             playingSimulation = false;
             finishedSimulation = false;
             paused = false;
+            wasPausedBeforeSkipping = false;
 
             simulationInterface.InstructionEditor.SetPlaybackState(false);
             simulationInterface.InstructionEditor.HighlightInstruction(-1);

@@ -154,12 +154,9 @@ namespace RecoDeli.Scripts.UI
             // during playback, only set skipping functionality
             if (playingInstructions)
             {
-                foreach (var bar in instructionBars)
+                for(int i = 0; i <= SkipToInstruction; i++)
                 {
-                    if(bar.Instruction.Progress > 0.0f)
-                    {
-                        bar.Selected = false;
-                    }
+                    instructionBars[i].Selected = false;
                 }
 
                 if (Input.GetMouseButtonDown(0) && mouseOverList)

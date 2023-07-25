@@ -23,6 +23,8 @@ namespace RecoDeli.Scripts.UI
         private float progressInterpStateTarget;
         private float progressInterpCalcSpeed;
 
+        private float lastValidDeltaTimeForProgressBar;
+
         private RobotInstruction instruction;
 
         public Action changing;
@@ -150,10 +152,15 @@ namespace RecoDeli.Scripts.UI
                 progressInterpCalcSpeed = 0.0f;
             }
 
+            if(Time.timeScale != 0.0f)
+            {
+                lastValidDeltaTimeForProgressBar = Time.deltaTime;
+            }
+
             progressBar.value = progressInterpState = Mathf.MoveTowards(
-                progressInterpState, 
-                progressInterpStateTarget, 
-                progressInterpCalcSpeed * Time.deltaTime
+                progressInterpState,
+                progressInterpStateTarget,
+                progressInterpCalcSpeed * lastValidDeltaTimeForProgressBar
             );
 
             EnableInClassList("in-progress", progressBar.value > 0);

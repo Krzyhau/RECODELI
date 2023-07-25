@@ -85,6 +85,11 @@ namespace BEPUphysics.Unity
         {
             if (!initialised || !Active) return;
 
+            if(Time.timeScale == 0.0f)
+            {
+                return;
+            }
+
             timeSinceLastStep += Time.deltaTime;
             var updateBeginTime = DateTime.Now;
 
@@ -106,6 +111,13 @@ namespace BEPUphysics.Unity
                 if(duration.TotalSeconds > maxUpdateRealTimeWindow)
                 {
                     timeSinceLastStep %= timeStep;
+                    break;
+                }
+
+                // special case: if we're paused mid-multiple iterations,
+                // make sure to not iterate further.
+                if(Time.timeScale == 0.0f)
+                {
                     break;
                 }
             }
