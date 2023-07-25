@@ -150,8 +150,8 @@ namespace RecoDeli.Scripts.Controllers
             Assert.IsNotNull(RobotController, "Cannot play instructions without a robot within a simulation!");
 
             simulationInstance.Active = true;
-            simulationInterface.InstructionEditor.HighlightInstruction(0);
             simulationInterface.InstructionEditor.SetPlaybackState(true);
+            simulationInterface.InstructionEditor.HighlightInstruction(0);
             var instructionSet = simulationInterface.InstructionEditor.GetRobotInstructionsList();
             RobotController.ExecuteCommands(instructionSet.ToArray());
             trailRecorder.StartRecording(RobotController);

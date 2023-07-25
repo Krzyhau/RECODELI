@@ -4,6 +4,7 @@ using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Utils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -647,9 +648,21 @@ namespace RecoDeli.Scripts.UI
             if (instructionBars.Count == 0) return;
             var bar = instructionBars[Math.Clamp(instructionIndex, 0, instructionBars.Count - 1)];
 
+            // Bars that have been created this frame might not have been
+            // fully recalculated yet. Delay setting scroll offset until
+            // the UI Toolkit is done with recalculations, so it isn't just set to 0.
+            StartCoroutine(FocusOnInstructionBarCoroutine(bar));
+        }
+
+        private IEnumerator FocusOnInstructionBarCoroutine(InstructionBar bar)
+        {
+            // wait one frame. awful, but what can I do?!
+            yield return null;
+
             // make instruction appear in the middle of the scrolling container
             var barPos = bar.localBound.y;
             var targetYScroll = barPos - instructionsContainer.localBound.height * 0.5f;
+
             instructionsContainer.scrollOffset = Vector2.up * targetYScroll;
         }
 
@@ -681,7 +694,7 @@ namespace RecoDeli.Scripts.UI
                 }
             }
 
-            instructionsContainer.SetEnabled(!state);
+            instructionsContainer.contentContainer.SetEnabled(!state);
 
             if (state)
             {
