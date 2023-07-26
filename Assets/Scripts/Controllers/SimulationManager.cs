@@ -1,6 +1,7 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.UI;
 using System.Linq;
 using UnityEngine;
@@ -124,6 +125,12 @@ namespace RecoDeli.Scripts.Controllers
         private void SimulationSuccessful()
         {
             LastCompletionTime = SimulationTime;
+
+            var levelInfo = SaveManager.CurrentSave.GetCurrentLevelInfo();
+            levelInfo.Completed = true;
+            levelInfo.FastestTime = Mathf.Min(levelInfo.FastestTime, LastCompletionTime);
+            levelInfo.LowestInstructions = Mathf.Min(levelInfo.LowestInstructions, RobotController.CurrentInstructions.Length);
+
             endingController.StartEnding();
 
 
@@ -184,6 +191,8 @@ namespace RecoDeli.Scripts.Controllers
 
             playAmbient.mute = false;
             idleAmbient.mute = true;
+
+            SaveManager.CurrentSave.GetCurrentLevelInfo().ExecutionCount++;
         }
 
         public void RestartSimulation()

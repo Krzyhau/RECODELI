@@ -531,7 +531,7 @@ namespace RecoDeli.Scripts.UI
             // due to having different starting position
             remainingRepositioningRequests += 2;
 
-            var levelInfo = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
+            var levelInfo = SaveManager.CurrentSave.GetCurrentLevelInfo();
 
             levelInfo.Slots[currentSlot].Instructions = GetRobotInstructionsList();
         }
@@ -545,7 +545,7 @@ namespace RecoDeli.Scripts.UI
 
             currentSlot = slot;
 
-            var saveLevelData = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
+            var saveLevelData = SaveManager.CurrentSave.GetCurrentLevelInfo();
             if (saveLevelData != null)
             {
                 AddInstructions(saveLevelData.Slots[currentSlot].Instructions, true);

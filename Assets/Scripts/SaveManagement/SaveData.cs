@@ -1,3 +1,4 @@
+using RecoDeli.Scripts.Level;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,11 @@ namespace RecoDeli.Scripts.SaveManagement
         public SaveData() 
         {
             LevelInfos = new();
+        }
+
+        public SaveLevelInfo GetCurrentLevelInfo()
+        {
+            return GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
         }
 
         public SaveLevelInfo GetLevelInfo(string levelName)

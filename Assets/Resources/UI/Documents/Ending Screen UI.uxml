@@ -15,12 +15,12 @@
                         <ui:Label tabindex="-1" text="0.000" display-tooltip-when-elided="true" name="stat-time" class="stats-text" />
                     </ui:VisualElement>
                     <ui:VisualElement name="instructions-stats" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
-                        <ui:Label tabindex="-1" text="INSTRUCTIONS:" display-tooltip-when-elided="true" name="stats-instructions-label" class="stats-label" />
-                        <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="stats-instructions" class="stats-text" />
+                        <ui:Label tabindex="-1" text="INSTRUCTIONS:" display-tooltip-when-elided="true" name="stat-instructions-label" class="stats-label" />
+                        <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="stat-instructions" class="stats-text" />
                     </ui:VisualElement>
-                    <ui:VisualElement name="simulation-count-stats" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
-                        <ui:Label tabindex="-1" text="SIMULATIONS COUNT:" display-tooltip-when-elided="true" name="stat-simulation-count-label" class="stats-label" />
-                        <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="stat-simulation-count-text" class="stats-text" />
+                    <ui:VisualElement name="attempts-stats" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
+                        <ui:Label tabindex="-1" text="TOTAL ATTEMPTS:" display-tooltip-when-elided="true" name="stat-attempts-label" class="stats-label" />
+                        <ui:Label tabindex="-1" text="0" display-tooltip-when-elided="true" name="stat-attempts" class="stats-text" />
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
