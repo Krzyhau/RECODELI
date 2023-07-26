@@ -354,7 +354,6 @@ Slider #unity-dragger {
 .instruction-bar {
     flex-direction: row;
     height: 45px;
-    width: 100%;
     -unity-font-definition: initial;
     -unity-font: resource('Fonts/SpaceGrotesk/SpaceGrotesk-Medium');
     border-left-color: rgb(255, 255, 255);
@@ -369,9 +368,10 @@ Slider #unity-dragger {
     color: rgb(255, 255, 255);
     margin-bottom: 5px;
     margin-top: 5px;
-    transition-property: translate;
-    transition-duration: 0.5s;
-    transition-timing-function: ease-out;
+    transition-property: top;
+    transition-duration: 0.1s;
+    transition-timing-function: linear;
+    position: absolute;
 }
 
 .instruction-bar > #progress {

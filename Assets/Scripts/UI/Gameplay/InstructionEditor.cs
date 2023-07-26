@@ -60,6 +60,7 @@ namespace RecoDeli.Scripts.UI
         private bool mouseOverList;
         private bool mouseHeldOnList;
         private float mouseListBasedPosition;
+        private int remainingRepositioningRequests;
 
         public bool Grabbing => grabbing;
         public List<InstructionBar> InstructionBars => instructionBars;
@@ -102,10 +103,37 @@ namespace RecoDeli.Scripts.UI
 
             foreach (var instructionBar in instructionBars)
             {
-                instructionBar.Update();
+                instructionBar.UpdateProgressBar();
             }
 
             instructionEditorContainer.EnableInClassList("no-instructions", instructionBars.Count == 0);
+        }
+
+        private void LateUpdate()
+        {
+            UpdateListPositioning();
+        }
+
+        private void UpdateListPositioning()
+        {
+            if (remainingRepositioningRequests == 0) return;
+            remainingRepositioningRequests--;
+
+            foreach (var instructionBar in instructionBars)
+            {
+                instructionBar.UpdateAbsolutePosition();
+            }
+
+            var desiredHeight = 0.0f;
+            if(instructionBars.Count > 0)
+            {
+                var lastElement = instructionsContainer.ElementAt(instructionsContainer.childCount - 1);
+                var lastElementStyle = lastElement.resolvedStyle;
+                var containerStyle = instructionsContainer.contentContainer.resolvedStyle;
+                desiredHeight = lastElement.style.top.value.value + lastElementStyle.marginTop + lastElementStyle.marginBottom + lastElementStyle.height;
+                desiredHeight += containerStyle.paddingTop + containerStyle.paddingBottom;
+            }
+            instructionsContainer.contentContainer.style.height = desiredHeight;
         }
 
         private void OnMouseOverList(MouseMoveEvent evt)
@@ -297,18 +325,18 @@ namespace RecoDeli.Scripts.UI
                     // temporarily "remove" grabbed instructions so they can be moved
                     foreach (var bar in grabbedInstructions)
                     {
-                        instructionsContainer.Remove(bar);
+                        bar.BringToFront();
                         instructionBars.Remove(bar);
                     }
 
-                    int currPos = minPos;
-
-                    foreach (var bar in grabbedInstructions)
+                    for (int i = 0; i < grabbedInstructions.Count; i++)
                     {
-                        instructionsContainer.Insert(currPos, bar);
-                        instructionBars.Insert(currPos, bar);
-                        currPos++;
+                        var bar = grabbedInstructions[i];
+                        instructionsContainer.Insert(minPos + i, bar);
+                        instructionBars.Insert(minPos + i, bar);
                     }
+
+                    remainingRepositioningRequests++;
                 }
 
                 // scroll list up or down if near the edge
@@ -476,18 +504,20 @@ namespace RecoDeli.Scripts.UI
                 selectedBar.Selected = false;
             }
 
+            var initialAddIndex = addIndex;
+
             foreach (RobotInstruction instruction in instructions)
             {
-                CreateInstructionBarAt(instruction, addIndex + 1);
-
+                var bar = CreateInstructionBarAt(instruction, addIndex + 1);
+                if (!quiet)
+                {
+                    bar.SetInterpolationStartingPosition(initialAddIndex);
+                }
                 addIndex++;
             }
             addInstructionMenu.Opened = false;
 
-            if (!quiet)
-            {
-                InstructionsListModified();
-            }
+            InstructionsListModified();
         }
 
         public void AddInstruction(RobotInstruction instruction, bool quiet = false)
@@ -497,6 +527,10 @@ namespace RecoDeli.Scripts.UI
 
         private void InstructionsListModified()
         {
+            // instructions added need to be repositioned multiple times
+            // due to having different starting position
+            remainingRepositioningRequests += 2;
+
             var levelInfo = SaveManager.CurrentSave.GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
 
             levelInfo.Slots[currentSlot].Instructions = GetRobotInstructionsList();

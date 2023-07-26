@@ -25,6 +25,9 @@ namespace RecoDeli.Scripts.UI
 
         private float lastValidDeltaTimeForProgressBar;
 
+        private float currentAbsolutePosition;
+        private int interpolationStartingPosition = -1;
+
         private RobotInstruction instruction;
 
         public Action changing;
@@ -129,12 +132,44 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public void Update()
+        public void UpdateAbsolutePosition()
         {
-            UpdateProgressBar();
+            if(this.parent.resolvedStyle.display == DisplayStyle.None)
+            {
+                return;
+            }
+            this.style.position = Position.Absolute;
+
+            var containerStyle = this.parent.contentContainer.resolvedStyle;
+            var ownStyle = this.resolvedStyle;
+
+            var childIndex = this.parent.IndexOf(this);
+            if(interpolationStartingPosition >= 0)
+            {
+                childIndex = Mathf.Min(interpolationStartingPosition, this.parent.childCount);
+                interpolationStartingPosition = -1;
+            }
+
+            var desiredYPos = containerStyle.paddingTop;
+            if(childIndex > 0)
+            {
+                var previous = this.parent.ElementAt(childIndex - 1);
+                var previousStyle = previous.resolvedStyle;
+                var previousSize = previousStyle.height + previousStyle.marginBottom;
+                desiredYPos = previous.style.top.value.value + previousSize;
+                if (previous is InstructionBar previousBar)
+                {
+                    desiredYPos = previousBar.currentAbsolutePosition + previousSize;
+                }
+            }
+
+            currentAbsolutePosition = desiredYPos + ownStyle.marginTop;
+            this.style.top = currentAbsolutePosition;
+            this.style.left = containerStyle.paddingLeft + ownStyle.marginLeft;
+            this.style.right = containerStyle.paddingRight + ownStyle.marginRight;
         }
 
-        private void UpdateProgressBar()
+        public void UpdateProgressBar()
         {
             if (progressBar == null) return;
             
@@ -169,6 +204,11 @@ namespace RecoDeli.Scripts.UI
         public bool IsPointerHoveringOnHandle()
         {
             return hoveringOverHandle;
+        }
+
+        public void SetInterpolationStartingPosition(int pos)
+        {
+            interpolationStartingPosition = pos;
         }
     }
 }
