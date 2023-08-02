@@ -122,17 +122,29 @@ namespace RecoDeli.Scripts.Controllers
             }
         }
 
+        private void SaveCompletionStats()
+        {
+            var levelInfo = SaveManager.CurrentSave.GetCurrentLevelInfo();
+            if (!levelInfo.Completed)
+            {
+                levelInfo.FastestTime = LastCompletionTime;
+                levelInfo.LowestInstructions = RobotController.CurrentInstructions.Length;
+                levelInfo.Completed = true;
+            }
+            else
+            {
+                levelInfo.FastestTime = Mathf.Min(levelInfo.FastestTime, LastCompletionTime);
+                levelInfo.LowestInstructions = Mathf.Min(levelInfo.LowestInstructions, RobotController.CurrentInstructions.Length);
+            }
+        }
+
         private void SimulationSuccessful()
         {
             LastCompletionTime = SimulationTime;
 
-            var levelInfo = SaveManager.CurrentSave.GetCurrentLevelInfo();
-            levelInfo.Completed = true;
-            levelInfo.FastestTime = Mathf.Min(levelInfo.FastestTime, LastCompletionTime);
-            levelInfo.LowestInstructions = Mathf.Min(levelInfo.LowestInstructions, RobotController.CurrentInstructions.Length);
+            SaveCompletionStats();
 
             endingController.StartEnding();
-
 
             paused = false;
             Time.timeScale = 1.0f;

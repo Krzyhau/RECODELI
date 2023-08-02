@@ -100,6 +100,7 @@ namespace RecoDeli.Scripts
             UpdateGameInterfaceClasses();
 
             saveButton.SetEnabled(!simulationManager.PlayingSimulation);
+            settingsButton.SetEnabled(!simulationManager.PlayingSimulation);
         }
 
         private void UpdateTimer()

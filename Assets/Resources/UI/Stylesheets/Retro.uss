@@ -838,12 +838,15 @@ Slider:focus Label {
     padding-right: 10px;
     flex-grow: 1;
     flex-shrink: 0;
+    max-height: 45%;
+    flex-direction: column;
 }
 
 #leaderboards-chart-bars {
     flex-grow: 1;
     flex-direction: row;
     align-items: flex-end;
+    padding-top: 40px;
 }
 
 #leaderboards-chart-bars > VisualElement {
@@ -856,11 +859,94 @@ Slider:focus Label {
 #leaderboards-chart-labels {
     flex-direction: row;
     justify-content: space-between;
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+#leaderboards-chart-labels Label {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
 }
 
 #leaderboards-scores {
     flex-grow: 1;
-    flex-shrink: 0;
+    flex-shrink: 1;
+}
+
+#leaderboards-chart-line {
+    background-color: rgb(255, 255, 255);
+    height: 100%;
+    width: 2px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: auto;
+    right: 0;
+}
+
+#leaderboards-chart-score {
+    position: absolute;
+    top: 10px;
+    bottom: 0;
+}
+
+#leaderboards-chart-score Label {
+    padding-left: 5px;
+    padding-right: 5px;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    position: absolute;
+    right: 0;
+}
+
+#leaderboards-chart-score.top50 Label {
+    right: auto;
+}
+
+#leaderboards-scores #score {
+    flex-direction: row;
+    justify-content: space-between;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+#leaderboards-scores #score.own {
+    background-color: rgb(64, 64, 64);
+}
+
+#leaderboards-scores #score Label {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+#leaderboards-scores #unity-content-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 Scroller {
