@@ -13,11 +13,11 @@ namespace RecoDeli.Scripts
         [SerializeField] private TimescaleBar timescaleBar;
         [SerializeField] private EndingInterface endingInterface;
         [SerializeField] private SaveManagementWindow saveManagementWindow;
+        [SerializeField] private SettingsMenu settingsMenu;
 
         [Header("Settings")]
         [SerializeField] private string timerFormat = "0.000";
 
-        private Slider timescaleSlider;
         private VisualElement instructionEditorContainer;
 
         private Button playButton;
@@ -50,8 +50,8 @@ namespace RecoDeli.Scripts
             instructionEditor.gameObject.SetActive(true);
             endingInterface.gameObject.SetActive(true);
             saveManagementWindow.gameObject.SetActive(true);
+            settingsMenu.gameObject.SetActive(true);
 
-            timescaleSlider = Document.rootVisualElement.Q<Slider>("timescale-slider");
             instructionEditorContainer = Document.rootVisualElement.Q<VisualElement>("instruction-editor-window");
 
             playButton = Document.rootVisualElement.Q<Button>("play-button");
@@ -89,6 +89,7 @@ namespace RecoDeli.Scripts
             focusOnGoalButton.clicked += simulationManager.DroneCamera.FollowPackage;
 
             saveButton.clicked += () => saveManagementWindow.SetDisplay(true);
+            settingsButton.clicked += () => settingsMenu.SetEnabled(true);
             // menuButton.clicked += 
         }
 

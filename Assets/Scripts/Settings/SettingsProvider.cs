@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 
 namespace RecoDeli.Scripts.Settings
 {
@@ -9,7 +10,7 @@ namespace RecoDeli.Scripts.Settings
             get => PlayerPrefs.GetFloat("SettingsMasterVolume", 1.0f);
             set {
                 PlayerPrefs.SetFloat("SettingsMasterVolume", value);
-                RecoDeliGame.Settings.MainAudioMixerGroup.audioMixer.SetFloat("Master Volume", Mathf.Log10(value) * 20.0f);
+                SetAudioLevels("Master Volume", value);
             }
         }
         public static float MusicVolume
@@ -18,7 +19,27 @@ namespace RecoDeli.Scripts.Settings
             set
             {
                 PlayerPrefs.SetFloat("SettingsMusicVolume", value);
-                RecoDeliGame.Settings.MusicAudioMixerGroup.audioMixer.SetFloat("Music Volume", Mathf.Log10(value) * 20.0f);
+                SetAudioLevels("Music Volume", value);
+            }
+        }
+
+        public static float EnvironmentVolume
+        {
+            get => PlayerPrefs.GetFloat("SettingsEnvironmentVolume", 1.0f);
+            set
+            {
+                PlayerPrefs.SetFloat("SettingsEnvironmentVolume", value);
+                SetAudioLevels("Environment Volume", value);
+            }
+        }
+
+        public static float InterfaceVolume
+        {
+            get => PlayerPrefs.GetFloat("SettingsInterfaceVolume", 1.0f);
+            set
+            {
+                PlayerPrefs.SetFloat("SettingsInterfaceVolume", value);
+                SetAudioLevels("Interface Volume", value);
             }
         }
 
@@ -30,9 +51,26 @@ namespace RecoDeli.Scripts.Settings
 
         public static void ApplySettings()
         {
+            Language = Language;
+            ApplyAudioSettings();
+            AudioSettings.OnAudioConfigurationChanged += (b) => ApplyAudioSettings();
+        }
+
+        private static void ApplyAudioSettings()
+        {
+            // BUG: audio mixer is reset on awake in editor. no idea how to prevent that lol
             MasterVolume = MasterVolume;
             MusicVolume = MusicVolume;
-            Language = Language;
+            EnvironmentVolume = EnvironmentVolume;
+            InterfaceVolume = InterfaceVolume;
+        }
+
+
+
+        private static void SetAudioLevels(string name, float value)
+        {
+            var volumeValue = value == 0 ? -80.0f : Mathf.Log10(value) * 20.0f;
+            RecoDeliGame.Settings.MusicAudioMixerGroup.audioMixer.SetFloat(name, volumeValue);
         }
     }
 }

@@ -25,7 +25,6 @@ namespace RecoDeli.Scripts.UI
                 saveSlotsButtons[slotToLoad].clicked += () => instructionEditor.LoadSaveSlot(slotToLoad);
             }
 
-
             SetDisplay(false);
         }
 

@@ -1,0 +1,62 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/Stylesheets/Retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#Retro" />
+    <ui:VisualElement name="settings-container" class="modal-container">
+        <ui:VisualElement name="settings-window" class="window">
+            <ui:VisualElement name="title-bar" class="title-bar">
+                <ui:VisualElement name="leaderboards-window-icon" class="title-icon" />
+                <ui:Label tabindex="-1" text="SETTINGS" display-tooltip-when-elided="true" name="leaderboards-window-label" class="text title" />
+                <ui:VisualElement name="menu-buttons" class="title-control-buttons">
+                    <ui:Button display-tooltip-when-elided="true" name="exit-button">
+                        <ui:Label tabindex="-1" text="x" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                        <ui:Label tabindex="-1" text="MENU" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
+                    </ui:Button>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="settings-window-inner" class="window-inner">
+                <ui:VisualElement name="settings-tab-view" class="tab-view">
+                    <ui:VisualElement name="settings-tabs" class="tab-view-tabs" style="background-color: rgba(0, 0, 0, 0);">
+                        <ui:Button display-tooltip-when-elided="true" name="general-settings-tab-button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="GENERAL" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
+                        </ui:Button>
+                        <ui:Button display-tooltip-when-elided="true" name="audio-settings-tab-button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="VIDEO" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
+                        </ui:Button>
+                        <ui:Button display-tooltip-when-elided="true" name="audio-settings-tab-button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="AUDIO" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
+                        </ui:Button>
+                        <ui:Button display-tooltip-when-elided="true" name="controls-settings-tab-button">
+                            <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
+                            <ui:Label tabindex="-1" text="CONTROLS" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
+                        </ui:Button>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="settings-views" class="tab-view-views">
+                        <ui:VisualElement name="settings-general-view" class="unity-disabled">
+                            <ui:DropdownField label="LANGUAGE" index="-1" name="language-dropdown" class="setting-field" />
+                            <ui:DropdownField label="UI SKIN" index="-1" name="skin-dropdown" class="setting-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="settings-video-view" class="unity-disabled">
+                            <ui:DropdownField label="DISPLAY MODE" index="-1" name="display-mode-dropdown" class="setting-field" />
+                            <ui:DropdownField label="ASPECT RATIO" index="-1" name="aspect-ratio-dropdown" class="setting-field" />
+                            <ui:DropdownField label="RESOLUTION" index="-1" name="resolution-dropdown" class="setting-field" />
+                            <ui:DropdownField label="QUALITY" index="-1" name="quality-dropdown" class="setting-field" />
+                            <ui:DropdownField label="POST-PROCESSING" index="-1" name="post-processing-dropdown" class="setting-field" />
+                            <ui:DropdownField label="UI SCALING" index="-1" name="ui-scaling-dropdown" class="setting-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="settings-audio-view">
+                            <ui:Slider picking-mode="Ignore" label="MASTER VOLUME" value="1" high-value="1" name="master-volume-slider" class="setting-field" />
+                            <ui:Slider picking-mode="Ignore" label="MUSIC VOLUME" value="1" high-value="1" name="music-volume-slider" class="setting-field" />
+                            <ui:Slider picking-mode="Ignore" label="INTERFACE VOLUME" value="1" high-value="1" name="interface-volume-slider" class="setting-field" />
+                            <ui:Slider picking-mode="Ignore" label="ENVIRONMENT VOLUME" value="1" high-value="1" name="environment-volume-slider" class="setting-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="settings-controls-view" class="unity-disabled">
+                            <ui:Label tabindex="-1" text="no fucking clue how im going to do this one lmfao" display-tooltip-when-elided="true" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>
