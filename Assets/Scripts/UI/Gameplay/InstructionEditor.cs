@@ -54,6 +54,7 @@ namespace RecoDeli.Scripts.UI
         private List<InstructionBar> grabbedInstructions = new();
         private bool grabbing;
         private InstructionBar lastClickedInstructionBar;
+        private float lastClickedInstructionBarTime;
         private bool playingInstructions;
         private float prePlayScrollPosition;
 
@@ -79,7 +80,7 @@ namespace RecoDeli.Scripts.UI
             copyButton = gameDocument.rootVisualElement.Q<Button>("copy-button");
             pasteButton = gameDocument.rootVisualElement.Q<Button>("paste-button");
 
-            addButton.clicked += () => { addInstructionMenu.Opened = true; };
+            addButton.clicked += addInstructionMenu.StartAddingInstruction;
             deleteButton.clicked += DeleteSelected;
             undoButton.clicked += Undo;
             redoButton.clicked += Redo;
@@ -233,6 +234,16 @@ namespace RecoDeli.Scripts.UI
                 // find out what to select
                 if (clickedBar != null)
                 {
+                    if (
+                        !multipleSelection && !rangeSelection &&
+                        lastClickedInstructionBar == clickedBar && clickedBar.Selected &&
+                        Time.realtimeSinceStartup - lastClickedInstructionBarTime < 0.5f &&
+                        instructionBars.Where(bar => bar.Selected).Count() == 1
+                    )
+                    {
+                        addInstructionMenu.StartReplacingInstruction(instructionBars.IndexOf(clickedBar), clickedBar.Instruction.Action);
+                    }
+
                     if (lastClickedInstructionBar == null || !lastClickedInstructionBar.Selected)
                     {
                         lastClickedInstructionBar = instructionBars.Where(bar => bar.Selected).FirstOrDefault();
@@ -256,6 +267,7 @@ namespace RecoDeli.Scripts.UI
                     }
 
                     lastClickedInstructionBar = clickedBar;
+                    lastClickedInstructionBarTime = Time.realtimeSinceStartup;
                 }
                 else
                 {
@@ -418,7 +430,7 @@ namespace RecoDeli.Scripts.UI
             {
                 if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    addInstructionMenu.Opened = false;
+                    addInstructionMenu.Finish();
                 }
             }
         }
@@ -515,7 +527,6 @@ namespace RecoDeli.Scripts.UI
                 }
                 addIndex++;
             }
-            addInstructionMenu.Opened = false;
 
             InstructionsListModified();
         }
@@ -523,6 +534,20 @@ namespace RecoDeli.Scripts.UI
         public void AddInstruction(RobotInstruction instruction, bool quiet = false)
         {
             AddInstructions(new List<RobotInstruction>() { instruction }, quiet);
+        }
+
+        public void ReplaceInstruction(int index, RobotInstruction instruction)
+        {
+            if (index < 0 || index >= instructionBars.Count) return;
+
+            StoreUndoOperation(index);
+
+            instructionBars.RemoveAt(index);
+            instructionsContainer.RemoveAt(index);
+
+            CreateInstructionBarAt(instruction, index);
+
+            InstructionsListModified();
         }
 
         private void InstructionsListModified()
@@ -729,7 +754,7 @@ namespace RecoDeli.Scripts.UI
 
             if (state)
             {
-                addInstructionMenu.Opened = false;
+                addInstructionMenu.Finish();
                 prePlayScrollPosition = instructionsContainer.scrollOffset.y;
                 foreach (var bar in instructionBars)
                 {
