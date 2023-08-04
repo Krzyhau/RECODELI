@@ -152,5 +152,10 @@ namespace RecoDeli.Scripts
             endingInterface.ShowInterface(show);
             interfaceDocument.rootVisualElement.SetEnabled(!show);
         }
+
+        public bool HasModalWindowOpened()
+        {
+            return settingsMenu.Opened || saveManagementWindow.Opened;
+        }
     }
 }

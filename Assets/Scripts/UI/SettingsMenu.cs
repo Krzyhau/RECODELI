@@ -15,6 +15,8 @@ namespace RecoDeli.Scripts.UI
 
         private Button exitButton;
 
+        public bool Opened => settingsDocument.rootVisualElement.enabledSelf;
+
         private void Awake()
         {
             exitButton = settingsDocument.rootVisualElement.Q<Button>("exit-button");

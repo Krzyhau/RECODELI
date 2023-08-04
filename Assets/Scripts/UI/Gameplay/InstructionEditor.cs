@@ -29,12 +29,14 @@ namespace RecoDeli.Scripts.UI
         }
 
 
+        [SerializeField] private SimulationInterface simulationInterface;
         [SerializeField] private AddInstructionMenu addInstructionMenu;
 
         [Header("Settings")]
         [SerializeField] private int maxUndoHistory;
         [SerializeField] private float focusZoneEdgesSize;
         [SerializeField] private float grabScrollMaxSpeed;
+        [SerializeField] private float doubleClickMaxDelay;
 
         private VisualElement instructionEditorContainer;
         private ScrollView instructionsContainer;
@@ -67,6 +69,7 @@ namespace RecoDeli.Scripts.UI
         public List<InstructionBar> InstructionBars => instructionBars;
         public int CurrentSlot => currentSlot;
         public int SkipToInstruction { get; private set; }
+        public AddInstructionMenu AddInstructionMenu => addInstructionMenu;
 
         public void Initialize(UIDocument gameDocument)
         {
@@ -237,7 +240,7 @@ namespace RecoDeli.Scripts.UI
                     if (
                         !multipleSelection && !rangeSelection &&
                         lastClickedInstructionBar == clickedBar && clickedBar.Selected &&
-                        Time.realtimeSinceStartup - lastClickedInstructionBarTime < 0.5f &&
+                        Time.realtimeSinceStartup - lastClickedInstructionBarTime < doubleClickMaxDelay &&
                         instructionBars.Where(bar => bar.Selected).Count() == 1
                     )
                     {
@@ -394,27 +397,50 @@ namespace RecoDeli.Scripts.UI
 
         private void HandleKeyboardShortcuts()
         {
-            if (!addInstructionMenu.Opened && !playingInstructions && !EventSystem.current.HasInputFieldSelected())
+            if(instructionEditorContainer.panel.focusController.focusedElement is TextField)
             {
-                if (Input.GetKeyDown(KeyCode.A))
+                return;
+            }
+            if (simulationInterface.HasModalWindowOpened())
+            {
+                return;
+            }
+
+            if (playingInstructions)
+            {
+
+            }
+            else if (addInstructionMenu)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
                 {
-                    SetAllBarsSelected(true);
+                    addInstructionMenu.Finish();
                 }
-                else if (Input.GetKeyDown(KeyCode.C))
+            }
+            else
+            {
+                if(Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
                 {
-                    CopySelected();
-                }
-                else if (Input.GetKeyDown(KeyCode.V))
-                {
-                    Paste();
-                }
-                else if (Input.GetKeyDown(KeyCode.Z))
-                {
-                    Undo();
-                }
-                else if (Input.GetKeyDown(KeyCode.Y))
-                {
-                    Redo();
+                    if (Input.GetKeyDown(KeyCode.A))
+                    {
+                        SetAllBarsSelected(true);
+                    }
+                    else if (Input.GetKeyDown(KeyCode.C))
+                    {
+                        CopySelected();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.V))
+                    {
+                        Paste();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Z))
+                    {
+                        Undo();
+                    }
+                    else if (Input.GetKeyDown(KeyCode.Y))
+                    {
+                        Redo();
+                    }
                 }
 
                 if (Input.GetKeyDown(KeyCode.Escape))
@@ -425,12 +451,9 @@ namespace RecoDeli.Scripts.UI
                 {
                     DeleteSelected();
                 }
-            }
-            else if(addInstructionMenu.Opened)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
+                if (Input.GetKeyDown(KeyCode.R))
                 {
-                    addInstructionMenu.Finish();
+                    TryStartReplacingSelectedInstruction();
                 }
             }
         }
@@ -534,6 +557,17 @@ namespace RecoDeli.Scripts.UI
         public void AddInstruction(RobotInstruction instruction, bool quiet = false)
         {
             AddInstructions(new List<RobotInstruction>() { instruction }, quiet);
+        }
+
+        public void TryStartReplacingSelectedInstruction()
+        {
+            var selectedBars = instructionBars.Where(i => i.Selected);
+            if (selectedBars.Count() == 1)
+            {
+                var bar = selectedBars.First();
+                var barIndex = instructionBars.IndexOf(bar);
+                addInstructionMenu.StartReplacingInstruction(barIndex, bar.Instruction.Action);
+            }
         }
 
         public void ReplaceInstruction(int index, RobotInstruction instruction)

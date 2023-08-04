@@ -12,6 +12,8 @@ namespace RecoDeli.Scripts.UI
         private Button closeButton;
         private List<Button> saveSlotsButtons;
 
+        public bool Opened => saveManagementDocument.rootVisualElement.enabledSelf;
+
         private void Awake()
         {
             closeButton = saveManagementDocument.rootVisualElement.Q<Button>("close-button");
