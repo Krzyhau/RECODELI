@@ -19,5 +19,17 @@ namespace RecoDeli.Scripts.Utils
 
             return root;
         }
+
+        public static bool ContainsElement(this VisualElement self, VisualElement element)
+        {
+            var check = element;
+            while (check != null)
+            {
+                if (self == check) return true;
+                check = check.parent;
+            }
+
+            return false;
+        }
     }
 }

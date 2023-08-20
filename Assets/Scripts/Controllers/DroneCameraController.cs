@@ -59,16 +59,16 @@ namespace RecoDeli.Scripts.Controllers
 
         private void Panning()
         {
-            if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-            {
-                heldPlanePosition = GetMousePosOnXZPlane();
-                panning = true;
-                FollowObject(null);
-            }
-            if (!Input.GetMouseButton(0))
-            {
-                panning = false;
-            }
+            //if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
+            //{
+            //    heldPlanePosition = GetMousePosOnXZPlane();
+            //    panning = true;
+            //    FollowObject(null);
+            //}
+            //if (!Input.GetMouseButton(0))
+            //{
+            //    panning = false;
+            //}
 
             if (!panning) return;
 
@@ -92,15 +92,15 @@ namespace RecoDeli.Scripts.Controllers
         {
             float zoomDistance = 0.0f;
 
-            if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.Plus))
-            {
-                zoomDistance += zoomScrollDistance;
-            }
+            //if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.Plus))
+            //{
+            //    zoomDistance += zoomScrollDistance;
+            //}
 
-            else if (Input.GetAxis("Mouse ScrollWheel") < 0f || Input.GetKeyDown(KeyCode.Minus))
-            {
-                zoomDistance -= zoomScrollDistance;
-            }
+            //else if (Input.GetAxis("Mouse ScrollWheel") < 0f || Input.GetKeyDown(KeyCode.Minus))
+            //{
+            //    zoomDistance -= zoomScrollDistance;
+            //}
 
             if (zoomDistance == 0.0f || EventSystem.current.IsPointerOverGameObject()) return;
 

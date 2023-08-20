@@ -22,39 +22,35 @@ namespace RecoDeli.Scripts.UI
 
         public VisualElement RootElement => windowDocument.rootVisualElement;
 
+        public static ModalWindow Current { get; private set; }
+        public static bool AnyOpened => Current != null;
+
         protected virtual void Awake()
         {
             closeButton = RootElement.Q<Button>("close-button");
             closeButton.clicked += () => Opened = false;
 
-
-            RootElement.RegisterCallback<NavigationCancelEvent>(e => OnNavigationCancel(e));
-            RootElement.RegisterCallback<NavigationMoveEvent>(e => OnNavigationMove(e));
-
             SetOpened(false);
-        }
-
-        private void OnNavigationCancel(NavigationCancelEvent evt)
-        {
-            SetOpened(false);
-        }
-
-        private void OnNavigationMove(NavigationMoveEvent evt)
-        {
-            var root = (evt.target as VisualElement).GetRootElement();
-            if ((evt.target as VisualElement).GetRootElement() != RootElement)
-            {
-                evt.PreventDefault();
-            }
         }
 
         public virtual void SetOpened(bool opened)
         {
-            Opened = opened;
             if (opened)
             {
+                if (Current != null)
+                {
+                    Current.SetOpened(false);
+                }
                 RootElement.Focus();
             }
+            else { 
+                if(Current == this)
+                {
+                    Current = null;
+                }
+            }
+
+            Opened = opened;
         }
     }
 }

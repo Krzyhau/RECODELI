@@ -101,6 +101,8 @@ namespace RecoDeli.Scripts
 
             saveButton.SetEnabled(!simulationManager.PlayingSimulation);
             settingsButton.SetEnabled(!simulationManager.PlayingSimulation);
+
+            Document.rootVisualElement.SetEnabled(!ModalWindow.AnyOpened);
         }
 
         private void UpdateTimer()
@@ -151,11 +153,6 @@ namespace RecoDeli.Scripts
         {
             endingInterface.ShowInterface(show);
             interfaceDocument.rootVisualElement.SetEnabled(!show);
-        }
-
-        public bool HasModalWindowOpened()
-        {
-            return settingsMenu.Opened || saveManagementWindow.Opened;
         }
     }
 }

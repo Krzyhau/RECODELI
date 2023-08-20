@@ -23,10 +23,11 @@ namespace RecoDeli.Scripts.UI
         public bool Opened
         {
             get => opened;
-            private set
+            set
             {
                 opened = value;
                 instructionEditorContainer.EnableInClassList("adding-instruction", opened);
+                if (opened) addInstructionMenu.Focus();
             }
         }
 
@@ -47,6 +48,8 @@ namespace RecoDeli.Scripts.UI
 
             closeButton.clicked += () => { Opened = false; };
 
+            addInstructionMenu.RegisterCallback<NavigationCancelEvent>(OnNavigationCancel);
+
             CreateMenu();
         }
 
@@ -64,6 +67,11 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
+        private void OnNavigationCancel(NavigationCancelEvent evt)
+        {
+            Opened = false;
+        }
+
         private void OnInstructionClicked(RobotInstruction instruction)
         {
             if (replacing)
@@ -75,7 +83,7 @@ namespace RecoDeli.Scripts.UI
                 instructionEditor.AddInstruction(instruction);
             }
 
-            Finish();
+            Opened = false;
         }
 
         public void StartAddingInstruction()
@@ -101,11 +109,6 @@ namespace RecoDeli.Scripts.UI
             {
                 button.SetEnabled(action != actionToExclude);
             }
-        }
-
-        public void Finish()
-        {
-            Opened = false;
         }
     }
 }
