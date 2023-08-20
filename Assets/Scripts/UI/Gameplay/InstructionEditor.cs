@@ -93,6 +93,8 @@ namespace RecoDeli.Scripts.UI
             instructionsContainer.contentContainer.RegisterCallback<MouseMoveEvent>((e) => OnMouseOverList(e));
             instructionsContainer.contentContainer.RegisterCallback<MouseLeaveEvent>((e) => OnMouseLeaveList(e));
 
+            instructionsContainer.contentContainer.RegisterCallback<NavigationMoveEvent>((e) => OnNavigationMove(e));
+
             addInstructionMenu.Initialize(this, gameDocument);
         }
 
@@ -458,6 +460,38 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
+        private void OnNavigationMove(NavigationMoveEvent evt)
+        {
+            var focusedBarTargets = instructionBars.Where(bar => bar == evt.target);
+            if (!focusedBarTargets.Any()) return;
+
+            var focusedBar = focusedBarTargets.FirstOrDefault();
+            var focusedBarIndex = instructionBars.IndexOf(focusedBar);
+
+            var nextFocusIndex = focusedBarIndex + evt.direction switch
+            {
+                NavigationMoveEvent.Direction.Up => -1,
+                NavigationMoveEvent.Direction.Down => 1,
+                _ => 0
+            };
+
+            if (nextFocusIndex < 0 || nextFocusIndex >= instructionBars.Count || nextFocusIndex == focusedBarIndex)
+            {
+                return;
+            }
+
+            evt.PreventDefault();
+
+            instructionBars[nextFocusIndex].Focus();
+        }
+
+        private void OnBarFocused(InstructionBar bar, FocusInEvent evt)
+        {
+            var editorHasFocus = instructionBars.Where(bar => bar == evt.relatedTarget).Any();
+ 
+            ScrollToInstruction(instructionBars.IndexOf(bar), false);
+        }
+
 
         private InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
         {
@@ -472,6 +506,7 @@ namespace RecoDeli.Scripts.UI
             bar.Instruction = instruction.Clone() as RobotInstruction;
             bar.changing += () => StoreUndoOperation(index);
             bar.changed += () => InstructionsListModified();
+            bar.RegisterCallback<FocusInEvent>((e) => OnBarFocused(bar, e));
 
             instructionsContainer.Insert(index, bar);
             instructionBars.Insert(index, bar);
@@ -670,7 +705,7 @@ namespace RecoDeli.Scripts.UI
 
             grabbing = false;
 
-            FocusOnInstruction(focusPos);
+            ScrollToInstruction(focusPos, true);
 
             InstructionsListModified();
         }
@@ -707,7 +742,7 @@ namespace RecoDeli.Scripts.UI
 
             grabbing = false;
 
-            FocusOnInstruction(focusPos);
+            ScrollToInstruction(focusPos, true);
 
             InstructionsListModified();
         }
@@ -733,7 +768,7 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        public void FocusOnInstruction(int instructionIndex)
+        public void ScrollToInstruction(int instructionIndex, bool center)
         {
             if (instructionBars.Count == 0) return;
             var bar = instructionBars[Math.Clamp(instructionIndex, 0, instructionBars.Count - 1)];
@@ -741,18 +776,39 @@ namespace RecoDeli.Scripts.UI
             // Bars that have been created this frame might not have been
             // fully recalculated yet. Delay setting scroll offset until
             // the UI Toolkit is done with recalculations, so it isn't just set to 0.
-            StartCoroutine(FocusOnInstructionBarCoroutine(bar));
+            StartCoroutine(ScrollToInstructionBarCoroutine(bar, center));
         }
 
-        private IEnumerator FocusOnInstructionBarCoroutine(InstructionBar bar)
+        private IEnumerator ScrollToInstructionBarCoroutine(InstructionBar bar, bool center)
         {
             // wait one frame. awful, but what can I do?!
             yield return null;
 
-            // make instruction appear in the middle of the scrolling container
             var barPos = bar.localBound.y;
-            var targetYScroll = barPos - instructionsContainer.localBound.height * 0.5f;
+            var barHeight = bar.localBound.height;
+            var height = instructionsContainer.localBound.height;
+            var targetYScroll = instructionsContainer.scrollOffset.y;
 
+            if (center)
+            {
+                // make instruction appear in the middle of the scrolling container
+                targetYScroll = barPos - height * 0.5f;
+            }
+            else
+            {
+                var barIndex = instructionBars.IndexOf(bar);
+                // make instruction appear within the scrolling container bounds
+                if(barPos < instructionsContainer.scrollOffset.y)
+                {
+                    targetYScroll = barPos;
+                    if (barIndex == 0) targetYScroll = 0;
+                }
+                else if(barPos + barHeight > instructionsContainer.scrollOffset.y + height)
+                {
+                    targetYScroll = (barPos - height + barHeight);
+                    if (barIndex == instructionBars.Count - 1) targetYScroll += barHeight;
+                }
+            }
             instructionsContainer.scrollOffset = Vector2.up * targetYScroll;
         }
 
@@ -766,7 +822,7 @@ namespace RecoDeli.Scripts.UI
             }
             else
             {
-                FocusOnInstruction(instructionIndex);
+                ScrollToInstruction(instructionIndex, true);
             }
         }
 

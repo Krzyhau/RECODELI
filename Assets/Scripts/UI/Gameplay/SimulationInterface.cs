@@ -88,8 +88,8 @@ namespace RecoDeli.Scripts
             focusOnDroneButton.clicked += simulationManager.DroneCamera.FollowRobot;
             focusOnGoalButton.clicked += simulationManager.DroneCamera.FollowPackage;
 
-            saveButton.clicked += () => saveManagementWindow.SetDisplay(true);
-            settingsButton.clicked += () => settingsMenu.SetEnabled(true);
+            saveButton.clicked += () => saveManagementWindow.SetOpened(true);
+            settingsButton.clicked += () => settingsMenu.SetOpened(true);
             // menuButton.clicked += 
         }
 

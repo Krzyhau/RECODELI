@@ -59,6 +59,8 @@ namespace RecoDeli.Scripts.UI
 
         private void ConstructBase()
         {
+            this.focusable = true;
+
             this.name = "instruction-bar";
             this.AddToClassList("instruction-bar");
 

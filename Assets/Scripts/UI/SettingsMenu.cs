@@ -6,22 +6,14 @@ using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
 {
-    public class SettingsMenu : MonoBehaviour
+    public class SettingsMenu : ModalWindow
     {
-        [SerializeField] private UIDocument settingsDocument;
-
         private VisualElement tabsContainer;
         private VisualElement viewsContainer;
 
-        private Button exitButton;
-
-        public bool Opened => settingsDocument.rootVisualElement.enabledSelf;
-
-        private void Awake()
+        protected override void Awake()
         {
-            exitButton = settingsDocument.rootVisualElement.Q<Button>("exit-button");
-
-            exitButton.clicked += () => SetEnabled(false);
+            base.Awake();
 
             InitializeTabAndViews();
 
@@ -29,14 +21,12 @@ namespace RecoDeli.Scripts.UI
             InitializeGraphicsSettings();
             InitializeAudioSettings();
             InitializeControlsSettings();
-
-            SetEnabled(false);
         }
 
         private void InitializeTabAndViews() 
         {
-            tabsContainer = settingsDocument.rootVisualElement.Q<VisualElement>("settings-tabs");
-            viewsContainer = settingsDocument.rootVisualElement.Q<VisualElement>("settings-views");
+            tabsContainer = RootElement.Q<VisualElement>("settings-tabs");
+            viewsContainer = RootElement.Q<VisualElement>("settings-views");
 
             for(int i = 0; i < tabsContainer.childCount; i++)
             {
@@ -73,10 +63,10 @@ namespace RecoDeli.Scripts.UI
 
         private void InitializeAudioSettings()
         {
-            var masterVolumeSlider = settingsDocument.rootVisualElement.Q<Slider>("master-volume-slider");
-            var musicVolumeSlider = settingsDocument.rootVisualElement.Q<Slider>("music-volume-slider");
-            var environmentVolumeSlider = settingsDocument.rootVisualElement.Q<Slider>("environment-volume-slider");
-            var interfaceVolumeSlider = settingsDocument.rootVisualElement.Q<Slider>("interface-volume-slider");
+            var masterVolumeSlider = RootElement.Q<Slider>("master-volume-slider");
+            var musicVolumeSlider = RootElement.Q<Slider>("music-volume-slider");
+            var environmentVolumeSlider = RootElement.Q<Slider>("environment-volume-slider");
+            var interfaceVolumeSlider = RootElement.Q<Slider>("interface-volume-slider");
 
             masterVolumeSlider.value = SettingsProvider.MasterVolume;
             musicVolumeSlider.value = SettingsProvider.MusicVolume;
@@ -92,11 +82,6 @@ namespace RecoDeli.Scripts.UI
         private void InitializeControlsSettings()
         {
 
-        }
-
-        public void SetEnabled(bool state)
-        {
-            settingsDocument.rootVisualElement.SetEnabled(state);
         }
     }
 }

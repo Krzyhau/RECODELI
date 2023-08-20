@@ -6,7 +6,7 @@
                 <ui:VisualElement name="leaderboards-window-icon" class="title-icon" />
                 <ui:Label tabindex="-1" text="SETTINGS" display-tooltip-when-elided="true" name="leaderboards-window-label" class="text title" />
                 <ui:VisualElement name="menu-buttons" class="title-control-buttons">
-                    <ui:Button display-tooltip-when-elided="true" name="exit-button">
+                    <ui:Button display-tooltip-when-elided="true" name="close-button">
                         <ui:Label tabindex="-1" text="x" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                         <ui:Label tabindex="-1" text="MENU" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>

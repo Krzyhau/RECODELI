@@ -82,6 +82,10 @@ Button:active {
     background-color: rgba(26, 26, 26, 0.7);
 }
 
+Button:focus {
+    background-color: rgba(64, 64, 64, 0.9);
+}
+
 Button.unity-disabled {
     border-left-color: rgb(128, 128, 128);
     border-right-color: rgb(128, 128, 128);
@@ -443,6 +447,10 @@ Slider:focus Label {
 .instruction-bar > #grabbing-handle {
     width: 50%;
     flex-direction: row;
+}
+
+.instruction-bar:focus > #grabbing-handle {
+    background-color: rgba(51, 51, 51, 0.7);
 }
 
 .instruction-bar > #grabbing-handle:hover {
