@@ -17,20 +17,6 @@ namespace RecoDeli.Scripts.UI
 {
     public class InstructionEditor : MonoBehaviour
     {
-        private class EditorCommandState
-        {
-            public List<RobotInstruction> Instructions = new();
-            public int ButtonBasedFocusPosition;
-            public List<int> SelectionIndices = new();
-        }
-
-        private class EditorCommandStatesSlot
-        {
-            public List<EditorCommandState> Undos = new();
-            public List<EditorCommandState> Redos = new();
-        }
-
-
         [SerializeField] private SimulationInterface simulationInterface;
         [SerializeField] private AddInstructionMenu addInstructionMenu;
 
@@ -64,7 +50,7 @@ namespace RecoDeli.Scripts.UI
 
         private List<InstructionBar> instructionBars = new();
 
-        private Dictionary<int, EditorCommandStatesSlot> commandStateSlots = new();
+        private InstructionsStateController commandStateController;
         private int currentSlot = 0;
 
         private List<InstructionBar> grabbedInstructions = new();
@@ -91,6 +77,9 @@ namespace RecoDeli.Scripts.UI
 
         public void Initialize(UIDocument gameDocument)
         {
+            commandStateController = new(this);
+            commandStateController.MaxUndoHistory = maxUndoHistory;
+
             InitializeInterface(gameDocument);
             InitializeInputs();
         }
@@ -109,8 +98,8 @@ namespace RecoDeli.Scripts.UI
 
             addButton.clicked += addInstructionMenu.StartAddingInstruction;
             deleteButton.clicked += DeleteSelected;
-            undoButton.clicked += Undo;
-            redoButton.clicked += Redo;
+            undoButton.clicked += commandStateController.Undo;
+            redoButton.clicked += commandStateController.Redo;
             copyButton.clicked += CopySelected;
             pasteButton.clicked += Paste;
 
@@ -133,8 +122,8 @@ namespace RecoDeli.Scripts.UI
         {
             addInput.action.performed += ctx => addInstructionMenu.StartAddingInstruction();
             deleteInput.action.performed += ctx => DeleteSelected();
-            undoInput.action.performed += ctx => Undo();
-            redoInput.action.performed += ctx => Redo();
+            undoInput.action.performed += ctx => commandStateController.Undo();
+            redoInput.action.performed += ctx => commandStateController.Redo();
             copyInput.action.performed += ctx => CopySelected();
             pasteInput.action.performed += ctx => Paste();
             replaceInput.action.performed += ctx => TryStartReplacingSelectedInstruction();
@@ -236,7 +225,7 @@ namespace RecoDeli.Scripts.UI
                     {
                         grabbing = true;
                         grabbedInstructions = selectedBars.ToList();
-                        StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+                        commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
                     }
                 }
             }
@@ -280,7 +269,7 @@ namespace RecoDeli.Scripts.UI
 
             if (!dragged)
             {
-                StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+                commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
             }
 
             // temporarily "remove" grabbed instructions so they can be moved
@@ -320,8 +309,8 @@ namespace RecoDeli.Scripts.UI
             {
                 addButton.SetEnabled(!playingInstructions);
                 deleteButton.SetEnabled(instructionBars.Where(bar => bar.Selected).Any());
-                undoButton.SetEnabled(GetCurrentCommandStateSlot().Undos.Count > 0);
-                redoButton.SetEnabled(GetCurrentCommandStateSlot().Redos.Count > 0);
+                undoButton.SetEnabled(commandStateController.GetCurrentSlot().Undos.Count > 0);
+                redoButton.SetEnabled(commandStateController.GetCurrentSlot().Redos.Count > 0);
                 copyButton.SetEnabled(deleteButton.enabledSelf);
                 pasteButton.SetEnabled(RobotInstruction.IsValidListString(GUIUtility.systemCopyBuffer));
             }
@@ -526,7 +515,7 @@ namespace RecoDeli.Scripts.UI
             currentlyHeldBar = null;
         }
 
-        private InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
+        public InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
         {
             if (instruction == null)
             {
@@ -537,7 +526,7 @@ namespace RecoDeli.Scripts.UI
 
             bar.Selected = true;
             bar.Instruction = instruction.Clone() as RobotInstruction;
-            bar.changing += () => StoreUndoOperation(index);
+            bar.changing += () => commandStateController.StoreUndoOperation(index);
             bar.changed += () => InstructionsListModified();
             bar.RegisterCallback<PointerDownEvent>(e => OnBarPointerDown(e, bar), TrickleDown.NoTrickleDown);
             bar.RegisterCallback<PointerUpEvent>(e => OnBarPointerUp(e, bar), TrickleDown.NoTrickleDown);
@@ -548,7 +537,7 @@ namespace RecoDeli.Scripts.UI
             return bar;
         }
 
-        private void DeleteInstructionBar(InstructionBar bar)
+        public void DeleteInstructionBar(InstructionBar bar)
         {
             instructionsContainer.Remove(bar);
             instructionBars.Remove(bar);
@@ -564,33 +553,6 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        private EditorCommandStatesSlot GetCurrentCommandStateSlot()
-        {
-            if (!commandStateSlots.ContainsKey(currentSlot))
-            {
-                commandStateSlots[currentSlot] = new EditorCommandStatesSlot();
-            }
-            return commandStateSlots[currentSlot];
-        }
-
-        private void StoreUndoOperation(int focusPosition)
-        {
-            var slot = GetCurrentCommandStateSlot();
-            slot.Undos.Add(new EditorCommandState
-            {
-                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
-                ButtonBasedFocusPosition = focusPosition,
-                SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
-            });
-
-            if (slot.Undos.Count > maxUndoHistory)
-            {
-                slot.Undos.RemoveAt(0);
-            }
-
-            slot.Redos.Clear();
-        }
-
         public void AddInstructions(List<RobotInstruction> instructions, bool quiet = false)
         {
             var addIndex = instructionsContainer.childCount - 1;
@@ -602,7 +564,7 @@ namespace RecoDeli.Scripts.UI
 
             if (!quiet)
             {
-                StoreUndoOperation(addIndex + instructions.Count / 2);
+                commandStateController.StoreUndoOperation(addIndex + instructions.Count / 2);
             }
 
             foreach (var selectedBar in selected)
@@ -647,7 +609,7 @@ namespace RecoDeli.Scripts.UI
         {
             if (index < 0 || index >= instructionBars.Count) return;
 
-            StoreUndoOperation(index);
+            commandStateController.StoreUndoOperation(index);
 
             instructionBars.RemoveAt(index);
             instructionsContainer.RemoveAt(index);
@@ -657,7 +619,7 @@ namespace RecoDeli.Scripts.UI
             InstructionsListModified();
         }
 
-        private void InstructionsListModified()
+        public void InstructionsListModified()
         {
             // instructions added need to be repositioned multiple times
             // due to having different starting position
@@ -666,6 +628,8 @@ namespace RecoDeli.Scripts.UI
             var levelInfo = SaveManager.CurrentSave.GetCurrentLevelInfo();
 
             levelInfo.Slots[currentSlot].Instructions = GetRobotInstructionsList();
+
+            grabbing = false;
         }
 
         public void LoadSaveSlot(int slot)
@@ -696,7 +660,7 @@ namespace RecoDeli.Scripts.UI
                 var barToSelectAfterwards = Math.Max(0, selectedBars.Select(bar => instructionBars.IndexOf(bar)).Min());
 
                 var focusIndex = selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average();
-                StoreUndoOperation(Mathf.RoundToInt((float)focusIndex));
+                commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)focusIndex));
 
                 foreach (var bar in selectedBars)
                 {
@@ -712,84 +676,6 @@ namespace RecoDeli.Scripts.UI
 
                 InstructionsListModified();
             }
-        }
-
-        public void Undo()
-        {
-            if (!instructionsContainer.enabledSelf) return;
-
-            var slot = GetCurrentCommandStateSlot();
-            if (slot.Undos.Count == 0) return;
-            var undo = slot.Undos.Last();
-
-            var focusPos = undo.ButtonBasedFocusPosition;
-
-            slot.Redos.Add(new EditorCommandState
-            {
-                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
-                ButtonBasedFocusPosition = focusPos,
-                SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
-            });
-
-            foreach (var bar in instructionBars.ToList())
-            {
-                DeleteInstructionBar(bar);
-            }
-
-            var currentIndex = 0;
-            foreach (var instruction in undo.Instructions)
-            {
-                var bar = CreateInstructionBarAt(instruction, currentIndex);
-                bar.Selected = undo.SelectionIndices.Contains(currentIndex);
-                currentIndex++;
-            }
-
-            slot.Undos.RemoveAt(slot.Undos.Count - 1);
-
-            grabbing = false;
-
-            ScrollToInstruction(focusPos, true);
-
-            InstructionsListModified();
-        }
-
-        public void Redo()
-        {
-            if (!instructionsContainer.enabledSelf) return;
-
-            var slot = GetCurrentCommandStateSlot();
-            if (slot.Redos.Count == 0) return;
-            var redo = slot.Redos.Last();
-            var focusPos = redo.ButtonBasedFocusPosition;
-
-            slot.Undos.Add(new EditorCommandState
-            {
-                Instructions = instructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
-                ButtonBasedFocusPosition = focusPos,
-                SelectionIndices = instructionBars.Where(bar => bar.Selected).Select(bar => instructionBars.IndexOf(bar)).ToList()
-            });
-
-            foreach (var bar in instructionBars.ToList())
-            {
-                DeleteInstructionBar(bar);
-            }
-
-            var currentIndex = 0;
-
-            foreach (var instruction in redo.Instructions)
-            {
-                var bar = CreateInstructionBarAt(instruction, currentIndex);
-                bar.Selected = redo.SelectionIndices.Contains(currentIndex);
-                currentIndex++;
-            }
-
-            slot.Redos.RemoveAt(slot.Redos.Count - 1);
-
-            grabbing = false;
-
-            ScrollToInstruction(focusPos, true);
-
-            InstructionsListModified();
         }
 
         public void CopySelected()
