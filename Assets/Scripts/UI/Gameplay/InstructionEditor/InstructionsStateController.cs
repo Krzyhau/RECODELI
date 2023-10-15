@@ -7,12 +7,22 @@ namespace RecoDeli.Scripts.UI
 {
     public class InstructionsStateController
     {
+        public enum StateType
+        {
+            ParameterEdited,
+            TypeChanged,
+            MovedShift,
+            MovedDrag,
+            Deleted,
+            Added,
+        }
 
         public class State
         {
             public List<RobotInstruction> Instructions = new();
             public int ButtonBasedFocusPosition;
             public List<int> SelectionIndices = new();
+            public StateType Type;
         }
 
         public class StatesSlot
@@ -40,7 +50,7 @@ namespace RecoDeli.Scripts.UI
             return commandStateSlots[editor.CurrentSlot];
         }
 
-        public void StoreUndoOperation(int focusPosition)
+        public void StoreUndoOperation(int focusPosition, StateType type)
         {
             var slot = GetCurrentSlot();
             slot.Undos.Add(new State
@@ -52,7 +62,8 @@ namespace RecoDeli.Scripts.UI
                 SelectionIndices = editor.InstructionBars
                     .Where(bar => bar.Selected)
                     .Select(bar => editor.InstructionBars.IndexOf(bar))
-                    .ToList()
+                    .ToList(),
+                Type = type
             });
 
             if (slot.Undos.Count > MaxUndoHistory)
@@ -83,7 +94,8 @@ namespace RecoDeli.Scripts.UI
                 SelectionIndices = editor.InstructionBars
                     .Where(bar => bar.Selected)
                     .Select(bar => editor.InstructionBars.IndexOf(bar))
-                    .ToList()
+                    .ToList(),
+                Type = undo.Type
             });
 
             foreach (var bar in editor.InstructionBars.ToList())
@@ -117,9 +129,15 @@ namespace RecoDeli.Scripts.UI
 
             slot.Undos.Add(new State
             {
-                Instructions = editor.InstructionBars.Select(bar => bar.Instruction.Clone() as RobotInstruction).ToList(),
+                Instructions = editor.InstructionBars
+                    .Select(bar => bar.Instruction.Clone() as RobotInstruction)
+                    .ToList(),
                 ButtonBasedFocusPosition = focusPos,
-                SelectionIndices = editor.InstructionBars.Where(bar => bar.Selected).Select(bar => editor.InstructionBars.IndexOf(bar)).ToList()
+                SelectionIndices = editor.InstructionBars
+                    .Where(bar => bar.Selected)
+                    .Select(bar => editor.InstructionBars.IndexOf(bar))
+                    .ToList(),
+                Type = redo.Type
             });
 
             foreach (var bar in editor.InstructionBars.ToList())

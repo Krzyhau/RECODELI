@@ -13,6 +13,7 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
+
 namespace RecoDeli.Scripts.UI
 {
     public class InstructionEditor : MonoBehaviour
@@ -225,7 +226,10 @@ namespace RecoDeli.Scripts.UI
                     {
                         grabbing = true;
                         grabbedInstructions = selectedBars.ToList();
-                        commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+                        commandStateController.StoreUndoOperation(
+                            Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()),
+                            InstructionsStateController.StateType.MovedDrag
+                        );
                     }
                 }
             }
@@ -269,7 +273,10 @@ namespace RecoDeli.Scripts.UI
 
             if (!dragged)
             {
-                commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+                commandStateController.StoreUndoOperation(
+                    Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()),
+                    InstructionsStateController.StateType.MovedShift
+                );
             }
 
             // temporarily "remove" grabbed instructions so they can be moved
@@ -526,7 +533,7 @@ namespace RecoDeli.Scripts.UI
 
             bar.Selected = true;
             bar.Instruction = instruction.Clone() as RobotInstruction;
-            bar.changing += () => commandStateController.StoreUndoOperation(index);
+            bar.changing += () => commandStateController.StoreUndoOperation(index, InstructionsStateController.StateType.ParameterEdited);
             bar.changed += () => InstructionsListModified();
             bar.RegisterCallback<PointerDownEvent>(e => OnBarPointerDown(e, bar), TrickleDown.NoTrickleDown);
             bar.RegisterCallback<PointerUpEvent>(e => OnBarPointerUp(e, bar), TrickleDown.NoTrickleDown);
@@ -564,7 +571,10 @@ namespace RecoDeli.Scripts.UI
 
             if (!quiet)
             {
-                commandStateController.StoreUndoOperation(addIndex + instructions.Count / 2);
+                commandStateController.StoreUndoOperation(
+                    addIndex + instructions.Count / 2,
+                    InstructionsStateController.StateType.Added
+                );
             }
 
             foreach (var selectedBar in selected)
@@ -609,7 +619,7 @@ namespace RecoDeli.Scripts.UI
         {
             if (index < 0 || index >= instructionBars.Count) return;
 
-            commandStateController.StoreUndoOperation(index);
+            commandStateController.StoreUndoOperation(index, InstructionsStateController.StateType.TypeChanged);
 
             instructionBars.RemoveAt(index);
             instructionsContainer.RemoveAt(index);
@@ -660,7 +670,10 @@ namespace RecoDeli.Scripts.UI
                 var barToSelectAfterwards = Math.Max(0, selectedBars.Select(bar => instructionBars.IndexOf(bar)).Min());
 
                 var focusIndex = selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average();
-                commandStateController.StoreUndoOperation(Mathf.RoundToInt((float)focusIndex));
+                commandStateController.StoreUndoOperation(
+                    Mathf.RoundToInt((float)focusIndex),
+                    InstructionsStateController.StateType.Deleted
+                );
 
                 foreach (var bar in selectedBars)
                 {
