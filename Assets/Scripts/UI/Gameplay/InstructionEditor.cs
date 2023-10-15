@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -68,14 +69,15 @@ namespace RecoDeli.Scripts.UI
 
         private List<InstructionBar> grabbedInstructions = new();
         private bool grabbing;
+        private InstructionBar currentlyHeldBar;
         private InstructionBar lastFocusedInstructionBar;
+        private bool doNotUnselectNextFocus;
         private float lastClickedInstructionBarTime;
         private bool playingInstructions;
         private float prePlayScrollPosition;
 
-        private bool mouseOverList;
-        private bool mouseHeldOnList;
         private float mouseListBasedPosition;
+        private float mouseListRealPosition;
         private int remainingRepositioningRequests;
 
         public bool Grabbing => grabbing;
@@ -83,6 +85,9 @@ namespace RecoDeli.Scripts.UI
         public int CurrentSlot => currentSlot;
         public int SkipToInstruction { get; private set; }
         public AddInstructionMenu AddInstructionMenu => addInstructionMenu;
+
+        public ScrollView ListDocument => instructionsContainer;
+        public VisualElement EditorDocument => instructionEditorContainer;
 
         public void Initialize(UIDocument gameDocument)
         {
@@ -109,14 +114,19 @@ namespace RecoDeli.Scripts.UI
             copyButton.clicked += CopySelected;
             pasteButton.clicked += Paste;
 
-            instructionsContainer.contentContainer.RegisterCallback<MouseMoveEvent>((e) => OnMouseOverList(e));
-            instructionsContainer.contentContainer.RegisterCallback<MouseLeaveEvent>((e) => OnMouseLeaveList(e));
+            instructionsContainer.contentContainer.RegisterCallback<PointerMoveEvent>((e) => OnMouseOverList(e));
 
             instructionsContainer.RegisterCallback<NavigationMoveEvent>((e) => OnNavigationMove(e));
-            instructionsContainer.RegisterCallback<FocusEvent>((e) => OnWindowFocused(e));
+            instructionsContainer.RegisterCallback<FocusEvent>((e) => OnWindowFocused(e), TrickleDown.TrickleDown);
             instructionsContainer.RegisterCallback<FocusInEvent>((e) => OnBarFocused(e));
 
+            gameDocument.rootVisualElement.RegisterCallback<NavigationMoveEvent>((e) => OnGlobalNavigationMove(e), TrickleDown.TrickleDown);
+            gameDocument.rootVisualElement.RegisterCallback<PointerCaptureOutEvent>((e) => OnPointerReleasedWithGrabbedBar(e));
+
             addInstructionMenu.Initialize(this, gameDocument);
+
+            instructionsContainer.horizontalScroller.focusable = false;
+            instructionsContainer.verticalScroller.focusable = false;
         }
 
         private void InitializeInputs()
@@ -128,14 +138,14 @@ namespace RecoDeli.Scripts.UI
             copyInput.action.performed += ctx => CopySelected();
             pasteInput.action.performed += ctx => Paste();
             replaceInput.action.performed += ctx => TryStartReplacingSelectedInstruction();
+
+
+
+            selectAllInput.action.performed += ctx => SetAllBarsSelected(true);
         }
 
         private void Update()
         {
-            // HandleBarGrabbing();
-
-            //HandleKeyboardShortcuts();
-
             UpdateEditorButtonsState();
 
             foreach (var instructionBar in instructionBars)
@@ -173,13 +183,18 @@ namespace RecoDeli.Scripts.UI
             instructionsContainer.contentContainer.style.height = desiredHeight;
         }
 
-        private void OnMouseOverList(MouseMoveEvent evt)
+        private void OnMouseOverList(PointerMoveEvent evt)
         {
-            mouseOverList = true;
-         
-            // calculate list-based mouse position (aka. over which element vertically mouse currently hovers)
+            mouseListRealPosition = evt.localPosition.y;
 
-            var yPosition = Mathf.Max(0.0f, evt.localMousePosition.y - instructionsContainer.contentContainer.resolvedStyle.paddingTop);
+            UpdateMouseListBasedPosition();
+            HandleBarGrabbing();
+        }
+
+        private void UpdateMouseListBasedPosition()
+        {
+            // calculate list-based mouse position (aka. over which element vertically mouse currently hovers)
+            var yPosition = Mathf.Max(0.0f, mouseListRealPosition - instructionsContainer.contentContainer.resolvedStyle.paddingTop);
 
             var currentPosition = 0.0f;
             var buttonIndex = 0;
@@ -203,12 +218,6 @@ namespace RecoDeli.Scripts.UI
             mouseListBasedPosition = buttonIndex;
         }
 
-        private void OnMouseLeaveList(MouseLeaveEvent evt)
-        {
-            mouseOverList = false;
-            // keep the last list-based position so that grabbing doesn't do anything weird
-        }
-
 
         private void HandleBarGrabbing()
         {
@@ -217,17 +226,9 @@ namespace RecoDeli.Scripts.UI
                 return;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if (!grabbing && currentlyHeldBar != null)
             {
-                mouseHeldOnList = mouseOverList;
-            }
-
-            if (
-                Input.GetMouseButton(0) && !grabbing && mouseHeldOnList &&
-                lastFocusedInstructionBar != null && lastFocusedInstructionBar.Selected
-            )
-            {
-                if (!lastFocusedInstructionBar.IsPointerHoveringOnHandle())
+                if (!currentlyHeldBar.IsPointerHoveringOnHandle())
                 {
                     var selectedBars = instructionBars.Where(bar => bar.Selected);
 
@@ -240,57 +241,67 @@ namespace RecoDeli.Scripts.UI
                 }
             }
 
-            if (Input.GetMouseButtonUp(0) && grabbing)
+            if (!grabbing) return;
+
+            int newPos = Mathf.FloorToInt(mouseListBasedPosition);
+            int oldPos = instructionBars.IndexOf(lastFocusedInstructionBar);
+
+            int delta = newPos - oldPos;
+            if(delta != 0)
             {
-                grabbing = false;
-                grabbedInstructions.Clear();
-                mouseHeldOnList = false;
-                InstructionsListModified();
+                MoveSelectedInstructions(delta, true);
             }
 
-            if (grabbing)
+            // scroll list up or down if near the edge
+            var mouseScreenPosition = mouseListRealPosition - instructionsContainer.scrollOffset.y;
+            var halfListHeight = instructionsContainer.localBound.height * 0.5f;
+            var midDistance = mouseScreenPosition - halfListHeight;
+            var edgeSpeed = Math.Clamp((Math.Abs(midDistance) - (halfListHeight - focusZoneEdgesSize)), 0.0f, 1.0f);
+            edgeSpeed *= Math.Sign(midDistance) / focusZoneEdgesSize;
+
+            if(edgeSpeed != 0.0f)
             {
-                int newPos = Mathf.FloorToInt(mouseListBasedPosition);
-                int oldPos = instructionBars.IndexOf(lastFocusedInstructionBar);
+                instructionsContainer.scrollOffset += Vector2.up * edgeSpeed * grabScrollMaxSpeed;
+            }
+        }
 
-                int minPos = newPos - grabbedInstructions.IndexOf(lastFocusedInstructionBar);
-                int maxPos = minPos + grabbedInstructions.Count - 1;
+        private void MoveSelectedInstructions(int direction, bool dragged)
+        {
+            var newPos = instructionBars.IndexOf(lastFocusedInstructionBar) + direction;
+            var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
 
-                if (newPos != oldPos && minPos >= 0 && maxPos < instructionsContainer.childCount)
-                {
-                    // temporarily "remove" grabbed instructions so they can be moved
-                    foreach (var bar in grabbedInstructions)
-                    {
-                        bar.BringToFront();
-                        instructionBars.Remove(bar);
-                    }
+            int minPos = newPos - selectedBars.IndexOf(lastFocusedInstructionBar);
+            int maxPos = minPos + grabbedInstructions.Count - 1;
 
-                    for (int i = 0; i < grabbedInstructions.Count; i++)
-                    {
-                        var bar = grabbedInstructions[i];
-                        instructionsContainer.Insert(minPos + i, bar);
-                        instructionBars.Insert(minPos + i, bar);
-                    }
+            if(minPos < 0 || maxPos >= instructionsContainer.childCount)
+            {
+                return;
+            }
 
-                    remainingRepositioningRequests++;
-                }
+            if (!dragged)
+            {
+                StoreUndoOperation(Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()));
+            }
 
-                // scroll list up or down if near the edge
-                var mousePosition = Input.mousePosition;
-                mousePosition.y = Screen.height - mousePosition.y;
-                var mouseLocalPosition = instructionsContainer.WorldToLocal(
-                    RuntimePanelUtils.ScreenToPanel(instructionsContainer.panel, mousePosition)
-                );
+            // temporarily "remove" grabbed instructions so they can be moved
+            foreach (var bar in grabbedInstructions)
+            {
+                bar.BringToFront();
+                instructionBars.Remove(bar);
+            }
 
-                var halfListHeight = instructionsContainer.localBound.height * 0.5f;
-                var midDistance = mouseLocalPosition.y - halfListHeight;
-                var edgeSpeed = Math.Clamp((Math.Abs(midDistance) - (halfListHeight - focusZoneEdgesSize)), 0.0f, 1.0f);
-                edgeSpeed *= Math.Sign(midDistance) / focusZoneEdgesSize;
+            for (int i = 0; i < grabbedInstructions.Count; i++)
+            {
+                var bar = grabbedInstructions[i];
+                instructionsContainer.Insert(minPos + i, bar);
+                instructionBars.Insert(minPos + i, bar);
+            }
 
-                if(edgeSpeed != 0.0f)
-                {
-                    instructionsContainer.scrollOffset += Vector2.up * edgeSpeed * grabScrollMaxSpeed;
-                }
+            remainingRepositioningRequests++;
+
+            if (!dragged)
+            {
+                InstructionsListModified();
             }
         }
 
@@ -316,9 +327,57 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
+        private void OnGlobalNavigationMove(NavigationMoveEvent evt)
+        {
+            if (instructionsContainer.ContainsElement(evt.target as VisualElement))
+            {
+                return;
+            }
+
+            if (evt.direction != NavigationMoveEvent.Direction.Up && evt.direction != NavigationMoveEvent.Direction.Down)
+            {
+                return;
+            }
+
+            evt.PreventDefault();
+            doNotUnselectNextFocus = true;
+            if (lastFocusedInstructionBar != null)
+            {
+                lastFocusedInstructionBar.Focus();
+            }
+            else if(instructionBars.Count > 0){
+                instructionBars[(evt.direction == NavigationMoveEvent.Direction.Up) ? ^1 : 0].Focus();
+            }
+        }
+
         private void OnNavigationMove(NavigationMoveEvent evt)
         {
-            if (lastFocusedInstructionBar == null) return;
+            if (lastFocusedInstructionBar == null)
+            {
+                evt.PreventDefault();
+
+                if(instructionBars.Count > 0)
+                {
+                    instructionBars[(evt.direction == NavigationMoveEvent.Direction.Up) ? ^1 : 0].Focus();
+                }
+
+                return;
+            }
+
+            var leaveDirection = evt.direction switch
+            {
+                NavigationMoveEvent.Direction.Previous => NavigationMoveEvent.Direction.Previous,
+                NavigationMoveEvent.Direction.Next => NavigationMoveEvent.Direction.Down,
+                _ => NavigationMoveEvent.Direction.None
+            };
+            if(leaveDirection != NavigationMoveEvent.Direction.None)
+            {
+                evt.PreventDefault();
+                var nextFocus = instructionsContainer.focusController.GetNextFocusable(instructionsContainer, leaveDirection);
+                nextFocus.Focus();
+                return;
+            }
+
 
             var focusedBarIndex = instructionBars.IndexOf(lastFocusedInstructionBar);
 
@@ -329,9 +388,17 @@ namespace RecoDeli.Scripts.UI
                 _ => 0
             };
 
-            if (nextFocusIndex < 0 || nextFocusIndex >= instructionBars.Count || nextFocusIndex == focusedBarIndex)
+            if (nextFocusIndex < 0 || nextFocusIndex >= instructionBars.Count)
             {
-                lastFocusedInstructionBar = null;
+
+                //if(!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
+                //{
+                //    SetAllBarsSelected(false);
+                //}
+                //lastFocusedInstructionBar = null;
+                //return;
+
+                evt.PreventDefault();
                 return;
             }
 
@@ -341,21 +408,43 @@ namespace RecoDeli.Scripts.UI
 
         private void OnWindowFocused(FocusEvent evt)
         {
+            // special case for tabbing to previous element
+            if (evt.direction.GetValue() == 1 && lastFocusedInstructionBar != null)
+            {
+                doNotUnselectNextFocus = true;
+                lastFocusedInstructionBar.Focus();
+                return;
+            }
+
             if (evt.target != instructionsContainer) return;
-            
+
             if (instructionBars.Count() == 0) return;
 
             if (evt.relatedTarget == null || evt.relatedTarget is InstructionBar)
             {
-                SetAllBarsSelected(false);
-                lastFocusedInstructionBar = null;
+                if(!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
+                {
+                    SetAllBarsSelected(false);
+                    lastFocusedInstructionBar = null;
+                }
             }
 
             else if(evt.relatedTarget != null)
             {
-                bool useLast = (evt.relatedTarget as VisualElement).worldBound.y > instructionsContainer.worldBound.y;
-                var barToFocus = instructionBars[useLast ? ^1 : 0];
-                barToFocus.Focus();
+                var navDir = evt.direction.GetValue();
+                var tabNavigation = navDir == 1 || navDir == 2 || navDir == 5 || navDir == 6;
+                if (lastFocusedInstructionBar != null && tabNavigation)
+                {
+                    doNotUnselectNextFocus = true;
+                    lastFocusedInstructionBar.Focus();
+                }
+                else
+                {
+                    lastFocusedInstructionBar = null;
+                    bool useLast = (evt.relatedTarget as VisualElement).worldBound.y > instructionsContainer.worldBound.y;
+                    var barToFocus = instructionBars[useLast ? ^1 : 0];
+                    barToFocus.Focus();
+                }
             }
             
         }
@@ -372,14 +461,69 @@ namespace RecoDeli.Scripts.UI
                 if (bar != barToBlur) barToBlur.Blur();
             }
 
-            if (!multiSelectionInput.action.IsPressed())
+            if (
+                !multiSelectionInput.action.IsPressed() && 
+                !rangeSelectionInput.action.IsPressed() &&
+                !bar.Selected &&
+                !doNotUnselectNextFocus
+            )
             {
                 SetAllBarsSelected(false);
+            }
+            doNotUnselectNextFocus = false;
+
+            if (rangeSelectionInput.action.IsPressed())
+            {
+                var lastBarIndex = instructionBars.IndexOf(lastFocusedInstructionBar);
+                var clickedBarIndex = instructionBars.IndexOf(bar);
+
+                for(var i = Mathf.Min(lastBarIndex, clickedBarIndex) + 1; i <= Mathf.Max(lastBarIndex, clickedBarIndex) - 1; i++)
+                {
+                    instructionBars[i].Selected = true;
+                }
             }
 
             bar.Selected = true;
             ScrollToInstruction(instructionBars.IndexOf(bar), false);
             lastFocusedInstructionBar = bar;
+        }
+
+        private void OnBarPointerDown(PointerDownEvent e, InstructionBar bar)
+        {
+            currentlyHeldBar = bar;
+            instructionsContainer.contentContainer.CapturePointer(e.pointerId);
+
+            var delay = Time.time - lastClickedInstructionBarTime;
+            if (bar == lastFocusedInstructionBar && delay < doubleClickMaxDelay)
+            {
+                TryStartReplacingSelectedInstruction();
+            }
+            lastClickedInstructionBarTime = Time.time;
+        }
+
+        private void OnBarPointerUp(PointerUpEvent e, InstructionBar bar)
+        {
+            if (grabbing || currentlyHeldBar != bar) return;
+
+            if (!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
+            {
+                SetAllBarsSelected(false);
+                bar.Selected = true;
+            }
+        }
+
+        private void OnPointerReleasedWithGrabbedBar(PointerCaptureOutEvent evt)
+        {
+            instructionsContainer.contentContainer.ReleasePointer(evt.pointerId);
+
+            if (grabbing)
+            {
+                grabbing = false;
+                grabbedInstructions.Clear();
+                InstructionsListModified();
+            }
+
+            currentlyHeldBar = null;
         }
 
         private InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
@@ -395,16 +539,8 @@ namespace RecoDeli.Scripts.UI
             bar.Instruction = instruction.Clone() as RobotInstruction;
             bar.changing += () => StoreUndoOperation(index);
             bar.changed += () => InstructionsListModified();
-            bar.RegisterCallback<PointerDownEvent>(e =>
-            {
-                var delay = Time.time - lastClickedInstructionBarTime;
-                if (bar == lastFocusedInstructionBar && delay < doubleClickMaxDelay)
-                {
-                    Debug.Log(delay);
-                    TryStartReplacingSelectedInstruction();
-                }
-                lastClickedInstructionBarTime = Time.time;
-            }, TrickleDown.NoTrickleDown);
+            bar.RegisterCallback<PointerDownEvent>(e => OnBarPointerDown(e, bar), TrickleDown.NoTrickleDown);
+            bar.RegisterCallback<PointerUpEvent>(e => OnBarPointerUp(e, bar), TrickleDown.NoTrickleDown);
 
             instructionsContainer.Insert(index, bar);
             instructionBars.Insert(index, bar);

@@ -64,6 +64,8 @@ namespace RecoDeli.Scripts.UI
             this.name = "instruction-bar";
             this.AddToClassList("instruction-bar");
 
+            this.RegisterCallback<NavigationSubmitEvent>(OnNavigationEnter);
+
             progressBar = new ProgressBar();
             progressBar.name = "progress";
             progressBar.lowValue = 0.0f;
@@ -131,6 +133,14 @@ namespace RecoDeli.Scripts.UI
                 changing?.Invoke();
                 Instruction.SetInputParameterFromString(parameterIndex, field.value.ToString());
                 changed?.Invoke();
+            }
+        }
+
+        private void OnNavigationEnter(NavigationSubmitEvent evt)
+        {
+            if(textFieldsContainer.childCount > 0)
+            {
+                textFieldsContainer[0].Focus();
             }
         }
 

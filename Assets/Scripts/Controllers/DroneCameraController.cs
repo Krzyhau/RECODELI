@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace RecoDeli.Scripts.Controllers
 {
@@ -11,6 +12,7 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private Camera controlledCamera;
         [SerializeField] private SimulationManager simulationManager;
 
+        [Header("Settings")]
         [SerializeField] private float zoomScrollDistance;
         [SerializeField] private float zoomNearLimit;
         [SerializeField] private float zoomFarLimit;
@@ -18,8 +20,16 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private float manualPanningFasterSpeed;
         [SerializeField] private float cameraInterpolationFactor;
 
+        [Header("Inputs")]
+        [SerializeField] private InputActionReference pointerInput;
+        [SerializeField] private InputActionReference heldInput;
+        [SerializeField] private InputActionReference manualControlInput;
+        [SerializeField] private InputActionReference fasterInput;
+        [SerializeField] private InputActionReference zoomInput;
+
         private Vector3 heldPlanePosition;
         private Vector3 preinterpolatedCameraPosition;
+        private bool pressed;
         private bool panning;
         private Transform followedObject;
         private bool followRobot = false;
@@ -59,48 +69,52 @@ namespace RecoDeli.Scripts.Controllers
 
         private void Panning()
         {
-            //if (Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject())
-            //{
-            //    heldPlanePosition = GetMousePosOnXZPlane();
-            //    panning = true;
-            //    FollowObject(null);
-            //}
-            //if (!Input.GetMouseButton(0))
-            //{
-            //    panning = false;
-            //}
+            var pressedNow = heldInput.action.IsPressed();
+            if(pressed != pressedNow)
+            {
+                pressed = pressedNow;
+                if (pressed && !EventSystem.current.IsPointerOverGameObject())
+                {
+                    heldPlanePosition = GetMousePosOnXZPlane();
+                    panning = true;
+                    FollowObject(null);
+                }
+                if (!pressed)
+                {
+                    panning = false;
+                }
+            }
 
-            if (!panning) return;
+            if (panning)
+            {
+                var currentHeldPlanePosition = GetMousePosOnXZPlane();
+                var difference = heldPlanePosition - currentHeldPlanePosition;
+                preinterpolatedCameraPosition += difference;
+            }
 
+            var manualControl2D = manualControlInput.action.ReadValue<Vector2>();
+            var manualControl = new Vector3(manualControl2D.x, 0, manualControl2D.y);
 
-            var currentHeldPlanePosition = GetMousePosOnXZPlane();
-            var difference = heldPlanePosition - currentHeldPlanePosition;
+            manualControl *= fasterInput.action.IsPressed() ? manualPanningFasterSpeed : manualPanningSpeed;
 
-            var manualControl = Vector3.zero;
-
-            if (Input.GetKey(KeyCode.W)) difference.z += 1;
-            if (Input.GetKey(KeyCode.S)) difference.z -= 1;
-            if (Input.GetKey(KeyCode.A)) difference.x -= 1;
-            if (Input.GetKey(KeyCode.D)) difference.x += 1;
-
-            manualControl *= (Input.GetKey(KeyCode.LeftShift)) ? manualPanningFasterSpeed : manualPanningSpeed;
-
-            preinterpolatedCameraPosition += difference + manualControl;
+            preinterpolatedCameraPosition += manualControl;
         }
 
         private void Zooming()
         {
             float zoomDistance = 0.0f;
 
-            //if (Input.GetAxis("Mouse ScrollWheel") > 0f || Input.GetKeyDown(KeyCode.Equals) || Input.GetKeyDown(KeyCode.Plus))
-            //{
-            //    zoomDistance += zoomScrollDistance;
-            //}
+            var scrolling = zoomInput.action.ReadValue<float>();
 
-            //else if (Input.GetAxis("Mouse ScrollWheel") < 0f || Input.GetKeyDown(KeyCode.Minus))
-            //{
-            //    zoomDistance -= zoomScrollDistance;
-            //}
+            if (scrolling > 0f)
+            {
+                zoomDistance += zoomScrollDistance;
+            }
+
+            else if (scrolling < 0f)
+            {
+                zoomDistance -= zoomScrollDistance;
+            }
 
             if (zoomDistance == 0.0f || EventSystem.current.IsPointerOverGameObject()) return;
 
@@ -118,8 +132,7 @@ namespace RecoDeli.Scripts.Controllers
 
         private Vector3 GetMousePosOnXZPlane()
         {
-            var mouseScreenPosition = Input.mousePosition;
-            mouseScreenPosition.z = 1;
+            var mouseScreenPosition = (Vector3)pointerInput.action.ReadValue<Vector2>() + Vector3.forward;
 
             var cameraPosition = controlledCamera.transform.position;
             var mouseWorldDirection = controlledCamera.ScreenToWorldPoint(mouseScreenPosition) - cameraPosition;

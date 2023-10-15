@@ -114,13 +114,31 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "DroneControl",
+                    "name": "Drone Camera Control",
                     "type": "PassThrough",
                     "id": "6e995605-66e9-435a-85d9-1878eff7f9d7",
                     "expectedControlType": "Vector2",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Drone Camera Speed Up",
+                    "type": "Button",
+                    "id": "ad5cbccf-6688-4d00-b5fe-c1372b707547",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Drone Camera Zoom",
+                    "type": "Value",
+                    "id": "6d8008d9-7abd-43be-b744-e005bb4d706e",
+                    "expectedControlType": "Analog",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -373,7 +391,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -384,7 +402,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -395,7 +413,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -406,7 +424,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -417,7 +435,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -428,7 +446,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -439,7 +457,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -450,7 +468,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -461,7 +479,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -472,9 +490,31 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "DroneControl",
+                    "action": "Drone Camera Control",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "e7d82826-84e4-4a92-b1a1-e26ed6bc1691",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drone Camera Zoom",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6a80dfa0-1571-48d1-90b4-97b156f3bb2d",
+                    "path": "<Keyboard>/shift",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drone Camera Speed Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         },
@@ -550,24 +590,6 @@
                     "type": "PassThrough",
                     "id": "860594e4-7594-4ad6-bce8-0324434bc0c2",
                     "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TrackedDevicePosition",
-                    "type": "PassThrough",
-                    "id": "3116aef1-3d56-4775-abab-bde445a05a6e",
-                    "expectedControlType": "Vector3",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "TrackedDeviceOrientation",
-                    "type": "PassThrough",
-                    "id": "08c8bc6f-0f55-49cf-95e6-ecc936d7d173",
-                    "expectedControlType": "Quaternion",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -813,28 +835,6 @@
                     "processors": "",
                     "groups": "",
                     "action": "RightClick",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "fa517365-ea22-40e0-9f24-8c7620722161",
-                    "path": "<XRController>/devicePosition",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackedDevicePosition",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "f50db2f4-d96c-4f2e-8a1f-d27c7e19906f",
-                    "path": "<XRController>/deviceRotation",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "TrackedDeviceOrientation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

@@ -1,6 +1,7 @@
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.UI;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts
@@ -88,9 +89,16 @@ namespace RecoDeli.Scripts
             focusOnDroneButton.clicked += simulationManager.DroneCamera.FollowRobot;
             focusOnGoalButton.clicked += simulationManager.DroneCamera.FollowPackage;
 
-            saveButton.clicked += () => saveManagementWindow.SetOpened(true);
-            settingsButton.clicked += () => settingsMenu.SetOpened(true);
+            saveButton.clicked += () => saveManagementWindow.Open();
+            settingsButton.clicked += () => settingsMenu.Open();
             // menuButton.clicked += 
+        }
+
+        private void Start()
+        {
+            // HACK: Game UI panel is not set as selected by Event System on start and
+            // there is no way to set it properly. Focusing any element does the job though.
+            InstructionEditor.ListDocument.Focus();
         }
 
         private void Update()

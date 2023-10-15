@@ -462,7 +462,11 @@ Slider:focus Label {
 }
 
 .instruction-bar.selected > #grabbing-handle {
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.instruction-bar.selected:focus > #grabbing-handle {
+    background-color: rgba(255, 255, 255, 0.18);
 }
 
 .instruction-bar #handle-character {

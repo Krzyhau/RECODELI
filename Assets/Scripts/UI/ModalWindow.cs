@@ -28,29 +28,30 @@ namespace RecoDeli.Scripts.UI
         protected virtual void Awake()
         {
             closeButton = RootElement.Q<Button>("close-button");
-            closeButton.clicked += () => Opened = false;
+            closeButton.clicked += Close;
 
-            SetOpened(false);
+            Close();
         }
 
-        public virtual void SetOpened(bool opened)
+        public void Open()
         {
-            if (opened)
-            {
-                if (Current != null)
-                {
-                    Current.SetOpened(false);
-                }
-                RootElement.Focus();
-            }
-            else { 
-                if(Current == this)
-                {
-                    Current = null;
-                }
-            }
+            Opened = true;
 
-            Opened = opened;
+            if (Current != null && Current != this)
+            {
+                Current.Close();
+            }
+            Current = this;
+            RootElement.Focus();
+        }
+
+        public void Close()
+        {
+            Opened = false;
+            if (Current == this)
+            {
+                Current = null;
+            }
         }
     }
 }
