@@ -172,6 +172,31 @@ namespace RecoDeli.Scripts.UI
             instructionsContainer.contentContainer.style.height = desiredHeight;
         }
 
+        private void UpdateEditorButtonsState()
+        {
+            if (addInstructionMenu.Opened || playingInstructions)
+            {
+                addButton.SetEnabled(false);
+                deleteButton.SetEnabled(false);
+                undoButton.SetEnabled(false);
+                redoButton.SetEnabled(false);
+                copyButton.SetEnabled(false);
+                pasteButton.SetEnabled(false);
+            }
+            else
+            {
+                addButton.SetEnabled(!playingInstructions);
+                deleteButton.SetEnabled(instructionBars.Where(bar => bar.Selected).Any());
+                undoButton.SetEnabled(commandStateController.GetCurrentSlot().Undos.Count > 0);
+                redoButton.SetEnabled(commandStateController.GetCurrentSlot().Redos.Count > 0);
+                copyButton.SetEnabled(deleteButton.enabledSelf);
+                pasteButton.SetEnabled(RobotInstruction.IsValidListString(GUIUtility.systemCopyBuffer));
+            }
+        }
+
+
+
+        // mouse is moving while over list or performing actions within the list
         private void OnMouseOverList(PointerMoveEvent evt)
         {
             mouseListRealPosition = evt.localPosition.y;
@@ -180,9 +205,9 @@ namespace RecoDeli.Scripts.UI
             HandleBarGrabbing();
         }
 
+        // calculate list-based mouse position (aka. over which instruction bar index mouse currently hovers)
         private void UpdateMouseListBasedPosition()
         {
-            // calculate list-based mouse position (aka. over which element vertically mouse currently hovers)
             var yPosition = Mathf.Max(0.0f, mouseListRealPosition - instructionsContainer.contentContainer.resolvedStyle.paddingTop);
 
             var currentPosition = 0.0f;
@@ -207,7 +232,7 @@ namespace RecoDeli.Scripts.UI
             mouseListBasedPosition = buttonIndex;
         }
 
-
+        // detect and handle when we should turn into grabbing mode and when instructions should be moved
         private void HandleBarGrabbing()
         {
             if (addInstructionMenu.Opened || playingInstructions)
@@ -243,6 +268,13 @@ namespace RecoDeli.Scripts.UI
                 MoveSelectedInstructions(delta, true);
             }
 
+            HandleGrabbedScrolling();
+        }
+
+        private void HandleGrabbedScrolling()
+        {
+            if (!grabbing) return;
+
             // scroll list up or down if near the edge
             var mouseScreenPosition = mouseListRealPosition - instructionsContainer.scrollOffset.y;
             var halfListHeight = instructionsContainer.localBound.height * 0.5f;
@@ -250,77 +282,13 @@ namespace RecoDeli.Scripts.UI
             var edgeSpeed = Math.Clamp((Math.Abs(midDistance) - (halfListHeight - focusZoneEdgesSize)), 0.0f, 1.0f);
             edgeSpeed *= Math.Sign(midDistance) / focusZoneEdgesSize;
 
-            if(edgeSpeed != 0.0f)
+            if (edgeSpeed != 0.0f)
             {
                 instructionsContainer.scrollOffset += Vector2.up * edgeSpeed * grabScrollMaxSpeed;
             }
         }
 
-        private void MoveSelectedInstructions(int direction, bool dragged)
-        {
-            var newPos = instructionBars.IndexOf(lastFocusedInstructionBar) + direction;
-            var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
-
-            int minPos = newPos - selectedBars.IndexOf(lastFocusedInstructionBar);
-            int maxPos = minPos + selectedBars.Count - 1;
-
-            if(minPos < 0 || maxPos >= instructionsContainer.childCount)
-            {
-                return;
-            }
-
-            if (!dragged)
-            {
-                commandStateController.StoreUndoOperation(
-                    Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()),
-                    InstructionsStateController.StateType.MovedShift
-                );
-            }
-
-            // temporarily "remove" grabbed instructions so they can be moved
-            foreach (var bar in selectedBars)
-            {
-                bar.BringToFront();
-                instructionBars.Remove(bar);
-            }
-
-            for (int i = 0; i < selectedBars.Count; i++)
-            {
-                var bar = selectedBars[i];
-                instructionsContainer.Insert(minPos + i, bar);
-                instructionBars.Insert(minPos + i, bar);
-            }
-
-            remainingRepositioningRequests++;
-
-            if (!dragged)
-            {
-                InstructionsListModified();
-            }
-        }
-
-        private void UpdateEditorButtonsState()
-        {
-            if (addInstructionMenu.Opened || playingInstructions)
-            {
-                addButton.SetEnabled(false);
-                deleteButton.SetEnabled(false);
-                undoButton.SetEnabled(false);
-                redoButton.SetEnabled(false);
-                copyButton.SetEnabled(false);
-                pasteButton.SetEnabled(false);
-            }
-            else
-            {
-                addButton.SetEnabled(!playingInstructions);
-                deleteButton.SetEnabled(instructionBars.Where(bar => bar.Selected).Any());
-                undoButton.SetEnabled(commandStateController.GetCurrentSlot().Undos.Count > 0);
-                redoButton.SetEnabled(commandStateController.GetCurrentSlot().Redos.Count > 0);
-                copyButton.SetEnabled(deleteButton.enabledSelf);
-                pasteButton.SetEnabled(RobotInstruction.IsValidListString(GUIUtility.systemCopyBuffer));
-            }
-        }
-
+        // attempt to move navigation into the list when navigating up or down when outside of editor
         private void OnGlobalNavigationMove(NavigationMoveEvent evt)
         {
             if (instructionsContainer.ContainsElement(evt.target as VisualElement))
@@ -344,10 +312,13 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
+        // navigating within the instruction editor
         private void OnNavigationMove(NavigationMoveEvent evt)
         {
+            // whatever happens, a key has been pressed - cancel grabbing right now!
             grabbing = false;
 
+            // never were in the list before - just try to select first or last based on direction
             if (lastFocusedInstructionBar == null)
             {
                 evt.PreventDefault();
@@ -360,6 +331,7 @@ namespace RecoDeli.Scripts.UI
                 return;
             }
 
+            // allow controlled navigation into the rest of the interface from the list
             var leaveDirection = evt.direction switch
             {
                 NavigationMoveEvent.Direction.Previous => NavigationMoveEvent.Direction.Previous,
@@ -377,38 +349,44 @@ namespace RecoDeli.Scripts.UI
 
             var focusedBarIndex = instructionBars.IndexOf(lastFocusedInstructionBar);
 
-            var nextFocusIndex = focusedBarIndex + evt.direction switch
+            var navigationListDirection = evt.direction switch
             {
                 NavigationMoveEvent.Direction.Up => -1,
                 NavigationMoveEvent.Direction.Down => 1,
                 _ => 0
             };
+            var nextFocusIndex = focusedBarIndex + navigationListDirection;
 
+            // trying to navigate out of the list with direction - just do nothing
             if (nextFocusIndex < 0 || nextFocusIndex >= instructionBars.Count)
             {
                 evt.PreventDefault();
                 return;
             }
 
+            // moving instructions with keyboard
             if (rangeSelectionInput.action.IsPressed())
             {
                 evt.PreventDefault();
-                MoveSelectedInstructions(nextFocusIndex - focusedBarIndex, false);
+                MoveSelectedInstructions(navigationListDirection, false);
                 return;
             }
 
+            // multi-selection, just don't unselect instructions when pressed
             if (!multiSelectionInput.action.IsPressed())
             {
                 SetAllBarsSelected(false);
             }
 
+            // default navigation behaviour - just focus the bar we're navigating to.
             evt.PreventDefault();
             instructionBars[nextFocusIndex].Focus();
         }
 
+        // whenever anything clicks or navigates to the editor itself rather than the instruction bar
         private void OnWindowFocused(FocusEvent evt)
         {
-            // special case for tabbing to previous element
+            // coming back to last selected instruction when tabbing into the window
             if (evt.direction.GetValue() == 1 && lastFocusedInstructionBar != null)
             {
                 doNotUnselectNextFocus = true;
@@ -420,6 +398,7 @@ namespace RecoDeli.Scripts.UI
 
             if (instructionBars.Count() == 0) return;
 
+            // clicking on empty space in the editor - remove all selection
             if (evt.relatedTarget == null || evt.relatedTarget is InstructionBar)
             {
                 if(!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
@@ -429,6 +408,7 @@ namespace RecoDeli.Scripts.UI
                 }
             }
 
+            // manually navigating into the editor - think of an instruction to focus on
             else if(evt.relatedTarget != null)
             {
                 var navDir = evt.direction.GetValue();
@@ -449,6 +429,7 @@ namespace RecoDeli.Scripts.UI
             
         }
 
+        // when any bar was focused, whether it is by clicking into it or by other navigation stuff
         private void OnBarFocused(FocusInEvent evt)
         {
             var focusedBarQuery = instructionBars.Where(bar => bar.ContainsElement(evt.target as VisualElement));
@@ -472,6 +453,7 @@ namespace RecoDeli.Scripts.UI
             }
             doNotUnselectNextFocus = false;
 
+            // range selection - select stuff between last focused and current one
             if (rangeSelectionInput.action.IsPressed())
             {
                 var lastBarIndex = instructionBars.IndexOf(lastFocusedInstructionBar);
@@ -488,11 +470,13 @@ namespace RecoDeli.Scripts.UI
             lastFocusedInstructionBar = bar;
         }
 
+        // the moment of clicking the bar
         private void OnBarPointerDown(PointerDownEvent e, InstructionBar bar)
         {
             currentlyHeldBar = bar;
             instructionsContainer.contentContainer.CapturePointer(e.pointerId);
 
+            // double click. Couldn't get the UI toolkit one working for whatever reason
             var delay = Time.time - lastClickedInstructionBarTime;
             if (bar == lastFocusedInstructionBar && delay < doubleClickMaxDelay)
             {
@@ -501,15 +485,18 @@ namespace RecoDeli.Scripts.UI
             lastClickedInstructionBarTime = Time.time;
         }
 
+        // pointer released after the bar has been clicked
         private void OnPointerReleasedWithGrabbedBar(PointerCaptureOutEvent evt)
         {
             instructionsContainer.contentContainer.ReleasePointer(evt.pointerId);
 
+            // just finished grabbing instructions
             if (grabbing)
             {
                 grabbing = false;
                 InstructionsListModified();
             }
+            // if not grabbing, should we unselect stuff?
             else if (
                 currentlyHeldBar != null && 
                 !multiSelectionInput.action.IsPressed() && 
@@ -522,6 +509,9 @@ namespace RecoDeli.Scripts.UI
 
             currentlyHeldBar = null;
         }
+
+
+
 
         public InstructionBar CreateInstructionBarAt(RobotInstruction instruction, int index)
         {
@@ -627,6 +617,49 @@ namespace RecoDeli.Scripts.UI
             CreateInstructionBarAt(instruction, index);
 
             InstructionsListModified();
+        }
+
+        private void MoveSelectedInstructions(int direction, bool dragged)
+        {
+            var newPos = instructionBars.IndexOf(lastFocusedInstructionBar) + direction;
+            var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
+
+            int minPos = newPos - selectedBars.IndexOf(lastFocusedInstructionBar);
+            int maxPos = minPos + selectedBars.Count - 1;
+
+            if (minPos < 0 || maxPos >= instructionsContainer.childCount)
+            {
+                return;
+            }
+
+            if (!dragged)
+            {
+                commandStateController.StoreUndoOperation(
+                    Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()),
+                    InstructionsStateController.StateType.MovedShift
+                );
+            }
+
+            // temporarily "remove" grabbed instructions so they can be moved
+            foreach (var bar in selectedBars)
+            {
+                bar.BringToFront();
+                instructionBars.Remove(bar);
+            }
+
+            for (int i = 0; i < selectedBars.Count; i++)
+            {
+                var bar = selectedBars[i];
+                instructionsContainer.Insert(minPos + i, bar);
+                instructionBars.Insert(minPos + i, bar);
+            }
+
+            remainingRepositioningRequests++;
+
+            if (!dragged)
+            {
+                InstructionsListModified();
+            }
         }
 
         public void InstructionsListModified()
