@@ -38,6 +38,7 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private InputActionReference selectAllInput;
         [SerializeField] private InputActionReference multiSelectionInput;
         [SerializeField] private InputActionReference rangeSelectionInput;
+        [SerializeField] private InputActionReference dragSelectionInput;
 
         private VisualElement instructionEditorContainer;
         private ScrollView instructionsContainer;
@@ -365,15 +366,15 @@ namespace RecoDeli.Scripts.UI
             }
 
             // moving instructions with keyboard
-            if (rangeSelectionInput.action.IsPressed())
+            if (dragSelectionInput.action.IsPressed())
             {
                 evt.PreventDefault();
                 MoveSelectedInstructions(navigationListDirection, false);
                 return;
             }
 
-            // multi-selection, just don't unselect instructions when pressed
-            if (!multiSelectionInput.action.IsPressed())
+            // multi-selection when navigating, just don't unselect instructions when pressed
+            if (!rangeSelectionInput.action.IsPressed())
             {
                 SetAllBarsSelected(false);
             }
@@ -621,6 +622,8 @@ namespace RecoDeli.Scripts.UI
 
         private void MoveSelectedInstructions(int direction, bool dragged)
         {
+            if (direction == 0) return;
+
             var newPos = instructionBars.IndexOf(lastFocusedInstructionBar) + direction;
             var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
 
@@ -659,6 +662,7 @@ namespace RecoDeli.Scripts.UI
             if (!dragged)
             {
                 InstructionsListModified();
+                ScrollToInstruction(direction > 0 ? maxPos : minPos, false);
             }
         }
 
@@ -790,14 +794,14 @@ namespace RecoDeli.Scripts.UI
             {
                 var barIndex = instructionBars.IndexOf(bar);
                 // make instruction appear within the scrolling container bounds
-                if(barPos < instructionsContainer.scrollOffset.y)
+                if(barPos < instructionsContainer.scrollOffset.y + focusZoneEdgesSize)
                 {
-                    targetYScroll = barPos;
+                    targetYScroll = barPos - focusZoneEdgesSize;
                     if (barIndex == 0) targetYScroll = 0;
                 }
-                else if(barPos + barHeight > instructionsContainer.scrollOffset.y + height)
+                else if(barPos + barHeight > instructionsContainer.scrollOffset.y + height - focusZoneEdgesSize)
                 {
-                    targetYScroll = (barPos - height + barHeight);
+                    targetYScroll = (barPos - height + barHeight + focusZoneEdgesSize);
                     if (barIndex == instructionBars.Count - 1) targetYScroll += barHeight;
                 }
             }

@@ -114,6 +114,15 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "Drag Selection",
+                    "type": "Button",
+                    "id": "94a515e0-7406-48ba-aa0a-9e7da90b7c59",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
                     "name": "Drone Camera Control",
                     "type": "PassThrough",
                     "id": "6e995605-66e9-435a-85d9-1878eff7f9d7",
@@ -513,6 +522,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "Drone Camera Speed Up",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a55c6024-bc30-42bf-8305-3718a1b865cd",
+                    "path": "<Keyboard>/ctrl",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Drag Selection",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
