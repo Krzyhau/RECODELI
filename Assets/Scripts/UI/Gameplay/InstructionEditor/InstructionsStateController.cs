@@ -114,6 +114,7 @@ namespace RecoDeli.Scripts.UI
             slot.Undos.RemoveAt(slot.Undos.Count - 1);
 
             editor.ScrollToInstruction(focusPos, true);
+            editor.InstructionBars[focusPos].Focus();
 
             editor.InstructionsListModified();
         }
@@ -157,6 +158,7 @@ namespace RecoDeli.Scripts.UI
             slot.Redos.RemoveAt(slot.Redos.Count - 1);
 
             editor.ScrollToInstruction(focusPos, true);
+            editor.InstructionBars[focusPos].Focus();
 
             editor.InstructionsListModified();
         }

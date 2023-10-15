@@ -54,7 +54,6 @@ namespace RecoDeli.Scripts.UI
         private InstructionsStateController commandStateController;
         private int currentSlot = 0;
 
-        private List<InstructionBar> grabbedInstructions = new();
         private bool grabbing;
         private InstructionBar currentlyHeldBar;
         private InstructionBar lastFocusedInstructionBar;
@@ -225,7 +224,6 @@ namespace RecoDeli.Scripts.UI
                     if (selectedBars.Any())
                     {
                         grabbing = true;
-                        grabbedInstructions = selectedBars.ToList();
                         commandStateController.StoreUndoOperation(
                             Mathf.RoundToInt((float)selectedBars.Select(bar => instructionBars.IndexOf(bar)).Average()),
                             InstructionsStateController.StateType.MovedDrag
@@ -264,7 +262,7 @@ namespace RecoDeli.Scripts.UI
             var selectedBars = instructionBars.Where(bar => bar.Selected).ToList();
 
             int minPos = newPos - selectedBars.IndexOf(lastFocusedInstructionBar);
-            int maxPos = minPos + grabbedInstructions.Count - 1;
+            int maxPos = minPos + selectedBars.Count - 1;
 
             if(minPos < 0 || maxPos >= instructionsContainer.childCount)
             {
@@ -280,15 +278,15 @@ namespace RecoDeli.Scripts.UI
             }
 
             // temporarily "remove" grabbed instructions so they can be moved
-            foreach (var bar in grabbedInstructions)
+            foreach (var bar in selectedBars)
             {
                 bar.BringToFront();
                 instructionBars.Remove(bar);
             }
 
-            for (int i = 0; i < grabbedInstructions.Count; i++)
+            for (int i = 0; i < selectedBars.Count; i++)
             {
-                var bar = grabbedInstructions[i];
+                var bar = selectedBars[i];
                 instructionsContainer.Insert(minPos + i, bar);
                 instructionBars.Insert(minPos + i, bar);
             }
@@ -348,6 +346,8 @@ namespace RecoDeli.Scripts.UI
 
         private void OnNavigationMove(NavigationMoveEvent evt)
         {
+            grabbing = false;
+
             if (lastFocusedInstructionBar == null)
             {
                 evt.PreventDefault();
@@ -386,16 +386,20 @@ namespace RecoDeli.Scripts.UI
 
             if (nextFocusIndex < 0 || nextFocusIndex >= instructionBars.Count)
             {
-
-                //if(!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
-                //{
-                //    SetAllBarsSelected(false);
-                //}
-                //lastFocusedInstructionBar = null;
-                //return;
-
                 evt.PreventDefault();
                 return;
+            }
+
+            if (rangeSelectionInput.action.IsPressed())
+            {
+                evt.PreventDefault();
+                MoveSelectedInstructions(nextFocusIndex - focusedBarIndex, false);
+                return;
+            }
+
+            if (!multiSelectionInput.action.IsPressed())
+            {
+                SetAllBarsSelected(false);
             }
 
             evt.PreventDefault();
@@ -497,17 +501,6 @@ namespace RecoDeli.Scripts.UI
             lastClickedInstructionBarTime = Time.time;
         }
 
-        private void OnBarPointerUp(PointerUpEvent e, InstructionBar bar)
-        {
-            if (grabbing || currentlyHeldBar != bar) return;
-
-            if (!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
-            {
-                SetAllBarsSelected(false);
-                bar.Selected = true;
-            }
-        }
-
         private void OnPointerReleasedWithGrabbedBar(PointerCaptureOutEvent evt)
         {
             instructionsContainer.contentContainer.ReleasePointer(evt.pointerId);
@@ -515,8 +508,16 @@ namespace RecoDeli.Scripts.UI
             if (grabbing)
             {
                 grabbing = false;
-                grabbedInstructions.Clear();
                 InstructionsListModified();
+            }
+            else if (
+                currentlyHeldBar != null && 
+                !multiSelectionInput.action.IsPressed() && 
+                !rangeSelectionInput.action.IsPressed()
+            )
+            {
+                SetAllBarsSelected(false);
+                currentlyHeldBar.Selected = true;
             }
 
             currentlyHeldBar = null;
@@ -536,7 +537,6 @@ namespace RecoDeli.Scripts.UI
             bar.changing += () => commandStateController.StoreUndoOperation(index, InstructionsStateController.StateType.ParameterEdited);
             bar.changed += () => InstructionsListModified();
             bar.RegisterCallback<PointerDownEvent>(e => OnBarPointerDown(e, bar), TrickleDown.NoTrickleDown);
-            bar.RegisterCallback<PointerUpEvent>(e => OnBarPointerUp(e, bar), TrickleDown.NoTrickleDown);
 
             instructionsContainer.Insert(index, bar);
             instructionBars.Insert(index, bar);
