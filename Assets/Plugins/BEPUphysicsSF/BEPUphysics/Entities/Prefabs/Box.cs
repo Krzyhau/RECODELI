@@ -3,7 +3,7 @@ using BEPUphysics.EntityStateManagement;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Entities.Prefabs
 {
@@ -13,12 +13,12 @@ namespace BEPUphysics.Entities.Prefabs
     public class Box : Entity<ConvexCollidable<BoxShape>>
     {
 
-        private Box(sfloat width, sfloat height, sfloat length)
+        private Box(fint width, fint height, fint length)
             :base(new ConvexCollidable<BoxShape>(new BoxShape(width, height, length)))
         {
         }
 
-        private Box(sfloat width, sfloat height, sfloat length, sfloat mass)
+        private Box(fint width, fint height, fint length, fint mass)
             :base(new ConvexCollidable<BoxShape>(new BoxShape(width, height, length)), mass)
         {
         }
@@ -31,7 +31,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="length">Length of the box.</param>
         /// <param name="height">Height of the box.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Box(Vector3 pos, sfloat width, sfloat height, sfloat length, sfloat mass)
+        public Box(Vector3 pos, fint width, fint height, fint length, fint mass)
             : this(width, height, length, mass)
         {
             Position = pos;
@@ -44,7 +44,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="width">Width of the box.</param>
         /// <param name="length">Length of the box.</param>
         /// <param name="height">Height of the box.</param>
-        public Box(Vector3 pos, sfloat width, sfloat height, sfloat length)
+        public Box(Vector3 pos, fint width, fint height, fint length)
             : this(width, height, length)
         {
             Position = pos;
@@ -58,7 +58,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="length">Length of the box.</param>
         /// <param name="height">Height of the box.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Box(MotionState motionState, sfloat width, sfloat height, sfloat length, sfloat mass)
+        public Box(MotionState motionState, fint width, fint height, fint length, fint mass)
             : this(width, height, length, mass)
         {
             MotionState = motionState;
@@ -73,7 +73,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="width">Width of the box.</param>
         /// <param name="length">Length of the box.</param>
         /// <param name="height">Height of the box.</param>
-        public Box(MotionState motionState, sfloat width, sfloat height, sfloat length)
+        public Box(MotionState motionState, fint width, fint height, fint length)
             : this(width, height, length)
         {
             MotionState = motionState;
@@ -82,7 +82,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Width of the box divided by two.
         /// </summary>
-        public sfloat HalfWidth
+        public fint HalfWidth
         {
             get { return CollisionInformation.Shape.HalfWidth; }
             set { CollisionInformation.Shape.HalfWidth = value; }
@@ -92,7 +92,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Height of the box divided by two.
         /// </summary>
-        public sfloat HalfHeight
+        public fint HalfHeight
         {
             get { return CollisionInformation.Shape.HalfHeight; }
             set { CollisionInformation.Shape.HalfHeight = value; }
@@ -101,7 +101,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Length of the box divided by two.
         /// </summary>
-        public sfloat HalfLength
+        public fint HalfLength
         {
             get { return CollisionInformation.Shape.HalfLength; }
             set { CollisionInformation.Shape.HalfLength = value; }
@@ -112,7 +112,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Width of the box.
         /// </summary>
-        public sfloat Width
+        public fint Width
         {
             get { return CollisionInformation.Shape.Width; }
             set { CollisionInformation.Shape.Width = value; }
@@ -121,7 +121,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Height of the box.
         /// </summary>
-        public sfloat Height
+        public fint Height
         {
             get { return CollisionInformation.Shape.Height; }
             set { CollisionInformation.Shape.Height = value; }
@@ -130,7 +130,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Length of the box.
         /// </summary>
-        public sfloat Length
+        public fint Length
         {
             get { return CollisionInformation.Shape.Length; }
             set { CollisionInformation.Shape.Length = value; }

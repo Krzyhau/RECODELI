@@ -1,5 +1,5 @@
 ﻿using BEPUutilities.DataStructures;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
 {
@@ -15,7 +15,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             sortingHash = hash;
         }
 
-        internal int GetIndex(sfloat x)
+        internal int GetIndex(fint x)
         {
             int minIndex = 0; //inclusive
             int maxIndex = entries.Count; //exclusive

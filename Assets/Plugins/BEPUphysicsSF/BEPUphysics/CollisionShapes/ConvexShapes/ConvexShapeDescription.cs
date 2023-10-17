@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,17 +20,17 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// Minimum radius of the convex shape.
         /// Must be contained fully by the shape when centered at the origin.
         /// </summary>
-        public sfloat MinimumRadius;
+        public fint MinimumRadius;
 
         /// <summary>
         /// Maximum radius of the convex shape.
         /// Must contain the shape fully when centered at the origin.
         /// </summary>
-        public sfloat MaximumRadius;
+        public fint MaximumRadius;
 
         /// <summary>
         /// Collision margin of the convex shape.
         /// </summary>
-        public sfloat CollisionMargin;
+        public fint CollisionMargin;
     }
 }

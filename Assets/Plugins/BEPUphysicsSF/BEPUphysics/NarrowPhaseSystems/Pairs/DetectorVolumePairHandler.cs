@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.UpdateableSystems;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 

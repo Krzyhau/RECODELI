@@ -1,7 +1,7 @@
 ﻿
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Paths
 {
@@ -15,7 +15,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="speed">Speed to maintain while traveling around a curve.</param>
         /// <param name="curve">Curve to wrap.</param>
-        public ConstantLinearSpeedCurve(sfloat speed, Curve<Vector3> curve)
+        public ConstantLinearSpeedCurve(fint speed, Curve<Vector3> curve)
             : base(speed, curve)
         {
         }
@@ -27,14 +27,14 @@ namespace BEPUphysics.Paths
         /// <param name="curve">Curve to wrap.</param>
         /// <param name="sampleCount">Number of samples to use when constructing the wrapper curve.
         /// More samples increases the accuracy of the speed requirement at the cost of performance.</param>
-        public ConstantLinearSpeedCurve(sfloat speed, Curve<Vector3> curve, int sampleCount)
+        public ConstantLinearSpeedCurve(fint speed, Curve<Vector3> curve, int sampleCount)
             : base(speed, curve, sampleCount)
         {
         }
 
-        protected override sfloat GetDistance(Vector3 start, Vector3 end)
+        protected override fint GetDistance(Vector3 start, Vector3 end)
         {
-            sfloat distance;
+            fint distance;
             Vector3.Distance(ref start, ref end, out distance);
             return distance;
         }

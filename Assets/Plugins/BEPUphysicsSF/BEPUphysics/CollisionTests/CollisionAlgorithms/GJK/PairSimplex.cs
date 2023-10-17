@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.CollisionShapes.ConvexShapes;
  
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Diagnostics;
 
 namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
@@ -95,12 +95,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         /// The baseline amount that a GJK iteration must progress through to avoid exiting.
         /// Defaults to 1e-8f.
         ///</summary>
-        public static sfloat ProgressionEpsilon = (sfloat)1e-8f;
+        public static fint ProgressionEpsilon = (fint)1e-8f;
         /// <summary>
         /// The baseline amount that an iteration must converge with its distance to avoid exiting.
         /// Defaults to 1e-7f.
         /// </summary>
-        public static sfloat DistanceConvergenceEpsilon = (sfloat)1e-7f;
+        public static fint DistanceConvergenceEpsilon = (fint)1e-7f;
 
         ///<summary>
         /// Simplex as viewed from the local space of A.
@@ -120,15 +120,15 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         /// <summary>
         /// Weight of vertex A.
         /// </summary>
-        public sfloat U;
+        public fint U;
         /// <summary>
         /// Weight of vertex B.
         /// </summary>
-        public sfloat V;
+        public fint V;
         /// <summary>
         /// Weight of vertex C.
         /// </summary>
-        public sfloat W;
+        public fint W;
         /// <summary>
         /// Transform of the second shape in the first shape's local space.
         /// </summary> 
@@ -138,8 +138,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         private PairSimplex(ref RigidTransform localTransformB)
         {
             //This isn't a very good approach since the transform position is not guaranteed to be within the object.  Would have to use the GetNewSimplexPoint to make it valid.
-            previousDistanceToClosest = sfloat.MaxValue;
-            errorTolerance = sfloat.Zero;
+            previousDistanceToClosest = fint.MaxValue;
+            errorTolerance = (fint)0;
             LocalTransformB = localTransformB;
             //Warm up the simplex using the centroids.
             //Could also use the GetNewSimplexPoint if it had a Empty case, but test before choosing.
@@ -151,9 +151,9 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             B = new Vector3();
             C = new Vector3();
             D = new Vector3();
-            U = sfloat.Zero;
-            V = sfloat.Zero;
-            W = sfloat.Zero;
+            U = (fint)0;
+            V = (fint)0;
+            W = (fint)0;
         }
 
         ///<summary>
@@ -178,17 +178,17 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             //Most dangerous degeneracy seen so far is tetrahedron.  It fails to find any points on opposing sides due to numerical problems and returns intersection.
 
 
-            previousDistanceToClosest = sfloat.MaxValue;
-            errorTolerance = sfloat.Zero;
+            previousDistanceToClosest = fint.MaxValue;
+            errorTolerance = (fint)0;
             LocalTransformB = localTransformB;
 
             //Transform the SimplexB into the working space of the simplex and compute the working space simplex.
             State = cachedSimplex.State;
             SimplexA = cachedSimplex.LocalSimplexA;
             SimplexB = new ContributingShapeSimplex();
-            U = sfloat.Zero;
-            V = sfloat.Zero;
-            W = sfloat.Zero;
+            U = (fint)0;
+            V = (fint)0;
+            W = (fint)0;
             switch (State)
             {
                 case SimplexState.Point:
@@ -351,7 +351,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
                 case SimplexState.Point:
                     point = A;
-                    U = sfloat.One;
+                    U = (fint)1;
                     break;
                 case SimplexState.Segment:
                     GetPointOnSegmentClosestToOrigin(out point);
@@ -380,25 +380,25 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Vector3 segmentDisplacement;
             Vector3.Subtract(ref B, ref A, out segmentDisplacement);
 
-            sfloat dotA;
+            fint dotA;
             Vector3.Dot(ref segmentDisplacement, ref A, out dotA);
-            if (dotA > sfloat.Zero)
+            if (dotA > (fint)0)
             {
                 //'Behind' segment.  This can't happen in a boolean version,
                 //but with closest points warmstarting or raycasts, it will.
                 State = SimplexState.Point;
 
-                U = sfloat.One;
+                U = (fint)1;
                 point = A;
                 return;
             }
-            sfloat dotB;
+            fint dotB;
             Vector3.Dot(ref segmentDisplacement, ref B, out dotB);
-            if (dotB > sfloat.Zero)
+            if (dotB > (fint)0)
             {
                 //Inside segment.
                 U = dotB / segmentDisplacement.LengthSquared();
-                V = sfloat.One - U;
+                V = (fint)1 - U;
                 Vector3.Multiply(ref segmentDisplacement, V, out point);
                 Vector3.Add(ref point, ref A, out point);
                 return;
@@ -415,7 +415,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             SimplexB.A = SimplexB.B;
             State = SimplexState.Point;
 
-            U = sfloat.One;
+            U = (fint)1;
             point = A;
 
         }
@@ -435,33 +435,33 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
             //Check to see if it's outside A.
             //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside A.
-            sfloat AdotAB, AdotAC;
+            fint AdotAB, AdotAC;
             Vector3.Dot(ref ab, ref A, out AdotAB);
             Vector3.Dot(ref ac, ref A, out AdotAC);
             AdotAB = -AdotAB;
             AdotAC = -AdotAC;
-            if (AdotAC <= sfloat.Zero && AdotAB <= sfloat.Zero)
+            if (AdotAC <= (fint)0 && AdotAB <= (fint)0)
             {
                 //It is A!
                 State = SimplexState.Point;
-                U = sfloat.One;
+                U = (fint)1;
                 point = A;
                 return;
             }
 
             //Check to see if it's outside B.
             //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside B.
-            sfloat BdotAB, BdotAC;
+            fint BdotAB, BdotAC;
             Vector3.Dot(ref ab, ref B, out BdotAB);
             Vector3.Dot(ref ac, ref B, out BdotAC);
             BdotAB = -BdotAB;
             BdotAC = -BdotAC;
-            if (BdotAB >= sfloat.Zero && BdotAC <= BdotAB)
+            if (BdotAB >= (fint)0 && BdotAC <= BdotAB)
             {
                 //It is B!
                 State = SimplexState.Point;
                 A = B;
-                U = sfloat.One;
+                U = (fint)1;
                 SimplexA.A = SimplexA.B;
                 SimplexB.A = SimplexB.B;
                 point = B;
@@ -469,12 +469,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
             //Check to see if it's outside AB.
-            sfloat vc = AdotAB * BdotAC - BdotAB * AdotAC;
-            if (vc <= sfloat.Zero && AdotAB > sfloat.Zero && BdotAB < sfloat.Zero)//Note > and < instead of => <=; avoids possibly division by zero
+            fint vc = AdotAB * BdotAC - BdotAB * AdotAC;
+            if (vc <= (fint)0 && AdotAB > (fint)0 && BdotAB < (fint)0)//Note > and < instead of => <=; avoids possibly division by zero
             {
                 State = SimplexState.Segment;
                 V = AdotAB / (AdotAB - BdotAB);
-                U = sfloat.One - V;
+                U = (fint)1 - V;
 
                 Vector3.Multiply(ref ab, V, out point);
                 Vector3.Add(ref point, ref A, out point);
@@ -483,19 +483,19 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
             //Check to see if it's outside C.
             //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside C.
-            sfloat CdotAB, CdotAC;
+            fint CdotAB, CdotAC;
             Vector3.Dot(ref ab, ref C, out CdotAB);
             Vector3.Dot(ref ac, ref C, out CdotAC);
             CdotAB = -CdotAB;
             CdotAC = -CdotAC;
-            if (CdotAC >= sfloat.Zero && CdotAB <= CdotAC)
+            if (CdotAC >= (fint)0 && CdotAB <= CdotAC)
             {
                 //It is C!
                 State = SimplexState.Point;
                 A = C;
                 SimplexA.A = SimplexA.C;
                 SimplexB.A = SimplexB.C;
-                U = sfloat.One;
+                U = (fint)1;
                 point = A;
                 return;
             }
@@ -506,8 +506,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             //Vector3.Dot(ref ac, ref A, out AdotAC);
             //AdotAB = -AdotAB;
             //AdotAC = -AdotAC;
-            sfloat vb = CdotAB * AdotAC - AdotAB * CdotAC;
-            if (vb <= sfloat.Zero && AdotAC > sfloat.Zero && CdotAC < sfloat.Zero)//Note > instead of >= and < instead of <=; prevents bad denominator
+            fint vb = CdotAB * AdotAC - AdotAB * CdotAC;
+            if (vb <= (fint)0 && AdotAC > (fint)0 && CdotAC < (fint)0)//Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 //Get rid of B.  Compress C into B.
                 State = SimplexState.Segment;
@@ -515,7 +515,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 SimplexA.B = SimplexA.C;
                 SimplexB.B = SimplexB.C;
                 V = AdotAC / (AdotAC - CdotAC);
-                U = sfloat.One - V;
+                U = (fint)1 - V;
                 Vector3.Multiply(ref ac, V, out point);
                 Vector3.Add(ref point, ref A, out point);
                 return;
@@ -527,10 +527,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             //Vector3.Dot(ref ac, ref B, out BdotAC);
             //BdotAB = -BdotAB;
             //BdotAC = -BdotAC;
-            sfloat va = BdotAB * CdotAC - CdotAB * BdotAC;
-            sfloat d3d4 = BdotAC - BdotAB;
-            sfloat d6d5 = CdotAB - CdotAC;
-            if (va <= sfloat.Zero && d3d4 > sfloat.Zero && d6d5 > sfloat.Zero)//Note > instead of >= and < instead of <=; prevents bad denominator
+            fint va = BdotAB * CdotAC - CdotAB * BdotAC;
+            fint d3d4 = BdotAC - BdotAB;
+            fint d6d5 = CdotAB - CdotAC;
+            if (va <= (fint)0 && d3d4 > (fint)0 && d6d5 > (fint)0)//Note > instead of >= and < instead of <=; prevents bad denominator
             {
                 //Throw away A.  C->A.
                 //TODO: Does B->A, C->B work better?
@@ -539,7 +539,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 SimplexA.A = SimplexA.C;
                 SimplexB.A = SimplexB.C;
                 U = d3d4 / (d3d4 + d6d5);
-                V = sfloat.One - U;
+                V = (fint)1 - U;
 
                 Vector3 bc;
                 Vector3.Subtract(ref C, ref B, out bc);
@@ -550,10 +550,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
 
             //On the face of the triangle.
-            sfloat denom = sfloat.One / (va + vb + vc);
+            fint denom = (fint)1 / (va + vb + vc);
             V = vb * denom;
             W = vc * denom;
-            U = sfloat.One - V - W;
+            U = (fint)1 - V - W;
             Vector3.Multiply(ref ab, V, out point);
             Vector3 acw;
             Vector3.Multiply(ref ac, W, out acw);
@@ -585,11 +585,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
             PairSimplex minimumSimplex = new PairSimplex();
             point = new Vector3();
-            sfloat minimumDistance = sfloat.MaxValue;
+            fint minimumDistance = fint.MaxValue;
 
 
             PairSimplex candidate;
-            sfloat candidateDistance;
+            fint candidateDistance;
             Vector3 candidatePoint;
             if (TryTetrahedronTriangle(ref A, ref C, ref D,
                                        ref SimplexA.A, ref SimplexA.C, ref SimplexA.D,
@@ -641,7 +641,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             }
 
 
-            if (minimumDistance < sfloat.MaxValue)
+            if (minimumDistance < fint.MaxValue)
             {
                 minimumSimplex.LocalTransformB = LocalTransformB;
                 minimumSimplex.previousDistanceToClosest = previousDistanceToClosest;
@@ -656,7 +656,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         private static bool TryTetrahedronTriangle(ref Vector3 A, ref Vector3 B, ref Vector3 C,
                                                    ref Vector3 A1, ref Vector3 B1, ref Vector3 C1,
                                                    ref Vector3 A2, ref Vector3 B2, ref Vector3 C2,
-                                                   sfloat errorTolerance,
+                                                   fint errorTolerance,
                                                    ref Vector3 otherPoint, out PairSimplex simplex, out Vector3 point)
         {
             //Note that there may be some extra terms that can be removed from this process.
@@ -672,7 +672,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Vector3.Subtract(ref C, ref A, out ac);
             Vector3 normal;
             Vector3.Cross(ref ab, ref ac, out normal);
-            sfloat AdotN, ADdotN;
+            fint AdotN, ADdotN;
             Vector3 AD;
             Vector3.Subtract(ref otherPoint, ref A, out AD);
             Vector3.Dot(ref A, ref normal, out AdotN);
@@ -687,17 +687,17 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
                 //Check to see if it's outside A.
                 //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside A.
-                sfloat AdotAB, AdotAC;
+                fint AdotAB, AdotAC;
                 Vector3.Dot(ref ab, ref A, out AdotAB);
                 Vector3.Dot(ref ac, ref A, out AdotAC);
                 AdotAB = -AdotAB;
                 AdotAC = -AdotAC;
-                if (AdotAC <= sfloat.Zero && AdotAB <= sfloat.Zero)
+                if (AdotAC <= (fint)0 && AdotAB <= (fint)0)
                 {
                     //It is A!
                     simplex.State = SimplexState.Point;
                     simplex.A = A;
-                    simplex.U = sfloat.One;
+                    simplex.U = (fint)1;
                     simplex.SimplexA.A = A1;
                     simplex.SimplexB.A = A2;
                     point = A;
@@ -706,17 +706,17 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
                 //Check to see if it's outside B.
                 //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside B.
-                sfloat BdotAB, BdotAC;
+                fint BdotAB, BdotAC;
                 Vector3.Dot(ref ab, ref B, out BdotAB);
                 Vector3.Dot(ref ac, ref B, out BdotAC);
                 BdotAB = -BdotAB;
                 BdotAC = -BdotAC;
-                if (BdotAB >= sfloat.Zero && BdotAC <= BdotAB)
+                if (BdotAB >= (fint)0 && BdotAC <= BdotAB)
                 {
                     //It is B!
                     simplex.State = SimplexState.Point;
                     simplex.A = B;
-                    simplex.U = sfloat.One;
+                    simplex.U = (fint)1;
                     simplex.SimplexA.A = B1;
                     simplex.SimplexB.A = B2;
                     point = B;
@@ -724,12 +724,12 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 }
 
                 //Check to see if it's outside AB.
-                sfloat vc = AdotAB * BdotAC - BdotAB * AdotAC;
-                if (vc <= sfloat.Zero && AdotAB > sfloat.Zero && BdotAB < sfloat.Zero) //Note > and < instead of => <=; avoids possibly division by zero
+                fint vc = AdotAB * BdotAC - BdotAB * AdotAC;
+                if (vc <= (fint)0 && AdotAB > (fint)0 && BdotAB < (fint)0) //Note > and < instead of => <=; avoids possibly division by zero
                 {
                     simplex.State = SimplexState.Segment;
                     simplex.V = AdotAB / (AdotAB - BdotAB);
-                    simplex.U = sfloat.One - simplex.V;
+                    simplex.U = (fint)1 - simplex.V;
                     simplex.A = A;
                     simplex.B = B;
                     simplex.SimplexA.A = A1;
@@ -744,17 +744,17 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
 
                 //Check to see if it's outside C.
                 //TODO: Note that in a boolean-style GJK, it shouldn't be possible to be outside C.
-                sfloat CdotAB, CdotAC;
+                fint CdotAB, CdotAC;
                 Vector3.Dot(ref ab, ref C, out CdotAB);
                 Vector3.Dot(ref ac, ref C, out CdotAC);
                 CdotAB = -CdotAB;
                 CdotAC = -CdotAC;
-                if (CdotAC >= sfloat.Zero && CdotAB <= CdotAC)
+                if (CdotAC >= (fint)0 && CdotAB <= CdotAC)
                 {
                     //It is C!
                     simplex.State = SimplexState.Point;
                     simplex.A = C;
-                    simplex.U = sfloat.One;
+                    simplex.U = (fint)1;
                     simplex.SimplexA.A = C1;
                     simplex.SimplexB.A = C2;
                     point = C;
@@ -767,8 +767,8 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 //Vector3.Dot(ref ac, ref A, out AdotAC);
                 //AdotAB = -AdotAB;
                 //AdotAC = -AdotAC;
-                sfloat vb = CdotAB * AdotAC - AdotAB * CdotAC;
-                if (vb <= sfloat.Zero && AdotAC > sfloat.Zero && CdotAC < sfloat.Zero) //Note > instead of >= and < instead of <=; prevents bad denominator
+                fint vb = CdotAB * AdotAC - AdotAB * CdotAC;
+                if (vb <= (fint)0 && AdotAC > (fint)0 && CdotAC < (fint)0) //Note > instead of >= and < instead of <=; prevents bad denominator
                 {
                     simplex.State = SimplexState.Segment;
                     simplex.A = A;
@@ -778,7 +778,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                     simplex.SimplexB.A = A2;
                     simplex.SimplexB.B = C2;
                     simplex.V = AdotAC / (AdotAC - CdotAC);
-                    simplex.U = sfloat.One - simplex.V;
+                    simplex.U = (fint)1 - simplex.V;
                     Vector3.Multiply(ref ac, simplex.V, out point);
                     Vector3.Add(ref point, ref A, out point);
                     return true;
@@ -790,10 +790,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 //Vector3.Dot(ref ac, ref B, out BdotAC);
                 //BdotAB = -BdotAB;
                 //BdotAC = -BdotAC;
-                sfloat va = BdotAB * CdotAC - CdotAB * BdotAC;
-                sfloat d3d4 = BdotAC - BdotAB;
-                sfloat d6d5 = CdotAB - CdotAC;
-                if (va <= sfloat.Zero && d3d4 > sfloat.Zero && d6d5 > sfloat.Zero)//Note > instead of >= and < instead of <=; prevents bad denominator
+                fint va = BdotAB * CdotAC - CdotAB * BdotAC;
+                fint d3d4 = BdotAC - BdotAB;
+                fint d6d5 = CdotAB - CdotAC;
+                if (va <= (fint)0 && d3d4 > (fint)0 && d6d5 > (fint)0)//Note > instead of >= and < instead of <=; prevents bad denominator
                 {
                     simplex.State = SimplexState.Segment;
                     simplex.A = B;
@@ -803,7 +803,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                     simplex.SimplexB.A = B2;
                     simplex.SimplexB.B = C2;
                     simplex.V = d3d4 / (d3d4 + d6d5);
-                    simplex.U = sfloat.One - simplex.V;
+                    simplex.U = (fint)1 - simplex.V;
 
                     Vector3 bc;
                     Vector3.Subtract(ref C, ref B, out bc);
@@ -824,10 +824,10 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
                 simplex.SimplexB.B = B2;
                 simplex.SimplexB.C = C2;
                 simplex.State = SimplexState.Triangle;
-                sfloat denom = sfloat.One / (va + vb + vc);
+                fint denom = (fint)1 / (va + vb + vc);
                 simplex.W = vc * denom;
                 simplex.V = vb * denom;
-                simplex.U = sfloat.One - simplex.V - simplex.W;
+                simplex.U = (fint)1 - simplex.V - simplex.W;
                 Vector3.Multiply(ref ab, simplex.V, out point);
                 Vector3 acw;
                 Vector3.Multiply(ref ac, simplex.W, out acw);
@@ -839,18 +839,18 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
         }
 
 
-        internal sfloat errorTolerance;
+        internal fint errorTolerance;
         ///<summary>
         /// Gets the error tolerance of the simplex.
         ///</summary>
-        public sfloat ErrorTolerance
+        public fint ErrorTolerance
         {
             get
             {
                 return errorTolerance;
             }
         }
-        sfloat previousDistanceToClosest;
+        fint previousDistanceToClosest;
         ///<summary>
         /// Adds a new point to the simplex.
         ///</summary>
@@ -869,11 +869,11 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             Vector3 S;
             Vector3.Subtract(ref sa, ref sb, out S);
             //If S is not further towards the origin along negativeDirection than closestPoint, then we're done.
-            sfloat dotS;
+            fint dotS;
             Vector3.Dot(ref S, ref negativeDirection, out dotS); //-P * S
-            sfloat distanceToClosest = closestPoint.LengthSquared();
+            fint distanceToClosest = closestPoint.LengthSquared();
 
-            sfloat progression = dotS + distanceToClosest;
+            fint progression = dotS + distanceToClosest;
             //It's likely that the system is oscillating between two or more states, usually because of a degenerate simplex.
             //Rather than detect specific problem cases, this approach just lets it run and catches whatever falls through.
             //During oscillation, one of the states is usually just BARELY outside of the numerical tolerance.
@@ -966,38 +966,38 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms.GJK
             switch (State)
             {
                 case SimplexState.Point:
-                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (fint).0001f)
                         Debug.WriteLine("break.");
                     break;
                 case SimplexState.Segment:
-                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (fint).0001f)
                         Debug.WriteLine("break.");
                     break;
                 case SimplexState.Triangle:
-                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.C - SimplexB.C, C) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.C - SimplexB.C, C) > (fint).0001f)
                         Debug.WriteLine("break.");
                     break;
 
                 case SimplexState.Tetrahedron:
-                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.A - SimplexB.A, A) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.B - SimplexB.B, B) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.C - SimplexB.C, C) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.C - SimplexB.C, C) > (fint).0001f)
                         Debug.WriteLine("break.");
 
-                    if (Vector3.Distance(SimplexA.D - SimplexB.D, D) > (sfloat).0001f)
+                    if (Vector3.Distance(SimplexA.D - SimplexB.D, D) > (fint).0001f)
                         Debug.WriteLine("break.");
                     break;
             }

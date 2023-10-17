@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms.GJK;
@@ -142,7 +142,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             
             Vector3 displacement;
             Vector3.Subtract(ref closestB, ref closestA, out displacement);
-            sfloat distanceSquared = displacement.LengthSquared();
+            fint distanceSquared = displacement.LengthSquared();
 
             if (distanceSquared < Toolbox.Epsilon)
             {
@@ -151,7 +151,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             }
 
             localDirection = displacement; //Use this as the direction for future deep contacts.
-            sfloat margin = collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin;
+            fint margin = collidableA.Shape.collisionMargin + collidableB.Shape.collisionMargin;
 
 
             if (distanceSquared < margin * margin)
@@ -167,7 +167,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
                 Vector3.Add(ref closestA, ref contact.Position, out contact.Position); //A + t * AB.
 
                 contact.Normal = displacement;
-                sfloat distance = libm.sqrtf(distanceSquared);
+                fint distance = fint.Sqrt(distanceSquared);
                 Vector3.Divide(ref contact.Normal, distance, out contact.Normal);
                 contact.PenetrationDepth = margin - distance;
                 return true;

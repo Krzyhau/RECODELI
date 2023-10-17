@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities.ResourceManagement;
@@ -41,7 +41,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             Vector3 center;
             Vector3.Add(ref shape.vA, ref shape.vB, out center);
             Vector3.Add(ref center, ref shape.vC, out center);
-            Vector3.Multiply(ref center, sfloat.One / (sfloat)3f, out center);
+            Vector3.Multiply(ref center, (fint)1 / (fint)3f, out center);
             Vector3.Subtract(ref shape.vA, ref center, out shape.vA);
             Vector3.Subtract(ref shape.vB, ref center, out shape.vB);
             Vector3.Subtract(ref shape.vC, ref center, out shape.vC);
@@ -50,7 +50,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             //The bounding box doesn't update by itself.
             toReturn.worldTransform.Position = center;
             toReturn.worldTransform.Orientation = Quaternion.Identity;
-            toReturn.UpdateBoundingBoxInternal(sfloat.Zero);
+            toReturn.UpdateBoundingBoxInternal((fint)0);
             shape.sidedness = mesh.Sidedness;
             shape.collisionMargin = mobileMesh.Shape.MeshCollisionMargin;
             return toReturn;
@@ -58,7 +58,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
       
 
-        protected override void ConfigureCollidable(TriangleEntry entry, sfloat dt)
+        protected override void ConfigureCollidable(TriangleEntry entry, fint dt)
         {
 
         }
@@ -103,7 +103,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
 
-        protected override void UpdateContainedPairs(sfloat dt)
+        protected override void UpdateContainedPairs(fint dt)
         {
             var overlappedElements = CommonResources.GetIntList();
             BoundingBox localBoundingBox;

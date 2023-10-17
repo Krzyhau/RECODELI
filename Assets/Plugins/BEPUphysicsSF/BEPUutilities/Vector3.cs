@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUutilities
 {
@@ -11,15 +11,15 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public sfloat X;
+        public fint X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public sfloat Y;
+        public fint Y;
         /// <summary>
         /// Z component of the vector.
         /// </summary>
-        public sfloat Z;
+        public fint Z;
 
         /// <summary>
         /// Constructs a new 3d vector.
@@ -27,7 +27,7 @@ namespace BEPUutilities
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y component of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
-        public Vector3(sfloat x, sfloat y, sfloat z)
+        public Vector3(fint x, fint y, fint z)
         {
             this.X = x;
             this.Y = y;
@@ -39,7 +39,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="xy">X and Y components of the vector.</param>
         /// <param name="z">Z component of the vector.</param>
-        public Vector3(Vector2 xy, sfloat z)
+        public Vector3(Vector2 xy, fint z)
         {
             this.X = xy.X;
             this.Y = xy.Y;
@@ -51,7 +51,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="yz">Y and Z components of the vector.</param>
-        public Vector3(sfloat x, Vector2 yz)
+        public Vector3(fint x, Vector2 yz)
         {
             this.X = x;
             this.Y = yz.X;
@@ -62,7 +62,7 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public sfloat LengthSquared()
+        public fint LengthSquared()
         {
             return X * X + Y * Y + Z * Z;
         }
@@ -71,9 +71,9 @@ namespace BEPUutilities
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public sfloat Length()
+        public fint Length()
         {
-            return libm.sqrtf(X * X + Y * Y + Z * Z);
+            return fint.Sqrt(X * X + Y * Y + Z * Z);
         }
 
         /// <summary>
@@ -81,7 +81,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            sfloat inverse = (sfloat)(sfloat.One / libm.sqrtf(X * X + Y * Y + Z * Z));
+            fint inverse = (fint)(1 / fint.Sqrt(X * X + Y * Y + Z * Z));
             X *= inverse;
             Y *= inverse;
             Z *= inverse;
@@ -122,7 +122,7 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <returns>Resulting dot product.</returns>
-        public static sfloat Dot(Vector3 a, Vector3 b)
+        public static fint Dot(Vector3 a, Vector3 b)
         {
             return a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
@@ -133,7 +133,7 @@ namespace BEPUutilities
         /// <param name="a">First vector in the product.</param>
         /// <param name="b">Second vector in the product.</param>
         /// <param name="product">Resulting dot product.</param>
-        public static void Dot(ref Vector3 a, ref Vector3 b, out sfloat product)
+        public static void Dot(ref Vector3 a, ref Vector3 b, out fint product)
         {
             product = a.X * b.X + a.Y * b.Y + a.Z * b.Z;
         }
@@ -167,7 +167,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector3 v, sfloat scale, out Vector3 result)
+        public static void Multiply(ref Vector3 v, fint scale, out Vector3 result)
         {
             result.X = v.X * scale;
             result.Y = v.Y * scale;
@@ -193,9 +193,9 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector3 v, sfloat divisor, out Vector3 result)
+        public static void Divide(ref Vector3 v, fint divisor, out Vector3 result)
         {
-            sfloat inverse = sfloat.One / divisor;
+            fint inverse = 1 / divisor;
             result.X = v.X * inverse;
             result.Y = v.Y * inverse;
             result.Z = v.Z * inverse;
@@ -206,7 +206,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector3 operator *(Vector3 v, sfloat f)
+        public static Vector3 operator *(Vector3 v, fint f)
         {
             Vector3 toReturn;
             toReturn.X = v.X * f;
@@ -221,7 +221,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector3 operator *(sfloat f, Vector3 v)
+        public static Vector3 operator *(fint f, Vector3 v)
         {
             Vector3 toReturn;
             toReturn.X = v.X * f;
@@ -249,10 +249,10 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Value to divide the vector's components.</param>
         /// <returns>Result of the division.</returns>
-        public static Vector3 operator /(Vector3 v, sfloat f)
+        public static Vector3 operator /(Vector3 v, fint f)
         {
             Vector3 toReturn;
-            f = sfloat.One / f;
+            f = 1 / f;
             toReturn.X = v.X * f;
             toReturn.Y = v.Y * f;
             toReturn.Z = v.Z * f;
@@ -368,11 +368,11 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distanceSquared">Squared distance between the two vectors.</param>
-        public static void DistanceSquared(ref Vector3 a, ref Vector3 b, out sfloat distanceSquared)
+        public static void DistanceSquared(ref Vector3 a, ref Vector3 b, out fint distanceSquared)
         {
-            sfloat x = a.X - b.X;
-            sfloat y = a.Y - b.Y;
-            sfloat z = a.Z - b.Z;
+            fint x = a.X - b.X;
+            fint y = a.Y - b.Y;
+            fint z = a.Z - b.Z;
             distanceSquared = x * x + y * y + z * z;
         }
 
@@ -382,11 +382,11 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <returns>Squared distance between the two vectors.</returns>
-        public static sfloat DistanceSquared(Vector3 a, Vector3 b)
+        public static fint DistanceSquared(Vector3 a, Vector3 b)
         {
-            sfloat x = a.X - b.X;
-            sfloat y = a.Y - b.Y;
-            sfloat z = a.Z - b.Z;
+            fint x = a.X - b.X;
+            fint y = a.Y - b.Y;
+            fint z = a.Z - b.Z;
             return x * x + y * y + z * z;
         }
 
@@ -397,12 +397,12 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <param name="distance">Distance between the two vectors.</param>
-        public static void Distance(ref Vector3 a, ref Vector3 b, out sfloat distance)
+        public static void Distance(ref Vector3 a, ref Vector3 b, out fint distance)
         {
-            sfloat x = a.X - b.X;
-            sfloat y = a.Y - b.Y;
-            sfloat z = a.Z - b.Z;
-            distance = libm.sqrtf(x * x + y * y + z * z);
+            fint x = a.X - b.X;
+            fint y = a.Y - b.Y;
+            fint z = a.Z - b.Z;
+            distance = fint.Sqrt(x * x + y * y + z * z);
         }
         /// <summary>
         /// Computes the distance between two two vectors.
@@ -410,9 +410,9 @@ namespace BEPUutilities
         /// <param name="a">First vector.</param>
         /// <param name="b">Second vector.</param>
         /// <returns>Distance between the two vectors.</returns>
-        public static sfloat Distance(Vector3 a, Vector3 b)
+        public static fint Distance(Vector3 a, Vector3 b)
         {
-            sfloat toReturn;
+            fint toReturn;
             Distance(ref a, ref b, out toReturn);
             return toReturn;
         }
@@ -437,9 +437,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.One,
-                    Y = sfloat.One,
-                    Z = sfloat.One
+                    X = 1,
+                    Y = 1,
+                    Z = 1
                 };
             }
         }
@@ -453,9 +453,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.Zero,
-                    Y = sfloat.One,
-                    Z = sfloat.Zero
+                    X = 0,
+                    Y = 1,
+                    Z = 0
                 };
             }
         }
@@ -469,9 +469,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.Zero,
-                    Y = sfloat.MinusOne,
-                    Z = sfloat.Zero
+                    X = 0,
+                    Y = -1,
+                    Z = 0
                 };
             }
         }
@@ -485,9 +485,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.One,
-                    Y = sfloat.Zero,
-                    Z = sfloat.Zero
+                    X = 1,
+                    Y = 0,
+                    Z = 0
                 };
             }
         }
@@ -501,9 +501,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.MinusOne,
-                    Y = sfloat.Zero,
-                    Z = sfloat.Zero
+                    X = -1,
+                    Y = 0,
+                    Z = 0
                 };
             }
         }
@@ -517,9 +517,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.Zero,
-                    Y = sfloat.Zero,
-                    Z = sfloat.MinusOne
+                    X = 0,
+                    Y = 0,
+                    Z = -1
                 };
             }
         }
@@ -533,9 +533,9 @@ namespace BEPUutilities
             {
                 return new Vector3()
                 {
-                    X = sfloat.Zero,
-                    Y = sfloat.Zero,
-                    Z = sfloat.One
+                    X = 0,
+                    Y = 0,
+                    Z = 1
                 };
             }
         }
@@ -545,7 +545,7 @@ namespace BEPUutilities
         /// </summary>
         public static Vector3 UnitX
         {
-            get { return new Vector3 { X = sfloat.One }; }
+            get { return new Vector3 { X = 1 }; }
         }
 
         /// <summary>
@@ -553,7 +553,7 @@ namespace BEPUutilities
         /// </summary>
         public static Vector3 UnitY
         {
-            get { return new Vector3 { Y = sfloat.One }; }
+            get { return new Vector3 { Y = 1 }; }
         }
 
         /// <summary>
@@ -561,7 +561,7 @@ namespace BEPUutilities
         /// </summary>
         public static Vector3 UnitZ
         {
-            get { return new Vector3 { Z = sfloat.One }; }
+            get { return new Vector3 { Z = 1 }; }
         }
 
         /// <summary>
@@ -584,9 +584,9 @@ namespace BEPUutilities
         /// <param name="result">Cross product of the two vectors.</param>
         public static void Cross(ref Vector3 a, ref Vector3 b, out Vector3 result)
         {
-            sfloat resultX = a.Y * b.Z - a.Z * b.Y;
-            sfloat resultY = a.Z * b.X - a.X * b.Z;
-            sfloat resultZ = a.X * b.Y - a.Y * b.X;
+            fint resultX = a.Y * b.Z - a.Z * b.Y;
+            fint resultY = a.Z * b.X - a.X * b.Z;
+            fint resultZ = a.X * b.Y - a.Y * b.X;
             result.X = resultX;
             result.Y = resultY;
             result.Z = resultZ;
@@ -611,7 +611,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector3 v, out Vector3 result)
         {
-            sfloat inverse = (sfloat)(sfloat.One / libm.sqrtf(v.X * v.X + v.Y * v.Y + v.Z * v.Z));
+            fint inverse = (fint)(1 / fint.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z));
             result.X = v.X * inverse;
             result.Y = v.Y * inverse;
             result.Z = v.Z * inverse;
@@ -636,15 +636,15 @@ namespace BEPUutilities
         /// <param name="result">Vector with nonnegative elements.</param>
         public static void Abs(ref Vector3 v, out Vector3 result)
         {
-            if (v.X < sfloat.Zero)
+            if (v.X < (fint)0)
                 result.X = -v.X;
             else
                 result.X = v.X;
-            if (v.Y < sfloat.Zero)
+            if (v.Y < (fint)0)
                 result.Y = -v.Y;
             else
                 result.Y = v.Y;
-            if (v.Z < sfloat.Zero)
+            if (v.Z < (fint)0)
                 result.Z = -v.Z;
             else
                 result.Z = v.Z;
@@ -722,7 +722,7 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector3 Lerp(Vector3 start, Vector3 end, sfloat interpolationAmount)
+        public static Vector3 Lerp(Vector3 start, Vector3 end, fint interpolationAmount)
         {
             Vector3 toReturn;
             Lerp(ref start, ref end, interpolationAmount, out toReturn);
@@ -735,9 +735,9 @@ namespace BEPUutilities
         /// <param name="end">Ending location of the interpolation.</param>
         /// <param name="interpolationAmount">Amount of the end location to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Lerp(ref Vector3 start, ref Vector3 end, sfloat interpolationAmount, out Vector3 result)
+        public static void Lerp(ref Vector3 start, ref Vector3 end, fint interpolationAmount, out Vector3 result)
         {
-            sfloat startAmount = sfloat.One - interpolationAmount;
+            fint startAmount = (fint)1 - interpolationAmount;
             result.X = start.X * startAmount + end.X * interpolationAmount;
             result.Y = start.Y * startAmount + end.Y * interpolationAmount;
             result.Z = start.Z * startAmount + end.Z * interpolationAmount;
@@ -752,14 +752,14 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <param name="result">Interpolated intermediate state.</param>
-        public static void Hermite(ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2, sfloat interpolationAmount, out Vector3 result)
+        public static void Hermite(ref Vector3 value1, ref Vector3 tangent1, ref Vector3 value2, ref Vector3 tangent2, fint interpolationAmount, out Vector3 result)
         {
-            sfloat weightSquared = interpolationAmount * interpolationAmount;
-            sfloat weightCubed = interpolationAmount * weightSquared;
-            sfloat value1Blend = (sfloat)2.0f * weightCubed - (sfloat)3.0f * weightSquared + (sfloat)1.0f;
-            sfloat tangent1Blend = weightCubed - (sfloat)2.0f * weightSquared + interpolationAmount;
-            sfloat value2Blend = -(sfloat)2.0f * weightCubed + (sfloat)3.0f * weightSquared;
-            sfloat tangent2Blend = weightCubed - weightSquared;
+            fint weightSquared = interpolationAmount * interpolationAmount;
+            fint weightCubed = interpolationAmount * weightSquared;
+            fint value1Blend = (fint)2.0f * weightCubed - (fint)3.0f * weightSquared + (fint)1.0f;
+            fint tangent1Blend = weightCubed - (fint)2.0f * weightSquared + interpolationAmount;
+            fint value2Blend = -(fint)2.0f * weightCubed + (fint)3.0f * weightSquared;
+            fint tangent2Blend = weightCubed - weightSquared;
             result.X = value1.X * value1Blend + value2.X * value2Blend + tangent1.X * tangent1Blend + tangent2.X * tangent2Blend;
             result.Y = value1.Y * value1Blend + value2.Y * value2Blend + tangent1.Y * tangent1Blend + tangent2.Y * tangent2Blend;
             result.Z = value1.Z * value1Blend + value2.Z * value2Blend + tangent1.Z * tangent1Blend + tangent2.Z * tangent2Blend;
@@ -773,7 +773,7 @@ namespace BEPUutilities
         /// <param name="tangent2">Tangent associated with the second position.</param>
         /// <param name="interpolationAmount">Amount of the second point to use.</param>
         /// <returns>Interpolated intermediate state.</returns>
-        public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, sfloat interpolationAmount)
+        public static Vector3 Hermite(Vector3 value1, Vector3 tangent1, Vector3 value2, Vector3 tangent2, fint interpolationAmount)
         {
             Vector3 toReturn;
             Hermite(ref value1, ref tangent1, ref value2, ref tangent2, interpolationAmount, out toReturn);
@@ -788,18 +788,18 @@ namespace BEPUutilities
         /// <param name="target">Ending location of the move.</param>
         /// <param name="maxDistanceDelta">Amount to move.</param>
         /// <returns>Moved vector.</returns>
-        public static Vector3 MoveTowards(Vector3 current, Vector3 target, sfloat maxDistanceDelta)
+        public static Vector3 MoveTowards(Vector3 current, Vector3 target, fint maxDistanceDelta)
         {
-            sfloat num = target.X - current.X;
-            sfloat num2 = target.Y - current.Y;
-            sfloat num3 = target.Z - current.Z;
-            sfloat num4 = num * num + num2 * num2 + num3 * num3;
-            if (num4 == sfloat.Zero || (maxDistanceDelta >= sfloat.Zero && num4 <= maxDistanceDelta * maxDistanceDelta))
+            fint num = target.X - current.X;
+            fint num2 = target.Y - current.Y;
+            fint num3 = target.Z - current.Z;
+            fint num4 = num * num + num2 * num2 + num3 * num3;
+            if (num4 == (fint)0 || (maxDistanceDelta >= (fint)0 && num4 <= maxDistanceDelta * maxDistanceDelta))
             {
                 return target;
             }
 
-            sfloat num5 = libm.sqrtf(num4);
+            fint num5 = fint.Sqrt(num4);
             return new Vector3(current.X + num / num5 * maxDistanceDelta, current.Y + num2 / num5 * maxDistanceDelta, current.Z + num3 / num5 * maxDistanceDelta);
         }
     }

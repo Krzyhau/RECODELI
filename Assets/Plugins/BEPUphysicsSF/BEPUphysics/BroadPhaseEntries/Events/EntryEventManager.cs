@@ -4,7 +4,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUphysics.OtherSpaceStages;
 using BEPUutilities;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities.DataStructures;
 
 namespace BEPUphysics.BroadPhaseEntries.Events

@@ -2,7 +2,7 @@
 using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints.SolverGroups
 {
@@ -33,7 +33,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             if (connectionB != null)
                 anchor += connectionB.position;
             if (connectionA != null && connectionB != null)
-                anchor *= sfloat.Half;
+                anchor *= (fint)0.5f;
             return anchor;
         }
 

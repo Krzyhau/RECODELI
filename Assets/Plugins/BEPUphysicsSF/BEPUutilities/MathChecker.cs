@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Diagnostics;
 
 namespace BEPUutilities
@@ -14,9 +14,10 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="f">Value to validate.</param>
         /// <returns>True if the value is invalid, false if it is valid.</returns>
-        private static bool IsInvalid(sfloat f)
+        private static bool IsInvalid(fint f)
         {
-            return f.IsNaN() || f.IsInfinity();
+            //return f.IsNaN() || f.IsInfinity();
+            return false;
         }
 
         /// <summary>
@@ -24,7 +25,7 @@ namespace BEPUutilities
         /// This is only run when the CHECKMATH symbol is defined.
         /// </summary>
         [Conditional("CHECKMATH")]
-        public static void Validate(this sfloat f)
+        public static void Validate(this fint f)
         {
             if (IsInvalid(f))
             {

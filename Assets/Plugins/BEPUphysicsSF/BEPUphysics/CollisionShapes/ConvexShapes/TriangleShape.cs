@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
@@ -95,7 +95,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public TriangleShape(Vector3 vA, Vector3 vB, Vector3 vC)
         {
             //Recenter.  Convexes should contain the origin.
-            Vector3 center = (vA + vB + vC) / (sfloat)3.0f;
+            Vector3 center = (vA + vB + vC) / (fint)3.0f;
             this.vA = vA - center;
             this.vB = vB - center;
             this.vC = vC - center;
@@ -113,7 +113,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public TriangleShape(Vector3 vA, Vector3 vB, Vector3 vC, out Vector3 center)
         {
             //Recenter.  Convexes should contain the origin.
-            center = (vA + vB + vC) / (sfloat)3.0f;
+            center = (vA + vB + vC) / (fint)3.0f;
             this.vA = vA - center;
             this.vB = vB - center;
             this.vC = vC - center;
@@ -130,7 +130,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         public TriangleShape(Vector3 vA, Vector3 vB, Vector3 vC, ConvexShapeDescription description)
         {
             //Recenter.  Convexes should contain the origin.
-            var center = (vA + vB + vC) / (sfloat)3.0f;
+            var center = (vA + vB + vC) / (fint)3.0f;
             this.vA = vA - center;
             this.vB = vB - center;
             this.vC = vC - center;
@@ -148,7 +148,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="vC">Third local vertex in the triangle.</param>
         ///<param name="collisionMargin">Collision margin of the shape.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(Vector3 vA, Vector3 vB, Vector3 vC, sfloat collisionMargin)
+        public static ConvexShapeDescription ComputeDescription(Vector3 vA, Vector3 vB, Vector3 vC, fint collisionMargin)
         {
             ConvexShapeDescription description;
             // A triangle by itself technically has no volume, but shapes try to include the collision margin in the volume when feasible (e.g. BoxShape).
@@ -162,13 +162,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
                 vB.X, vB.Y, vB.Z,
                 vC.X, vC.Y, vC.Z);
             var s = new Matrix3x3(
-                sfloat.Two, sfloat.One, sfloat.One,
-                sfloat.One, sfloat.Two, sfloat.One,
-                sfloat.One, sfloat.One, sfloat.Two);
+                (fint)2, (fint)1, (fint)1,
+                (fint)1, (fint)2, (fint)1,
+                (fint)1, (fint)1, (fint)2);
 
             Matrix3x3.MultiplyTransposed(ref v, ref s, out description.EntityShapeVolume.VolumeDistribution);
             Matrix3x3.Multiply(ref description.EntityShapeVolume.VolumeDistribution, ref v, out description.EntityShapeVolume.VolumeDistribution);
-            var scaling = sfloatArea / (sfloat)24f;
+            var scaling = sfloatArea / (fint)24f;
             Matrix3x3.Multiply(ref description.EntityShapeVolume.VolumeDistribution, -scaling, out description.EntityShapeVolume.VolumeDistribution);
 
             //The square-of-sum term is ignored since the parameters should already be localized (and so would sum to zero).
@@ -178,7 +178,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
             description.EntityShapeVolume.VolumeDistribution.M33 += sums;
 
             description.MinimumRadius = collisionMargin;
-            description.MaximumRadius = collisionMargin + sfloat.Max(vA.Length(), sfloat.Max(vB.Length(), vC.Length()));
+            description.MaximumRadius = collisionMargin + fint.Max(vA.Length(), fint.Max(vB.Length(), vC.Length()));
             description.CollisionMargin = collisionMargin;
             return description;
         }
@@ -220,7 +220,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<param name="extremePoint">Extreme point on the shape.</param>
         public override void GetLocalExtremePointWithoutMargin(ref Vector3 direction, out Vector3 extremePoint)
         {
-            sfloat dotA, dotB, dotC;
+            fint dotA, dotB, dotC;
             Vector3.Dot(ref direction, ref vA, out dotA);
             Vector3.Dot(ref direction, ref vB, out dotB);
             Vector3.Dot(ref direction, ref vC, out dotC);
@@ -249,20 +249,20 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <returns>Volume distribution of the shape.</returns>
         public static Matrix3x3 ComputeVolumeDistribution(Vector3 vA, Vector3 vB, Vector3 vC)
         {
-            Vector3 center = (vA + vB + vC) * (sfloat.One / (sfloat)3f);
+            Vector3 center = (vA + vB + vC) * ((fint)1 / (fint)3f);
 
             //Calculate distribution of mass.
 
-            sfloat massPerPoint = (sfloat).333333333f;
+            fint massPerPoint = (fint).333333333f;
 
             //Subtract the position from the distribution, moving into a 'body space' relative to itself.
             //        [ (j * j + z * z)  (-j * j)  (-j * z) ]
             //I = I + [ (-j * j)  (j * j + z * z)  (-j * z) ]
             //	      [ (-j * z)  (-j * z)  (j * j + j * j) ]
 
-            sfloat i = vA.X - center.X;
-            sfloat j = vA.Y - center.Y;
-            sfloat k = vA.Z - center.Z;
+            fint i = vA.X - center.X;
+            fint j = vA.Y - center.Y;
+            fint k = vA.Z - center.Z;
             //localInertiaTensor += new Matrix(j * j + k * k, -j * j, -j * k, 0, -j * j, j * j + k * k, -j * k, 0, -j * k, -j * k, j * j + j * j, 0, 0, 0, 0, 0); //No mass per point.
             var volumeDistribution = new Matrix3x3(massPerPoint * (j * j + k * k), massPerPoint * (-i * j), massPerPoint * (-i * k),
                                                    massPerPoint * (-i * j), massPerPoint * (i * i + k * k), massPerPoint * (-j * k),
@@ -322,7 +322,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="maximumLength">Maximum distance to travel in units of the direction vector's length.</param>
         /// <param name="hit">Hit data of the ray cast, if any.</param>
         /// <returns>Whether or not the ray hit the target.</returns>
-        public override bool RayTest(ref Ray ray, ref RigidTransform transform, sfloat maximumLength, out RayHit hit)
+        public override bool RayTest(ref Ray ray, ref RigidTransform transform, fint maximumLength, out RayHit hit)
         {
             Matrix3x3 orientation;
             Matrix3x3.CreateFromQuaternion(ref transform.Orientation, out orientation);

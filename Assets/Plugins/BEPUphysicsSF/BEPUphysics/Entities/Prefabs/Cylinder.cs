@@ -3,7 +3,7 @@ using BEPUphysics.EntityStateManagement;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Entities.Prefabs
 {
@@ -15,7 +15,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Gets or sets the height of the cylinder.
         /// </summary>
-        public sfloat Height
+        public fint Height
         {
             get
             {
@@ -30,7 +30,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Gets or sets the radius of the cylinder.
         /// </summary>
-        public sfloat Radius
+        public fint Radius
         {
             get
             {
@@ -43,12 +43,12 @@ namespace BEPUphysics.Entities.Prefabs
         }
 
 
-        private Cylinder(sfloat high, sfloat rad, sfloat mass)
+        private Cylinder(fint high, fint rad, fint mass)
             : base(new ConvexCollidable<CylinderShape>(new CylinderShape(high, rad)), mass)
         {
         }
 
-        private Cylinder(sfloat high, sfloat rad)
+        private Cylinder(fint high, fint rad)
             : base(new ConvexCollidable<CylinderShape>(new CylinderShape(high, rad)))
         {
         }
@@ -60,7 +60,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="height">Height of the cylinder.</param>
         /// <param name="radius">Radius of the cylinder.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Cylinder(Vector3 position, sfloat height, sfloat radius, sfloat mass)
+        public Cylinder(Vector3 position, fint height, fint radius, fint mass)
             : this(height, radius, mass)
         {
             Position = position;
@@ -72,7 +72,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="position">Position of the cylinder.</param>
         /// <param name="height">Height of the cylinder.</param>
         /// <param name="radius">Radius of the cylinder.</param>
-        public Cylinder(Vector3 position, sfloat height, sfloat radius)
+        public Cylinder(Vector3 position, fint height, fint radius)
             : this(height, radius)
         {
             Position = position;
@@ -85,7 +85,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="height">Height of the cylinder.</param>
         /// <param name="radius">Radius of the cylinder.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Cylinder(MotionState motionState, sfloat height, sfloat radius, sfloat mass)
+        public Cylinder(MotionState motionState, fint height, fint radius, fint mass)
             : this(height, radius, mass)
         {
             MotionState = motionState;
@@ -97,7 +97,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="height">Height of the cylinder.</param>
         /// <param name="radius">Radius of the cylinder.</param>
-        public Cylinder(MotionState motionState, sfloat height, sfloat radius)
+        public Cylinder(MotionState motionState, fint height, fint radius)
             : this(height, radius)
         {
             MotionState = motionState;

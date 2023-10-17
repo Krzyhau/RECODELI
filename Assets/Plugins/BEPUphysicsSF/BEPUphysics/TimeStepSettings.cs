@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics
 {
@@ -18,11 +18,11 @@ namespace BEPUphysics
         /// The other method, Space.Update(sfloat), will try to move time forward by the amount specified in the parameter by taking steps of TimeStepDuration size.
         /// Defaults to 1/60.
         /// </summary>
-        public sfloat TimeStepDuration = sfloat.One / (sfloat)60;
+        public fint TimeStepDuration = (fint)1 / (fint)60;
 
         /// <summary>
         /// Amount of time accumulated by previous calls to Space.Update(sfloat) that has not yet been simulated.
         /// </summary>
-        public sfloat AccumulatedTime;
+        public fint AccumulatedTime;
     }
 }

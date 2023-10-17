@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries.Events;
 using BEPUphysics.CollisionShapes;
 using BEPUutilities;
@@ -157,7 +157,7 @@ namespace BEPUphysics.BroadPhaseEntries
         /// <param name="maximumLength">Maximum length, in units of the ray's direction's length, to test.</param>
         /// <param name="rayHit">Hit location of the ray on the entry, if any.</param>
         /// <returns>Whether or not the ray hit the entry.</returns>
-        public override bool RayCast(Ray ray, sfloat maximumLength, out RayHit rayHit)
+        public override bool RayCast(Ray ray, fint maximumLength, out RayHit rayHit)
         {
             return RayCast(ray, maximumLength, sidedness, out rayHit);
         }
@@ -170,7 +170,7 @@ namespace BEPUphysics.BroadPhaseEntries
         ///<param name="sidedness">Sidedness to use during the ray cast.  This does not have to be the same as the mesh's sidedness.</param>
         ///<param name="rayHit">The hit location of the ray on the mesh, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, sfloat maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
+        public bool RayCast(Ray ray, fint maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
         {
             //Put the ray into local space.
             Ray localRay;
@@ -208,7 +208,7 @@ namespace BEPUphysics.BroadPhaseEntries
             var hitElements = CommonResources.GetIntList();
             if (this.Shape.TriangleMesh.Tree.GetOverlaps(boundingBox, hitElements))
             {
-                hit.T = sfloat.MaxValue;
+                hit.T = fint.MaxValue;
                 for (int i = 0; i < hitElements.Count; i++)
                 {
                     Shape.TriangleMesh.Data.GetTriangle(hitElements[i], out tri.vA, out tri.vB, out tri.vC);
@@ -218,19 +218,19 @@ namespace BEPUphysics.BroadPhaseEntries
                     Vector3 center;
                     Vector3.Add(ref tri.vA, ref tri.vB, out center);
                     Vector3.Add(ref center, ref tri.vC, out center);
-                    Vector3.Multiply(ref center, sfloat.One / (sfloat)3.0f, out center);
+                    Vector3.Multiply(ref center, (fint)1 / (fint)3.0f, out center);
                     Vector3.Subtract(ref tri.vA, ref center, out tri.vA);
                     Vector3.Subtract(ref tri.vB, ref center, out tri.vB);
                     Vector3.Subtract(ref tri.vC, ref center, out tri.vC);
                     tri.MaximumRadius = tri.vA.LengthSquared();
-                    sfloat radius = tri.vB.LengthSquared();
+                    fint radius = tri.vB.LengthSquared();
                     if (tri.MaximumRadius < radius)
                         tri.MaximumRadius = radius;
                     radius = tri.vC.LengthSquared();
                     if (tri.MaximumRadius < radius)
                         tri.MaximumRadius = radius;
-                    tri.MaximumRadius = libm.sqrtf(tri.MaximumRadius);
-                    tri.collisionMargin = sfloat.Zero;
+                    tri.MaximumRadius = fint.Sqrt(tri.MaximumRadius);
+                    tri.collisionMargin = (fint)0;
                     var triangleTransform = new RigidTransform { Orientation = Quaternion.Identity, Position = center };
                     RayHit tempHit;
                     if (MPRToolbox.Sweep(castShape, tri, ref sweep, ref Toolbox.ZeroVector, ref startingTransform, ref triangleTransform, out tempHit) && tempHit.T < hit.T)
@@ -238,10 +238,10 @@ namespace BEPUphysics.BroadPhaseEntries
                         hit = tempHit;
                     }
                 }
-                tri.MaximumRadius = sfloat.Zero;
+                tri.MaximumRadius = (fint)0;
                 PhysicsThreadResources.GiveBack(tri);
                 CommonResources.GiveBack(hitElements);
-                return hit.T != sfloat.MaxValue;
+                return hit.T != fint.MaxValue;
             }
             PhysicsThreadResources.GiveBack(tri);
             CommonResources.GiveBack(hitElements);

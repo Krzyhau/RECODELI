@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
  
 using BEPUphysics.Settings;
@@ -13,19 +13,19 @@ namespace BEPUphysics.Constraints.Collision
     /// </summary>
     public class TwistFrictionConstraint : SolverUpdateable
     {
-        private readonly sfloat[] leverArms = new sfloat[4];
+        private readonly fint[] leverArms = new fint[4];
         private ConvexContactManifoldConstraint contactManifoldConstraint;
         ///<summary>
         /// Gets the contact manifold constraint that owns this constraint.
         ///</summary>
         public ConvexContactManifoldConstraint ContactManifoldConstraint { get { return contactManifoldConstraint; } }
-        internal sfloat accumulatedImpulse;
-        private sfloat angularX, angularY, angularZ;
+        internal fint accumulatedImpulse;
+        private fint angularX, angularY, angularZ;
         private int contactCount;
-        private sfloat friction;
+        private fint friction;
         Entity entityA, entityB;
         bool entityADynamic, entityBDynamic;
-        private sfloat velocityToImpulse;
+        private fint velocityToImpulse;
 
         ///<summary>
         /// Constructs a new twist friction constraint.
@@ -38,7 +38,7 @@ namespace BEPUphysics.Constraints.Collision
         /// <summary>
         /// Gets the torque applied by twist friction.
         /// </summary>
-        public sfloat TotalTorque
+        public fint TotalTorque
         {
             get { return accumulatedImpulse; }
         }
@@ -46,11 +46,11 @@ namespace BEPUphysics.Constraints.Collision
         ///<summary>
         /// Gets the angular velocity between the associated entities.
         ///</summary>
-        public sfloat RelativeVelocity
+        public fint RelativeVelocity
         {
             get
             {
-                sfloat lambda = sfloat.Zero;
+                fint lambda = (fint)0;
                 if (entityA != null)
                     lambda = entityA.angularVelocity.X * angularX + entityA.angularVelocity.Y * angularY + entityA.angularVelocity.Z * angularZ;
                 if (entityB != null)
@@ -63,16 +63,16 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             //Compute relative velocity.  Collisions can occur between an entity and a non-entity.  If it's not an entity, assume it's not moving.
-            sfloat lambda = RelativeVelocity;
+            fint lambda = RelativeVelocity;
             
             lambda *= velocityToImpulse; //convert to impulse
 
             //Clamp accumulated impulse
-            sfloat previousAccumulatedImpulse = accumulatedImpulse;
-            sfloat maximumFrictionForce = sfloat.Zero;
+            fint previousAccumulatedImpulse = accumulatedImpulse;
+            fint maximumFrictionForce = (fint)0;
             for (int i = 0; i < contactCount; i++)
             {
                 maximumFrictionForce += leverArms[i] * contactManifoldConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
@@ -104,7 +104,7 @@ namespace BEPUphysics.Constraints.Collision
             }
 
 
-            return sfloat.Abs(lambda);
+            return fint.Abs(lambda);
         }
 
 
@@ -112,7 +112,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
 
             entityADynamic = entityA != null && entityA.isDynamic;
@@ -125,10 +125,10 @@ namespace BEPUphysics.Constraints.Collision
             angularZ = normal.Z;
 
             //Compute inverse effective mass matrix
-            sfloat entryA, entryB;
+            fint entryA, entryB;
 
             //these are the transformed coordinates
-            sfloat tX, tY, tZ;
+            fint tX, tY, tZ;
             if (entityADynamic)
             {
                 tX = angularX * entityA.inertiaTensorInverse.M11 + angularY * entityA.inertiaTensorInverse.M21 + angularZ * entityA.inertiaTensorInverse.M31;
@@ -137,7 +137,7 @@ namespace BEPUphysics.Constraints.Collision
                 entryA = tX * angularX + tY * angularY + tZ * angularZ + entityA.inverseMass;
             }
             else
-                entryA = sfloat.Zero;
+                entryA = (fint)0;
 
             if (entityBDynamic)
             {
@@ -147,17 +147,17 @@ namespace BEPUphysics.Constraints.Collision
                 entryB = tX * angularX + tY * angularY + tZ * angularZ + entityB.inverseMass;
             }
             else
-                entryB = sfloat.Zero;
+                entryB = (fint)0;
 
-            velocityToImpulse = sfloat.MinusOne / (entryA + entryB);
+            velocityToImpulse = (fint)(-1) / (entryA + entryB);
 
 
             //Compute the relative velocity to determine what kind of friction to use
-            sfloat relativeAngularVelocity = RelativeVelocity;
+            fint relativeAngularVelocity = RelativeVelocity;
             //Set up friction and find maximum friction force
             Vector3 relativeSlidingVelocity = contactManifoldConstraint.SlidingFriction.relativeVelocity;
-            friction = sfloat.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
-                       sfloat.Abs(relativeSlidingVelocity.X) + sfloat.Abs(relativeSlidingVelocity.Y) + sfloat.Abs(relativeSlidingVelocity.Z) > CollisionResponseSettings.StaticFrictionVelocityThreshold
+            friction = fint.Abs(relativeAngularVelocity) > CollisionResponseSettings.StaticFrictionVelocityThreshold ||
+                       fint.Abs(relativeSlidingVelocity.X) + fint.Abs(relativeSlidingVelocity.Y) + fint.Abs(relativeSlidingVelocity.Z) > CollisionResponseSettings.StaticFrictionVelocityThreshold
                            ? contactManifoldConstraint.materialInteraction.KineticFriction
                            : contactManifoldConstraint.materialInteraction.StaticFriction;
             friction *= CollisionResponseSettings.TwistFrictionFactor;
@@ -215,7 +215,7 @@ namespace BEPUphysics.Constraints.Collision
 
         internal void CleanUp()
         {
-            accumulatedImpulse = sfloat.Zero;
+            accumulatedImpulse = (fint)0;
             contactManifoldConstraint = null;
             entityA = null;
             entityB = null;

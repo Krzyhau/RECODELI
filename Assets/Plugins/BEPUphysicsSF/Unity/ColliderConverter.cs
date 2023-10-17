@@ -2,7 +2,7 @@
 using BEPUphysics.Entities;
 using BEPUphysics.Entities.Prefabs;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Linq;
 using UnityEngine;
 using BEPUphysics.CollisionShapes;
@@ -34,7 +34,7 @@ namespace BEPUphysics.Unity
                     {
                         Debug.LogWarning($"Non-uniform scale for SphereCollider {collider.gameObject}! {scale.X} {scale.Y} {scale.Z}");
                     }
-                    var sphereRadius = (scale.X + scale.Y + scale.Z) / (sfloat)3.0f * (sfloat)sphereCollider.radius;
+                    var sphereRadius = (scale.X + scale.Y + scale.Z) / (fint)3.0f * (fint)sphereCollider.radius;
                     var sphereCollideable = new ConvexCollidable<SphereShape>(new SphereShape(sphereRadius));
                     sphereCollideable.WorldTransform = new RigidTransform(sphereCollider.center.ToBEPU() * scale, BQuaternion.Identity);
                     return sphereCollideable;
@@ -53,8 +53,8 @@ namespace BEPUphysics.Unity
                     {
                         Debug.LogWarning($"Non-uniform scale for CapsuleCollider {collider.gameObject}! {scale.X} {scale.Y} {scale.Z}");
                     }
-                    var size = (scale.X + scale.Y + scale.Z) / (sfloat)3.0f;
-                    var capsuleRadius = (sfloat)capsuleCollider.radius;
+                    var size = (scale.X + scale.Y + scale.Z) / (fint)3.0f;
+                    var capsuleRadius = (fint)capsuleCollider.radius;
                     var offsetAxis = capsuleCollider.direction switch
                     {
                         0 => BVector3.Right * scale.X,
@@ -62,8 +62,8 @@ namespace BEPUphysics.Unity
                         2 => BVector3.Forward * scale.Z,
                         _ => BVector3.Zero
                     };
-                    var halfHeight = (sfloat)capsuleCollider.height * sfloat.Half;
-                    var halfHeightMinusRadius = sfloat.Max(sfloat.Zero, halfHeight - capsuleRadius);
+                    var halfHeight = (fint)capsuleCollider.height * (fint)0.5f;
+                    var halfHeightMinusRadius = fint.Max((fint)0, halfHeight - capsuleRadius);
                     var center = capsuleCollider.center.ToBEPU() * scale;
                     var start = -offsetAxis * halfHeightMinusRadius;
                     var end = offsetAxis * halfHeightMinusRadius;

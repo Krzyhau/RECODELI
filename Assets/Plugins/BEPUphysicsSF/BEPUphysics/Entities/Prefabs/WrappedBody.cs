@@ -1,5 +1,5 @@
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.EntityStateManagement;
@@ -27,7 +27,7 @@ namespace BEPUphysics.Entities.Prefabs
         }
 
         /// <exception cref="ArgumentException">Thrown when the subbodies list contains zero entities.</exception>
-        private WrappedBody(IList<ConvexShapeEntry> subShapes, sfloat mass)
+        private WrappedBody(IList<ConvexShapeEntry> subShapes, fint mass)
         {
             Vector3 center;
             var shape = new WrappedShape(subShapes, out center);
@@ -50,7 +50,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="position">Position of the box.</param>
         /// <param name="subBodies">List of entities composing the body.</param>
         /// <param name="mass">Mass of the object.</param>
-        public WrappedBody(Vector3 position, IList<ConvexShapeEntry> subBodies, sfloat mass)
+        public WrappedBody(Vector3 position, IList<ConvexShapeEntry> subBodies, fint mass)
             : this(subBodies, mass)
         {
             Position = position;
@@ -73,7 +73,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="subBodies">List of entities composing the body.</param>
         /// <param name="mass">Mass of the object.</param>
-        public WrappedBody(MotionState motionState, IList<ConvexShapeEntry> subBodies, sfloat mass)
+        public WrappedBody(MotionState motionState, IList<ConvexShapeEntry> subBodies, fint mass)
             : this(subBodies, mass)
         {
             MotionState = motionState;

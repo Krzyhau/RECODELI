@@ -3,7 +3,7 @@ using BEPUphysics.EntityStateManagement;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Entities.Prefabs
 {
@@ -15,7 +15,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Gets or sets the length of the cone.
         /// </summary>
-        public sfloat Height
+        public fint Height
         {
             get
             {
@@ -30,7 +30,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Gets or sets the radius of the cone.
         /// </summary>
-        public sfloat Radius
+        public fint Radius
         {
             get
             {
@@ -43,12 +43,12 @@ namespace BEPUphysics.Entities.Prefabs
         }
 
 
-        private Cone(sfloat high, sfloat rad)
+        private Cone(fint high, fint rad)
             :base(new ConvexCollidable<ConeShape>(new ConeShape(high, rad)))
         {
         }
 
-        private Cone(sfloat high, sfloat rad, sfloat mass)
+        private Cone(fint high, fint rad, fint mass)
             :base(new ConvexCollidable<ConeShape>(new ConeShape(high, rad)), mass)
         {
         }
@@ -62,7 +62,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="height">Height of the cone.</param>
         /// <param name="radius">Radius of the cone.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Cone(Vector3 position, sfloat height, sfloat radius, sfloat mass)
+        public Cone(Vector3 position, fint height, fint radius, fint mass)
             : this(height, radius, mass)
         {
             Position = position;
@@ -74,7 +74,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="position">Position of the cone.</param>
         /// <param name="height">Height of the cone.</param>
         /// <param name="radius">Radius of the cone.</param>
-        public Cone(Vector3 position, sfloat height, sfloat radius)
+        public Cone(Vector3 position, fint height, fint radius)
             : this(height, radius)
         {
             Position = position;
@@ -87,7 +87,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="height">Height of the cone.</param>
         /// <param name="radius">Radius of the cone.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Cone(MotionState motionState, sfloat height, sfloat radius, sfloat mass)
+        public Cone(MotionState motionState, fint height, fint radius, fint mass)
             : this(height, radius, mass)
         {
             MotionState = motionState;
@@ -99,7 +99,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="height">Height of the cone.</param>
         /// <param name="radius">Radius of the cone.</param>
-        public Cone(MotionState motionState, sfloat height, sfloat radius)
+        public Cone(MotionState motionState, fint height, fint radius)
             : this(height, radius)
         {
             MotionState = motionState;

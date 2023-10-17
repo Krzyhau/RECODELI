@@ -4,7 +4,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints.SolverGroups
 {
@@ -53,9 +53,9 @@ namespace BEPUphysics.Constraints.SolverGroups
             if (connectionB == null)
                 connectionB = TwoEntityConstraint.WorldEntity;
             PointOnPlaneJoint = new PointOnPlaneJoint(connectionA, connectionB, planeAnchor, planeNormal, pointAnchor);
-            LimitX = new LinearAxisLimit(connectionA, connectionB, planeAnchor, pointAnchor, xAxis, sfloat.Zero, sfloat.Zero);
+            LimitX = new LinearAxisLimit(connectionA, connectionB, planeAnchor, pointAnchor, xAxis, (fint)0, (fint)0);
             MotorX = new LinearAxisMotor(connectionA, connectionB, planeAnchor, pointAnchor, xAxis);
-            LimitY = new LinearAxisLimit(connectionA, connectionB, planeAnchor, pointAnchor, yAxis, sfloat.Zero, sfloat.Zero);
+            LimitY = new LinearAxisLimit(connectionA, connectionB, planeAnchor, pointAnchor, yAxis, (fint)0, (fint)0);
             MotorY = new LinearAxisMotor(connectionA, connectionB, planeAnchor, pointAnchor, yAxis);
             LimitX.IsActive = false;
             MotorX.IsActive = false;

@@ -2,7 +2,7 @@
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
 {
@@ -72,14 +72,14 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// <param name="maximumLength">Maximum length, in units of the ray's direction's length, to test.</param>
         /// <param name="rayHit">Hit location of the ray on the entry, if any.</param>
         /// <returns>Whether or not the ray hit the entry.</returns>
-        public override bool RayCast(Ray ray, sfloat maximumLength, out RayHit rayHit)
+        public override bool RayCast(Ray ray, fint maximumLength, out RayHit rayHit)
         {
             return Shape.RayTest(ref ray, ref worldTransform, maximumLength, out rayHit);
         }
 
 
 
-        protected internal override void UpdateBoundingBoxInternal(sfloat dt)
+        protected internal override void UpdateBoundingBoxInternal(fint dt)
         {
             Shape.GetBoundingBox(ref worldTransform, out boundingBox);
 

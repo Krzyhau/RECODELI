@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
@@ -16,9 +16,9 @@ namespace BEPUphysics.DeactivationManagement
         private int maximumDeactivationAttemptsPerFrame = 100;
         private int deactivationIslandIndex;
 
-        internal sfloat velocityLowerLimit = (sfloat).26f;
-        internal sfloat velocityLowerLimitSquared = (sfloat).26f * (sfloat).26f;
-        internal sfloat lowVelocityTimeMinimum = sfloat.One;
+        internal fint velocityLowerLimit = (fint).26f;
+        internal fint velocityLowerLimitSquared = (fint).26f * (fint).26f;
+        internal fint lowVelocityTimeMinimum = (fint)1;
 
         ///<summary>
         /// Gets or sets the velocity under which the deactivation system will consider 
@@ -26,7 +26,7 @@ namespace BEPUphysics.DeactivationManagement
         /// for the LowVelocityTimeMinimum).
         /// Defaults to 0.26.
         ///</summary>
-        public sfloat VelocityLowerLimit
+        public fint VelocityLowerLimit
         {
             get
             {
@@ -34,7 +34,7 @@ namespace BEPUphysics.DeactivationManagement
             }
             set
             {
-                velocityLowerLimit = sfloat.Max(sfloat.Zero, value);
+                velocityLowerLimit = fint.Max((fint)0, value);
                 velocityLowerLimitSquared = velocityLowerLimit * velocityLowerLimit;
             }
         }
@@ -44,7 +44,7 @@ namespace BEPUphysics.DeactivationManagement
         /// objects to be deactivation candidates (if their velocity stays below the VelocityLowerLimit for the duration).
         /// Defaults to 1.
         /// </summary>
-        public sfloat LowVelocityTimeMinimum
+        public fint LowVelocityTimeMinimum
         {
             get
             {
@@ -52,7 +52,7 @@ namespace BEPUphysics.DeactivationManagement
             }
             set
             {
-                if (value <= sfloat.Zero)
+                if (value <= (fint)0)
                     throw new ArgumentException("Must use a positive, non-zero value for deactivation time minimum.");
                 lowVelocityTimeMinimum = value;
             }
@@ -228,13 +228,13 @@ namespace BEPUphysics.DeactivationManagement
 
         ConcurrentDeque<SimulationIslandConnection> splitAttempts = new ConcurrentDeque<SimulationIslandConnection>();
 
-        static sfloat maximumSplitAttemptsFraction = (sfloat).01f;
+        static fint maximumSplitAttemptsFraction = (fint).01f;
         /// <summary>
         /// Gets or sets the fraction of splits that the deactivation manager will attempt in a single frame.
         /// The total splits queued multiplied by this value results in the number of splits managed.
         /// Defaults to .04f.
         /// </summary>
-        public static sfloat MaximumSplitAttemptsFraction
+        public static fint MaximumSplitAttemptsFraction
         {
             get
             {
@@ -242,7 +242,7 @@ namespace BEPUphysics.DeactivationManagement
             }
             set
             {
-                if (value > sfloat.One || value < sfloat.Zero)
+                if (value > (fint)1 || value < (fint)0)
                     throw new ArgumentException("Value must be from zero to one.");
                 maximumSplitAttemptsFraction = value;
             }
@@ -269,7 +269,7 @@ namespace BEPUphysics.DeactivationManagement
         {
 
             //Only do a portion of the total splits.
-            int maxAttempts = Math.Max(minimumSplitAttempts, (int)((sfloat)splitAttempts.Count * maximumSplitAttemptsFraction));
+            int maxAttempts = Math.Max(minimumSplitAttempts, (int)((fint)splitAttempts.Count * maximumSplitAttemptsFraction));
             int attempts = 0;
             SimulationIslandConnection attempt;
             while (attempts < maxAttempts && splitAttempts.TryUnsafeDequeueFirst(out attempt))

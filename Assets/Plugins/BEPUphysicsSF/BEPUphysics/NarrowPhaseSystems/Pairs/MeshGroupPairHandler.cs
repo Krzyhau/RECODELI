@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
@@ -191,7 +191,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// </summary>
         /// <param name="entry">Entry to configure.</param>
         /// <param name="dt">Time step duration.</param>
-        protected abstract void ConfigureCollidable(TriangleEntry entry, sfloat dt);
+        protected abstract void ConfigureCollidable(TriangleEntry entry, fint dt);
 
         /// <summary>
         /// Cleans up the collidable.
@@ -202,14 +202,14 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             PhysicsResources.GiveBack(collidable);
         }
 
-        protected abstract void UpdateContainedPairs(sfloat dt);
+        protected abstract void UpdateContainedPairs(fint dt);
 
 
         ///<summary>
         /// Updates the pair handler's contacts.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        protected virtual void UpdateContacts(sfloat dt)
+        protected virtual void UpdateContacts(fint dt)
         {
 
             UpdateContainedPairs(dt);
@@ -253,7 +253,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// Updates the pair handler.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateCollision(sfloat dt)
+        public override void UpdateCollision(fint dt)
         {
 
             if (!suppressEvents)
@@ -299,9 +299,9 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public override void UpdateTimeOfImpact(Collidable requester, sfloat dt)
+        public override void UpdateTimeOfImpact(Collidable requester, fint dt)
         {
-            timeOfImpact = sfloat.One;
+            timeOfImpact = (fint)1;
             foreach (var pair in subPairs.Values)
             {
                 //The system uses the identity of the requester to determine if it needs to do handle the TOI calculation.

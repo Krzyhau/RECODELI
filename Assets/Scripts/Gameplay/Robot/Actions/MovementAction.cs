@@ -1,6 +1,6 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Prototyping;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,21 +22,21 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
             var deltaTime = controller.Rigidbody.Simulation.TimeStep;
 
-            var parameter = (sfloat)instruction.Parameter;
-            var absParameter = sfloat.Abs(parameter);
-            var finalMovementDir = (sfloat)parameter.Sign() * (sfloat)movementDirection;
-            for (sfloat t = sfloat.Zero; t < absParameter; t += deltaTime)
+            var parameter = (fint)instruction.Parameter;
+            var absParameter = fint.Abs(parameter);
+            var finalMovementDir = fint.Sign(parameter) * (fint)movementDirection;
+            for (fint t = (fint)0; t < absParameter; t += deltaTime)
             {
                 yield return 1;
 
-                var accelerationStep = sfloat.Min(deltaTime, absParameter - t);
-                var flyingForce = robotEntity.OrientationMatrix.Forward * finalMovementDir * (sfloat)controller.PropulsionForce * accelerationStep;
+                var accelerationStep = fint.Min(deltaTime, absParameter - t);
+                var flyingForce = robotEntity.OrientationMatrix.Forward * finalMovementDir * (fint)controller.PropulsionForce * accelerationStep;
                 robotEntity.LinearVelocity += flyingForce;
                 
                 robotEntity.AngularVelocity = BEPUutilities.Vector3.MoveTowards(
                     robotEntity.AngularVelocity,
                     BEPUutilities.Vector3.Zero,
-                    (sfloat)controller.PropulsionRotationDrag * deltaTime
+                    (fint)controller.PropulsionRotationDrag * deltaTime
                 );
                 instruction.UpdateProgress((float)(t / absParameter));
             }

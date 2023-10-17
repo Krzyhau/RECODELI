@@ -1,7 +1,7 @@
 ﻿
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.CollisionTests
 {
@@ -22,6 +22,6 @@ namespace BEPUphysics.CollisionTests
         /// <summary>
         /// Original penetration depth computed at the associatd contact.
         /// </summary>
-        public sfloat BasePenetrationDepth;
+        public fint BasePenetrationDepth;
     }
 }

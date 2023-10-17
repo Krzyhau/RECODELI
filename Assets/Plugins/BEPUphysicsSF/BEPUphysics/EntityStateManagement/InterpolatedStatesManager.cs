@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
 using BEPUutilities.Threading;
@@ -105,7 +105,7 @@ namespace BEPUphysics.EntityStateManagement
         }
 
 
-        sfloat blendAmount;
+        fint blendAmount;
         ///<summary>
         /// Gets or sets the blending amount to use.
         /// This is set automatically when the space is using internal timestepping
@@ -114,7 +114,7 @@ namespace BEPUphysics.EntityStateManagement
         /// in the blended state.  A value of 1 means use only the current frame;
         /// a value of 0 means use only the previous frame.
         ///</summary>
-        public sfloat BlendAmount
+        public fint BlendAmount
         {
             get
             {
@@ -122,7 +122,7 @@ namespace BEPUphysics.EntityStateManagement
             }
             set
             {
-                blendAmount = MathHelper.Clamp(value, sfloat.Zero, sfloat.One);
+                blendAmount = MathHelper.Clamp(value, (fint)0, (fint)1);
             }
         }
 

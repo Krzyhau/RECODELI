@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Materials
 {
@@ -8,12 +8,12 @@ namespace BEPUphysics.Materials
     ///</summary>
     public class Material
     {
-        internal sfloat kineticFriction = MaterialManager.DefaultKineticFriction;
+        internal fint kineticFriction = MaterialManager.DefaultKineticFriction;
         ///<summary>
         /// Gets or sets the friction coefficient used when the object is sliding quickly and
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public sfloat KineticFriction
+        public fint KineticFriction
         {
             get
             {
@@ -27,12 +27,12 @@ namespace BEPUphysics.Materials
             }
         }
 
-        internal sfloat staticFriction = MaterialManager.DefaultStaticFriction;
+        internal fint staticFriction = MaterialManager.DefaultStaticFriction;
         ///<summary>
         /// Gets or sets the friction coefficient used when the object is sliding slowly and
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public sfloat StaticFriction
+        public fint StaticFriction
         {
             get
             {
@@ -47,12 +47,12 @@ namespace BEPUphysics.Materials
         }
 
 
-        internal sfloat bounciness = MaterialManager.DefaultBounciness;
+        internal fint bounciness = MaterialManager.DefaultBounciness;
         ///<summary>
         /// Gets or sets the coefficient of restitution between the objects when
         /// no special material relationship is defined between the colliding objects.
         ///</summary>
-        public sfloat Bounciness
+        public fint Bounciness
         {
             get
             {
@@ -85,7 +85,7 @@ namespace BEPUphysics.Materials
         ///<param name="staticFriction">Static friction to use.</param>
         ///<param name="kineticFriction">Kinetic friction to use.</param>
         ///<param name="bounciness">Bounciness to use.</param>
-        public Material(sfloat staticFriction, sfloat kineticFriction, sfloat bounciness)
+        public Material(fint staticFriction, fint kineticFriction, fint bounciness)
             : this()
         {
             this.staticFriction = staticFriction;

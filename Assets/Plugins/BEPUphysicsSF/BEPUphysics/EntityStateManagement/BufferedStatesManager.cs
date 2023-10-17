@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities.DataStructures;
 using BEPUutilities.Threading;

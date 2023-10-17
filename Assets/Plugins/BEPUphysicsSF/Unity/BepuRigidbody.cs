@@ -1,6 +1,6 @@
 
 using BEPUphysics.Entities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
@@ -51,7 +51,7 @@ namespace BEPUphysics.Unity
             set
             {
                 mass = value;
-                if (Entity != null) Entity.Mass = (sfloat)value;
+                if (Entity != null) Entity.Mass = (fint)value;
             }
         }
         public bool Kinematic
@@ -167,12 +167,12 @@ namespace BEPUphysics.Unity
             physicsEntity.CollisionInformation.Tag = this;
             physicsEntity.Material = new Materials.Material
             {
-                StaticFriction = (sfloat)staticFriction,
-                KineticFriction = (sfloat)kineticFriction,
-                Bounciness = (sfloat)bounciness
+                StaticFriction = (fint)staticFriction,
+                KineticFriction = (fint)kineticFriction,
+                Bounciness = (fint)bounciness
             };
-            physicsEntity.AngularDamping = (sfloat)angularDamping;
-            physicsEntity.LinearDamping = (sfloat)linearDamping;
+            physicsEntity.AngularDamping = (fint)angularDamping;
+            physicsEntity.LinearDamping = (fint)linearDamping;
 
             simulation.PhysicsSpace.Add(physicsEntity);
 
@@ -229,17 +229,17 @@ namespace BEPUphysics.Unity
             if (fixedPosition.X)
             {
                 Entity.position.X = currentPhysicsPosition.X;
-                Entity.linearVelocity.X = sfloat.Zero;
+                Entity.linearVelocity.X = (fint)0;
             }
             if (fixedPosition.Y)
             {
                 Entity.position.Y = currentPhysicsPosition.Y;
-                Entity.linearVelocity.Y = sfloat.Zero;
+                Entity.linearVelocity.Y = (fint)0;
             }
             if (fixedPosition.Z)
             {
                 Entity.position.Z = currentPhysicsPosition.Z;
-                Entity.linearVelocity.Z = sfloat.Zero;
+                Entity.linearVelocity.Z = (fint)0;
             }
 
             // apply rotation constrains
@@ -250,22 +250,22 @@ namespace BEPUphysics.Unity
 
                 if (fixedRotation.X)
                 {
-                    axis.X = sfloat.Zero;
-                    Entity.angularVelocity.X = sfloat.Zero;
+                    axis.X = (fint)0;
+                    Entity.angularVelocity.X = (fint)0;
                 }
                 if (fixedRotation.Y)
                 {
-                    axis.Y = sfloat.Zero;
-                    Entity.angularVelocity.Y = sfloat.Zero;
+                    axis.Y = (fint)0;
+                    Entity.angularVelocity.Y = (fint)0;
                 }
                 if (fixedRotation.Z)
                 {
-                    axis.Z = sfloat.Zero;
-                    Entity.angularVelocity.Z = sfloat.Zero;
+                    axis.Z = (fint)0;
+                    Entity.angularVelocity.Z = (fint)0;
                 }
                 rotationDelta = BQuaternion.Identity;
                 var axisLength = axis.Length();
-                if (axisLength > sfloat.Zero)
+                if (axisLength > (fint)0)
                 {
                     angle *= axisLength;
                     axis.Normalize();

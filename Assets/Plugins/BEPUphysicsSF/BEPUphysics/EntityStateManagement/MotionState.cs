@@ -1,6 +1,6 @@
 ﻿ 
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities;
 
 namespace BEPUphysics.EntityStateManagement

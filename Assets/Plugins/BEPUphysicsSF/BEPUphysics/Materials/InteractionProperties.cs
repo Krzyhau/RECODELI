@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Materials
 {
@@ -10,14 +10,14 @@ namespace BEPUphysics.Materials
         ///<summary>
         /// Kinetic friction between the pair of objects.
         ///</summary>
-        public sfloat KineticFriction;
+        public fint KineticFriction;
         ///<summary>
         /// Static friction between the pair of objects.
         ///</summary>
-        public sfloat StaticFriction;
+        public fint StaticFriction;
         ///<summary>
         /// Bounciness between the pair of objects.
         ///</summary>
-        public sfloat Bounciness;
+        public fint Bounciness;
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities.DataStructures;
@@ -35,14 +35,14 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             //Construct a TriangleCollidable from the static mesh.
             var toReturn = PhysicsResources.GetTriangleCollidable();
             Vector3 terrainUp = new Vector3(mesh.worldTransform.LinearTransform.M21, mesh.worldTransform.LinearTransform.M22, mesh.worldTransform.LinearTransform.M23);
-            sfloat dot;
+            fint dot;
             Vector3 AB, AC, normal;
             var shape = toReturn.Shape;
             mesh.Shape.GetTriangle(index, ref mesh.worldTransform, out shape.vA, out shape.vB, out shape.vC);
             Vector3 center;
             Vector3.Add(ref shape.vA, ref shape.vB, out center);
             Vector3.Add(ref center, ref shape.vC, out center);
-            Vector3.Multiply(ref center, sfloat.One / (sfloat)3f, out center);
+            Vector3.Multiply(ref center, (fint)1 / (fint)3f, out center);
             Vector3.Subtract(ref shape.vA, ref center, out shape.vA);
             Vector3.Subtract(ref shape.vB, ref center, out shape.vB);
             Vector3.Subtract(ref shape.vC, ref center, out shape.vC);
@@ -50,13 +50,13 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             //The bounding box doesn't update by itself.
             toReturn.worldTransform.Position = center;
             toReturn.worldTransform.Orientation = Quaternion.Identity;
-            toReturn.UpdateBoundingBoxInternal(sfloat.Zero);
+            toReturn.UpdateBoundingBoxInternal((fint)0);
 
             Vector3.Subtract(ref shape.vB, ref shape.vA, out AB);
             Vector3.Subtract(ref shape.vC, ref shape.vA, out AC);
             Vector3.Cross(ref AB, ref AC, out normal);
             Vector3.Dot(ref terrainUp, ref normal, out dot);
-            if (dot > sfloat.Zero)
+            if (dot > (fint)0)
             {
                 shape.sidedness = TriangleSidedness.Clockwise;
             }
@@ -69,7 +69,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         }
 
 
-        protected override void ConfigureCollidable(TriangleEntry entry, sfloat dt)
+        protected override void ConfigureCollidable(TriangleEntry entry, fint dt)
         {
 
         }
@@ -114,7 +114,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
 
-        protected override void UpdateContainedPairs(sfloat dt)
+        protected override void UpdateContainedPairs(fint dt)
         {
             var overlappedElements = new QuickList<int>(BufferPools<int>.Thread);
             BoundingBox localBoundingBox;

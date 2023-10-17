@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
@@ -123,11 +123,11 @@ namespace BEPUphysics.CollisionTests.Manifolds
             }
         }
 #else
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
 
             //Now, generate a contact between the two shapes.
-            sfloat distance;
+            fint distance;
             Vector3 axis;
             var manifold = new TinyStructList<BoxContactData>();
             if (BoxBoxCollider.AreBoxesColliding(boxA.Shape, boxB.Shape, ref boxA.worldTransform, ref boxB.worldTransform, out distance, out axis, out manifold))

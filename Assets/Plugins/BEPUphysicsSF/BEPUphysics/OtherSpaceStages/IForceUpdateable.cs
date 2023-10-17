@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.OtherSpaceStages
 {
@@ -11,7 +11,7 @@ namespace BEPUphysics.OtherSpaceStages
         /// Applies forces to the object.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void UpdateForForces(sfloat dt);
+        void UpdateForForces(fint dt);
 
         ///<summary>
         /// Force updater that owns this object.

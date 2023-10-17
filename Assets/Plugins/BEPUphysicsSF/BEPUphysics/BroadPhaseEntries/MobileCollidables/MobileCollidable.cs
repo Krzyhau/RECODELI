@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
 {
@@ -14,7 +14,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// Updates the bounding box of the mobile collidable.
         ///</summary>
         ///<param name="dt">Timestep with which to update the bounding box.</param>
-        public abstract void UpdateBoundingBox(sfloat dt);
+        public abstract void UpdateBoundingBox(fint dt);
 
 
     }

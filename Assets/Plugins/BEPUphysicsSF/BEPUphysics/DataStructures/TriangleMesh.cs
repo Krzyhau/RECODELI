@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using BEPUutilities;
 using BEPUutilities.ResourceManagement;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.DataStructures
 {
@@ -72,7 +72,7 @@ namespace BEPUphysics.DataStructures
         ///<returns>Whether or not the ray hit the mesh.</returns>
         public bool RayCast(Ray ray, out RayHit rayHit)
         {
-            return RayCast(ray, sfloat.MaxValue, TriangleSidedness.DoubleSided, out rayHit);
+            return RayCast(ray, fint.MaxValue, TriangleSidedness.DoubleSided, out rayHit);
         }
 
         ///<summary>
@@ -84,7 +84,7 @@ namespace BEPUphysics.DataStructures
         ///<returns>Whether or not the ray hit the mesh.</returns>
         public bool RayCast(Ray ray, TriangleSidedness sidedness, out RayHit rayHit)
         {
-            return RayCast(ray, sfloat.MaxValue, sidedness, out rayHit);
+            return RayCast(ray, fint.MaxValue, sidedness, out rayHit);
         }
 
         ///<summary>
@@ -95,7 +95,7 @@ namespace BEPUphysics.DataStructures
         ///<returns>Whether or not the ray hit the mesh.</returns>
         public bool RayCast(Ray ray, IList<RayHit> hits)
         {
-            return RayCast(ray, sfloat.MaxValue, TriangleSidedness.DoubleSided, hits);
+            return RayCast(ray, fint.MaxValue, TriangleSidedness.DoubleSided, hits);
         }
 
         ///<summary>
@@ -107,7 +107,7 @@ namespace BEPUphysics.DataStructures
         ///<returns>Whether or not the ray hit the mesh.</returns>
         public bool RayCast(Ray ray, TriangleSidedness sidedness, IList<RayHit> hits)
         {
-            return RayCast(ray, sfloat.MaxValue, sidedness, hits);
+            return RayCast(ray, fint.MaxValue, sidedness, hits);
         }
 
         ///<summary>
@@ -117,7 +117,7 @@ namespace BEPUphysics.DataStructures
         /// <param name="maximumLength">Maximum length of the ray in units of the ray direction's length.</param>
         ///<param name="rayHit">Hit data for the ray, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, sfloat maximumLength, out RayHit rayHit)
+        public bool RayCast(Ray ray, fint maximumLength, out RayHit rayHit)
         {
             return RayCast(ray, maximumLength, TriangleSidedness.DoubleSided, out rayHit);
         }
@@ -130,7 +130,7 @@ namespace BEPUphysics.DataStructures
         /// <param name="sidedness">Sidedness to apply to the mesh for the ray cast.</param>
         ///<param name="rayHit">Hit data for the ray, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, sfloat maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
+        public bool RayCast(Ray ray, fint maximumLength, TriangleSidedness sidedness, out RayHit rayHit)
         {
             var rayHits = CommonResources.GetRayHitList();
             bool toReturn = RayCast(ray, maximumLength, sidedness, rayHits);
@@ -157,7 +157,7 @@ namespace BEPUphysics.DataStructures
         /// <param name="maximumLength">Maximum length of the ray in units of the ray direction's length.</param>
         ///<param name="hits">Hit data for the ray, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, sfloat maximumLength, IList<RayHit> hits)
+        public bool RayCast(Ray ray, fint maximumLength, IList<RayHit> hits)
         {
             return RayCast(ray, maximumLength, TriangleSidedness.DoubleSided, hits);
         }
@@ -170,7 +170,7 @@ namespace BEPUphysics.DataStructures
         /// <param name="sidedness">Sidedness to apply to the mesh for the ray cast.</param>
         ///<param name="hits">Hit data for the ray, if any.</param>
         ///<returns>Whether or not the ray hit the mesh.</returns>
-        public bool RayCast(Ray ray, sfloat maximumLength, TriangleSidedness sidedness, IList<RayHit> hits)
+        public bool RayCast(Ray ray, fint maximumLength, TriangleSidedness sidedness, IList<RayHit> hits)
         {
             var hitElements = CommonResources.GetIntList();
             tree.GetOverlaps(ray, maximumLength, hitElements);

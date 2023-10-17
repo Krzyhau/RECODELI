@@ -1,5 +1,5 @@
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 
 using BEPUutilities;
@@ -11,20 +11,20 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
     /// </summary>
     public class DistanceJoint : Joint, I1DImpulseConstraintWithError, I1DJacobianConstraint
     {
-        private sfloat accumulatedImpulse;
+        private fint accumulatedImpulse;
         private Vector3 anchorA;
 
         private Vector3 anchorB;
-        private sfloat biasVelocity;
+        private fint biasVelocity;
         private Vector3 jAngularA, jAngularB;
         private Vector3 jLinearA, jLinearB;
 
         /// <summary>
         /// Distance maintained between the anchors.
         /// </summary>
-        protected sfloat distance;
+        protected fint distance;
 
-        private sfloat error;
+        private fint error;
 
         private Vector3 localAnchorA;
 
@@ -32,7 +32,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
 
         private Vector3 offsetA, offsetB;
-        private sfloat velocityToImpulse;
+        private fint velocityToImpulse;
 
         /// <summary>
         /// Constructs a distance joint.
@@ -74,10 +74,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets or sets the distance maintained between the anchors.
         /// </summary>
-        public sfloat Distance
+        public fint Distance
         {
             get { return distance; }
-            set { distance = sfloat.Max(sfloat.Zero, value); }
+            set { distance = fint.Max((fint)0, value); }
         }
 
         /// <summary>
@@ -139,11 +139,11 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public sfloat RelativeVelocity
+        public fint RelativeVelocity
         {
             get
             {
-                sfloat lambda, dot;
+                fint lambda, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
                 lambda += dot;
@@ -159,7 +159,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public sfloat TotalImpulse
+        public fint TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -167,7 +167,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        public sfloat Error
+        public fint Error
         {
             get { return error; }
         }
@@ -216,7 +216,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out sfloat outputMassMatrix)
+        public void GetMassMatrix(out fint outputMassMatrix)
         {
             outputMassMatrix = velocityToImpulse;
         }
@@ -227,10 +227,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             //Compute the current relative velocity.
-            sfloat lambda, dot;
+            fint lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
             lambda += dot;
@@ -265,14 +265,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (sfloat.Abs(lambda));
+            return (fint.Abs(lambda));
         }
 
         /// <summary>
         /// Calculates necessary information for velocity solving.
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             //Transform the anchors and offsets into world space.
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out offsetA);
@@ -283,7 +283,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             //Compute the distance.
             Vector3 separation;
             Vector3.Subtract(ref anchorB, ref anchorA, out separation);
-            sfloat currentDistance = separation.Length();
+            fint currentDistance = separation.Length();
 
             //Compute jacobians
             if (currentDistance > Toolbox.Epsilon)
@@ -337,14 +337,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             {
                 //No point in trying to solve with two kinematics.
                 isActiveInSolver = false;
-                accumulatedImpulse = sfloat.Zero;
+                accumulatedImpulse = (fint)0;
                 return;
             }
 
-            sfloat errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReduction, out softness);
+            fint errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, (fint)1 / dt, out errorReduction, out softness);
 
-            velocityToImpulse = sfloat.One / (softness + velocityToImpulse);
+            velocityToImpulse = (fint)1 / (softness + velocityToImpulse);
             //Finish computing jacobian; it's down here as an optimization (since it didn't need to be negated in mass matrix)
             jAngularA.X = -jAngularA.X;
             jAngularA.Y = -jAngularA.Y;

@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Paths
 {
@@ -13,7 +13,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="speedCurve">Curve defining speeds to use.</param>
         /// <param name="curve">Curve to wrap.</param>
-        protected VariableSpeedCurve(Path<sfloat> speedCurve, Curve<TValue> curve)
+        protected VariableSpeedCurve(Path<fint> speedCurve, Curve<TValue> curve)
             : base(curve)
         {
             SpeedCurve = speedCurve;
@@ -27,7 +27,7 @@ namespace BEPUphysics.Paths
         /// <param name="curve">Curve to wrap.</param>
         /// <param name="sampleCount">Number of samples to use when constructing the wrapper curve.
         /// More samples increases the accuracy of the speed requirement at the cost of performance.</param>
-        protected VariableSpeedCurve(Path<sfloat> speedCurve, Curve<TValue> curve, int sampleCount)
+        protected VariableSpeedCurve(Path<fint> speedCurve, Curve<TValue> curve, int sampleCount)
             : base(curve, sampleCount)
         {
             SpeedCurve = speedCurve;
@@ -38,14 +38,14 @@ namespace BEPUphysics.Paths
         /// Gets or sets the path that defines the speeds at given locations.
         /// The speed curve will be sampled at times associated with the wrapped curve.
         /// </summary>
-        public Path<sfloat> SpeedCurve { get; set; }
+        public Path<fint> SpeedCurve { get; set; }
 
         /// <summary>
         /// Gets the speed at a given time on the wrapped curve.
         /// </summary>
         /// <param name="time">Time to evaluate.</param>
         /// <returns>Speed at the given time.</returns>
-        public override sfloat GetSpeedAtCurveTime(sfloat time)
+        public override fint GetSpeedAtCurveTime(fint time)
         {
             return SpeedCurve.Evaluate(time);
         }

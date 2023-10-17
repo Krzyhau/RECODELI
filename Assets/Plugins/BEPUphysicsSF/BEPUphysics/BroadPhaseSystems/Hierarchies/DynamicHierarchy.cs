@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities.DataStructures;
@@ -226,7 +226,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (offset.X * offset.Y * offset.Z == sfloat.Zero)
+            if (offset.X * offset.Y * offset.Z == (fint)0)
                 entry.UpdateBoundingBox();
             //Could buffer additions to get a better construction in the tree.
             var node = leafNodes.Take();
@@ -327,17 +327,17 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         /// Useful for comparing against other trees.
         /// </summary>
         /// <returns>Cost of the tree.</returns>
-        public sfloat MeasureCostMetric()
+        public fint MeasureCostMetric()
         {
             if (root != null)
             {
                 var offset = root.BoundingBox.Max - root.BoundingBox.Min;
                 var volume = offset.X * offset.Y * offset.Z;
-                if (volume < (sfloat)1e-9f)
-                    return sfloat.Zero;
+                if (volume < (fint)1e-9f)
+                    return (fint)0;
                 return root.MeasureSubtreeCost() / volume;
             }
-            return sfloat.Zero;
+            return (fint)0;
         }
         #endregion
     }

@@ -2,7 +2,7 @@
 
 
 
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUutilities
 {
@@ -14,32 +14,32 @@ namespace BEPUutilities
         /// <summary>
         /// Value at row 1, column 1 of the matrix.
         /// </summary>
-        public sfloat M11;
+        public fint M11;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public sfloat M12;
+        public fint M12;
 
         /// <summary>
         /// Value at row 1, column 2 of the matrix.
         /// </summary>
-        public sfloat M13;
+        public fint M13;
 
         /// <summary>
         /// Value at row 2, column 1 of the matrix.
         /// </summary>
-        public sfloat M21;
+        public fint M21;
 
         /// <summary>
         /// Value at row 2, column 2 of the matrix.
         /// </summary>
-        public sfloat M22;
+        public fint M22;
 
         /// <summary>
         /// Value at row 2, column 3 of the matrix.
         /// </summary>
-        public sfloat M23;
+        public fint M23;
 
 
         /// <summary>
@@ -51,7 +51,7 @@ namespace BEPUutilities
         /// <param name="m21">Value at row 2, column 1 of the matrix.</param>
         /// <param name="m22">Value at row 2, column 2 of the matrix.</param>
         /// <param name="m23">Value at row 2, column 3 of the matrix.</param>
-        public Matrix2x3(sfloat m11, sfloat m12, sfloat m13, sfloat m21, sfloat m22, sfloat m23)
+        public Matrix2x3(fint m11, fint m12, fint m13, fint m21, fint m22, fint m23)
         {
             M11 = m11;
             M12 = m12;
@@ -69,13 +69,13 @@ namespace BEPUutilities
         /// <param name="result">Sum of the two matrices.</param>
         public static void Add(ref Matrix2x3 a, ref Matrix2x3 b, out Matrix2x3 result)
         {
-            sfloat m11 = a.M11 + b.M11;
-            sfloat m12 = a.M12 + b.M12;
-            sfloat m13 = a.M13 + b.M13;
+            fint m11 = a.M11 + b.M11;
+            fint m12 = a.M12 + b.M12;
+            fint m13 = a.M13 + b.M13;
 
-            sfloat m21 = a.M21 + b.M21;
-            sfloat m22 = a.M22 + b.M22;
-            sfloat m23 = a.M23 + b.M23;
+            fint m21 = a.M21 + b.M21;
+            fint m22 = a.M22 + b.M22;
+            fint m23 = a.M23 + b.M23;
 
             result.M11 = m11;
             result.M12 = m12;
@@ -95,13 +95,13 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix2x3 a, ref Matrix3x3 b, out Matrix2x3 result)
         {
-            sfloat resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-            sfloat resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-            sfloat resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
+            fint resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
+            fint resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
+            fint resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
 
-            sfloat resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-            sfloat resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-            sfloat resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
+            fint resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
+            fint resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
+            fint resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -120,13 +120,13 @@ namespace BEPUutilities
         /// <param name="result">Product of the multiplication.</param>
         public static void Multiply(ref Matrix2x3 a, ref Matrix b, out Matrix2x3 result)
         {
-            sfloat resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
-            sfloat resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
-            sfloat resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
+            fint resultM11 = a.M11 * b.M11 + a.M12 * b.M21 + a.M13 * b.M31;
+            fint resultM12 = a.M11 * b.M12 + a.M12 * b.M22 + a.M13 * b.M32;
+            fint resultM13 = a.M11 * b.M13 + a.M12 * b.M23 + a.M13 * b.M33;
 
-            sfloat resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
-            sfloat resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
-            sfloat resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
+            fint resultM21 = a.M21 * b.M11 + a.M22 * b.M21 + a.M23 * b.M31;
+            fint resultM22 = a.M21 * b.M12 + a.M22 * b.M22 + a.M23 * b.M32;
+            fint resultM23 = a.M21 * b.M13 + a.M22 * b.M23 + a.M23 * b.M33;
 
             result.M11 = resultM11;
             result.M12 = resultM12;
@@ -144,13 +144,13 @@ namespace BEPUutilities
         /// <param name="result">Negated matrix.</param>
         public static void Negate(ref Matrix2x3 matrix, out Matrix2x3 result)
         {
-            sfloat m11 = -matrix.M11;
-            sfloat m12 = -matrix.M12;
-            sfloat m13 = -matrix.M13;
+            fint m11 = -matrix.M11;
+            fint m12 = -matrix.M12;
+            fint m13 = -matrix.M13;
 
-            sfloat m21 = -matrix.M21;
-            sfloat m22 = -matrix.M22;
-            sfloat m23 = -matrix.M23;
+            fint m21 = -matrix.M21;
+            fint m22 = -matrix.M22;
+            fint m23 = -matrix.M23;
 
             result.M11 = m11;
             result.M12 = m12;
@@ -169,13 +169,13 @@ namespace BEPUutilities
         /// <param name="result">Difference of the two matrices.</param>
         public static void Subtract(ref Matrix2x3 a, ref Matrix2x3 b, out Matrix2x3 result)
         {
-            sfloat m11 = a.M11 - b.M11;
-            sfloat m12 = a.M12 - b.M12;
-            sfloat m13 = a.M13 - b.M13;
+            fint m11 = a.M11 - b.M11;
+            fint m12 = a.M12 - b.M12;
+            fint m13 = a.M13 - b.M13;
 
-            sfloat m21 = a.M21 - b.M21;
-            sfloat m22 = a.M22 - b.M22;
-            sfloat m23 = a.M23 - b.M23;
+            fint m21 = a.M21 - b.M21;
+            fint m22 = a.M22 - b.M22;
+            fint m23 = a.M23 - b.M23;
 
             result.M11 = m11;
             result.M12 = m12;

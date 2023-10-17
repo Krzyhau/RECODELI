@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
@@ -16,13 +16,13 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         ///<summary>
         /// Gets or sets the radius of the sphere.
         ///</summary>
-        public sfloat Radius { get { return collisionMargin; } set { CollisionMargin = value; } }
+        public fint Radius { get { return collisionMargin; } set { CollisionMargin = value; } }
 
         ///<summary>
         /// Constructs a new sphere shape.
         ///</summary>
         ///<param name="radius">Radius of the sphere.</param>
-        public SphereShape(sfloat radius)
+        public SphereShape(fint radius)
         {
             Radius = radius;
 
@@ -50,12 +50,12 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// </summary>
         ///<param name="radius">Radius of the sphere.</param>
         /// <returns>Description required to define a convex shape.</returns>
-        public static ConvexShapeDescription ComputeDescription(sfloat radius)
+        public static ConvexShapeDescription ComputeDescription(fint radius)
         {
             ConvexShapeDescription description;
-            description.EntityShapeVolume.Volume = (sfloat)1.333333f * MathHelper.Pi * radius * radius * radius;
+            description.EntityShapeVolume.Volume = (fint)1.333333f * MathHelper.Pi * radius * radius * radius;
             description.EntityShapeVolume.VolumeDistribution = new Matrix3x3();
-            sfloat diagValue = ((sfloat.Two / (sfloat)5f) * radius * radius);
+            fint diagValue = (((fint)2 / (fint)5f) * radius * radius);
             description.EntityShapeVolume.VolumeDistribution.M11 = diagValue;
             description.EntityShapeVolume.VolumeDistribution.M22 = diagValue;
             description.EntityShapeVolume.VolumeDistribution.M33 = diagValue;
@@ -107,7 +107,7 @@ namespace BEPUphysics.CollisionShapes.ConvexShapes
         /// <param name="maximumLength">Maximum distance to travel in units of the ray direction's length.</param>
         /// <param name="hit">Ray hit data, if any.</param>
         /// <returns>Whether or not the ray hit the target.</returns>
-        public override bool RayTest(ref Ray ray, ref RigidTransform transform, sfloat maximumLength, out RayHit hit)
+        public override bool RayTest(ref Ray ray, ref RigidTransform transform, fint maximumLength, out RayHit hit)
         {
             return Toolbox.RayCastSphere(ref ray, ref transform.Position, collisionMargin, maximumLength, out hit);
         }

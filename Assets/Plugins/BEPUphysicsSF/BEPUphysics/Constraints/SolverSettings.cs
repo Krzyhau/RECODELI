@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints
 {
@@ -17,7 +17,7 @@ namespace BEPUphysics.Constraints
 
         internal int minimumIterationCount = DefaultMinimumIterationCount;
 
-        internal sfloat minimumImpulse = DefaultMinimumImpulse;
+        internal fint minimumImpulse = DefaultMinimumImpulse;
         internal int iterationsAtZeroImpulse;
 
         /// <summary>
@@ -48,10 +48,10 @@ namespace BEPUphysics.Constraints
         /// against the MinimumIterations property.  If there's been too many tiny impulses in a row, then the system will stop trying to solve to save time.
         /// Higher values will allow the system to give up earlier, but can harm accuracy.
         /// </summary>
-        public sfloat MinimumImpulse
+        public fint MinimumImpulse
         {
             get { return minimumImpulse; }
-            set { minimumImpulse = sfloat.Max(value, sfloat.Zero); }
+            set { minimumImpulse = fint.Max(value, (fint)0); }
         }
 
         /// <summary>
@@ -60,7 +60,7 @@ namespace BEPUphysics.Constraints
         /// High values quicken the short circuit but can cause instability, while low values will often prevent short circuiting, possibly increasing accuracy but harming performance.
         /// Defaults to .001f.
         /// </summary>
-        public static sfloat DefaultMinimumImpulse = (sfloat).001f;
+        public static fint DefaultMinimumImpulse = (fint).001f;
 
         /// <summary>
         /// The value to assign to new constraints' SolverSettings.MinimumIterations.

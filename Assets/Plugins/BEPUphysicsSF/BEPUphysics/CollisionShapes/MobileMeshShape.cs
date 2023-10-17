@@ -5,7 +5,7 @@ using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUphysics.DataStructures;
 using BEPUutilities;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Settings;
 using BEPUutilities.DataStructures;
 using BEPUutilities.ResourceManagement;
@@ -19,12 +19,12 @@ namespace BEPUphysics.CollisionShapes
     ///</summary>
     public class MobileMeshShape : EntityShape
     {
-        private sfloat meshCollisionMargin = CollisionDetectionSettings.DefaultMargin;
+        private fint meshCollisionMargin = CollisionDetectionSettings.DefaultMargin;
         /// <summary>
         /// Gets or sets the margin of the mobile mesh to use when colliding with other meshes.
         /// When colliding with non-mesh shapes, the mobile mesh has no margin.
         /// </summary>
-        public sfloat MeshCollisionMargin
+        public fint MeshCollisionMargin
         {
             get
             {
@@ -32,7 +32,7 @@ namespace BEPUphysics.CollisionShapes
             }
             set
             {
-                if (value < sfloat.Zero)
+                if (value < (fint)0)
                     throw new ArgumentException("Mesh margin must be nonnegative.");
                 meshCollisionMargin = value;
                 OnShapeChanged();
@@ -187,7 +187,7 @@ namespace BEPUphysics.CollisionShapes
         /// <param name="sidednessWhenSolid">Triangle sidedness to use when the shape is solid.</param>
         /// <param name="collisionMargin">Collision margin used to expand the mesh triangles.</param>
         /// <param name="volumeDescription">Description of the volume and its distribution in the shape. Assumed to be correct; no processing or validation is performed.</param>
-        public MobileMeshShape(TransformableMeshData meshData, IList<Vector3> hullVertices, MobileMeshSolidity solidity, TriangleSidedness sidednessWhenSolid, sfloat collisionMargin, EntityShapeVolumeDescription volumeDescription)
+        public MobileMeshShape(TransformableMeshData meshData, IList<Vector3> hullVertices, MobileMeshSolidity solidity, TriangleSidedness sidednessWhenSolid, fint collisionMargin, EntityShapeVolumeDescription volumeDescription)
         {
             triangleMesh = new TriangleMesh(meshData);
             this.hullVertices = new RawList<Vector3>(hullVertices);
@@ -221,7 +221,7 @@ namespace BEPUphysics.CollisionShapes
         {
             var overlapList = CommonResources.GetIntList();
             hit = new RayHit();
-            hit.T = sfloat.MaxValue;
+            hit.T = fint.MaxValue;
             if (triangleMesh.Tree.GetOverlaps(ray, overlapList))
             {
                 bool minimumClockwise = false;
@@ -231,7 +231,7 @@ namespace BEPUphysics.CollisionShapes
                     triangleMesh.Data.GetTriangle(overlapList[i], out vA, out vB, out vC);
                     bool hitClockwise;
                     RayHit tempHit;
-                    if (Toolbox.FindRayTriangleIntersection(ref ray, sfloat.MaxValue, ref vA, ref vB, ref vC, out hitClockwise, out tempHit) &&
+                    if (Toolbox.FindRayTriangleIntersection(ref ray, fint.MaxValue, ref vA, ref vB, ref vC, out hitClockwise, out tempHit) &&
                         tempHit.T < hit.T)
                     {
                         hit = tempHit;
@@ -241,7 +241,7 @@ namespace BEPUphysics.CollisionShapes
                 CommonResources.GiveBack(overlapList);
 
                 //If the mesh is hit from behind by the ray on the first hit, then the ray is inside.
-                return hit.T < sfloat.MaxValue && ((SidednessWhenSolid == TriangleSidedness.Clockwise && !minimumClockwise) || (SidednessWhenSolid == TriangleSidedness.Counterclockwise && minimumClockwise));
+                return hit.T < fint.MaxValue && ((SidednessWhenSolid == TriangleSidedness.Clockwise && !minimumClockwise) || (SidednessWhenSolid == TriangleSidedness.Counterclockwise && minimumClockwise));
             }
             CommonResources.GiveBack(overlapList);
             return false;
@@ -251,13 +251,13 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// The difference in t parameters in a ray cast under which two hits are considered to be redundant.
         /// </summary>
-        public static sfloat MeshHitUniquenessThreshold = (sfloat).0001f;
+        public static fint MeshHitUniquenessThreshold = (fint).0001f;
 
         internal bool IsHitUnique(RawList<RayHit> hits, ref RayHit hit)
         {
             for (int i = 0; i < hits.Count; i++)
             {
-                if (sfloat.Abs(hits.Elements[i].T - hit.T) < MeshHitUniquenessThreshold)
+                if (fint.Abs(hits.Elements[i].T - hit.T) < MeshHitUniquenessThreshold)
                     return false;
             }
             hits.Add(hit);
@@ -282,7 +282,7 @@ namespace BEPUphysics.CollisionShapes
             var ray = new Ray();
             Vector3 vA, vB, vC;
             triangleMesh.Data.GetTriangle(((triangleMesh.Data.indices.Length / 3) / 2) * 3, out vA, out vB, out vC);
-            ray.Direction = (vA + vB + vC) / (sfloat)3.0f;
+            ray.Direction = (vA + vB + vC) / (fint)3.0f;
             ray.Direction.Normalize();
 
             SidednessWhenSolid = ComputeSolidSidednessHelper(ray);
@@ -302,13 +302,13 @@ namespace BEPUphysics.CollisionShapes
                 //Identify the first and last hits.
                 int minimum = 0;
                 int maximum = 0;
-                sfloat minimumT = sfloat.MaxValue;
-                sfloat maximumT = sfloat.MinusOne;
+                fint minimumT = fint.MaxValue;
+                fint maximumT = (fint)(-1);
                 for (int i = 0; i < hitList.Count; i++)
                 {
                     triangleMesh.Data.GetTriangle(hitList[i], out vA, out vB, out vC);
                     RayHit hit;
-                    if (Toolbox.FindRayTriangleIntersection(ref ray, sfloat.MaxValue, TriangleSidedness.DoubleSided, ref vA, ref vB, ref vC, out hit) &&
+                    if (Toolbox.FindRayTriangleIntersection(ref ray, fint.MaxValue, TriangleSidedness.DoubleSided, ref vA, ref vB, ref vC, out hit) &&
                         IsHitUnique(hits, ref hit))
                     {
                         if (hit.T < minimumT)
@@ -331,7 +331,7 @@ namespace BEPUphysics.CollisionShapes
 
                     triangleMesh.Data.GetTriangle(minimum, out vA, out vB, out vC);
                     var normal = Vector3.Cross(vA - vB, vA - vC);
-                    if (Vector3.Dot(normal, ray.Direction) < sfloat.Zero)
+                    if (Vector3.Dot(normal, ray.Direction) < (fint)0)
                         toReturn = TriangleSidedness.Clockwise;
                     else
                         toReturn = TriangleSidedness.Counterclockwise;
@@ -343,7 +343,7 @@ namespace BEPUphysics.CollisionShapes
 
                     triangleMesh.Data.GetTriangle(maximum, out vA, out vB, out vC);
                     var normal = Vector3.Cross(vA - vB, vA - vC);
-                    if (Vector3.Dot(normal, ray.Direction) < sfloat.Zero)
+                    if (Vector3.Dot(normal, ray.Direction) < (fint)0)
                         toReturn = TriangleSidedness.Counterclockwise;
                     else
                         toReturn = TriangleSidedness.Clockwise;
@@ -361,7 +361,7 @@ namespace BEPUphysics.CollisionShapes
         private void UpdateSurfaceVertices()
         {
             hullVertices.Clear();
-            if (Volume > sfloat.Zero)
+            if (Volume > (fint)0)
             {
                 ConvexHullHelper.GetConvexHull(triangleMesh.Data.vertices, hullVertices);
                 var transformableData = triangleMesh.Data as TransformableMeshData;
@@ -432,13 +432,13 @@ namespace BEPUphysics.CollisionShapes
                 }
                 InertiaHelper.ComputeShapeDistribution(transformedVertices, data.indices, out shapeInformation.Center, out shapeInformation.Volume, out shapeInformation.VolumeDistribution);
                 CommonResources.GiveBack(transformedVertices);
-                if (shapeInformation.Volume > sfloat.Zero)
+                if (shapeInformation.Volume > (fint)0)
                     return shapeInformation;
                 throw new ArgumentException("A solid mesh must have volume.");
             }
             shapeInformation.Center = new Vector3();
             shapeInformation.VolumeDistribution = new Matrix3x3();
-            sfloat totalWeight = sfloat.Zero;
+            fint totalWeight = (fint)0;
             for (int i = 0; i < data.indices.Length; i += 3)
             {
                 //Compute the center contribution.
@@ -450,10 +450,10 @@ namespace BEPUphysics.CollisionShapes
                 Vector3.Subtract(ref vC, ref vA, out vAvC);
                 Vector3 cross;
                 Vector3.Cross(ref vAvB, ref vAvC, out cross);
-                sfloat weight = cross.Length();
+                fint weight = cross.Length();
                 totalWeight += weight;
 
-                sfloat perVertexWeight = weight * (sfloat.One / (sfloat)3f);
+                fint perVertexWeight = weight * ((fint)1 / (fint)3f);
                 shapeInformation.Center += perVertexWeight * (vA + vB + vC);
 
                 //Compute the inertia contribution of this triangle.
@@ -472,14 +472,14 @@ namespace BEPUphysics.CollisionShapes
             shapeInformation.Center /= totalWeight;
 
             //The extra factor of 2 is used because the cross product length was twice the actual area.
-            Matrix3x3.Multiply(ref shapeInformation.VolumeDistribution, sfloat.One / (sfloat.Two * totalWeight), out shapeInformation.VolumeDistribution);
+            Matrix3x3.Multiply(ref shapeInformation.VolumeDistribution, (fint)1 / ((fint)2 * totalWeight), out shapeInformation.VolumeDistribution);
 
             //Move the inertia tensor into position according to the center.
             Matrix3x3 additionalInertia;
-            InertiaHelper.GetPointContribution(sfloat.Half, ref Toolbox.ZeroVector, ref shapeInformation.Center, out additionalInertia);
+            InertiaHelper.GetPointContribution((fint)0.5f, ref Toolbox.ZeroVector, ref shapeInformation.Center, out additionalInertia);
             Matrix3x3.Subtract(ref shapeInformation.VolumeDistribution, ref additionalInertia, out shapeInformation.VolumeDistribution);
 
-            shapeInformation.Volume = sfloat.Zero;
+            shapeInformation.Volume = (fint)0;
 
 
             return shapeInformation;
@@ -497,11 +497,11 @@ namespace BEPUphysics.CollisionShapes
             var backDirection = new Vector3(o.M13, o.M23, o.M33);
 
             int right = 0, left = 0, up = 0, down = 0, backward = 0, forward = 0;
-            sfloat minX = sfloat.MaxValue, maxX = -sfloat.MaxValue, minY = sfloat.MaxValue, maxY = -sfloat.MaxValue, minZ = sfloat.MaxValue, maxZ = -sfloat.MaxValue;
+            fint minX = fint.MaxValue, maxX = -fint.MaxValue, minY = fint.MaxValue, maxY = -fint.MaxValue, minZ = fint.MaxValue, maxZ = -fint.MaxValue;
 
             for (int i = 0; i < hullVertices.Count; i++)
             {
-                sfloat dotX, dotY, dotZ;
+                fint dotX, dotY, dotZ;
                 Vector3.Dot(ref rightDirection, ref hullVertices.Elements[i], out dotX);
                 Vector3.Dot(ref upDirection, ref hullVertices.Elements[i], out dotY);
                 Vector3.Dot(ref backDirection, ref hullVertices.Elements[i], out dotZ);
@@ -541,9 +541,9 @@ namespace BEPUphysics.CollisionShapes
             }
 
             //Incorporate the collision margin.
-            Vector3.Multiply(ref rightDirection, meshCollisionMargin / libm.sqrtf(rightDirection.Length()), out rightDirection);
-            Vector3.Multiply(ref upDirection, meshCollisionMargin / libm.sqrtf(upDirection.Length()), out upDirection);
-            Vector3.Multiply(ref backDirection, meshCollisionMargin / libm.sqrtf(backDirection.Length()), out backDirection);
+            Vector3.Multiply(ref rightDirection, meshCollisionMargin / fint.Sqrt(rightDirection.Length()), out rightDirection);
+            Vector3.Multiply(ref upDirection, meshCollisionMargin / fint.Sqrt(upDirection.Length()), out upDirection);
+            Vector3.Multiply(ref backDirection, meshCollisionMargin / fint.Sqrt(backDirection.Length()), out backDirection);
 
             var rightElement = hullVertices.Elements[right];
             var leftElement = hullVertices.Elements[left];

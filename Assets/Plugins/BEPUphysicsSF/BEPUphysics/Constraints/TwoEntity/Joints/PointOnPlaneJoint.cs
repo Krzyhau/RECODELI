@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.Entities;
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -10,9 +10,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
     /// </summary>
     public class PointOnPlaneJoint : Joint, I1DImpulseConstraintWithError, I1DJacobianConstraint
     {
-        private sfloat accumulatedImpulse;
-        private sfloat biasVelocity;
-        private sfloat error;
+        private fint accumulatedImpulse;
+        private fint biasVelocity;
+        private fint error;
 
         private Vector3 localPlaneAnchor;
         private Vector3 localPlaneNormal;
@@ -21,7 +21,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         private Vector3 worldPlaneAnchor;
         private Vector3 worldPlaneNormal;
         private Vector3 worldPointAnchor;
-        private sfloat negativeEffectiveMass;
+        private fint negativeEffectiveMass;
         private Vector3 rA;
         private Vector3 rAcrossN;
         private Vector3 rB;
@@ -161,7 +161,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public sfloat RelativeVelocity
+        public fint RelativeVelocity
         {
             get
             {
@@ -172,7 +172,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Vector3.Cross(ref connectionB.angularVelocity, ref rB, out bVel);
                 Vector3.Add(ref bVel, ref connectionB.linearVelocity, out bVel);
                 Vector3.Subtract(ref aVel, ref bVel, out dv);
-                sfloat velocityDifference;
+                fint velocityDifference;
                 Vector3.Dot(ref dv, ref worldPlaneNormal, out velocityDifference);
                 return velocityDifference;
             }
@@ -182,7 +182,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public sfloat TotalImpulse
+        public fint TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -190,7 +190,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        public sfloat Error
+        public fint Error
         {
             get { return error; }
         }
@@ -239,7 +239,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out sfloat outputMassMatrix)
+        public void GetMassMatrix(out fint outputMassMatrix)
         {
             outputMassMatrix = -negativeEffectiveMass;
         }
@@ -250,7 +250,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             //TODO: This could technically be faster.
             //Form the jacobian explicitly.
@@ -264,12 +264,12 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Cross(ref connectionB.angularVelocity, ref rB, out bVel);
             Vector3.Add(ref bVel, ref connectionB.linearVelocity, out bVel);
             Vector3.Subtract(ref aVel, ref bVel, out dv);
-            sfloat velocityDifference;
+            fint velocityDifference;
             Vector3.Dot(ref dv, ref worldPlaneNormal, out velocityDifference);
             //if(velocityDifference > 0)
             //    Debug.WriteLine("Velocity difference: " + velocityDifference);
             //Debug.WriteLine("softness velocity: " + softness * accumulatedImpulse);
-            sfloat lambda = negativeEffectiveMass * (velocityDifference + biasVelocity + softness * accumulatedImpulse);
+            fint lambda = negativeEffectiveMass * (velocityDifference + biasVelocity + softness * accumulatedImpulse);
             accumulatedImpulse += lambda;
 
             Vector3 impulse;
@@ -296,7 +296,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             Matrix3x3.Transform(ref localPlaneNormal, ref connectionA.orientationMatrix, out worldPlaneNormal);
             Matrix3x3.Transform(ref localPlaneAnchor, ref connectionA.orientationMatrix, out worldPlaneAnchor);
@@ -307,10 +307,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
             //Find rA and rB.
             //So find the closest point on the plane to worldPointAnchor.
-            sfloat pointDistance, planeDistance;
+            fint pointDistance, planeDistance;
             Vector3.Dot(ref worldPointAnchor, ref worldPlaneNormal, out pointDistance);
             Vector3.Dot(ref worldPlaneAnchor, ref worldPlaneNormal, out planeDistance);
-            sfloat distanceChange = planeDistance - pointDistance;
+            fint distanceChange = planeDistance - pointDistance;
             Vector3 closestPointOnPlane;
             Vector3.Multiply(ref worldPlaneNormal, distanceChange, out closestPointOnPlane);
             Vector3.Add(ref closestPointOnPlane, ref worldPointAnchor, out closestPointOnPlane);
@@ -324,8 +324,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3 offset;
             Vector3.Subtract(ref worldPointAnchor, ref closestPointOnPlane, out offset);
             Vector3.Dot(ref offset, ref worldPlaneNormal, out error);
-            sfloat errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReduction, out softness);
+            fint errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, (fint)1 / dt, out errorReduction, out softness);
             biasVelocity = MathHelper.Clamp(-errorReduction * error, -maxCorrectiveVelocity, maxCorrectiveVelocity);
 
             if (connectionA.IsDynamic && connectionB.IsDynamic)
@@ -333,32 +333,32 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 Vector3 IrACrossN, IrBCrossN;
                 Matrix3x3.Transform(ref rAcrossN, ref connectionA.inertiaTensorInverse, out IrACrossN);
                 Matrix3x3.Transform(ref rBcrossN, ref connectionB.inertiaTensorInverse, out IrBCrossN);
-                sfloat angularA, angularB;
+                fint angularA, angularB;
                 Vector3.Dot(ref rAcrossN, ref IrACrossN, out angularA);
                 Vector3.Dot(ref rBcrossN, ref IrBCrossN, out angularB);
                 negativeEffectiveMass = connectionA.inverseMass + connectionB.inverseMass + angularA + angularB;
-                negativeEffectiveMass = sfloat.MinusOne / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = (fint)(-1) / (negativeEffectiveMass + softness);
             }
             else if (connectionA.IsDynamic && !connectionB.IsDynamic)
             {
                 Vector3 IrACrossN;
                 Matrix3x3.Transform(ref rAcrossN, ref connectionA.inertiaTensorInverse, out IrACrossN);
-                sfloat angularA;
+                fint angularA;
                 Vector3.Dot(ref rAcrossN, ref IrACrossN, out angularA);
                 negativeEffectiveMass = connectionA.inverseMass + angularA;
-                negativeEffectiveMass = sfloat.MinusOne / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = (fint)(-1) / (negativeEffectiveMass + softness);
             }
             else if (!connectionA.IsDynamic && connectionB.IsDynamic)
             {
                 Vector3 IrBCrossN;
                 Matrix3x3.Transform(ref rBcrossN, ref connectionB.inertiaTensorInverse, out IrBCrossN);
-                sfloat angularB;
+                fint angularB;
                 Vector3.Dot(ref rBcrossN, ref IrBCrossN, out angularB);
                 negativeEffectiveMass = connectionB.inverseMass + angularB;
-                negativeEffectiveMass = sfloat.MinusOne / (negativeEffectiveMass + softness);
+                negativeEffectiveMass = (fint)(-1) / (negativeEffectiveMass + softness);
             }
             else
-                negativeEffectiveMass = sfloat.Zero;
+                negativeEffectiveMass = (fint)0;
 
 
         }

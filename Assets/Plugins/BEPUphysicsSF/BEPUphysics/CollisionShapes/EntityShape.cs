@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.CollisionShapes
 {
@@ -20,7 +20,7 @@ namespace BEPUphysics.CollisionShapes
         /// <summary>
         /// Gets the volume of the shape.
         /// </summary>
-        public sfloat Volume { get; internal set; }
+        public fint Volume { get; internal set; }
 
         internal Matrix3x3 volumeDistribution;
         /// <summary>

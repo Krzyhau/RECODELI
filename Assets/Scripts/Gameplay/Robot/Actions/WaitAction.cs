@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Unity;
 using System.Collections.Generic;
 
@@ -12,12 +12,12 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         public override IEnumerator<int> Execute(RobotController controller, RobotInstruction<float> instruction)
         {
-            sfloat remainingTime = (sfloat)instruction.Parameter;
-            while(remainingTime > sfloat.Zero)
+            fint remainingTime = (fint)instruction.Parameter;
+            while(remainingTime > (fint)0)
             {
                 yield return 1;
                 remainingTime -= controller.Rigidbody.Simulation.TimeStep;
-                instruction.UpdateProgress(1.0f - (float)(remainingTime / (sfloat)instruction.Parameter));
+                instruction.UpdateProgress(1.0f - (float)(remainingTime / (fint)instruction.Parameter));
             }
         }
     }

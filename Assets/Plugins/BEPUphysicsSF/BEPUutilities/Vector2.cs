@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUutilities
 {
@@ -11,18 +11,18 @@ namespace BEPUutilities
         /// <summary>
         /// X component of the vector.
         /// </summary>
-        public sfloat X;
+        public fint X;
         /// <summary>
         /// Y component of the vector.
         /// </summary>
-        public sfloat Y;
+        public fint Y;
 
         /// <summary>
         /// Constructs a new two dimensional vector.
         /// </summary>
         /// <param name="x">X component of the vector.</param>
         /// <param name="y">Y component of the vector.</param>
-        public Vector2(sfloat x, sfloat y)
+        public Vector2(fint x, fint y)
         {
             this.X = x;
             this.Y = y;
@@ -32,7 +32,7 @@ namespace BEPUutilities
         /// Computes the squared length of the vector.
         /// </summary>
         /// <returns>Squared length of the vector.</returns>
-        public sfloat LengthSquared()
+        public fint LengthSquared()
         {
             return X * X + Y * Y;
         }
@@ -41,9 +41,9 @@ namespace BEPUutilities
         /// Computes the length of the vector.
         /// </summary>
         /// <returns>Length of the vector.</returns>
-        public sfloat Length()
+        public fint Length()
         {
-            return libm.sqrtf(X * X + Y * Y);
+            return fint.Sqrt(X * X + Y * Y);
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="scale">Amount to scale.</param>
         /// <param name="result">Scaled vector.</param>
-        public static void Multiply(ref Vector2 v, sfloat scale, out Vector2 result)
+        public static void Multiply(ref Vector2 v, fint scale, out Vector2 result)
         {
             result.X = v.X * scale;
             result.Y = v.Y * scale;
@@ -109,9 +109,9 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="divisor">Value to divide the vector's components.</param>
         /// <param name="result">Result of the division.</param>
-        public static void Divide(ref Vector2 v, sfloat divisor, out Vector2 result)
+        public static void Divide(ref Vector2 v, fint divisor, out Vector2 result)
         {
-            sfloat inverse = sfloat.One / divisor;
+            fint inverse = (fint)1 / divisor;
             result.X = v.X * inverse;
             result.Y = v.Y * inverse;
         }
@@ -122,7 +122,7 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <param name="dot">Dot product of the two vectors.</param>
-        public static void Dot(ref Vector2 a, ref Vector2 b, out sfloat dot)
+        public static void Dot(ref Vector2 a, ref Vector2 b, out fint dot)
         {
             dot = a.X * b.X + a.Y * b.Y;
         }
@@ -133,7 +133,7 @@ namespace BEPUutilities
         /// <param name="a">First vector of the dot product.</param>
         /// <param name="b">Second vector of the dot product.</param>
         /// <returns>Dot product of the two vectors.</returns>
-        public static sfloat Dot(Vector2 a, Vector2 b)
+        public static fint Dot(Vector2 a, Vector2 b)
         {
             return a.X * b.X + a.Y * b.Y;
         }
@@ -154,7 +154,7 @@ namespace BEPUutilities
         /// </summary>
         public static Vector2 UnitX
         {
-            get { return new Vector2 { X = sfloat.One }; }
+            get { return new Vector2 { X = (fint)1 }; }
         }
 
         /// <summary>
@@ -162,7 +162,7 @@ namespace BEPUutilities
         /// </summary>
         public static Vector2 UnitY
         {
-            get { return new Vector2 { Y = sfloat.One }; }
+            get { return new Vector2 { Y = (fint)1 }; }
         }
 
 
@@ -185,7 +185,7 @@ namespace BEPUutilities
         /// <param name="result">Normalized vector.</param>
         public static void Normalize(ref Vector2 v, out Vector2 result)
         {
-            sfloat inverse = (sfloat)(sfloat.One / libm.sqrtf(v.X * v.X + v.Y * v.Y));
+            fint inverse = (fint)((fint)1 / fint.Sqrt(v.X * v.X + v.Y * v.Y));
             result.X = v.X * inverse;
             result.Y = v.Y * inverse;
         }
@@ -208,11 +208,11 @@ namespace BEPUutilities
         /// <param name="result">Vector with nonnegative elements.</param>
         public static void Abs(ref Vector2 v, out Vector2 result)
         {
-            if (v.X < sfloat.Zero)
+            if (v.X < (fint)0)
                 result.X = -v.X;
             else
                 result.X = v.X;
-            if (v.Y < sfloat.Zero)
+            if (v.Y < (fint)0)
                 result.Y = -v.Y;
             else
                 result.Y = v.Y;
@@ -286,7 +286,7 @@ namespace BEPUutilities
         /// </summary>
         public void Normalize()
         {
-            sfloat inverse = (sfloat)(sfloat.One / libm.sqrtf(X * X + Y * Y));
+            fint inverse = (fint)((fint)1 / fint.Sqrt(X * X + Y * Y));
             X *= inverse;
             Y *= inverse;
         }
@@ -297,7 +297,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(Vector2 v, sfloat f)
+        public static Vector2 operator *(Vector2 v, fint f)
         {
             Vector2 toReturn;
             toReturn.X = v.X * f;
@@ -310,7 +310,7 @@ namespace BEPUutilities
         /// <param name="v">Vector to scale.</param>
         /// <param name="f">Amount to scale.</param>
         /// <returns>Scaled vector.</returns>
-        public static Vector2 operator *(sfloat f, Vector2 v)
+        public static Vector2 operator *(fint f, Vector2 v)
         {
             Vector2 toReturn;
             toReturn.X = v.X * f;
@@ -337,10 +337,10 @@ namespace BEPUutilities
         /// <param name="v">Vector to divide.</param>
         /// <param name="f">Amount to divide.</param>
         /// <returns>Divided vector.</returns>
-        public static Vector2 operator /(Vector2 v, sfloat f)
+        public static Vector2 operator /(Vector2 v, fint f)
         {
             Vector2 toReturn;
-            f = sfloat.One / f;
+            f = (fint)1 / f;
             toReturn.X = v.X * f;
             toReturn.Y = v.Y * f;
             return toReturn;

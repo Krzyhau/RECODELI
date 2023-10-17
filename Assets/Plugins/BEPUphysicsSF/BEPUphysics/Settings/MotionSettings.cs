@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.PositionUpdating;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUphysics.Entities;
@@ -20,7 +20,7 @@ namespace BEPUphysics.Settings
         /// to perform CCD are, and more collisions are missed.
         /// Defaults to .8f.
         ///</summary>
-        public static sfloat CoreShapeScaling
+        public static fint CoreShapeScaling
         {
             get
             {
@@ -29,10 +29,10 @@ namespace BEPUphysics.Settings
             set
             {
                 //The reason why it doesn't allow up to 1.0 is there exist systems that require a small margin between the full minimum radius and the core shape.
-                coreShapeScaling = MathHelper.Clamp(value, sfloat.Zero, (sfloat).99f);
+                coreShapeScaling = MathHelper.Clamp(value, (fint)0, (fint).99f);
             }
         }
-        static sfloat coreShapeScaling = (sfloat).8f;
+        static fint coreShapeScaling = (fint).8f;
         /// <summary>
         /// The default position updating mode used by position updateables.
         /// Defaults to Discrete.

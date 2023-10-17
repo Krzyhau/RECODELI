@@ -6,7 +6,7 @@ using BEPUphysics.Constraints.Collision;
 using BEPUphysics.CollisionTests.Manifolds;
 using BEPUphysics.CollisionTests;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Constraints.SolverGroups;
 using BEPUphysics.Materials;
 
@@ -57,13 +57,13 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         }
 
 
-        protected internal sfloat timeOfImpact = sfloat.One;
+        protected internal fint timeOfImpact = (fint)1;
         ///<summary>
         /// Gets the last computed time of impact of the pair handler.
         /// This is only computed when one of the members is a continuously
         /// updated object.
         ///</summary>
-        public sfloat TimeOfImpact
+        public fint TimeOfImpact
         {
             get
             {
@@ -76,7 +76,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         ///</summary>
         ///<param name="requester">Collidable requesting the update.</param>
         ///<param name="dt">Timestep duration.</param>
-        public abstract void UpdateTimeOfImpact(Collidable requester, sfloat dt);
+        public abstract void UpdateTimeOfImpact(Collidable requester, fint dt);
 
 
         protected bool suppressEvents;
@@ -197,7 +197,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
             broadPhaseOverlap = new BroadPhaseOverlap();
             suppressEvents = false;
-            timeOfImpact = sfloat.One;
+            timeOfImpact = (fint)1;
             Parent = null;
 
             previousContactCount = 0;
@@ -247,7 +247,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             {
                 foreach (var contact in Contacts)
                 {
-                    if (contact.Contact.PenetrationDepth >= sfloat.Zero)
+                    if (contact.Contact.PenetrationDepth >= (fint)0)
                         return true;
                 }
                 return false;

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ namespace BEPUutilities
         /// <summary>
         /// Radius of the sphere.
         /// </summary>
-        public sfloat Radius;
+        public fint Radius;
         /// <summary>
         /// Location of the center of the sphere.
         /// </summary>
@@ -25,7 +25,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="center">Location of the center of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public BoundingSphere(Vector3 center, sfloat radius)
+        public BoundingSphere(Vector3 center, fint radius)
         {
             this.Center = center;
             this.Radius = radius;

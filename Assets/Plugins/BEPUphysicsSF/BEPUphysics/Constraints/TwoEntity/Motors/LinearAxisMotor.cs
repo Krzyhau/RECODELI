@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 
 using BEPUutilities;
@@ -13,14 +13,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
     {
         private readonly MotorSettings1D settings;
 
-        private sfloat accumulatedImpulse;
-        private sfloat biasVelocity;
+        private fint accumulatedImpulse;
+        private fint biasVelocity;
         private Vector3 jAngularA, jAngularB;
         private Vector3 jLinearA, jLinearB;
         private Vector3 localAnchorA;
         private Vector3 localAnchorB;
-        private sfloat massMatrix;
-        private sfloat error;
+        private fint massMatrix;
+        private fint error;
         private Vector3 localAxis;
         private Vector3 worldAxis;
         private Vector3 rA; //Jacobian entry for entity A.
@@ -185,11 +185,11 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the current relative velocity between the connected entities with respect to the constraint.
         /// </summary>
-        public sfloat RelativeVelocity
+        public fint RelativeVelocity
         {
             get
             {
-                sfloat lambda, dot;
+                fint lambda, dot;
                 Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
                 Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
                 lambda += dot;
@@ -204,7 +204,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// <summary>
         /// Gets the total impulse applied by this constraint.
         /// </summary>
-        public sfloat TotalImpulse
+        public fint TotalImpulse
         {
             get { return accumulatedImpulse; }
         }
@@ -213,7 +213,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the current constraint error.
         /// If the motor is in velocity only mode, the error will be zero.
         /// </summary>
-        public sfloat Error
+        public fint Error
         {
             get { return error; }
         }
@@ -264,7 +264,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Gets the mass matrix of the constraint.
         /// </summary>
         /// <param name="outputMassMatrix">Constraint's mass matrix.</param>
-        public void GetMassMatrix(out sfloat outputMassMatrix)
+        public void GetMassMatrix(out fint outputMassMatrix)
         {
             outputMassMatrix = massMatrix;
         }
@@ -275,10 +275,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             //Compute the current relative velocity.
-            sfloat lambda, dot;
+            fint lambda, dot;
             Vector3.Dot(ref jLinearA, ref connectionA.linearVelocity, out lambda);
             Vector3.Dot(ref jAngularA, ref connectionA.angularVelocity, out dot);
             lambda += dot;
@@ -294,7 +294,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             lambda *= massMatrix;
 
             //Clamp accumulated impulse
-            sfloat previousAccumulatedImpulse = accumulatedImpulse;
+            fint previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse = MathHelper.Clamp(accumulatedImpulse + lambda, -maxForceDt, maxForceDt);
             lambda = accumulatedImpulse - previousAccumulatedImpulse;
 
@@ -315,10 +315,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (sfloat.Abs(lambda));
+            return (fint.Abs(lambda));
         }
 
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             //Compute the 'pre'-jacobians
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
@@ -328,7 +328,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             Vector3.Subtract(ref worldAnchorB, ref connectionA.position, out rA);
             Matrix3x3.Transform(ref localAxis, ref connectionA.orientationMatrix, out worldAxis);
 
-            sfloat updateRate = sfloat.One / dt;
+            fint updateRate = 1 / dt;
             if (settings.mode == MotorMode.Servomechanism)
             {
                 //Compute error
@@ -348,17 +348,17 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
 
 
                 //Compute bias
-                sfloat absErrorOverDt = sfloat.Abs(error * updateRate);
-                sfloat errorReduction;
+                fint absErrorOverDt = fint.Abs(error * updateRate);
+                fint errorReduction;
                 settings.servo.springSettings.ComputeErrorReductionAndSoftness(dt, updateRate, out errorReduction, out usedSoftness);
-                biasVelocity = (sfloat)error.Sign() * MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt) + error * errorReduction;
+                biasVelocity = fint.Sign(error) * MathHelper.Min(settings.servo.baseCorrectiveSpeed, absErrorOverDt) + error * errorReduction;
                 biasVelocity = MathHelper.Clamp(biasVelocity, -settings.servo.maxCorrectiveVelocity, settings.servo.maxCorrectiveVelocity);
             }
             else
             {
                 biasVelocity = -settings.velocityMotor.goalVelocity;
                 usedSoftness = settings.velocityMotor.softness * updateRate;
-                error = sfloat.Zero;
+                error = 0;
             }
 
             //Compute jacobians
@@ -370,7 +370,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
             Vector3.Cross(ref worldOffsetB, ref jLinearB, out jAngularB);
 
             //compute mass matrix
-            sfloat entryA, entryB;
+            fint entryA, entryB;
             Vector3 intermediate;
             if (connectionA.isDynamic)
             {
@@ -379,7 +379,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 entryA += connectionA.inverseMass;
             }
             else
-                entryA = sfloat.Zero;
+                entryA = 0;
             if (connectionB.isDynamic)
             {
                 Matrix3x3.Transform(ref jAngularB, ref connectionB.inertiaTensorInverse, out intermediate);
@@ -387,8 +387,8 @@ namespace BEPUphysics.Constraints.TwoEntity.Motors
                 entryB += connectionB.inverseMass;
             }
             else
-                entryB = sfloat.Zero;
-            massMatrix = sfloat.One / (entryA + entryB + usedSoftness);
+                entryB = 0;
+            massMatrix = 1 / (entryA + entryB + usedSoftness);
 
             //Update the maximum force
             ComputeMaxForces(settings.maximumForce, dt);

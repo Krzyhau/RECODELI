@@ -1,5 +1,5 @@
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUutilities.Threading
 {

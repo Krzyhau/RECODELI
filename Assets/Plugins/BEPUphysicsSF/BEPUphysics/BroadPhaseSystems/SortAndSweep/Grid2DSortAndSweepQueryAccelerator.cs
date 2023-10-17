@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -33,38 +33,38 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider using a broad phase which supports infinite tests, using a custom solution, or using a finite ray.");
         }
 
-        public bool RayCast(Ray ray, sfloat maximumLength, IList<BroadPhaseEntry> outputIntersections)
+        public bool RayCast(Ray ray, fint maximumLength, IList<BroadPhaseEntry> outputIntersections)
         {
-            if (maximumLength == sfloat.MaxValue) 
+            if (maximumLength == fint.MaxValue) 
                 throw new NotSupportedException("The Grid2DSortAndSweep broad phase cannot accelerate infinite ray casts.  Consider specifying a maximum length or using a broad phase which supports infinite ray casts.");
         
             //Use 2d line rasterization.
             //Compute the exit location in the cell.
             //Test against each bounding box up until the exit value is reached.
-            sfloat length = sfloat.Zero;
+            fint length = (fint)0;
             Int2 cellIndex;
             Vector3 currentPosition = ray.Position;
             Grid2DSortAndSweep.ComputeCell(ref currentPosition, out cellIndex);
             while (true)
             {
 
-                sfloat cellWidth = sfloat.One / Grid2DSortAndSweep.cellSizeInverse;
-                sfloat nextT; //Distance along ray to next boundary.
-                sfloat nextTy; //Distance along ray to next boundary along y axis.
-                sfloat nextTz; //Distance along ray to next boundary along z axis.
+                fint cellWidth = (fint)1 / Grid2DSortAndSweep.cellSizeInverse;
+                fint nextT; //Distance along ray to next boundary.
+                fint nextTy; //Distance along ray to next boundary along y axis.
+                fint nextTz; //Distance along ray to next boundary along z axis.
                 //Find the next cell.
-                if (ray.Direction.Y > sfloat.Zero)
-                    nextTy = ((sfloat)(cellIndex.Y + 1) * cellWidth - currentPosition.Y) / ray.Direction.Y;
-                else if (ray.Direction.Y < sfloat.Zero)
-                    nextTy = ((sfloat)(cellIndex.Y) * cellWidth - currentPosition.Y) / ray.Direction.Y;
+                if (ray.Direction.Y > (fint)0)
+                    nextTy = ((fint)(cellIndex.Y + 1) * cellWidth - currentPosition.Y) / ray.Direction.Y;
+                else if (ray.Direction.Y < (fint)0)
+                    nextTy = ((fint)(cellIndex.Y) * cellWidth - currentPosition.Y) / ray.Direction.Y;
                 else
-                    nextTy = (sfloat)10e10f;
-                if (ray.Direction.Z > sfloat.Zero)
-                    nextTz = ((sfloat)(cellIndex.Z + 1) * cellWidth - currentPosition.Z) / ray.Direction.Z;
-                else if (ray.Direction.Z < sfloat.Zero)
-                    nextTz = ((sfloat)(cellIndex.Z) * cellWidth - currentPosition.Z) / ray.Direction.Z;
+                    nextTy = (fint)10e10f;
+                if (ray.Direction.Z > (fint)0)
+                    nextTz = ((fint)(cellIndex.Z + 1) * cellWidth - currentPosition.Z) / ray.Direction.Z;
+                else if (ray.Direction.Z < (fint)0)
+                    nextTz = ((fint)(cellIndex.Z) * cellWidth - currentPosition.Z) / ray.Direction.Z;
                 else
-                    nextTz = (sfloat)10e10f;
+                    nextTz = (fint)10e10f;
 
                 bool yIsMinimum = nextTy < nextTz;
                 nextT = yIsMinimum ? nextTy : nextTz;
@@ -76,8 +76,8 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 GridCell2D cell;
                 if (owner.cellSet.TryGetCell(ref cellIndex, out cell))
                 {
-                    sfloat endingX;
-                    if(ray.Direction.X < sfloat.Zero)
+                    fint endingX;
+                    if(ray.Direction.X < (fint)0)
                         endingX = currentPosition.X;
                     else
                         endingX = currentPosition.X + ray.Direction.X * nextT;
@@ -89,7 +89,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                         && cell.entries.Elements[i].item.boundingBox.Min.X <= endingX; i++) //TODO: Try additional x axis pruning?
                     {
                         var item = cell.entries.Elements[i].item;
-                        sfloat t;
+                        fint t;
                         if (ray.Intersects(ref item.boundingBox, out t) && t < maximumLength && !outputIntersections.Contains(item))
                         {
                             outputIntersections.Add(item);
@@ -105,12 +105,12 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
                 Vector3.Multiply(ref ray.Direction, nextT, out offset);
                 Vector3.Add(ref offset, ref currentPosition, out currentPosition);
                 if (yIsMinimum)
-                    if (ray.Direction.Y < sfloat.Zero)
+                    if (ray.Direction.Y < (fint)0)
                         cellIndex.Y -= 1;
                     else
                         cellIndex.Y += 1;
                 else
-                    if (ray.Direction.Z < sfloat.Zero)
+                    if (ray.Direction.Z < (fint)0)
                         cellIndex.Z -= 1;
                     else
                         cellIndex.Z += 1;

@@ -1,5 +1,5 @@
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
@@ -48,7 +48,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Gets or sets the dictionary storing density multipliers for the fluid volume.  If a value is specified for an entity, the density of the object is effectively scaled to match.
         /// Higher values make entities sink more, lower values make entities sfloat more.
         /// </summary>
-        public Dictionary<Entity, sfloat> DensityMultipliers { get; set; }
+        public Dictionary<Entity, fint> DensityMultipliers { get; set; }
 
         BoundingBox boundingBox;
         /// <summary>
@@ -62,11 +62,11 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        sfloat maxDepth;
+        fint maxDepth;
         /// <summary>
         /// Maximum depth of the fluid from the surface.
         /// </summary>
-        public sfloat MaxDepth
+        public fint MaxDepth
         {
             get
             {
@@ -82,7 +82,7 @@ namespace BEPUphysics.UpdateableSystems
         /// <summary>
         /// Density of the fluid represented in the volume.
         /// </summary>
-        public sfloat Density { get; set; }
+        public fint Density { get; set; }
 
         int samplePointsPerDimension = 8;
         /// <summary>
@@ -104,12 +104,12 @@ namespace BEPUphysics.UpdateableSystems
         /// <summary>
         /// Fraction by which to reduce the linear momentum of sfloating objects each update.
         /// </summary>
-        public sfloat LinearDamping { get; set; }
+        public fint LinearDamping { get; set; }
 
         /// <summary>
         /// Fraction by which to reduce the angular momentum of sfloating objects each update.
         /// </summary>
-        public sfloat AngularDamping { get; set; }
+        public fint AngularDamping { get; set; }
 
 
 
@@ -126,8 +126,8 @@ namespace BEPUphysics.UpdateableSystems
             }
             set
             {
-                sfloat length = value.Length();
-                if (length > sfloat.Zero)
+                fint length = value.Length();
+                if (length > (fint)0)
                 {
                     flowDirection = value / length;
                 }
@@ -137,13 +137,13 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        private sfloat flowForce;
+        private fint flowForce;
 
         /// <summary>
         /// Magnitude of the flow's force, in units of flow direction.
         /// flowDirection and maxFlowSpeed must have valid values as well for the flow to work.
         /// </summary>
-        public sfloat FlowForce
+        public fint FlowForce
         {
             get
             {
@@ -156,12 +156,12 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        sfloat maxFlowSpeed;
+        fint maxFlowSpeed;
         /// <summary>
         /// Maximum speed of the flow; objects will not be accelerated by the flow force beyond this speed.
         /// flowForce and flowDirection must have valid values as well for the flow to work.
         /// </summary>
-        public sfloat MaxFlowSpeed
+        public fint MaxFlowSpeed
         {
             get
             {
@@ -198,11 +198,11 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        sfloat gravity;
+        fint gravity;
         ///<summary>
         /// Gets or sets the gravity used by the fluid volume.
         ///</summary>
-        public sfloat Gravity
+        public fint Gravity
         {
             get
             {
@@ -226,7 +226,7 @@ namespace BEPUphysics.UpdateableSystems
         /// <param name="fluidDensity">Density of the fluid represented in the volume.</param>
         /// <param name="linearDamping">Fraction by which to reduce the linear momentum of sfloating objects each update, in addition to any of the body's own damping.</param>
         /// <param name="angularDamping">Fraction by which to reduce the angular momentum of sfloating objects each update, in addition to any of the body's own damping.</param>
-        public FluidVolume(Vector3 upVector, sfloat gravity, List<Vector3[]> surfaceTriangles, sfloat depth, sfloat fluidDensity, sfloat linearDamping, sfloat angularDamping)
+        public FluidVolume(Vector3 upVector, fint gravity, List<Vector3[]> surfaceTriangles, fint depth, fint fluidDensity, fint linearDamping, fint angularDamping)
         {
             Gravity = gravity;
             SurfaceTriangles = surfaceTriangles;
@@ -239,7 +239,7 @@ namespace BEPUphysics.UpdateableSystems
 
             analyzeCollisionEntryDelegate = AnalyzeEntry;
 
-            DensityMultipliers = new Dictionary<Entity, sfloat>();
+            DensityMultipliers = new Dictionary<Entity, fint>();
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Called automatically when needed by the owning Space.
         /// </summary>
         /// <param name="dt">Time since last frame in physical logic.</param>
-        void IDuringForcesUpdateable.Update(sfloat dt)
+        void IDuringForcesUpdateable.Update(fint dt)
         {
             QueryAccelerator.GetEntries(boundingBox, broadPhaseEntries);
             //TODO: Could integrate the entire thing into the collision detection pipeline.  Applying forces
@@ -299,7 +299,7 @@ namespace BEPUphysics.UpdateableSystems
 
         }
 
-        sfloat dt;
+        fint dt;
         Action<int> analyzeCollisionEntryDelegate;
 
         void AnalyzeEntry(int i)
@@ -321,18 +321,18 @@ namespace BEPUphysics.UpdateableSystems
                     return;
 
                 //The entity is submerged, apply buoyancy forces.
-                sfloat submergedVolume;
+                fint submergedVolume;
                 Vector3 submergedCenter;
                 GetBuoyancyInformation(entityCollidable, out submergedVolume, out submergedCenter);
 
-                if (submergedVolume > sfloat.Zero)
+                if (submergedVolume > (fint)0)
                 {
 
                     //The approximation can sometimes output a volume greater than the shape itself. Don't let that error seep into usage.
-                    sfloat fractionSubmerged = sfloat.Min(sfloat.One, submergedVolume / entityCollidable.entity.CollisionInformation.Shape.Volume);
+                    fint fractionSubmerged = fint.Min((fint)1, submergedVolume / entityCollidable.entity.CollisionInformation.Shape.Volume);
 
                     //Divide the volume by the density multiplier if present.
-                    sfloat densityMultiplier;
+                    fint densityMultiplier;
                     if (DensityMultipliers.TryGetValue(entityCollidable.entity, out densityMultiplier))
                     {
                         submergedVolume /= densityMultiplier;
@@ -342,12 +342,12 @@ namespace BEPUphysics.UpdateableSystems
                     entityCollidable.entity.ApplyImpulseWithoutActivating(ref submergedCenter, ref force);
 
                     //Flow
-                    if (FlowForce != sfloat.Zero)
+                    if (FlowForce != (fint)0)
                     {
-                        sfloat dot = sfloat.Max(Vector3.Dot(entityCollidable.entity.linearVelocity, flowDirection), sfloat.Zero);
+                        fint dot = fint.Max(Vector3.Dot(entityCollidable.entity.linearVelocity, flowDirection), (fint)0);
                         if (dot < MaxFlowSpeed)
                         {
-                            force = sfloat.Min(FlowForce, (MaxFlowSpeed - dot) * entityCollidable.entity.mass) * dt * fractionSubmerged * FlowDirection;
+                            force = fint.Min(FlowForce, (MaxFlowSpeed - dot) * entityCollidable.entity.mass) * dt * fractionSubmerged * FlowDirection;
                             entityCollidable.entity.ApplyLinearImpulse(ref force);
                         }
                     }
@@ -359,21 +359,21 @@ namespace BEPUphysics.UpdateableSystems
             }
         }
 
-        void GetBuoyancyInformation(EntityCollidable collidable, out sfloat submergedVolume, out Vector3 submergedCenter)
+        void GetBuoyancyInformation(EntityCollidable collidable, out fint submergedVolume, out Vector3 submergedCenter)
         {
             BoundingBox entityBoundingBox;
 
             RigidTransform localTransform;
             RigidTransform.MultiplyByInverse(ref collidable.worldTransform, ref surfaceTransform, out localTransform);
             collidable.Shape.GetBoundingBox(ref localTransform, out entityBoundingBox);
-            if (entityBoundingBox.Min.Y > sfloat.Zero)
+            if (entityBoundingBox.Min.Y > (fint)0)
             {
                 //Fish out of the water.  Don't need to do raycast tests on objects not at the boundary.
-                submergedVolume = sfloat.Zero;
+                submergedVolume = (fint)0;
                 submergedCenter = collidable.worldTransform.Position;
                 return;
             }
-            if (entityBoundingBox.Max.Y < sfloat.Zero)
+            if (entityBoundingBox.Max.Y < (fint)0)
             {
                 submergedVolume = collidable.entity.CollisionInformation.Shape.Volume;
                 submergedCenter = collidable.worldTransform.Position;
@@ -381,22 +381,22 @@ namespace BEPUphysics.UpdateableSystems
             }
 
             Vector3 origin, xSpacing, zSpacing;
-            sfloat perColumnArea;
+            fint perColumnArea;
             GetSamplingOrigin(ref entityBoundingBox, out xSpacing, out zSpacing, out perColumnArea, out origin);
 
-            sfloat boundingBoxHeight = entityBoundingBox.Max.Y - entityBoundingBox.Min.Y;
-            sfloat maxLength = -entityBoundingBox.Min.Y;
+            fint boundingBoxHeight = entityBoundingBox.Max.Y - entityBoundingBox.Min.Y;
+            fint maxLength = -entityBoundingBox.Min.Y;
             submergedCenter = new Vector3();
-            submergedVolume = sfloat.Zero;
+            submergedVolume = (fint)0;
             for (int i = 0; i < samplePointsPerDimension; i++)
             {
                 for (int j = 0; j < samplePointsPerDimension; j++)
                 {
                     Vector3 columnVolumeCenter;
-                    sfloat submergedHeight;
-                    if ((submergedHeight = GetSubmergedHeight(collidable, maxLength, boundingBoxHeight, ref origin, ref xSpacing, ref zSpacing, i, j, out columnVolumeCenter)) > sfloat.Zero)
+                    fint submergedHeight;
+                    if ((submergedHeight = GetSubmergedHeight(collidable, maxLength, boundingBoxHeight, ref origin, ref xSpacing, ref zSpacing, i, j, out columnVolumeCenter)) > (fint)0)
                     {
-                        sfloat columnVolume = submergedHeight * perColumnArea;
+                        fint columnVolume = submergedHeight * perColumnArea;
                         Vector3.Multiply(ref columnVolumeCenter, columnVolume, out columnVolumeCenter);
                         Vector3.Add(ref columnVolumeCenter, ref submergedCenter, out submergedCenter);
                         submergedVolume += columnVolume;
@@ -409,13 +409,13 @@ namespace BEPUphysics.UpdateableSystems
 
         }
 
-        void GetSamplingOrigin(ref BoundingBox entityBoundingBox, out Vector3 xSpacing, out Vector3 zSpacing, out sfloat perColumnArea, out Vector3 origin)
+        void GetSamplingOrigin(ref BoundingBox entityBoundingBox, out Vector3 xSpacing, out Vector3 zSpacing, out fint perColumnArea, out Vector3 origin)
         {
             //Compute spacing and increment informaiton.
-            sfloat widthIncrement = (entityBoundingBox.Max.X - entityBoundingBox.Min.X) / (sfloat)samplePointsPerDimension;
-            sfloat lengthIncrement = (entityBoundingBox.Max.Z - entityBoundingBox.Min.Z) / (sfloat)samplePointsPerDimension;
-            xSpacing = new Vector3(widthIncrement, sfloat.Zero, sfloat.Zero);
-            zSpacing = new Vector3(sfloat.Zero, sfloat.Zero, lengthIncrement);
+            fint widthIncrement = (entityBoundingBox.Max.X - entityBoundingBox.Min.X) / (fint)samplePointsPerDimension;
+            fint lengthIncrement = (entityBoundingBox.Max.Z - entityBoundingBox.Min.Z) / (fint)samplePointsPerDimension;
+            xSpacing = new Vector3(widthIncrement, (fint)0, (fint)0);
+            zSpacing = new Vector3((fint)0, (fint)0, lengthIncrement);
             Quaternion.Transform(ref xSpacing, ref surfaceTransform.Orientation, out xSpacing);
             Quaternion.Transform(ref zSpacing, ref surfaceTransform.Orientation, out zSpacing);
             perColumnArea = widthIncrement * lengthIncrement;
@@ -426,9 +426,9 @@ namespace BEPUphysics.UpdateableSystems
             RigidTransform.Transform(ref entityBoundingBox.Min, ref surfaceTransform, out minimum);
             //Matrix3X3.TransformTranspose(ref entityBoundingBox.Min, ref surfaceOrientationTranspose, out minimum);
             Vector3 offset;
-            Vector3.Multiply(ref xSpacing, (sfloat).5f, out offset);
+            Vector3.Multiply(ref xSpacing, (fint).5f, out offset);
             Vector3.Add(ref minimum, ref offset, out origin);
-            Vector3.Multiply(ref zSpacing, (sfloat).5f, out offset);
+            Vector3.Multiply(ref zSpacing, (fint).5f, out offset);
             Vector3.Add(ref origin, ref offset, out origin);
 
 
@@ -477,11 +477,11 @@ namespace BEPUphysics.UpdateableSystems
             //}
         }
 
-        sfloat GetSubmergedHeight(EntityCollidable collidable, sfloat maxLength, sfloat boundingBoxHeight, ref Vector3 rayOrigin, ref Vector3 xSpacing, ref Vector3 zSpacing, int i, int j, out Vector3 volumeCenter)
+        fint GetSubmergedHeight(EntityCollidable collidable, fint maxLength, fint boundingBoxHeight, ref Vector3 rayOrigin, ref Vector3 xSpacing, ref Vector3 zSpacing, int i, int j, out Vector3 volumeCenter)
         {
             Ray ray;
-            Vector3.Multiply(ref xSpacing, (sfloat)i, out ray.Position);
-            Vector3.Multiply(ref zSpacing, (sfloat)j, out ray.Direction);
+            Vector3.Multiply(ref xSpacing, (fint)i, out ray.Position);
+            Vector3.Multiply(ref zSpacing, (fint)j, out ray.Direction);
             Vector3.Add(ref ray.Position, ref ray.Direction, out ray.Position);
             Vector3.Add(ref ray.Position, ref rayOrigin, out ray.Position);
 
@@ -498,23 +498,23 @@ namespace BEPUphysics.UpdateableSystems
 
                 //Transform the hit into local space.
                 RigidTransform.TransformByInverse(ref rayHit.Location, ref surfaceTransform, out rayHit.Location);
-                sfloat bottomY = rayHit.Location.Y;
-                sfloat bottom = rayHit.T;
+                fint bottomY = rayHit.Location.Y;
+                fint bottom = rayHit.T;
                 Vector3 bottomPosition = rayHit.Location;
                 if (collidable.RayCast(ray, boundingBoxHeight - rayHit.T, out rayHit))
                 {
                     //Transform the hit into local space.
                     RigidTransform.TransformByInverse(ref rayHit.Location, ref surfaceTransform, out rayHit.Location);
                     Vector3.Add(ref rayHit.Location, ref bottomPosition, out volumeCenter);
-                    Vector3.Multiply(ref volumeCenter, (sfloat).5f, out volumeCenter);
-                    return sfloat.Min(-bottomY, boundingBoxHeight - rayHit.T - bottom);
+                    Vector3.Multiply(ref volumeCenter, (fint).5f, out volumeCenter);
+                    return fint.Min(-bottomY, boundingBoxHeight - rayHit.T - bottom);
                 }
                 //This inner raycast should always hit, but just in case it doesn't due to some numerical problem, give it a graceful way out.
                 volumeCenter = Vector3.Zero;
-                return sfloat.Zero;
+                return (fint)0;
             }
             volumeCenter = Vector3.Zero;
-            return sfloat.Zero;
+            return (fint)0;
         }
 
         public override void OnAdditionToSpace(Space newSpace)

@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities;
 using BEPUphysics.CollisionShapes;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Entities
 {
@@ -39,7 +39,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity.</param>
-        public MorphableEntity(EntityCollidable collisionInformation, sfloat mass)
+        public MorphableEntity(EntityCollidable collisionInformation, fint mass)
             : base(collisionInformation, mass)
         {
         }
@@ -50,7 +50,7 @@ namespace BEPUphysics.Entities
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity.</param>
-        public MorphableEntity(EntityCollidable collisionInformation, sfloat mass, Matrix3x3 inertiaTensor)
+        public MorphableEntity(EntityCollidable collisionInformation, fint mass, Matrix3x3 inertiaTensor)
             : base(collisionInformation, mass, inertiaTensor)
         {
         }
@@ -70,7 +70,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity.</param>
-        public MorphableEntity(EntityShape shape, sfloat mass)
+        public MorphableEntity(EntityShape shape, fint mass)
             : base(shape, mass)
         {
         }
@@ -81,7 +81,7 @@ namespace BEPUphysics.Entities
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity.</param>
-        public MorphableEntity(EntityShape shape, sfloat mass, Matrix3x3 inertiaTensor)
+        public MorphableEntity(EntityShape shape, fint mass, Matrix3x3 inertiaTensor)
             : base(shape, mass, inertiaTensor)
         {
         }
@@ -116,7 +116,7 @@ namespace BEPUphysics.Entities
         /// </summary>
         /// <param name="newCollisionInformation">New collidable to use.</param>
         /// <param name="newMass">New mass to use for the entity.</param>
-        public void SetCollisionInformation(EntityCollidable newCollisionInformation, sfloat newMass)
+        public void SetCollisionInformation(EntityCollidable newCollisionInformation, fint newMass)
         {
             //Temporarily remove the object from the space.  
             //The reset process will update any systems that need to be updated.
@@ -139,7 +139,7 @@ namespace BEPUphysics.Entities
         /// <param name="newCollisionInformation">New collidable to use.</param>
         /// <param name="newMass">New mass to use for the entity.</param>
         /// <param name="newInertia">New inertia tensor to use for the entity.</param>
-        public void SetCollisionInformation(EntityCollidable newCollisionInformation, sfloat newMass, Matrix3x3 newInertia)
+        public void SetCollisionInformation(EntityCollidable newCollisionInformation, fint newMass, Matrix3x3 newInertia)
         {
             //Temporarily remove the object from the space.  
             //The reset process will update any systems that need to be updated.

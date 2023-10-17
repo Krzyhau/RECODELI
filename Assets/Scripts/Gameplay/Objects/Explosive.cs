@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 using BEPUphysics.Unity;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.NarrowPhaseSystems.Pairs;
 
@@ -80,12 +80,12 @@ namespace RecoDeli.Scripts.Gameplay
             {
                 var delta = (rigidbody.Entity.Position - Rigidbody.Entity.Position);
                 var distance = delta.Length();
-                if (distance > (sfloat)explosionRadius) continue;
+                if (distance > (fint)explosionRadius) continue;
 
                 var pushVector = BEPUutilities.Vector3.Lerp(
-                    delta.Normalized() * (sfloat)explosionForce,
+                    delta.Normalized() * (fint)explosionForce,
                     BEPUutilities.Vector3.Zero,
-                    distance / (sfloat)explosionRadius
+                    distance / (fint)explosionRadius
                 );
 
                 rigidbody.Entity.LinearVelocity += pushVector;

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.DataStructures;
 
 namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
@@ -47,7 +47,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             for (int i = 0; i < children.Length; i++)
             {
                 children[i].CollisionInformation.worldTransform = owner.Shape.shapes.Elements[i].LocalTransform;
-                children[i].CollisionInformation.UpdateBoundingBoxInternal(sfloat.Zero);
+                children[i].CollisionInformation.UpdateBoundingBoxInternal((fint)0);
             }
             tree = new BoundingBoxTree<CompoundChild>(children);
         }

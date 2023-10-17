@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -53,20 +53,20 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             b = null;
 
 
-            sfloat weightA, weightB;
+            fint weightA, weightB;
             if (SplitCompound(splitPredicate, a.CollisionInformation, bCollidable, out distributionInfoA, out distributionInfoB, out weightA, out weightB))
             {
                 //Reconfigure the entities using the data computed in the split.
-                sfloat originalMass = a.mass;
+                fint originalMass = a.mass;
                 if (a.CollisionInformation.children.Count > 0)
                 {
-                    sfloat newMassA = (weightA / (weightA + weightB)) * originalMass;
+                    fint newMassA = (weightA / (weightA + weightB)) * originalMass;
                     Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA * InertiaHelper.InertiaTensorScale, out distributionInfoA.VolumeDistribution);
                     a.Initialize(a.CollisionInformation, newMassA, distributionInfoA.VolumeDistribution);
                 }
                 if (bCollidable.children.Count > 0)
                 {
-                    sfloat newMassB = (weightB / (weightA + weightB)) * originalMass;
+                    fint newMassB = (weightB / (weightA + weightB)) * originalMass;
                     Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB * InertiaHelper.InertiaTensorScale, out distributionInfoB.VolumeDistribution);
                     b = new Entity<CompoundCollidable>();
                     b.Initialize(bCollidable, newMassB, distributionInfoB.VolumeDistribution);
@@ -78,7 +78,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             return false;
         }
 
-        static void SplitReposition(Entity a, Entity b, ref ShapeDistributionInformation distributionInfoA, ref ShapeDistributionInformation distributionInfoB, sfloat weightA, sfloat weightB)
+        static void SplitReposition(Entity a, Entity b, ref ShapeDistributionInformation distributionInfoA, ref ShapeDistributionInformation distributionInfoB, fint weightA, fint weightB)
         {
             //The compounds are not aligned with the original's position yet.
             //In order to align them, first look at the centers the split method computed.
@@ -144,21 +144,21 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                         Entity<CompoundCollidable> a, Entity<CompoundCollidable> b,
                         out ShapeDistributionInformation distributionInfoA, out ShapeDistributionInformation distributionInfoB)
         {
-            sfloat weightA, weightB;
+            fint weightA, weightB;
             if (SplitCompound(splitPredicate, a.CollisionInformation, b.CollisionInformation, out distributionInfoA, out distributionInfoB, out weightA, out weightB))
             {
                 //Reconfigure the entities using the data computed in the split.
-                sfloat originalMass = a.mass;
+                fint originalMass = a.mass;
                 if (a.CollisionInformation.children.Count > 0)
                 {
-                    sfloat newMassA = (weightA / (weightA + weightB)) * originalMass;
+                    fint newMassA = (weightA / (weightA + weightB)) * originalMass;
                     Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, newMassA * InertiaHelper.InertiaTensorScale, out distributionInfoA.VolumeDistribution);
                     a.Initialize(a.CollisionInformation, newMassA, distributionInfoA.VolumeDistribution);
                 }
 
                 if (b.CollisionInformation.children.Count > 0)
                 {
-                    sfloat newMassB = (weightB / (weightA + weightB)) * originalMass;
+                    fint newMassB = (weightB / (weightA + weightB)) * originalMass;
                     Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, newMassB * InertiaHelper.InertiaTensorScale, out distributionInfoB.VolumeDistribution);
                     b.Initialize(b.CollisionInformation, newMassB, distributionInfoB.VolumeDistribution);
                 }
@@ -184,7 +184,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         public static bool SplitCompound(Func<CompoundChild, bool> splitPredicate,
             CompoundCollidable a, CompoundCollidable b,
             out ShapeDistributionInformation distributionInfoA, out ShapeDistributionInformation distributionInfoB,
-            out sfloat weightA, out sfloat weightB)
+            out fint weightA, out fint weightB)
         {
             bool splitOccurred = false;
             for (int i = a.children.Count - 1; i >= 0; i--)
@@ -208,16 +208,16 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 //No split occurred, so we cannot proceed.
                 distributionInfoA = new ShapeDistributionInformation();
                 distributionInfoB = new ShapeDistributionInformation();
-                weightA = sfloat.Zero;
-                weightB = sfloat.Zero;
+                weightA = (fint)0;
+                weightB = (fint)0;
                 return false;
             }
 
             //Compute the contributions from the original shape to the new form of the original collidable.
             distributionInfoA = new ShapeDistributionInformation();
-            weightA = sfloat.Zero;
+            weightA = (fint)0;
             distributionInfoB = new ShapeDistributionInformation();
-            weightB = sfloat.Zero;
+            weightB = (fint)0;
             for (int i = a.children.Count - 1; i >= 0; i--)
             {
                 var child = a.children.Elements[i];
@@ -240,10 +240,10 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Average the center out.
-            if (weightA > sfloat.Zero)
+            if (weightA > (fint)0)
                 Vector3.Divide(ref distributionInfoA.Center, weightA, out distributionInfoA.Center);
 
-            if (weightB > sfloat.Zero)
+            if (weightB > (fint)0)
                 Vector3.Divide(ref distributionInfoB.Center, weightB, out distributionInfoB.Center);
 
             //Note that the 'entry' is from the Shape, and so the translations are local to the shape's center.
@@ -283,8 +283,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, sfloat.One / weightA, out distributionInfoA.VolumeDistribution);
-            Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, sfloat.One / weightB, out distributionInfoB.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfoA.VolumeDistribution, (fint)1 / weightA, out distributionInfoA.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfoB.VolumeDistribution, (fint)1 / weightB, out distributionInfoB.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
@@ -295,7 +295,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         }
 
 
-        static void RemoveReposition(Entity compound, ref ShapeDistributionInformation distributionInfo, sfloat weight, sfloat removedWeight, ref Vector3 removedCenter)
+        static void RemoveReposition(Entity compound, ref ShapeDistributionInformation distributionInfo, fint weight, fint removedWeight, ref Vector3 removedCenter)
         {
             //The compounds are not aligned with the original's position yet.
             //In order to align them, first look at the centers the split method computed.
@@ -351,8 +351,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         public static bool RemoveChildFromCompound(Entity<CompoundCollidable> compound, Func<CompoundChild, bool> removalPredicate, IList<ShapeDistributionInformation> childContributions,
                         out ShapeDistributionInformation distributionInfo)
         {
-            sfloat weight;
-            sfloat removedWeight;
+            fint weight;
+            fint removedWeight;
             Vector3 removedCenter;
             if (RemoveChildFromCompound(compound.CollisionInformation, removalPredicate, childContributions, out distributionInfo, out weight, out removedWeight, out removedCenter))
             {
@@ -360,8 +360,8 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 //Only bother if there are any children left in the compound!
                 if (compound.CollisionInformation.Children.Count > 0)
                 {
-                    sfloat originalMass = compound.mass;
-                    sfloat newMass = (weight / (weight + removedWeight)) * originalMass;
+                    fint originalMass = compound.mass;
+                    fint newMass = (weight / (weight + removedWeight)) * originalMass;
                     Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, newMass * InertiaHelper.InertiaTensorScale, out distributionInfo.VolumeDistribution);
                     compound.Initialize(compound.CollisionInformation, newMass, distributionInfo.VolumeDistribution);
 
@@ -386,10 +386,10 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
         /// <param name="removedCenter">Center of the chunk removed from the compound.</param>
         /// <returns>Whether or not any removal took place.</returns>
         public static bool RemoveChildFromCompound(CompoundCollidable compound, Func<CompoundChild, bool> removalPredicate, IList<ShapeDistributionInformation> childContributions,
-           out ShapeDistributionInformation distributionInfo, out sfloat weight, out sfloat removedWeight, out Vector3 removedCenter)
+           out ShapeDistributionInformation distributionInfo, out fint weight, out fint removedWeight, out Vector3 removedCenter)
         {
             bool removalOccurred = false;
-            removedWeight = sfloat.Zero;
+            removedWeight = (fint)0;
             removedCenter = new Vector3();
             for (int i = compound.children.Count - 1; i >= 0; i--)
             {
@@ -414,17 +414,17 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             {
                 //No removal occurred, so we cannot proceed.
                 distributionInfo = new ShapeDistributionInformation();
-                weight = sfloat.Zero;
+                weight = (fint)0;
                 return false;
             }
-            if (removedWeight > sfloat.Zero)
+            if (removedWeight > (fint)0)
             {
                 Vector3.Divide(ref removedCenter, removedWeight, out removedCenter);
             }
 
             //Compute the contributions from the original shape to the new form of the original collidable.
             distributionInfo = new ShapeDistributionInformation();
-            weight = sfloat.Zero;
+            weight = (fint)0;
             for (int i = compound.children.Count - 1; i >= 0; i--)
             {
                 var child = compound.children.Elements[i];
@@ -462,7 +462,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
             }
 
             //Normalize the volume distribution.
-            Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, sfloat.One / weight, out distributionInfo.VolumeDistribution);
+            Matrix3x3.Multiply(ref distributionInfo.VolumeDistribution, (fint)1 / weight, out distributionInfo.VolumeDistribution);
 
             //Update the hierarchies of the compounds.
             //TODO: Create a new method that does this quickly without garbage.  Requires a new Reconstruct method which takes a pool which stores the appropriate node types.
@@ -484,7 +484,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
 
             CompoundCollidable compound = new CompoundCollidable();
             Vector3 center = new Vector3();
-            sfloat totalWeight = sfloat.Zero;
+            fint totalWeight = (fint)0;
             for (int i = 0; i < childIndices.Count; i++)
             {
                 //Create and add the child object itself.
@@ -496,7 +496,7 @@ namespace BEPUphysics.BroadPhaseEntries.MobileCollidables
                 Vector3.Add(ref center, ref toAdd, out center);
                 totalWeight += entry.Weight;
             }
-            if (totalWeight <= sfloat.Zero)
+            if (totalWeight <= (fint)0)
             {
                 throw new ArgumentException("Compound has zero total weight; invalid configuration.");
             }

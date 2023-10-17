@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.UpdateableSystems
 {
@@ -11,7 +11,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Updates the updateable before the narrow phase.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void Update(sfloat dt);
+        void Update(fint dt);
 
     }
 }

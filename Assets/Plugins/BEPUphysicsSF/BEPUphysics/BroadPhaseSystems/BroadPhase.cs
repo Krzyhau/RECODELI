@@ -3,7 +3,7 @@ using BEPUutilities;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUutilities.DataStructures;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities.Threading;
 
 namespace BEPUphysics.BroadPhaseSystems

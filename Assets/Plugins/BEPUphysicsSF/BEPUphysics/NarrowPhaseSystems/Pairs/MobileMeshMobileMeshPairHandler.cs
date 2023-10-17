@@ -2,7 +2,7 @@
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities.ResourceManagement;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -44,7 +44,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             base.CleanUpCollidable(collidable);
         }
 
-        protected override void ConfigureCollidable(TriangleEntry entry, sfloat dt)
+        protected override void ConfigureCollidable(TriangleEntry entry, fint dt)
         {
             var shape = entry.Collidable.Shape;
             mesh.Shape.TriangleMesh.Data.GetTriangle(entry.Index, out shape.vA, out shape.vB, out shape.vC);
@@ -56,7 +56,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
             Vector3 center;
             Vector3.Add(ref shape.vA, ref shape.vB, out center);
             Vector3.Add(ref center, ref shape.vC, out center);
-            Vector3.Multiply(ref center, sfloat.One / (sfloat)3f, out center);
+            Vector3.Multiply(ref center, (fint)1 / (fint)3f, out center);
             Vector3.Subtract(ref shape.vA, ref center, out shape.vA);
             Vector3.Subtract(ref shape.vB, ref center, out shape.vB);
             Vector3.Subtract(ref shape.vC, ref center, out shape.vC);
@@ -100,7 +100,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
 
 
-        protected override void UpdateContainedPairs(sfloat dt)
+        protected override void UpdateContainedPairs(fint dt)
         {
             var overlappedElements = CommonResources.GetIntList();
             BoundingBox localBoundingBox;

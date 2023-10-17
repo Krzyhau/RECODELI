@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Settings
 {
@@ -11,38 +11,38 @@ namespace BEPUphysics.Settings
         /// Impact velocity above which the full bounciness of a material pair is taken into account.  Below the threshold, the extra energy introduced by the bounce is reduced. The lower the velocity is relative to the threshold, the lower the effective bounciness.
         /// Defaults to 1.
         /// </summary>
-        public static sfloat BouncinessVelocityThreshold = (sfloat)1;
+        public static fint BouncinessVelocityThreshold = (fint)1;
 
         /// <summary>
         /// Maximum speed at which interpenetrating objects will attempt to undo any overlap.
         /// Defaults to 2.
         /// </summary>
-        public static sfloat MaximumPenetrationRecoverySpeed = (sfloat)2;
+        public static fint MaximumPenetrationRecoverySpeed = (fint)2;
 
         /// <summary>
         /// Fraction of position error to convert into corrective momentum.
         /// Defaults to 0.2.
         /// </summary>
-        public static sfloat PenetrationRecoveryStiffness = (sfloat)0.2f;
+        public static fint PenetrationRecoveryStiffness = (fint)0.2f;
 
         /// <summary>
         /// Magnitude of relative velocity at a contact point below which staticFriction is used.
         /// dynamicFriction is used when velocity exceeds this threshold.
         /// Defaults to 0.2.
         /// </summary>
-        public static sfloat StaticFrictionVelocityThreshold = (sfloat)0.2f;
+        public static fint StaticFrictionVelocityThreshold = (fint)0.2f;
 
         /// <summary>
         /// Value by which a collision pair's friction coefficient will be multiplied to get the twist friction coefficient.
         /// Defaults to 1.
         /// </summary>
-        public static sfloat TwistFrictionFactor = (sfloat)1f;
+        public static fint TwistFrictionFactor = (fint)1f;
 
         /// <summary>
         /// <para>Softness multiplier used by collision penetration constraints. Higher softness values allow more velocity error and make things look 'squishier'. Defaults to 0.001.</para>
         /// <para>Note that this value is not used directly by constraints; it is first scaled by the raw inverse effective mass. This allows consistent behavior across objects with different masses.</para>
         /// </summary>
-        public static sfloat Softness = (sfloat).001f;
+        public static fint Softness = (fint).001f;
 
 
     }

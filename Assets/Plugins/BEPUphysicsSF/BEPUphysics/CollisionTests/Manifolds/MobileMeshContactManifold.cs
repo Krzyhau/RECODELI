@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionShapes.ConvexShapes;
@@ -40,7 +40,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
         //Expand the convex's bounding box to include the mobile mesh's movement.
 
-        protected internal override int FindOverlappingTriangles(sfloat dt)
+        protected internal override int FindOverlappingTriangles(fint dt)
         {
             BoundingBox boundingBox;
             AffineTransform transform = new AffineTransform(mesh.worldTransform.Orientation, mesh.worldTransform.Position);
@@ -60,17 +60,17 @@ namespace BEPUphysics.CollisionTests.Manifolds
             Matrix3x3.TransformTranspose(ref transformedVelocity, ref transform.LinearTransform, out transformedVelocity);
             Vector3.Multiply(ref transformedVelocity, dt, out transformedVelocity);
 
-            if (transformedVelocity.X > sfloat.Zero)
+            if (transformedVelocity.X > (fint)0)
                 boundingBox.Max.X += transformedVelocity.X;
             else
                 boundingBox.Min.X += transformedVelocity.X;
 
-            if (transformedVelocity.Y > sfloat.Zero)
+            if (transformedVelocity.Y > (fint)0)
                 boundingBox.Max.Y += transformedVelocity.Y;
             else
                 boundingBox.Min.Y += transformedVelocity.Y;
 
-            if (transformedVelocity.Z > sfloat.Zero)
+            if (transformedVelocity.Z > (fint)0)
                 boundingBox.Max.Z += transformedVelocity.Z;
             else
                 boundingBox.Min.Z += transformedVelocity.Z;
@@ -125,7 +125,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 }
             }
             localTriangleShape.sidedness = sidedness;
-            localTriangleShape.collisionMargin = sfloat.Zero;
+            localTriangleShape.collisionMargin = (fint)0;
             indices = new TriangleIndices
             {
                 A = data.indices[triangleIndex],
@@ -151,7 +151,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             get { return mesh.improveBoundaryBehavior; }
         }
 
-        sfloat previousDepth;
+        fint previousDepth;
         Vector3 lastValidConvexPosition;
         protected override void ProcessCandidates(ref QuickList<ContactData> candidates)
         {
@@ -175,7 +175,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
 
                 //Cast from the current position back to the previous position.
                 Vector3.Subtract(ref lastValidConvexPosition, ref ray.Position, out ray.Direction);
-                sfloat rayDirectionLength = ray.Direction.LengthSquared();
+                fint rayDirectionLength = ray.Direction.LengthSquared();
                 if (rayDirectionLength < Toolbox.Epsilon)
                 {
                     //The object may not have moved enough to normalize properly.  If so, choose something arbitrary.
@@ -186,10 +186,10 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     {
                         //This is unlikely; just pick something completely arbitrary then.
                         ray.Direction = Vector3.Up;
-                        rayDirectionLength = sfloat.One;
+                        rayDirectionLength = (fint)1;
                     }
                 }
-                Vector3.Divide(ref ray.Direction, libm.sqrtf(rayDirectionLength), out ray.Direction);
+                Vector3.Divide(ref ray.Direction, fint.Sqrt(rayDirectionLength), out ray.Direction);
 
 
                 RayHit hit;
@@ -203,7 +203,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
                     newContact.Normal = hit.Normal;
                     newContact.Normal.Normalize();
 
-                    sfloat factor;
+                    fint factor;
                     Vector3.Dot(ref ray.Direction, ref newContact.Normal, out factor);
                     newContact.PenetrationDepth = -factor * hit.T + convex.Shape.MinimumRadius;
 
@@ -235,12 +235,12 @@ namespace BEPUphysics.CollisionTests.Manifolds
                 {
                     //It's possible that we had a false negative.  The previous frame may have been in deep intersection, and this frame just failed to come to the same conclusion.
                     //If we set the target location to the current location, the object will never escape the mesh.  Instead, only do that if two frames agree that we are no longer colliding.
-                    if (previousDepth > sfloat.Zero)
+                    if (previousDepth > (fint)0)
                     {
                         //We're not touching the mesh.
                         lastValidConvexPosition = ray.Position;
                     }
-                    previousDepth = sfloat.Zero;
+                    previousDepth = (fint)0;
 
                 }
             }

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseSystems;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
@@ -371,13 +371,13 @@ namespace BEPUphysics.Entities
             }
         }
 
-        internal sfloat mass;
+        internal fint mass;
         ///<summary>
         /// Gets or sets the mass of the entity.  Setting this to an invalid value, such as a non-positive number, NaN, or infinity, makes the entity kinematic.
         /// Setting it to a valid positive number will also scale the inertia tensor if it was already dynamic, or force the calculation of a new inertia tensor
         /// if it was previously kinematic.
         ///</summary>
-        public sfloat Mass
+        public fint Mass
         {
             get
             {
@@ -385,7 +385,7 @@ namespace BEPUphysics.Entities
             }
             set
             {
-                if (value <= sfloat.Zero || value.IsNaN() || value.IsInfinity())
+                if (value <= (fint)0)
                     BecomeKinematic();
                 else
                 {
@@ -405,11 +405,11 @@ namespace BEPUphysics.Entities
             }
         }
 
-        internal sfloat inverseMass;
+        internal fint inverseMass;
         /// <summary>
         /// Gets or sets the inverse mass of the entity.
         /// </summary>
-        public sfloat InverseMass
+        public fint InverseMass
         {
             get
             {
@@ -417,10 +417,10 @@ namespace BEPUphysics.Entities
             }
             set
             {
-                if (value > sfloat.Zero)
-                    Mass = sfloat.One / value;
+                if (value > (fint)0)
+                    Mass = (fint)1 / value;
                 else
-                    Mass = sfloat.Zero;
+                    Mass = (fint)0;
             }
         }
 
@@ -567,7 +567,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
-        public Entity(EntityCollidable collisionInformation, sfloat mass)
+        public Entity(EntityCollidable collisionInformation, fint mass)
             : this()
         {
             Initialize(collisionInformation, mass);
@@ -579,7 +579,7 @@ namespace BEPUphysics.Entities
         ///<param name="collisionInformation">Collidable to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity. Only used for a dynamic entity.</param>
-        public Entity(EntityCollidable collisionInformation, sfloat mass, Matrix3x3 inertiaTensor)
+        public Entity(EntityCollidable collisionInformation, fint mass, Matrix3x3 inertiaTensor)
             : this()
         {
             Initialize(collisionInformation, mass, inertiaTensor);
@@ -600,7 +600,7 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
-        public Entity(EntityShape shape, sfloat mass)
+        public Entity(EntityShape shape, fint mass)
             : this()
         {
             Initialize(shape.GetCollidableInstance(), mass);
@@ -612,7 +612,7 @@ namespace BEPUphysics.Entities
         ///<param name="shape">Shape to use with the entity.</param>
         ///<param name="mass">Mass of the entity. If positive, the entity will be dynamic. Otherwise, it will be kinematic.</param>
         /// <param name="inertiaTensor">Inertia tensor of the entity. Only used for a dynamic entity.</param>
-        public Entity(EntityShape shape, sfloat mass, Matrix3x3 inertiaTensor)
+        public Entity(EntityShape shape, fint mass, Matrix3x3 inertiaTensor)
             : this()
         {
             Initialize(shape.GetCollidableInstance(), mass, inertiaTensor);
@@ -630,11 +630,11 @@ namespace BEPUphysics.Entities
             collisionInformation.Entity = this;
         }
 
-        protected internal void Initialize(EntityCollidable collisionInformation, sfloat mass)
+        protected internal void Initialize(EntityCollidable collisionInformation, fint mass)
         {
             CollisionInformation = collisionInformation;
 
-            if (mass > sfloat.Zero)
+            if (mass > (fint)0)
             {
                 BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass * InertiaHelper.InertiaTensorScale));
             }
@@ -646,11 +646,11 @@ namespace BEPUphysics.Entities
             collisionInformation.Entity = this;
         }
 
-        protected internal void Initialize(EntityCollidable collisionInformation, sfloat mass, Matrix3x3 inertiaTensor)
+        protected internal void Initialize(EntityCollidable collisionInformation, fint mass, Matrix3x3 inertiaTensor)
         {
             CollisionInformation = collisionInformation;
 
-            if (mass > sfloat.Zero)
+            if (mass > (fint)0)
                 BecomeDynamic(mass, inertiaTensor);
             else
                 BecomeKinematic();
@@ -821,8 +821,8 @@ namespace BEPUphysics.Entities
             bool previousState = isDynamic;
             isDynamic = false;
             LocalInertiaTensorInverse = new Matrix3x3();
-            mass = sfloat.Zero;
-            inverseMass = sfloat.Zero;
+            mass = (fint)0;
+            inverseMass = (fint)0;
 
             //Notify simulation island of the change.
             if (previousState)
@@ -850,7 +850,7 @@ namespace BEPUphysics.Entities
         /// Forces the entity to become dynamic.  Dynamic entities respond to collisions and have finite mass and inertia.
         ///</summary>
         ///<param name="mass">Mass to use for the entity.</param>
-        public void BecomeDynamic(sfloat mass)
+        public void BecomeDynamic(fint mass)
         {
             BecomeDynamic(mass, collisionInformation.Shape.VolumeDistribution * (mass * InertiaHelper.InertiaTensorScale));
         }
@@ -860,15 +860,15 @@ namespace BEPUphysics.Entities
         ///</summary>
         ///<param name="mass">Mass to use for the entity.</param>
         /// <param name="localInertiaTensor">Inertia tensor to use for the entity.</param>
-        public void BecomeDynamic(sfloat mass, Matrix3x3 localInertiaTensor)
+        public void BecomeDynamic(fint mass, Matrix3x3 localInertiaTensor)
         {
-            if (mass <= sfloat.Zero || mass.IsInfinity() || mass.IsNaN())
+            if (mass <= (fint)0)
                 throw new InvalidOperationException("Cannot use a mass of " + mass + " for a dynamic entity.  Consider using a kinematic entity instead.");
             bool previousState = isDynamic;
             isDynamic = true;
             LocalInertiaTensor = localInertiaTensor;
             this.mass = mass;
-            this.inverseMass = sfloat.One / mass;
+            this.inverseMass = (fint)1 / mass;
 
             //Notify simulation island system of the change.
             if (!previousState)
@@ -894,7 +894,7 @@ namespace BEPUphysics.Entities
         }
 
 
-        void IForceUpdateable.UpdateForForces(sfloat dt)
+        void IForceUpdateable.UpdateForForces(fint dt)
         {
 
             //Apply gravity.
@@ -913,34 +913,34 @@ namespace BEPUphysics.Entities
             if (activityInformation.DeactivationManager.useStabilization && activityInformation.allowStabilization &&
                 (activityInformation.isSlowing || activityInformation.velocityTimeBelowLimit > activityInformation.DeactivationManager.lowVelocityTimeMinimum))
             {
-                sfloat energy = linearVelocity.LengthSquared() + angularVelocity.LengthSquared();
+                fint energy = linearVelocity.LengthSquared() + angularVelocity.LengthSquared();
                 if (energy < activityInformation.DeactivationManager.velocityLowerLimitSquared)
                 {
-                    sfloat boost = sfloat.One - (sfloat)(libm.sqrtf(energy) / (sfloat.Two * activityInformation.DeactivationManager.velocityLowerLimit));
+                    fint boost = (fint)1 - (fint)(fint.Sqrt(energy) / ((fint)2 * activityInformation.DeactivationManager.velocityLowerLimit));
                     ModifyAngularDamping(boost);
                     ModifyLinearDamping(boost);
                 }
             }
 
             //Damping
-            sfloat linear = LinearDamping + linearDampingBoost;
-            if (linear > sfloat.Zero)
+            fint linear = LinearDamping + linearDampingBoost;
+            if (linear > (fint)0)
             {
-                Vector3.Multiply(ref linearVelocity, libm.powf(MathHelper.Clamp(sfloat.One - linear, sfloat.Zero, sfloat.One), dt), out linearVelocity);
+                Vector3.Multiply(ref linearVelocity, fint.Pow(MathHelper.Clamp((fint)1 - linear, (fint)0, (fint)1), dt), out linearVelocity);
             }
             //When applying angular damping, the momentum or velocity is damped depending on the conservation setting.
-            sfloat angular = AngularDamping + angularDampingBoost;
-            if (angular > sfloat.Zero)
+            fint angular = AngularDamping + angularDampingBoost;
+            if (angular > (fint)0)
             {
 #if CONSERVE
-                Vector3.Multiply(ref angularMomentum, libm.powf(MathHelper.Clamp(sfloat.One - angular, sfloat.Zero, sfloat.One), dt), out angularMomentum);
+                Vector3.Multiply(ref angularMomentum, fint.Pow(MathHelper.Clamp(sfloat.One - angular, sfloat.Zero, sfloat.One), dt), out angularMomentum);
 #else
-                Vector3.Multiply(ref angularVelocity, libm.powf(MathHelper.Clamp(sfloat.One - angular, sfloat.Zero, sfloat.One), dt), out angularVelocity);
+                Vector3.Multiply(ref angularVelocity, fint.Pow(MathHelper.Clamp((fint)1 - angular, (fint)0, (fint)1), dt), out angularVelocity);
 #endif
             }
 
-            linearDampingBoost = sfloat.Zero;
-            angularDampingBoost = sfloat.Zero;
+            linearDampingBoost = (fint)0;
+            angularDampingBoost = (fint)0;
 
             //Update world inertia tensors.
             Matrix3x3 multiplied;
@@ -1054,7 +1054,7 @@ namespace BEPUphysics.Entities
             }
         }
 
-        void ICCDPositionUpdateable.UpdateTimesOfImpact(sfloat dt)
+        void ICCDPositionUpdateable.UpdateTimesOfImpact(fint dt)
         {
             //I am a continuous object.  If I am in a pair with another object, even if I am inactive,
             //I must order the pairs to compute a time of impact.
@@ -1072,13 +1072,13 @@ namespace BEPUphysics.Entities
             //Reset all of the times of impact to 1, allowing the entity to move all the way through its velocity-defined motion.
             for (int i = 0; i < collisionInformation.pairs.Count; i++)
             {
-                collisionInformation.pairs.Elements[i].timeOfImpact = sfloat.One;
+                collisionInformation.pairs.Elements[i].timeOfImpact = (fint)1;
             }
         }
 
-        void ICCDPositionUpdateable.UpdatePositionContinuously(sfloat dt)
+        void ICCDPositionUpdateable.UpdatePositionContinuously(fint dt)
         {
-            sfloat minimumToi = sfloat.One;
+            fint minimumToi = (fint)1;
             for (int i = 0; i < collisionInformation.pairs.Count; i++)
             {
                 if (collisionInformation.pairs.Elements[i].timeOfImpact < minimumToi)
@@ -1107,12 +1107,12 @@ namespace BEPUphysics.Entities
 #endif
         }
 
-        void IPositionUpdateable.PreUpdatePosition(sfloat dt)
+        void IPositionUpdateable.PreUpdatePosition(fint dt)
         {
             Vector3 increment;
 
-            Vector3.Multiply(ref angularVelocity, dt * sfloat.Half, out increment);
-            var multiplier = new Quaternion(increment.X, increment.Y, increment.Z, sfloat.Zero);
+            Vector3.Multiply(ref angularVelocity, dt * (fint)0.5f, out increment);
+            var multiplier = new Quaternion(increment.X, increment.Y, increment.Z, (fint)0);
             Quaternion.Multiply(ref multiplier, ref orientation, out multiplier);
             Quaternion.Add(ref orientation, ref multiplier, out orientation);
             orientation.Normalize();
@@ -1146,15 +1146,15 @@ namespace BEPUphysics.Entities
 
 
 
-        sfloat linearDampingBoost, angularDampingBoost;
-        sfloat angularDamping = (sfloat).15f;
-        sfloat linearDamping = (sfloat).03f;
+        fint linearDampingBoost, angularDampingBoost;
+        fint angularDamping = (fint).15f;
+        fint linearDamping = (fint).03f;
         ///<summary>
         /// Gets or sets the angular damping of the entity.
         /// Values range from 0 to 1, corresponding to a fraction of angular momentum removed
         /// from the entity over a unit of time.
         ///</summary>
-        public sfloat AngularDamping
+        public fint AngularDamping
         {
             get
             {
@@ -1162,7 +1162,7 @@ namespace BEPUphysics.Entities
             }
             set
             {
-                angularDamping = MathHelper.Clamp(value, sfloat.Zero, sfloat.One);
+                angularDamping = MathHelper.Clamp(value, (fint)0, (fint)1);
             }
         }
         ///<summary>
@@ -1170,7 +1170,7 @@ namespace BEPUphysics.Entities
         /// Values range from 0 to 1, corresponding to a fraction of linear momentum removed
         /// from the entity over a unit of time.
         ///</summary>
-        public sfloat LinearDamping
+        public fint LinearDamping
         {
             get
             {
@@ -1179,7 +1179,7 @@ namespace BEPUphysics.Entities
 
             set
             {
-                linearDamping = MathHelper.Clamp(value, sfloat.Zero, sfloat.One);
+                linearDamping = MathHelper.Clamp(value, (fint)0, (fint)1);
             }
         }
 
@@ -1188,10 +1188,10 @@ namespace BEPUphysics.Entities
         /// damping returns to the base value.
         /// </summary>
         /// <param name="damping">Damping to add.</param>
-        public void ModifyLinearDamping(sfloat damping)
+        public void ModifyLinearDamping(fint damping)
         {
-            sfloat totalDamping = LinearDamping + linearDampingBoost;
-            sfloat remainder = sfloat.One - totalDamping;
+            fint totalDamping = LinearDamping + linearDampingBoost;
+            fint remainder = (fint)1 - totalDamping;
             linearDampingBoost += damping * remainder;
         }
         /// <summary>
@@ -1199,10 +1199,10 @@ namespace BEPUphysics.Entities
         /// damping returns to the base value.
         /// </summary>
         /// <param name="damping">Damping to add.</param>
-        public void ModifyAngularDamping(sfloat damping)
+        public void ModifyAngularDamping(fint damping)
         {
-            sfloat totalDamping = AngularDamping + angularDampingBoost;
-            sfloat remainder = sfloat.One - totalDamping;
+            fint totalDamping = AngularDamping + angularDampingBoost;
+            fint remainder = (fint)1 - totalDamping;
             angularDampingBoost += damping * remainder;
         }
 

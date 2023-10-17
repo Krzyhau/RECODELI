@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.PositionUpdating
 {
@@ -22,6 +22,6 @@ namespace BEPUphysics.PositionUpdating
         /// Updates the position state of the object.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void PreUpdatePosition(sfloat dt);
+        void PreUpdatePosition(fint dt);
     }
 }

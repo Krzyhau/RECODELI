@@ -1,7 +1,7 @@
 ﻿
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints
 {
@@ -14,12 +14,12 @@ namespace BEPUphysics.Constraints
         /// Gets the current relative velocity of the constraint.
         /// Computed based on the current connection velocities and jacobians.
         /// </summary>
-        sfloat RelativeVelocity { get; }
+        fint RelativeVelocity { get; }
 
         /// <summary>
         /// Gets the total impulse a constraint has applied.
         /// </summary>
-        sfloat TotalImpulse { get; }
+        fint TotalImpulse { get; }
     }
 
     /// <summary>
@@ -30,7 +30,7 @@ namespace BEPUphysics.Constraints
         /// <summary>
         /// Gets the current constraint error.
         /// </summary>
-        sfloat Error { get; }
+        fint Error { get; }
     }
 
     /// <summary>

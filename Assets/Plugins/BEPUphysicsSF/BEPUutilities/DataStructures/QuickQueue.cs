@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Diagnostics;
 using BEPUutilities.ResourceManagement;
 using System.Collections.Generic;

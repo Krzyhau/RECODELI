@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -115,7 +115,7 @@ namespace BEPUutilities
             else
                 clampedLocation.Z = boundingSphere.Center.Z;
 
-            sfloat distanceSquared;
+            fint distanceSquared;
             Vector3.DistanceSquared(ref clampedLocation, ref boundingSphere.Center, out distanceSquared);
             intersects = distanceSquared <= boundingSphere.Radius * boundingSphere.Radius;
 

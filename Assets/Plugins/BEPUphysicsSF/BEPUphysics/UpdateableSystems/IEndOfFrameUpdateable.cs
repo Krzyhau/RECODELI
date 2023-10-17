@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.UpdateableSystems
 {
@@ -11,7 +11,7 @@ namespace BEPUphysics.UpdateableSystems
         /// Updates the object at the end of the frame.
         /// </summary>
         /// <param name="dt">Time step duration.</param>
-        void Update(sfloat dt);
+        void Update(fint dt);
 
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Threading;
 using BEPUutilities.DataStructures;
 using System.Collections.ObjectModel;

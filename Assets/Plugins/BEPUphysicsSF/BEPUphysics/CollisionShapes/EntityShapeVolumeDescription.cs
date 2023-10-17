@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,6 @@ namespace BEPUphysics.CollisionShapes
     public struct EntityShapeVolumeDescription
     {
         public Matrix3x3 VolumeDistribution;
-        public sfloat Volume;
+        public fint Volume;
     }
 }

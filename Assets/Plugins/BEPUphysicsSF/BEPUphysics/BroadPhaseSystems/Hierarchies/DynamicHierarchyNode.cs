@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections.Generic;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities;
@@ -14,7 +14,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         internal abstract void GetOverlaps(ref BoundingBox boundingBox, IList<BroadPhaseEntry> outputOverlappedElements);
         internal abstract void GetOverlaps(ref BoundingSphere boundingSphere, IList<BroadPhaseEntry> outputOverlappedElements);
         //internal abstract void GetOverlaps(ref BoundingFrustum boundingFrustum, IList<BroadPhaseEntry> outputOverlappedElements);
-        internal abstract void GetOverlaps(ref Ray ray, sfloat maximumLength, IList<BroadPhaseEntry> outputOverlappedElements);
+        internal abstract void GetOverlaps(ref Ray ray, fint maximumLength, IList<BroadPhaseEntry> outputOverlappedElements);
         internal abstract void GetOverlaps(Node node, DynamicHierarchy owner);
 
         internal abstract bool IsLeaf { get; }
@@ -42,7 +42,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         internal abstract bool Remove(BroadPhaseEntry entry, out LeafNode leafNode, out Node replacementNode);
         internal abstract bool RemoveFast(BroadPhaseEntry entry, out LeafNode leafNode, out Node replacementNode);
 
-        internal abstract sfloat MeasureSubtreeCost();
+        internal abstract fint MeasureSubtreeCost();
     }
 
     internal sealed class InternalNode : Node
@@ -50,10 +50,10 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         internal Node childA;
         internal Node childB;
 
-        internal sfloat currentVolume;
-        internal sfloat maximumVolume;
+        internal fint currentVolume;
+        internal fint maximumVolume;
 
-        internal static sfloat MaximumVolumeScale = (sfloat)1.4f;
+        internal static fint MaximumVolumeScale = (fint)1.4f;
 
         internal override Node ChildA
         {
@@ -119,9 +119,9 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         //        childB.GetOverlaps(ref boundingFrustum, outputOverlappedElements);
         //}
 
-        internal override void GetOverlaps(ref Ray ray, sfloat maximumLength, IList<BroadPhaseEntry> outputOverlappedElements)
+        internal override void GetOverlaps(ref Ray ray, fint maximumLength, IList<BroadPhaseEntry> outputOverlappedElements)
         {
-            sfloat result;
+            fint result;
             if (ray.Intersects(ref childA.BoundingBox, out result) && result < maximumLength)
                 childA.GetOverlaps(ref ray, maximumLength, outputOverlappedElements);
             if (ray.Intersects(ref childB.BoundingBox, out result) && result < maximumLength)
@@ -201,13 +201,13 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             BoundingBox.CreateMerged(ref childB.BoundingBox, ref node.BoundingBox, out mergedB);
 
             Vector3 offset;
-            sfloat originalAVolume, originalBVolume;
+            fint originalAVolume, originalBVolume;
             Vector3.Subtract(ref childA.BoundingBox.Max, ref childA.BoundingBox.Min, out offset);
             originalAVolume = offset.X * offset.Y * offset.Z;
             Vector3.Subtract(ref childB.BoundingBox.Max, ref childB.BoundingBox.Min, out offset);
             originalBVolume = offset.X * offset.Y * offset.Z;
 
-            sfloat mergedAVolume, mergedBVolume;
+            fint mergedAVolume, mergedBVolume;
             Vector3.Subtract(ref mergedA.Max, ref mergedA.Min, out offset);
             mergedAVolume = offset.X * offset.Y * offset.Z;
             Vector3.Subtract(ref mergedB.Max, ref mergedB.Min, out offset);
@@ -614,7 +614,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             return false;
         }
 
-        internal override sfloat MeasureSubtreeCost()
+        internal override fint MeasureSubtreeCost()
         {
             Vector3 offset;
             Vector3.Subtract(ref BoundingBox.Max, ref BoundingBox.Min, out offset);
@@ -710,7 +710,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
         //    outputOverlappedElements.Add(element);
         //}
 
-        internal override void GetOverlaps(ref Ray ray, sfloat maximumLength, IList<BroadPhaseEntry> outputOverlappedElements)
+        internal override void GetOverlaps(ref Ray ray, fint maximumLength, IList<BroadPhaseEntry> outputOverlappedElements)
         {
             outputOverlappedElements.Add(element);
         }
@@ -847,7 +847,7 @@ namespace BEPUphysics.BroadPhaseSystems.Hierarchies
             return false;
         }
 
-        internal override sfloat MeasureSubtreeCost()
+        internal override fint MeasureSubtreeCost()
         {
             //Not much value in attempting to assign variable cost to leaves vs internal nodes for this diagnostic.
             Vector3 offset;

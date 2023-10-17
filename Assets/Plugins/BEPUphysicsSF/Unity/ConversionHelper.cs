@@ -1,5 +1,5 @@
 
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Unity
 {
@@ -16,8 +16,8 @@ namespace BEPUphysics.Unity
         public static BEPUutilities.Vector2 ToBEPU(this UnityEngine.Vector2 vector)
         {
             return new BEPUutilities.Vector2(
-                (sfloat)vector.x,
-                (sfloat)vector.y
+                (fint)vector.x,
+                (fint)vector.y
             );
         }
         public static UnityEngine.Vector3 ToUnity(this BEPUutilities.Vector3 vector)
@@ -32,9 +32,9 @@ namespace BEPUphysics.Unity
         public static BEPUutilities.Vector3 ToBEPU(this UnityEngine.Vector3 vector)
         {
             return new BEPUutilities.Vector3(
-                (sfloat)vector.x,
-                (sfloat)vector.y,
-                (sfloat)vector.z
+                (fint)vector.x,
+                (fint)vector.y,
+                (fint)vector.z
             );
         }
 
@@ -51,10 +51,10 @@ namespace BEPUphysics.Unity
         public static BEPUutilities.Quaternion ToBEPU(this UnityEngine.Quaternion vector)
         {
             return new BEPUutilities.Quaternion(
-                (sfloat)vector.x,
-                (sfloat)vector.y,
-                (sfloat)vector.z,
-                (sfloat)vector.w
+                (fint)vector.x,
+                (fint)vector.y,
+                (fint)vector.z,
+                (fint)vector.w
             );
         }
     }

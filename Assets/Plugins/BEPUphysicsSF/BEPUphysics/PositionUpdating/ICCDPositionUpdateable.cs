@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.PositionUpdating
 {
@@ -31,13 +31,13 @@ namespace BEPUphysics.PositionUpdating
         /// Updates the time of impacts associated with the updateable.
         ///</summary>
         ///<param name="dt">Time step duration.</param>
-        void UpdateTimesOfImpact(sfloat dt);
+        void UpdateTimesOfImpact(fint dt);
 
         /// <summary>
         /// Updates the updateable using its continuous nature.
         /// </summary>
         /// <param name="dt">Time step duration.</param>
-        void UpdatePositionContinuously(sfloat dt);
+        void UpdatePositionContinuously(fint dt);
 
         /// <summary>
         /// Gets or sets the position update mode of the object.

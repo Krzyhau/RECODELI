@@ -1,4 +1,4 @@
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,7 +16,7 @@ namespace BEPUphysics.Unity
 
         private bool initialised = false;
         private float timeSinceLastStep;
-        private sfloat simulationTime;
+        private fint simulationTime;
 
         private Space space;
         private List<IBepuEntity> rigidbodies = new List<IBepuEntity>();
@@ -28,8 +28,8 @@ namespace BEPUphysics.Unity
         public bool Active { get; set; }
         public Space PhysicsSpace => space;
         public float InterpolationTime => timeSinceLastStep / timeStep;
-        public sfloat SimulationTime => simulationTime;
-        public sfloat TimeStep => (sfloat)timeStep;
+        public fint SimulationTime => simulationTime;
+        public fint TimeStep => (fint)timeStep;
         public List<IBepuEntity> Rigidbodies => rigidbodies;
 
         private void Awake()
@@ -48,7 +48,7 @@ namespace BEPUphysics.Unity
             space.TimeStepSettings = new TimeStepSettings()
             {
                 MaximumTimeStepsPerFrame = 1,
-                TimeStepDuration = (sfloat)timeStep
+                TimeStepDuration = (fint)timeStep
             };
             space.ForceUpdater.Gravity = gravity.ToBEPU();
 
@@ -103,7 +103,7 @@ namespace BEPUphysics.Unity
                 if (OnPostPhysicsUpdate != null) OnPostPhysicsUpdate.Invoke();
                 Profiler.EndSample();
 
-                simulationTime += (sfloat)timeStep;
+                simulationTime += (fint)timeStep;
 
                 timeSinceLastStep -= timeStep;
 

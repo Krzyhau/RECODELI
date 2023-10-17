@@ -1,7 +1,7 @@
 using BEPUphysics.Unity;
 using BEPUutilities;
 using RecoDeli.Scripts.Prototyping;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -21,23 +21,23 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         {
             var robotEntity = controller.Rigidbody.Entity;
             var deltaTime = controller.Rigidbody.Simulation.TimeStep;
-            var rawParameter = (sfloat)instruction.Parameter;
+            var rawParameter = (fint)instruction.Parameter;
 
-            var direction = (sfloat)rotationDirection * (sfloat)rawParameter.Sign();
-            var parameter = libm.sqrtf(sfloat.Abs(rawParameter) * sfloat.Two) - deltaTime;
+            var direction = (fint)rotationDirection * fint.Sign(rawParameter);
+            var parameter = fint.Sqrt(fint.Abs(rawParameter) * (fint)2) - deltaTime;
 
             var stepCounts = (parameter / deltaTime);
 
-            sfloat t = deltaTime;
+            fint t = deltaTime;
 
             // robot needs to rotate with certain velocity at given time in order to stop perfectly at given angle
-            for (sfloat step = sfloat.Zero; step <= stepCounts + sfloat.One; step += sfloat.One)
+            for (fint step = (fint)0; step <= stepCounts + (fint)1; step += (fint)1)
             {
-                sfloat currentAngularVelocity = MathHelper.ToDegrees(robotEntity.AngularVelocity.Y);
-                sfloat desiredAngularVelocity = direction * (sfloat)controller.RotationSpeed * sfloat.Max(sfloat.Zero, parameter - t);
+                fint currentAngularVelocity = MathHelper.ToDegrees(robotEntity.AngularVelocity.Y);
+                fint desiredAngularVelocity = direction * (fint)controller.RotationSpeed * fint.Max((fint)0, parameter - t);
 
-                sfloat newAngularVelocity = MathHelper.MoveTowards(currentAngularVelocity, desiredAngularVelocity, (sfloat)controller.RotationSpeed * deltaTime);
-                robotEntity.AngularVelocity = new BEPUutilities.Vector3(sfloat.Zero, MathHelper.ToRadians(newAngularVelocity), sfloat.Zero);
+                fint newAngularVelocity = MathHelper.MoveTowards(currentAngularVelocity, desiredAngularVelocity, (fint)controller.RotationSpeed * deltaTime);
+                robotEntity.AngularVelocity = new BEPUutilities.Vector3((fint)0, MathHelper.ToRadians(newAngularVelocity), (fint)0);
 
 
                 yield return 1;

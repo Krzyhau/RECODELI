@@ -4,7 +4,7 @@ using BEPUphysics.Constraints.TwoEntity.Joints;
 using BEPUphysics.Constraints.TwoEntity.Motors;
 using BEPUphysics.Entities;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints.SolverGroups
 {
@@ -54,7 +54,7 @@ namespace BEPUphysics.Constraints.SolverGroups
             AngularJoint = new SwivelHingeAngularJoint(connectionA, connectionB, hingeAxis, -BallSocketJoint.OffsetB);
             HingeLimit = new RevoluteLimit(connectionA, connectionB);
             HingeMotor = new RevoluteMotor(connectionA, connectionB, hingeAxis);
-            TwistLimit = new TwistLimit(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB, sfloat.Zero, sfloat.Zero);
+            TwistLimit = new TwistLimit(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB, (fint)0, (fint)0);
             TwistMotor = new TwistMotor(connectionA, connectionB, BallSocketJoint.OffsetA, -BallSocketJoint.OffsetB);
             HingeLimit.IsActive = false;
             HingeMotor.IsActive = false;

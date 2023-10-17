@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -164,7 +164,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Applies the corrective impulses required by the constraint.
         /// </summary>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             Vector3 velocityDifference;
             Vector3.Subtract(ref connectionB.angularVelocity, ref connectionA.angularVelocity, out velocityDifference);
@@ -188,14 +188,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref torqueB);
             }
 
-            return sfloat.Abs(lambda.X) + sfloat.Abs(lambda.Y) + sfloat.Abs(lambda.Z);
+            return fint.Abs(lambda.X) + fint.Abs(lambda.Y) + fint.Abs(lambda.Z);
         }
 
         /// <summary>
         /// Initializes the constraint for the current frame.
         /// </summary>
         /// <param name="dt">Time between frames.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             Quaternion quaternionA;
             Quaternion.Multiply(ref connectionA.orientation, ref initialQuaternionConjugateA, out quaternionA);
@@ -206,7 +206,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Quaternion.Multiply(ref quaternionA, ref quaternionB, out intermediate);
 
 
-            sfloat angle;
+            fint angle;
             Vector3 axis;
             Quaternion.GetAxisAngleFromQuaternion(ref intermediate, out axis, out angle);
 
@@ -214,18 +214,18 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             error.Y = axis.Y * angle;
             error.Z = axis.Z * angle;
 
-            sfloat errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReduction, out softness);
+            fint errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, (fint)1 / dt, out errorReduction, out softness);
             errorReduction = -errorReduction;
             biasVelocity.X = errorReduction * error.X;
             biasVelocity.Y = errorReduction * error.Y;
             biasVelocity.Z = errorReduction * error.Z;
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            sfloat length = biasVelocity.LengthSquared();
+            fint length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                sfloat multiplier = maxCorrectiveVelocity / libm.sqrtf(length);
+                fint multiplier = maxCorrectiveVelocity / fint.Sqrt(length);
                 biasVelocity.X *= multiplier;
                 biasVelocity.Y *= multiplier;
                 biasVelocity.Z *= multiplier;

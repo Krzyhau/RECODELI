@@ -2,7 +2,7 @@
 using BEPUphysics.CollisionRuleManagement;
 using BEPUutilities.DataStructures;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.NarrowPhaseSystems.Pairs
 {
@@ -71,7 +71,7 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
 
         protected abstract void UpdateContainedPairs();
 
-        public override void UpdateCollision(sfloat dt)
+        public override void UpdateCollision(fint dt)
         {
             WasContaining = Containing;
             WasTouching = Touching;

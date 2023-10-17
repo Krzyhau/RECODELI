@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -11,16 +11,16 @@ namespace BEPUphysics.Constraints.SingleEntity
     /// </summary>
     public class MaximumLinearSpeedConstraint : SingleEntityConstraint, I3DImpulseConstraint
     {
-        private sfloat effectiveMassMatrix;
-        private sfloat maxForceDt = sfloat.MaxValue;
-        private sfloat maxForceDtSquared = sfloat.MaxValue;
+        private fint effectiveMassMatrix;
+        private fint maxForceDt = fint.MaxValue;
+        private fint maxForceDtSquared = fint.MaxValue;
         private Vector3 accumulatedImpulse;
-        private sfloat maximumForce = sfloat.MaxValue;
-        private sfloat maximumSpeed;
-        private sfloat maximumSpeedSquared;
+        private fint maximumForce = fint.MaxValue;
+        private fint maximumSpeed;
+        private fint maximumSpeedSquared;
 
-        private sfloat softness = (sfloat).00001f;
-        private sfloat usedSoftness;
+        private fint softness = (fint).00001f;
+        private fint usedSoftness;
 
         /// <summary>
         /// Constructs a maximum speed constraint.
@@ -37,7 +37,7 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// </summary>
         /// <param name="e">Affected entity.</param>
         /// <param name="maxSpeed">Maximum linear speed allowed.</param>
-        public MaximumLinearSpeedConstraint(Entity e, sfloat maxSpeed)
+        public MaximumLinearSpeedConstraint(Entity e, fint maxSpeed)
         {
             Entity = e;
             MaximumSpeed = maxSpeed;
@@ -47,28 +47,28 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Gets and sets the maximum impulse that the constraint will attempt to apply when satisfying its requirements.
         /// This field can be used to simulate friction in a constraint.
         /// </summary>
-        public sfloat MaximumForce
+        public fint MaximumForce
         {
             get
             {
-                if (maximumForce > sfloat.Zero)
+                if (maximumForce > (fint)0)
                 {
                     return maximumForce;
                 }
-                return sfloat.Zero;
+                return (fint)0;
             }
-            set { maximumForce = value >= sfloat.Zero ? value : sfloat.Zero; }
+            set { maximumForce = value >= (fint)0 ? value : (fint)0; }
         }
 
         /// <summary>
         /// Gets or sets the maximum linear speed that this constraint allows.
         /// </summary>
-        public sfloat MaximumSpeed
+        public fint MaximumSpeed
         {
             get { return maximumSpeed; }
             set
             {
-                maximumSpeed = MathHelper.Max(sfloat.Zero, value);
+                maximumSpeed = MathHelper.Max((fint)0, value);
                 maximumSpeedSquared = maximumSpeed * maximumSpeed;
             }
         }
@@ -80,10 +80,10 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Sometimes, if a joint system is unstable, increasing the softness of the involved constraints will make it settle down.
         /// For motors, softness can be used to implement damping.  For a damping constant k, the appropriate softness is 1/k.
         /// </summary>
-        public sfloat Softness
+        public fint Softness
         {
             get { return softness; }
-            set { softness = sfloat.Max(sfloat.Zero, value); }
+            set { softness = fint.Max((fint)0, value); }
         }
 
         #region I3DImpulseConstraint Members
@@ -112,12 +112,12 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
-            sfloat linearSpeed = entity.linearVelocity.LengthSquared();
+            fint linearSpeed = entity.linearVelocity.LengthSquared();
             if (linearSpeed > maximumSpeedSquared)
             {
-                linearSpeed = libm.sqrtf(linearSpeed);
+                linearSpeed = fint.Sqrt(linearSpeed);
                 Vector3 impulse;
                 //divide by linearSpeed to normalize the velocity.
                 //Multiply by linearSpeed - maximumSpeed to get the 'velocity change vector.'
@@ -135,11 +135,11 @@ namespace BEPUphysics.Constraints.SingleEntity
                 //Accumulate
                 Vector3 previousAccumulatedImpulse = accumulatedImpulse;
                 Vector3.Add(ref accumulatedImpulse, ref impulse, out accumulatedImpulse);
-                sfloat forceMagnitude = accumulatedImpulse.LengthSquared();
+                fint forceMagnitude = accumulatedImpulse.LengthSquared();
                 if (forceMagnitude > maxForceDtSquared)
                 {
                     //max / impulse gives some value 0 < x < 1.  Basically, normalize the vector (divide by the length) and scale by the maximum.
-                    sfloat multiplier = maxForceDt / libm.sqrtf(forceMagnitude);
+                    fint multiplier = maxForceDt / fint.Sqrt(forceMagnitude);
                     accumulatedImpulse.X *= multiplier;
                     accumulatedImpulse.Y *= multiplier;
                     accumulatedImpulse.Z *= multiplier;
@@ -153,11 +153,11 @@ namespace BEPUphysics.Constraints.SingleEntity
                 entity.ApplyLinearImpulse(ref impulse);
 
 
-                return (sfloat.Abs(impulse.X) + sfloat.Abs(impulse.Y) + sfloat.Abs(impulse.Z));
+                return (fint.Abs(impulse.X) + fint.Abs(impulse.Y) + fint.Abs(impulse.Z));
             }
 
 
-            return sfloat.Zero;
+            return (fint)0;
         }
 
         /// <summary>
@@ -165,22 +165,22 @@ namespace BEPUphysics.Constraints.SingleEntity
         /// Called automatically by space.
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             usedSoftness = softness / dt;
 
-            effectiveMassMatrix = sfloat.One / (entity.inverseMass + usedSoftness);
+            effectiveMassMatrix = (fint)1 / (entity.inverseMass + usedSoftness);
 
             //Determine maximum force
-            if (maximumForce < sfloat.MaxValue)
+            if (maximumForce < fint.MaxValue)
             {
                 maxForceDt = maximumForce * dt;
                 maxForceDtSquared = maxForceDt * maxForceDt;
             }
             else
             {
-                maxForceDt = sfloat.MaxValue;
-                maxForceDtSquared = sfloat.MaxValue;
+                maxForceDt = fint.MaxValue;
+                maxForceDtSquared = fint.MaxValue;
             }
 
           

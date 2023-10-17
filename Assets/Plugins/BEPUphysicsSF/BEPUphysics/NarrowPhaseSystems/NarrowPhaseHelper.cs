@@ -6,7 +6,7 @@ using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUphysics.CollisionRuleManagement;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities.DataStructures;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.NarrowPhaseSystems
 {
@@ -428,7 +428,7 @@ namespace BEPUphysics.NarrowPhaseSystems
             if (pairHandler == null)
                 return false;
             pairHandler.SuppressEvents = true;
-            pairHandler.UpdateCollision(sfloat.Zero);
+            pairHandler.UpdateCollision((fint)0);
             bool toReturn = pairHandler.Colliding;
             pairHandler.SuppressEvents = false;
             pairHandler.CleanUp();

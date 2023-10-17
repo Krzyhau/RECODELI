@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Constraints.TwoEntity.Joints
 {
@@ -11,14 +11,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        protected sfloat maxCorrectiveVelocity = sfloat.MaxValue;
+        protected fint maxCorrectiveVelocity = fint.MaxValue;
 
         /// <summary>
         /// Squared maximum extra velocity that the constraint will apply in an effort to correct constraint error.
         /// </summary>
-        protected sfloat maxCorrectiveVelocitySquared = sfloat.MaxValue;
+        protected fint maxCorrectiveVelocitySquared = fint.MaxValue;
 
-        protected sfloat softness;
+        protected fint softness;
 
         /// <summary>
         /// Spring settings define how a constraint responds to velocity and position error.
@@ -28,15 +28,15 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// <summary>
         /// Gets or sets the maximum extra velocity that the constraint will apply in an effort to correct any constraint error.
         /// </summary>
-        public sfloat MaxCorrectiveVelocity
+        public fint MaxCorrectiveVelocity
         {
             get { return maxCorrectiveVelocity; }
             set
             {
-                maxCorrectiveVelocity = sfloat.Max(sfloat.Zero, value);
-                if (maxCorrectiveVelocity >= sfloat.MaxValue)
+                maxCorrectiveVelocity = fint.Max((fint)0, value);
+                if (maxCorrectiveVelocity >= fint.MaxValue)
                 {
-                    maxCorrectiveVelocitySquared = sfloat.MaxValue;
+                    maxCorrectiveVelocitySquared = fint.MaxValue;
                 }
                 else
                 {

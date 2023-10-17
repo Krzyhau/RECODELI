@@ -1,6 +1,6 @@
 ﻿ 
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities;
 
 namespace BEPUphysics.CollisionTests
@@ -13,7 +13,7 @@ namespace BEPUphysics.CollisionTests
         /// <summary>
         /// Amount of penetration between the two objects.
         /// </summary>
-        public sfloat PenetrationDepth;
+        public fint PenetrationDepth;
 
         /// <summary>
         /// Feature-based id used to match contacts from the previous frame to their current versions.

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Diagnostics;
 using BEPUphysics.CollisionTests;
 using BEPUutilities;
@@ -20,7 +20,7 @@ namespace BEPUphysics
         public static void Validate(this Contact contact)
         {
             contact.Normal.Validate();
-            if (contact.Normal.LengthSquared() < (sfloat)0.9f)
+            if (contact.Normal.LengthSquared() < (fint)0.9f)
                 throw new ArithmeticException("Invalid contact normal.");
             contact.Position.Validate();
             contact.PenetrationDepth.Validate();

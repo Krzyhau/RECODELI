@@ -1,5 +1,5 @@
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -208,14 +208,14 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Called by preStep(sfloat dt)
         /// </summary>
         /// <param name="dt">Time in seconds since the last update.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             Matrix3x3.Transform(ref localAnchorA, ref connectionA.orientationMatrix, out worldOffsetA);
             Matrix3x3.Transform(ref localAnchorB, ref connectionB.orientationMatrix, out worldOffsetB);
 
 
-            sfloat errorReductionParameter;
-            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReductionParameter, out softness);
+            fint errorReductionParameter;
+            springSettings.ComputeErrorReductionAndSoftness(dt, (fint)1 / dt, out errorReductionParameter, out softness);
 
             //Mass Matrix
             Matrix3x3 k;
@@ -266,10 +266,10 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
             Vector3.Multiply(ref error, -errorReductionParameter, out biasVelocity);
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            sfloat length = biasVelocity.LengthSquared();
+            fint length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                sfloat multiplier = maxCorrectiveVelocity / libm.sqrtf(length);
+                fint multiplier = maxCorrectiveVelocity / fint.Sqrt(length);
                 biasVelocity.X *= multiplier;
                 biasVelocity.Y *= multiplier;
                 biasVelocity.Z *= multiplier;
@@ -316,7 +316,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Calculates and applies corrective impulses.
         /// Called automatically by space.
         /// </summary>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
 #if !WINDOWS
             Vector3 lambda = new Vector3();
@@ -367,9 +367,9 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref tbImpulse);
             }
 
-            return (sfloat.Abs(lambda.X) +
-                    sfloat.Abs(lambda.Y) +
-                    sfloat.Abs(lambda.Z));
+            return (fint.Abs(lambda.X) +
+                    fint.Abs(lambda.Y) +
+                    fint.Abs(lambda.Z));
         }
     }
 }

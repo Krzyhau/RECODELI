@@ -1,7 +1,7 @@
 ﻿using BEPUphysics.Unity;
 using BEPUutilities;
 using RecoDeli.Scripts.Prototyping;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,15 +22,15 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             var robotEntity = controller.Rigidbody.Entity;
             var deltaTime = controller.Rigidbody.Simulation.TimeStep;
 
-            var parameter = (sfloat)instruction.Parameter;
-            var absParameter = sfloat.Abs(parameter);
-            var direction = (sfloat)rotationDirection * (sfloat)parameter.Sign();
+            var parameter = (fint)instruction.Parameter;
+            var absParameter = fint.Abs(parameter);
+            var direction = (fint)rotationDirection * fint.Sign(parameter);
 
-            for (sfloat t = sfloat.Zero; t < absParameter; t += deltaTime)
+            for (fint t = (fint)0; t < absParameter; t += deltaTime)
             {
-                var accelerationStep = sfloat.Min(deltaTime, absParameter - t);
-                var rotationAcceleration = (direction * (sfloat)controller.RotationSpeed) * accelerationStep;
-                robotEntity.AngularVelocity += new BEPUutilities.Vector3(sfloat.Zero, MathHelper.ToRadians(rotationAcceleration), sfloat.Zero);
+                var accelerationStep = fint.Min(deltaTime, absParameter - t);
+                var rotationAcceleration = (direction * (fint)controller.RotationSpeed) * accelerationStep;
+                robotEntity.AngularVelocity += new BEPUutilities.Vector3((fint)0, MathHelper.ToRadians(rotationAcceleration), (fint)0);
 
                 if (absParameter - t < deltaTime) break;
                 yield return 1;

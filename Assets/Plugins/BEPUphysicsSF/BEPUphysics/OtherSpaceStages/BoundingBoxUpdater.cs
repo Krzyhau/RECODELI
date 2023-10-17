@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUutilities;
 using BEPUutilities.DataStructures;

@@ -1,6 +1,6 @@
 ﻿using BEPUphysics.NarrowPhaseSystems.Pairs;
 using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities.ResourceManagement;
 
 namespace BEPUphysics.NarrowPhaseSystems

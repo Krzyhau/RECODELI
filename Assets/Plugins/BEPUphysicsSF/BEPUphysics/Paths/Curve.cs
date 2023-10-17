@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUutilities;
 
 namespace BEPUphysics.Paths
@@ -43,19 +43,19 @@ namespace BEPUphysics.Paths
         /// <param name="preLoop">Looping behavior of the curve before the first endpoint's time.</param>
         /// <param name="postLoop">Looping behavior of the curve after the last endpoint's time.</param>
         /// <returns>Time within the curve's interval.</returns>
-        public static sfloat ModifyTime(sfloat time, sfloat intervalBegin, sfloat intervalEnd, CurveEndpointBehavior preLoop, CurveEndpointBehavior postLoop)
+        public static fint ModifyTime(fint time, fint intervalBegin, fint intervalEnd, CurveEndpointBehavior preLoop, CurveEndpointBehavior postLoop)
         {
             if (time < intervalBegin)
             {
                 switch (preLoop)
                 {
                     case CurveEndpointBehavior.Wrap:
-                        sfloat modifiedTime = time - intervalBegin;
-                        sfloat intervalLength = intervalEnd - intervalBegin;
+                        fint modifiedTime = time - intervalBegin;
+                        fint intervalLength = intervalEnd - intervalBegin;
                         modifiedTime %= intervalLength;
                         return intervalEnd + modifiedTime;
                     case CurveEndpointBehavior.Clamp:
-                        return sfloat.Max(intervalBegin, time);
+                        return fint.Max(intervalBegin, time);
                     case CurveEndpointBehavior.Mirror:
                         modifiedTime = time - intervalBegin;
                         intervalLength = intervalEnd - intervalBegin;
@@ -70,12 +70,12 @@ namespace BEPUphysics.Paths
                 switch (postLoop)
                 {
                     case CurveEndpointBehavior.Wrap:
-                        sfloat modifiedTime = time - intervalEnd;
-                        sfloat intervalLength = intervalEnd - intervalBegin;
+                        fint modifiedTime = time - intervalEnd;
+                        fint intervalLength = intervalEnd - intervalBegin;
                         modifiedTime %= intervalLength;
                         return intervalBegin + modifiedTime;
                     case CurveEndpointBehavior.Clamp:
-                        return sfloat.Min(intervalEnd, time);
+                        return fint.Min(intervalEnd, time);
                     case CurveEndpointBehavior.Mirror:
                         modifiedTime = time - intervalEnd;
                         intervalLength = intervalEnd - intervalBegin;
@@ -95,7 +95,7 @@ namespace BEPUphysics.Paths
         /// <param name="controlPointIndex">Index of the starting control point of the subinterval.</param>
         /// <param name="weight">Location to evaluate on the subinterval from 0 to 1.</param>
         /// <param name="value">Value at the given location.</param>
-        public abstract void Evaluate(int controlPointIndex, sfloat weight, out TValue value);
+        public abstract void Evaluate(int controlPointIndex, fint weight, out TValue value);
 
         /// <summary>
         /// Gets the curve's bounding index information.
@@ -109,9 +109,9 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time at which to evaluate the curve.</param>
         /// <param name="value">Curve value at the given time.</param>
-        public override void Evaluate(sfloat time, out TValue value)
+        public override void Evaluate(fint time, out TValue value)
         {
-            sfloat firstTime, lastTime;
+            fint firstTime, lastTime;
             int minIndex, maxIndex;
             GetCurveBoundsInformation(out firstTime, out lastTime, out minIndex, out maxIndex);
             if (minIndex < 0 || maxIndex < 0)
@@ -142,11 +142,11 @@ namespace BEPUphysics.Paths
             {
                 var denominator = ControlPoints[index + 1].Time - ControlPoints[index].Time;
 
-                sfloat intervalTime;
+                fint intervalTime;
                 if (denominator < Toolbox.Epsilon)
-                    intervalTime = sfloat.Zero;
+                    intervalTime = (fint)0;
                 else
-                    intervalTime = (sfloat) ((time - ControlPoints[index].Time) / denominator);
+                    intervalTime = (fint) ((time - ControlPoints[index].Time) / denominator);
 
 
                 Evaluate(index, intervalTime, out value);
@@ -158,7 +158,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="startingTime">Beginning time of the path.</param>
         /// <param name="endingTime">Ending time of the path.</param>
-        public override void GetPathBoundsInformation(out sfloat startingTime, out sfloat endingTime)
+        public override void GetPathBoundsInformation(out fint startingTime, out fint endingTime)
         {
             int minIndex;
             int maxIndex;
@@ -173,7 +173,7 @@ namespace BEPUphysics.Paths
         /// <param name="lastIndexTime">Time of the last index.</param>
         /// <param name="minIndex">First index in the reachable curve.</param>
         /// <param name="maxIndex">Last index in the reachable curve.</param>
-        public void GetCurveBoundsInformation(out sfloat firstIndexTime, out sfloat lastIndexTime, out int minIndex, out int maxIndex)
+        public void GetCurveBoundsInformation(out fint firstIndexTime, out fint lastIndexTime, out int minIndex, out int maxIndex)
         {
             GetCurveIndexBoundsInformation(out minIndex, out maxIndex);
             if (minIndex >= 0 && maxIndex < ControlPoints.Count && minIndex <= maxIndex)
@@ -183,8 +183,8 @@ namespace BEPUphysics.Paths
             }
             else
             {
-                firstIndexTime = sfloat.Zero;
-                lastIndexTime = sfloat.Zero;
+                firstIndexTime = (fint)0;
+                lastIndexTime = (fint)0;
             }
         }
 
@@ -195,7 +195,7 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time to index.</param>
         /// <returns>Index prior to or equal to the given time.</returns>
-        public int GetPreviousIndex(sfloat time)
+        public int GetPreviousIndex(fint time)
         {
             int indexMin = 0;
             int indexMax = ControlPoints.Count;

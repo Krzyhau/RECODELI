@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
  
@@ -40,7 +40,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
 
             Vector3 offset;
             Vector3.Subtract(ref spherePosition, ref contact.Position, out offset);
-            sfloat offsetLength = offset.LengthSquared();
+            fint offsetLength = offset.LengthSquared();
 
             if (offsetLength > (sphere.collisionMargin + CollisionDetectionSettings.maximumContactDistance) * (sphere.collisionMargin + CollisionDetectionSettings.maximumContactDistance))
             {
@@ -50,7 +50,7 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             //Colliding.
             if (offsetLength > Toolbox.Epsilon)
             {
-                offsetLength = libm.sqrtf(offsetLength);
+                offsetLength = fint.Sqrt(offsetLength);
                 //Outside of the box.
                 Vector3.Divide(ref offset, offsetLength, out contact.Normal);
                 contact.PenetrationDepth = sphere.collisionMargin - offsetLength;
@@ -59,22 +59,22 @@ namespace BEPUphysics.CollisionTests.CollisionAlgorithms
             {
                 //Inside of the box.
                 Vector3 penetrationDepths;
-                penetrationDepths.X = localClosestPoint.X < sfloat.Zero ? localClosestPoint.X + box.halfWidth : box.halfWidth - localClosestPoint.X;
-                penetrationDepths.Y = localClosestPoint.Y < sfloat.Zero ? localClosestPoint.Y + box.halfHeight : box.halfHeight - localClosestPoint.Y;
-                penetrationDepths.Z = localClosestPoint.Z < sfloat.Zero ? localClosestPoint.Z + box.halfLength : box.halfLength - localClosestPoint.Z;
+                penetrationDepths.X = localClosestPoint.X < (fint)0 ? localClosestPoint.X + box.halfWidth : box.halfWidth - localClosestPoint.X;
+                penetrationDepths.Y = localClosestPoint.Y < (fint)0 ? localClosestPoint.Y + box.halfHeight : box.halfHeight - localClosestPoint.Y;
+                penetrationDepths.Z = localClosestPoint.Z < (fint)0 ? localClosestPoint.Z + box.halfLength : box.halfLength - localClosestPoint.Z;
                 if (penetrationDepths.X < penetrationDepths.Y && penetrationDepths.X < penetrationDepths.Z)
                 {
-                    contact.Normal = localClosestPoint.X > sfloat.Zero ? Toolbox.RightVector : Toolbox.LeftVector; 
+                    contact.Normal = localClosestPoint.X > (fint)0 ? Toolbox.RightVector : Toolbox.LeftVector; 
                     contact.PenetrationDepth = penetrationDepths.X;
                 }
                 else if (penetrationDepths.Y < penetrationDepths.Z)
                 {
-                    contact.Normal = localClosestPoint.Y > sfloat.Zero ? Toolbox.UpVector : Toolbox.DownVector; 
+                    contact.Normal = localClosestPoint.Y > (fint)0 ? Toolbox.UpVector : Toolbox.DownVector; 
                     contact.PenetrationDepth = penetrationDepths.Y;
                 }
                 else
                 {
-                    contact.Normal = localClosestPoint.Z > sfloat.Zero ? Toolbox.BackVector : Toolbox.ForwardVector; 
+                    contact.Normal = localClosestPoint.Z > (fint)0 ? Toolbox.BackVector : Toolbox.ForwardVector; 
                     contact.PenetrationDepth = penetrationDepths.Z;
                 }
                 contact.PenetrationDepth += sphere.collisionMargin;

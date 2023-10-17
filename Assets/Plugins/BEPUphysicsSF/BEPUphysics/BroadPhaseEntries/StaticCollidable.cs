@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.CollisionShapes;
 using BEPUphysics.Materials;
 using BEPUphysics.CollisionRuleManagement;

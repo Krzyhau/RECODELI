@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.CollisionTests;
 using BEPUutilities;
  
@@ -25,14 +25,14 @@ namespace BEPUphysics.NarrowPhaseSystems.Pairs
         /// <summary>
         /// Normal impulse applied between the objects at the contact point.
         /// </summary>
-        public sfloat NormalImpulse;
+        public fint NormalImpulse;
 
         /// <summary>
         /// Friction impulse applied between the objects at the contact point.
         /// This is sometimes an approximation due to the varying ways in which
         /// friction is calculated.
         /// </summary>
-        public sfloat FrictionImpulse;
+        public fint FrictionImpulse;
         
         ///<summary>
         /// Relative velocity of the colliding objects at the position of the contact.

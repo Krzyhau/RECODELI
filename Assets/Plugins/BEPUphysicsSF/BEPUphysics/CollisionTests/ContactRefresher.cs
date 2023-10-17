@@ -2,7 +2,7 @@
 using BEPUphysics.Settings;
  
 using BEPUutilities.DataStructures;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.CollisionTests
 {
@@ -33,7 +33,7 @@ namespace BEPUphysics.CollisionTests
                 //Compute the horizontal offset.
                 Vector3 ab;
                 Vector3.Subtract(ref newPosB, ref newPosA, out ab);
-                sfloat dot;
+                fint dot;
                 Vector3.Dot(ref ab, ref contacts.Elements[k].Normal, out dot);
                 Vector3 temp;
                 Vector3.Multiply(ref contacts.Elements[k].Normal, dot, out temp);
@@ -56,7 +56,7 @@ namespace BEPUphysics.CollisionTests
                         //Refresh position and ra/rb.
                         Vector3 newPos;
                         Vector3.Add(ref newPosB, ref newPosA, out newPos);
-                        Vector3.Multiply(ref newPos, sfloat.Half, out newPos);
+                        Vector3.Multiply(ref newPos, (fint)0.5f, out newPos);
                         contacts.Elements[k].Position = newPos;
                         //This is an interesting idea, but has very little effect one way or the other.
                         //data.BasePenetrationDepth = contacts.Elements[k].PenetrationDepth;

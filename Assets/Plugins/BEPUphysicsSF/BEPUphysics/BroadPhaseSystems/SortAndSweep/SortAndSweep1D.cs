@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
@@ -50,7 +50,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (offset.X * offset.Y * offset.Z == sfloat.Zero)
+            if (offset.X * offset.Y * offset.Z == (fint)0)
                 entry.UpdateBoundingBox();
             //binary search for the approximately correct location.  This helps prevent large first-frame sort times.
             int minIndex = 0; //inclusive

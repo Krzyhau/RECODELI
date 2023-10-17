@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUutilities
 {
@@ -14,7 +14,7 @@ namespace BEPUutilities
         /// <summary>
         /// Negative distance to the plane from the origin along the normal.
         /// </summary>
-        public sfloat D;
+        public fint D;
 
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace BEPUutilities
         /// <param name="normal">The normal of the plane.</param>
         public Plane(ref Vector3 position, ref Vector3 normal)
         {
-            sfloat d;
+            fint d;
             Vector3.Dot(ref position, ref normal, out d);
             D = -d;
             Normal = normal;
@@ -48,7 +48,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="normal">Normal of the plane.</param>
         /// <param name="d">Negative distance to the plane from the origin along the normal.</param>
-        public Plane(Vector3 normal, sfloat d)
+        public Plane(Vector3 normal, fint d)
             : this(ref normal, d)
         {
         }
@@ -58,7 +58,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="normal">Normal of the plane.</param>
         /// <param name="d">Negative distance to the plane from the origin along the normal.</param>
-        public Plane(ref Vector3 normal, sfloat d)
+        public Plane(ref Vector3 normal, fint d)
         {
             this.Normal = normal;
             this.D = d;
@@ -69,7 +69,7 @@ namespace BEPUutilities
         /// </summary>
         /// <param name="v">Position to compute the dot product of.</param>
         /// <param name="dot">Dot product.</param>
-        public void DotCoordinate(ref Vector3 v, out sfloat dot)
+        public void DotCoordinate(ref Vector3 v, out fint dot)
         {
             dot = Normal.X * v.X + Normal.Y * v.Y + Normal.Z * v.Z + D;
         }

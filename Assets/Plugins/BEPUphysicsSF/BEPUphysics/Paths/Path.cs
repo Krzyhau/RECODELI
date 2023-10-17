@@ -1,4 +1,4 @@
-﻿using SoftFloat;
+﻿using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Paths
 {
@@ -13,21 +13,21 @@ namespace BEPUphysics.Paths
         /// </summary>
         /// <param name="time">Time at which to evaluate the path.</param>
         /// <param name="value">Path value at the given time.</param>
-        public abstract void Evaluate(sfloat time, out TValue value);
+        public abstract void Evaluate(fint time, out TValue value);
 
         /// <summary>
         /// Gets the starting and ending times of the path.
         /// </summary>
         /// <param name="startingTime">Beginning time of the path.</param>
         /// <param name="endingTime">Ending time of the path.</param>
-        public abstract void GetPathBoundsInformation(out sfloat startingTime, out sfloat endingTime);
+        public abstract void GetPathBoundsInformation(out fint startingTime, out fint endingTime);
 
         /// <summary>
         /// Computes the value of the path at a given time.
         /// </summary>
         /// <param name="time">Time at which to evaluate the path.</param>
         /// <returns>Path value at the given time.</returns>
-        public TValue Evaluate(sfloat time)
+        public TValue Evaluate(fint time)
         {
             TValue toReturn;
             Evaluate(time, out toReturn);

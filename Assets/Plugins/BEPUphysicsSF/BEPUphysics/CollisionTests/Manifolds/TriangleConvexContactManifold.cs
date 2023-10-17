@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.CollisionTests.CollisionAlgorithms;
@@ -68,7 +68,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
             pairTester = new TriangleConvexPairTester();
         }
 
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             //First, refresh all existing contacts.  This is an incremental manifold.
             ContactRefresher.ContactRefresh(contacts, supplementData, ref convex.worldTransform, ref triangle.worldTransform, contactIndicesToRemove);
@@ -159,7 +159,7 @@ namespace BEPUphysics.CollisionTests.Manifolds
         private bool IsContactUnique(ref ContactData contactCandidate)
         {
             contactCandidate.Validate();
-            sfloat distanceSquared;
+            fint distanceSquared;
             for (int i = 0; i < contacts.Count; i++)
             {
                 Vector3.DistanceSquared(ref contacts.Elements[i].Position, ref contactCandidate.Position, out distanceSquared);

@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
 
@@ -113,7 +113,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         private void UpdateRestrictedAxes()
         {
             localConstrainedAxis1 = Vector3.Cross(Vector3.Up, localAxisA);
-            if (localConstrainedAxis1.LengthSquared() < (sfloat).001f)
+            if (localConstrainedAxis1.LengthSquared() < (fint).001f)
             {
                 localConstrainedAxis1 = Vector3.Cross(Vector3.Right, localAxisA);
             }
@@ -224,7 +224,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
             Matrix3x3.Transform(ref localAxisA, ref connectionA.orientationMatrix, out worldAxisA);
             Matrix3x3.Transform(ref localAxisB, ref connectionB.orientationMatrix, out worldAxisB);
@@ -238,18 +238,18 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
 
             Vector3.Dot(ref error, ref worldConstrainedAxis1, out this.error.X);
             Vector3.Dot(ref error, ref worldConstrainedAxis2, out this.error.Y);
-            sfloat errorReduction;
-            springSettings.ComputeErrorReductionAndSoftness(dt, sfloat.One / dt, out errorReduction, out softness);
+            fint errorReduction;
+            springSettings.ComputeErrorReductionAndSoftness(dt, (fint)1 / dt, out errorReduction, out softness);
             errorReduction = -errorReduction;
             biasVelocity.X = errorReduction * this.error.X;
             biasVelocity.Y = errorReduction * this.error.Y;
 
 
             //Ensure that the corrective velocity doesn't exceed the max.
-            sfloat length = biasVelocity.LengthSquared();
+            fint length = biasVelocity.LengthSquared();
             if (length > maxCorrectiveVelocitySquared)
             {
-                sfloat multiplier = maxCorrectiveVelocity / libm.sqrtf(length);
+                fint multiplier = maxCorrectiveVelocity / fint.Sqrt(length);
                 biasVelocity.X *= multiplier;
                 biasVelocity.Y *= multiplier;
             }
@@ -322,7 +322,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
             // lambda = -mc * (Jv + b)
             // P = JT * lambda
@@ -362,7 +362,7 @@ namespace BEPUphysics.Constraints.TwoEntity.Joints
                 connectionB.ApplyAngularImpulse(ref impulse);
             }
 
-            return (sfloat.Abs(lambda.X) + sfloat.Abs(lambda.Y));
+            return (fint.Abs(lambda.X) + fint.Abs(lambda.Y));
         }
 
 

@@ -1,7 +1,7 @@
 ﻿
 
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Paths
 {
@@ -50,7 +50,7 @@ namespace BEPUphysics.Paths
             current = ControlPoints[0].Value;
             next = ControlPoints[1].Value;
             Vector3.Subtract(ref next, ref current, out tangentA);
-            Vector3.Multiply(ref tangentA, (sfloat)(sfloat.Half / (ControlPoints[1].Time - ControlPoints[0].Time)), out tangentA);
+            Vector3.Multiply(ref tangentA, (fint)((fint)0.5f / (ControlPoints[1].Time - ControlPoints[0].Time)), out tangentA);
             //Vector3.Multiply(ref current, .5f / (controlPoints[0].time), out tangentB);
             //Vector3.Add(ref tangentA, ref tangentB, out tangentA);
             tangents.Add(tangentA);
@@ -62,8 +62,8 @@ namespace BEPUphysics.Paths
                 next = ControlPoints[i + 1].Value;
                 Vector3.Subtract(ref next, ref current, out tangentA);
                 Vector3.Subtract(ref current, ref previous, out tangentB);
-                Vector3.Multiply(ref tangentA, (sfloat)(sfloat.Half / (ControlPoints[i + 1].Time - ControlPoints[i].Time)), out tangentA);
-                Vector3.Multiply(ref tangentB, (sfloat)(sfloat.Half / (ControlPoints[i].Time - ControlPoints[i - 1].Time)), out tangentB);
+                Vector3.Multiply(ref tangentA, (fint)((fint)0.5f / (ControlPoints[i + 1].Time - ControlPoints[i].Time)), out tangentA);
+                Vector3.Multiply(ref tangentB, (fint)((fint)0.5f / (ControlPoints[i].Time - ControlPoints[i - 1].Time)), out tangentB);
                 Vector3.Add(ref tangentA, ref tangentB, out tangentA);
                 tangents.Add(tangentA);
             }
@@ -75,7 +75,7 @@ namespace BEPUphysics.Paths
             int currentIndex = ControlPoints.Count - 1;
             int previousIndex = currentIndex - 1;
             //Vector3.Multiply(ref tangentA, .5f / (-controlPoints[currentIndex].time), out tangentA);
-            Vector3.Multiply(ref tangentB, (sfloat)(sfloat.Half / (ControlPoints[currentIndex].Time - ControlPoints[previousIndex].Time)), out tangentB);
+            Vector3.Multiply(ref tangentB, (fint)((fint)0.5f / (ControlPoints[currentIndex].Time - ControlPoints[previousIndex].Time)), out tangentB);
             //Vector3.Add(ref tangentA, ref tangentB, out tangentA);
             tangents.Add(tangentB);
         }

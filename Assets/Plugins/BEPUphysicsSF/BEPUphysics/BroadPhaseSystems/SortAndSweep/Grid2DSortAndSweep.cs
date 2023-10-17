@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.BroadPhaseEntries;
 using BEPUutilities;
 using BEPUutilities.DataStructures;
@@ -22,24 +22,24 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
         /// Gets or sets the width of cells in the 2D grid.  For sparser, larger scenes, increasing this can help performance.
         /// For denser scenes, decreasing this may help.
         /// </summary>
-        public static sfloat CellSize
+        public static fint CellSize
         {
             get
             {
-                return sfloat.One / cellSizeInverse;
+                return (fint)1 / cellSizeInverse;
             }
             set
             {
-                cellSizeInverse = sfloat.One / value;
+                cellSizeInverse = (fint)1 / value;
             }
         }
         //TODO: Try different values for this.
-        internal static sfloat cellSizeInverse = sfloat.One / (sfloat)8f; 
+        internal static fint cellSizeInverse = (fint)1 / (fint)8f; 
 
         internal static void ComputeCell(ref Vector3 v, out Int2 cell)
         {
-            cell.Y = (int)libm.floorf(v.Y * cellSizeInverse);
-            cell.Z = (int)libm.floorf(v.Z * cellSizeInverse);
+            cell.Y = (int)fint.Floor(v.Y * cellSizeInverse);
+            cell.Z = (int)fint.Floor(v.Z * cellSizeInverse);
         }
 
         
@@ -84,7 +84,7 @@ namespace BEPUphysics.BroadPhaseSystems.SortAndSweep
             //Entities do not set up their own bounding box before getting stuck in here.  If they're all zeroed out, the tree will be horrible.
             Vector3 offset;
             Vector3.Subtract(ref entry.boundingBox.Max, ref entry.boundingBox.Min, out offset);
-            if (offset.X * offset.Y * offset.Z == sfloat.Zero)
+            if (offset.X * offset.Y * offset.Z == (fint)0)
                 entry.UpdateBoundingBox();
             var newEntry = entryPool.Take();
             newEntry.Initialize(entry);

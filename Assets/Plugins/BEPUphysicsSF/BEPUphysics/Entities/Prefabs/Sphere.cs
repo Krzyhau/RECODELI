@@ -3,7 +3,7 @@ using BEPUphysics.EntityStateManagement;
  
 using BEPUphysics.CollisionShapes.ConvexShapes;
 using BEPUutilities;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 
 namespace BEPUphysics.Entities.Prefabs
 {
@@ -15,7 +15,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <summary>
         /// Radius of the sphere.
         /// </summary>
-        public sfloat Radius
+        public fint Radius
         {
             get
             {
@@ -27,12 +27,12 @@ namespace BEPUphysics.Entities.Prefabs
             }
         }
 
-        private Sphere(sfloat radius)
+        private Sphere(fint radius)
             :base(new ConvexCollidable<SphereShape>(new SphereShape(radius)))
         {
         }
 
-        private Sphere(sfloat radius, sfloat mass)
+        private Sphere(fint radius, fint mass)
             :base(new ConvexCollidable<SphereShape>(new SphereShape(radius)), mass)
         {
         }
@@ -45,7 +45,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="position">Position of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Sphere(Vector3 position, sfloat radius, sfloat mass)
+        public Sphere(Vector3 position, fint radius, fint mass)
             : this(radius, mass)
         {
             Position = position;
@@ -56,7 +56,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// </summary>
         /// <param name="position">Position of the sphere.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public Sphere(Vector3 position, sfloat radius)
+        public Sphere(Vector3 position, fint radius)
             : this(radius)
         {
             Position = position;
@@ -68,7 +68,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="radius">Radius of the sphere.</param>
         /// <param name="mass">Mass of the object.</param>
-        public Sphere(MotionState motionState, sfloat radius, sfloat mass)
+        public Sphere(MotionState motionState, fint radius, fint mass)
             : this(radius, mass)
         {
             MotionState = motionState;
@@ -79,7 +79,7 @@ namespace BEPUphysics.Entities.Prefabs
         /// </summary>
         /// <param name="motionState">Motion state specifying the entity's initial state.</param>
         /// <param name="radius">Radius of the sphere.</param>
-        public Sphere(MotionState motionState, sfloat radius)
+        public Sphere(MotionState motionState, fint radius)
             : this(radius)
         {
             MotionState = motionState;

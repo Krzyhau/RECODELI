@@ -1,5 +1,5 @@
 ﻿using System;
-using SoftFloat;
+using BEPUutilities.FixedMath;
 using BEPUphysics.Entities;
 using BEPUutilities;
  
@@ -27,7 +27,7 @@ namespace BEPUphysics.Constraints.Collision
         internal Vector2 accumulatedImpulse;
         internal Matrix2x3 angularA, angularB;
         private int contactCount;
-        private sfloat friction;
+        private fint friction;
         internal Matrix2x3 linearA;
         private Entity entityA, entityB;
         private bool entityADynamic, entityBDynamic;
@@ -93,7 +93,7 @@ namespace BEPUphysics.Constraints.Collision
 
                 //Re-using information version:
                 //TODO: va + wa x ra - vb - wb x rb, dotted against each axis, is it faster?
-                sfloat dvx = sfloat.Zero, dvy = sfloat.Zero, dvz = sfloat.Zero;
+                fint dvx = (fint)0, dvy = (fint)0, dvz = (fint)0;
                 if (entityA != null)
                 {
                     dvx = entityA.linearVelocity.X + (entityA.angularVelocity.Y * ra.Z) - (entityA.angularVelocity.Z * ra.Y);
@@ -153,14 +153,14 @@ namespace BEPUphysics.Constraints.Collision
         /// Computes one iteration of the constraint to meet the solver updateable's goal.
         /// </summary>
         /// <returns>The rough applied impulse magnitude.</returns>
-        public override sfloat SolveIteration()
+        public override fint SolveIteration()
         {
 
             Vector2 lambda = RelativeVelocity;
 
             //Convert to impulse
             //Matrix2x2.Transform(ref lambda, ref velocityToImpulse, out lambda);
-            sfloat x = lambda.X;
+            fint x = lambda.X;
             lambda.X = x * velocityToImpulse.M11 + lambda.Y * velocityToImpulse.M21;
             lambda.Y = x * velocityToImpulse.M12 + lambda.Y * velocityToImpulse.M22;
 
@@ -168,8 +168,8 @@ namespace BEPUphysics.Constraints.Collision
             Vector2 previousAccumulatedImpulse = accumulatedImpulse;
             accumulatedImpulse.X += lambda.X;
             accumulatedImpulse.Y += lambda.Y;
-            sfloat length = accumulatedImpulse.LengthSquared();
-            sfloat maximumFrictionForce = sfloat.Zero;
+            fint length = accumulatedImpulse.LengthSquared();
+            fint maximumFrictionForce = (fint)0;
             for (int i = 0; i < contactCount; i++)
             {
                 maximumFrictionForce += contactManifoldConstraint.penetrationConstraints.Elements[i].accumulatedImpulse;
@@ -177,7 +177,7 @@ namespace BEPUphysics.Constraints.Collision
             maximumFrictionForce *= friction;
             if (length > maximumFrictionForce * maximumFrictionForce)
             {
-                length = maximumFrictionForce / libm.sqrtf(length);
+                length = maximumFrictionForce / fint.Sqrt(length);
                 accumulatedImpulse.X *= length;
                 accumulatedImpulse.Y *= length;
             }
@@ -231,7 +231,7 @@ namespace BEPUphysics.Constraints.Collision
             }
 
 
-            return sfloat.Abs(lambda.X) + sfloat.Abs(lambda.Y);
+            return fint.Abs(lambda.X) + fint.Abs(lambda.Y);
         }
 
         internal Vector3 manifoldCenter, relativeVelocity;
@@ -240,7 +240,7 @@ namespace BEPUphysics.Constraints.Collision
         /// Performs the frame's configuration step.
         ///</summary>
         ///<param name="dt">Timestep duration.</param>
-        public override void Update(sfloat dt)
+        public override void Update(fint dt)
         {
 
             entityADynamic = entityA != null && entityA.isDynamic;
@@ -256,9 +256,9 @@ namespace BEPUphysics.Constraints.Collision
                     Vector3.Add(ref contactManifoldConstraint.penetrationConstraints.Elements[0].contact.Position,
                                 ref contactManifoldConstraint.penetrationConstraints.Elements[1].contact.Position,
                                 out manifoldCenter);
-                    manifoldCenter.X *= sfloat.Half;
-                    manifoldCenter.Y *= sfloat.Half;
-                    manifoldCenter.Z *= sfloat.Half;
+                    manifoldCenter.X *= (fint)0.5f;
+                    manifoldCenter.Y *= (fint)0.5f;
+                    manifoldCenter.Z *= (fint)0.5f;
                     break;
                 case 3:
                     Vector3.Add(ref contactManifoldConstraint.penetrationConstraints.Elements[0].contact.Position,
@@ -267,9 +267,9 @@ namespace BEPUphysics.Constraints.Collision
                     Vector3.Add(ref contactManifoldConstraint.penetrationConstraints.Elements[2].contact.Position,
                                 ref manifoldCenter,
                                 out manifoldCenter);
-                    manifoldCenter.X *= (sfloat).333333333f;
-                    manifoldCenter.Y *= (sfloat).333333333f;
-                    manifoldCenter.Z *= (sfloat).333333333f;
+                    manifoldCenter.X *= (fint).333333333f;
+                    manifoldCenter.Y *= (fint).333333333f;
+                    manifoldCenter.Z *= (fint).333333333f;
                     break;
                 case 4:
                     //This isn't actually the center of the manifold.  Is it good enough?  Sure seems like it.
@@ -282,9 +282,9 @@ namespace BEPUphysics.Constraints.Collision
                     Vector3.Add(ref contactManifoldConstraint.penetrationConstraints.Elements[3].contact.Position,
                                 ref manifoldCenter,
                                 out manifoldCenter);
-                    manifoldCenter.X *= (sfloat).25f;
-                    manifoldCenter.Y *= (sfloat).25f;
-                    manifoldCenter.Z *= (sfloat).25f;
+                    manifoldCenter.X *= (fint).25f;
+                    manifoldCenter.Y *= (fint).25f;
+                    manifoldCenter.Z *= (fint).25f;
                     break;
                 default:
                     manifoldCenter = Toolbox.NoVector;
@@ -315,17 +315,17 @@ namespace BEPUphysics.Constraints.Collision
 
             //Get rid of the normal velocity.
             Vector3 normal = contactManifoldConstraint.penetrationConstraints.Elements[0].contact.Normal;
-            sfloat normalVelocityScalar = normal.X * relativeVelocity.X + normal.Y * relativeVelocity.Y + normal.Z * relativeVelocity.Z;
+            fint normalVelocityScalar = normal.X * relativeVelocity.X + normal.Y * relativeVelocity.Y + normal.Z * relativeVelocity.Z;
             relativeVelocity.X -= normalVelocityScalar * normal.X;
             relativeVelocity.Y -= normalVelocityScalar * normal.Y;
             relativeVelocity.Z -= normalVelocityScalar * normal.Z;
 
             //Create the jacobian entry and decide the friction coefficient.
-            sfloat length = relativeVelocity.LengthSquared();
+            fint length = relativeVelocity.LengthSquared();
             if (length > Toolbox.Epsilon)
             {
-                length = libm.sqrtf(length);
-                sfloat inverseLength = sfloat.One / length;
+                length = fint.Sqrt(length);
+                fint inverseLength = (fint)1 / length;
                 linearA.M11 = relativeVelocity.X * inverseLength;
                 linearA.M12 = relativeVelocity.Y * inverseLength;
                 linearA.M13 = relativeVelocity.Z * inverseLength;
@@ -341,7 +341,7 @@ namespace BEPUphysics.Constraints.Collision
 
                 //If there was no velocity, try using the previous frame's jacobian... if it exists.
                 //Reusing an old one is okay since jacobians are cleared when a contact is initialized.
-                if (!(linearA.M11 != sfloat.Zero || linearA.M12 != sfloat.Zero || linearA.M13 != sfloat.Zero))
+                if (!(linearA.M11 != (fint)0 || linearA.M12 != (fint)0 || linearA.M13 != (fint)0))
                 {
                     //Otherwise, just redo it all.
                     //Create arbitrary axes.
@@ -350,8 +350,8 @@ namespace BEPUphysics.Constraints.Collision
                     length = axis1.LengthSquared();
                     if (length > Toolbox.Epsilon)
                     {
-                        length = libm.sqrtf(length);
-                        sfloat inverseLength = sfloat.One / length;
+                        length = fint.Sqrt(length);
+                        fint inverseLength = (fint)1 / length;
                         linearA.M11 = axis1.X * inverseLength;
                         linearA.M12 = axis1.Y * inverseLength;
                         linearA.M13 = axis1.Z * inverseLength;
