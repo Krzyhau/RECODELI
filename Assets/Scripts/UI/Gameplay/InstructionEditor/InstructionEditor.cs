@@ -113,7 +113,7 @@ namespace RecoDeli.Scripts.UI
 
             instructionsContainer.RegisterCallback<NavigationMoveEvent>((e) => OnNavigationMove(e));
             instructionsContainer.RegisterCallback<FocusEvent>((e) => OnWindowFocused(e), TrickleDown.TrickleDown);
-            instructionsContainer.RegisterCallback<FocusInEvent>((e) => OnBarFocused(e));
+            instructionsContainer.RegisterCallback<FocusInEvent>((e) => OnInEditorFocused(e));
 
             gameDocument.rootVisualElement.RegisterCallback<NavigationMoveEvent>((e) => OnGlobalNavigationMove(e), TrickleDown.TrickleDown);
             gameDocument.rootVisualElement.RegisterCallback<PointerCaptureOutEvent>((e) => OnPointerReleasedWithGrabbedBar(e));
@@ -413,7 +413,7 @@ namespace RecoDeli.Scripts.UI
             if (instructionBars.Count() == 0) return;
 
             // clicking on empty space in the editor - remove all selection
-            if (evt.relatedTarget == null || evt.relatedTarget is InstructionBar)
+            if (evt.relatedTarget == null || instructionsContainer.ContainsElement(evt.relatedTarget as VisualElement))
             {
                 if(!multiSelectionInput.action.IsPressed() && !rangeSelectionInput.action.IsPressed())
                 {
@@ -432,24 +432,31 @@ namespace RecoDeli.Scripts.UI
                     doNotUnselectNextFocus = true;
                     lastFocusedInstructionBar.Focus();
                 }
-                else
-                {
-                    lastFocusedInstructionBar = null;
-                    bool useLast = (evt.relatedTarget as VisualElement).worldBound.y > instructionsContainer.worldBound.y;
-                    var barToFocus = instructionBars[useLast ? ^1 : 0];
-                    barToFocus.Focus();
-                }
+                //else
+                //{
+                //    lastFocusedInstructionBar = null;
+                //    bool useLast = (evt.relatedTarget as VisualElement).worldBound.y > instructionsContainer.worldBound.y;
+                //    var barToFocus = instructionBars[useLast ? ^1 : 0];
+                //    barToFocus.Focus();
+                //}
             }
             
         }
 
-        // when any bar was focused, whether it is by clicking into it or by other navigation stuff
-        private void OnBarFocused(FocusInEvent evt)
+        // when anythin in editor was focused, whether it is by clicking into it or by other navigation stuff
+        private void OnInEditorFocused(FocusInEvent evt)
         {
             var focusedBarQuery = instructionBars.Where(bar => bar.ContainsElement(evt.target as VisualElement));
             if (!focusedBarQuery.Any()) return;
             
             var bar = focusedBarQuery.First();
+
+            if (playingInstructions)
+            {
+                evt.PreventDefault();
+                SkipToInstruction = instructionBars.IndexOf(bar);
+                return;
+            }
 
             foreach (var barToBlur in instructionBars)
             {
@@ -487,7 +494,12 @@ namespace RecoDeli.Scripts.UI
         // the moment of clicking the bar
         private void OnBarPointerDown(PointerDownEvent e, InstructionBar bar)
         {
-            if (e.target != bar) return;
+            if (bar.TextFieldsContainer.ContainsElement((VisualElement)e.target)) return;
+
+            if (playingInstructions)
+            {
+                return;
+            }
 
             currentlyHeldBar = bar;
             instructionsContainer.contentContainer.CapturePointer(e.pointerId);
@@ -835,6 +847,12 @@ namespace RecoDeli.Scripts.UI
             {
                 ScrollToInstruction(instructionIndex, true);
             }
+
+            if (playingInstructions)
+            {
+                instructionBars[instructionIndex].Blocked = true;
+                //instructionBars[instructionIndex].Blur();
+            }
         }
 
         public void SetPlaybackState(bool state)
@@ -849,18 +867,22 @@ namespace RecoDeli.Scripts.UI
                 {
                     bar.Instruction.UpdateProgress(0.0f);
                 }
+                SkipToInstruction = -1;
             }
 
-            instructionsContainer.contentContainer.SetEnabled(!state);
+            //instructionsContainer.contentContainer.SetEnabled(!state);
 
             if (state)
             {
                 addInstructionMenu.Opened = false;
                 prePlayScrollPosition = instructionsContainer.scrollOffset.y;
-                foreach (var bar in instructionBars)
-                {
-                    bar.Selected = false;
-                }
+            }
+
+            foreach (var bar in instructionBars)
+            {
+                bar.Selected = false;
+                bar.Locked = state;
+                bar.Blocked = false;
             }
         }
 

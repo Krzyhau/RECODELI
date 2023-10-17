@@ -33,6 +33,9 @@ namespace RecoDeli.Scripts.UI
         public Action changing;
         public Action changed;
 
+        public VisualElement Handle => grabbingHandle;
+        public VisualElement TextFieldsContainer => textFieldsContainer;
+
         public bool Selected
         {
             get => selected;
@@ -40,6 +43,16 @@ namespace RecoDeli.Scripts.UI
                 selected = value;
                 EnableInClassList("selected", selected);
             }
+        }
+        public bool Locked
+        {
+            get => !TextFieldsContainer.enabledSelf;
+            set => TextFieldsContainer.SetEnabled(!value);
+        }
+        public bool Blocked
+        {
+            get => !enabledSelf;
+            set => SetEnabled(!value);
         }
         public RobotInstruction Instruction
         {
@@ -210,7 +223,8 @@ namespace RecoDeli.Scripts.UI
                 progressInterpCalcSpeed * lastValidDeltaTimeForProgressBar
             );
 
-            EnableInClassList("in-progress", progressBar.value > 0);
+            var inProgress = progressBar.value > 0;
+            EnableInClassList("in-progress", inProgress);
         }
 
         public bool IsPointerHoveringOnHandle()
