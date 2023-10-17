@@ -49,11 +49,6 @@ namespace RecoDeli.Scripts.UI
             get => !TextFieldsContainer.enabledSelf;
             set => TextFieldsContainer.SetEnabled(!value);
         }
-        public bool Blocked
-        {
-            get => !enabledSelf;
-            set => SetEnabled(!value);
-        }
         public RobotInstruction Instruction
         {
             get => instruction;
@@ -225,6 +220,11 @@ namespace RecoDeli.Scripts.UI
 
             var inProgress = progressBar.value > 0;
             EnableInClassList("in-progress", inProgress);
+
+            if(enabledSelf != !inProgress)
+            {
+                SetEnabled(!inProgress);
+            }
         }
 
         public bool IsPointerHoveringOnHandle()

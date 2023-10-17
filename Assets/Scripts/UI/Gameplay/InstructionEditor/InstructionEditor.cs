@@ -847,12 +847,6 @@ namespace RecoDeli.Scripts.UI
             {
                 ScrollToInstruction(instructionIndex, true);
             }
-
-            if (playingInstructions && instructionBars.Count > instructionIndex)
-            {
-                instructionBars[instructionIndex].Blocked = true;
-                //instructionBars[instructionIndex].Blur();
-            }
         }
 
         public void SetPlaybackState(bool state)
@@ -882,7 +876,6 @@ namespace RecoDeli.Scripts.UI
             {
                 bar.Selected = false;
                 bar.Locked = state;
-                bar.Blocked = false;
             }
         }
 
