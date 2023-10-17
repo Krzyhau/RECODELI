@@ -94,13 +94,6 @@ namespace RecoDeli.Scripts
             // menuButton.clicked += 
         }
 
-        private void Start()
-        {
-            // HACK: Game UI panel is not set as selected by Event System on start and
-            // there is no way to set it properly. Focusing any element does the job though.
-            InstructionEditor.ListDocument.Focus();
-        }
-
         private void Update()
         {
             UpdateTimer();
@@ -110,7 +103,9 @@ namespace RecoDeli.Scripts
             saveButton.SetEnabled(!simulationManager.PlayingSimulation);
             settingsButton.SetEnabled(!simulationManager.PlayingSimulation);
 
-            Document.rootVisualElement.SetEnabled(!ModalWindow.AnyOpened);
+            Document.rootVisualElement.SetEnabled(
+                !ModalWindow.AnyOpened && !endingInterface.IsInterfaceShown()
+            );
         }
 
         private void UpdateTimer()
@@ -160,7 +155,6 @@ namespace RecoDeli.Scripts
         public void ShowEndingInterface(bool show)
         {
             endingInterface.ShowInterface(show);
-            interfaceDocument.rootVisualElement.SetEnabled(!show);
         }
     }
 }

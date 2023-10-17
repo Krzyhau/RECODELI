@@ -40,6 +40,7 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private InputActionReference rangeSelectionInput;
         [SerializeField] private InputActionReference dragSelectionInput;
 
+        private UIDocument usedDocument;
         private VisualElement instructionEditorContainer;
         private ScrollView instructionsContainer;
 
@@ -67,6 +68,8 @@ namespace RecoDeli.Scripts.UI
         private float mouseListRealPosition;
         private int remainingRepositioningRequests;
 
+        private bool lastEnabledState;
+
         public bool Grabbing => grabbing;
         public List<InstructionBar> InstructionBars => instructionBars;
         public int CurrentSlot => currentSlot;
@@ -78,6 +81,8 @@ namespace RecoDeli.Scripts.UI
 
         public void Initialize(UIDocument gameDocument)
         {
+            usedDocument = gameDocument;
+
             commandStateController = new(this);
             commandStateController.MaxUndoHistory = maxUndoHistory;
 
@@ -144,6 +149,14 @@ namespace RecoDeli.Scripts.UI
             }
 
             instructionEditorContainer.EnableInClassList("no-instructions", instructionBars.Count == 0);
+
+            var currentEnabledState = usedDocument.rootVisualElement.enabledSelf;
+            if (currentEnabledState && lastEnabledState != currentEnabledState)
+            {
+                ListDocument.Focus();
+            }
+
+            lastEnabledState = currentEnabledState;
         }
 
         private void LateUpdate()

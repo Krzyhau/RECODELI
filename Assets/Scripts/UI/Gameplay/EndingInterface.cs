@@ -209,5 +209,10 @@ namespace RecoDeli.Scripts.UI
                 ShowTab(0);
             }
         }
+
+        public bool IsInterfaceShown()
+        {
+            return endingDocument.rootVisualElement.enabledSelf;
+        }
     }
 }
