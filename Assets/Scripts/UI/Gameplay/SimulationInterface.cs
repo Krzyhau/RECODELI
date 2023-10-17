@@ -111,7 +111,7 @@ namespace RecoDeli.Scripts
         private void UpdateTimer()
         {
             var monospaceSize = 0.6f;
-            var time = simulationManager.SimulationTime;
+            var time = GetDisplaySimulationTime();
             var timeString = time.ToString(timerFormat);
             var timeSegments = timeString.Split('.');
 
@@ -119,6 +119,16 @@ namespace RecoDeli.Scripts
 
             var timerString = $"<mspace={monospaceSize}em>{timeSegments[0]}</mspace>.<mspace={monospaceSize}em>{milliseconds}</mspace>";
             timeLabel.text = timerString;
+        }
+
+        private float GetDisplaySimulationTime()
+        {
+            // doing this achieves two things: time is interpolated between smaller
+            // values when playback timescale is low, and it displays nice round
+            // numbers during playback that actually matches with the instruction set
+            var timeStep = (float)simulationManager.PhysicsSimulationInstance.TimeStep;
+            var interpTime = simulationManager.PhysicsSimulationInstance.InterpolationTime;
+            return simulationManager.SimulationTime + (interpTime - 1.0f) * timeStep;
         }
 
         private void UpdateInstructions()

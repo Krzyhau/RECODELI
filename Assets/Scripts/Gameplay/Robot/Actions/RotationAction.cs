@@ -28,7 +28,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
             var stepCounts = (parameter / deltaTime);
 
-            fint t = deltaTime;
+            fint t = 0;
 
             // robot needs to rotate with certain velocity at given time in order to stop perfectly at given angle
             for (fint step = (fint)0; step <= stepCounts + (fint)1; step += (fint)1)

@@ -123,6 +123,11 @@ namespace BEPUphysics.Unity
             }
         }
 
+        public void ResetStepTimer()
+        {
+            timeSinceLastStep = timeStep;
+        }
+
         public void RemoveEntity(IBepuEntity entity)
         {
             rigidbodies.Remove(entity);

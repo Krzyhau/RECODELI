@@ -25,7 +25,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             var parameter = (fint)instruction.Parameter;
             var absParameter = fint.Abs(parameter);
             var finalMovementDir = fint.Sign(parameter) * (fint)movementDirection;
-            for (fint t = (fint)0; t < absParameter; t += deltaTime)
+            for (fint t = (fint)0.0001f; t < absParameter; t += deltaTime)
             {
                 yield return 1;
 

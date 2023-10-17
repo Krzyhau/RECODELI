@@ -848,7 +848,7 @@ namespace RecoDeli.Scripts.UI
                 ScrollToInstruction(instructionIndex, true);
             }
 
-            if (playingInstructions)
+            if (playingInstructions && instructionBars.Count > instructionIndex)
             {
                 instructionBars[instructionIndex].Blocked = true;
                 //instructionBars[instructionIndex].Blur();

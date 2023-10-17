@@ -184,6 +184,7 @@ namespace RecoDeli.Scripts.Controllers
             if(!skipping && wasPausedBeforeSkipping)
             {
                 PauseSimulation();
+                simulationInstance.ResetStepTimer();
                 wasPausedBeforeSkipping = false;
             }
         }
