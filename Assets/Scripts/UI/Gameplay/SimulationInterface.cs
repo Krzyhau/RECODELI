@@ -128,7 +128,9 @@ namespace RecoDeli.Scripts
             // numbers during playback that actually matches with the instruction set
             var timeStep = (float)simulationManager.PhysicsSimulationInstance.TimeStep;
             var interpTime = simulationManager.PhysicsSimulationInstance.InterpolationTime;
-            return simulationManager.SimulationTime + (interpTime - 1.0f) * timeStep;
+            var displayTime = simulationManager.SimulationTime + (interpTime - 1.0f) * timeStep;
+
+            return Mathf.Clamp(displayTime, 0.0f, simulationManager.FinishedSimulation ? simulationManager.LastCompletionTime : float.MaxValue);
         }
 
         private void UpdateInstructions()
