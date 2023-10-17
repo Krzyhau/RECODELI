@@ -487,6 +487,8 @@ namespace RecoDeli.Scripts.UI
         // the moment of clicking the bar
         private void OnBarPointerDown(PointerDownEvent e, InstructionBar bar)
         {
+            if (e.target != bar) return;
+
             currentlyHeldBar = bar;
             instructionsContainer.contentContainer.CapturePointer(e.pointerId);
 
