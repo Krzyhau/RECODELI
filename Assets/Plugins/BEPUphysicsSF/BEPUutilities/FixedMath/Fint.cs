@@ -318,7 +318,10 @@ namespace BEPUutilities.FixedMath
 
             if (yl == 0)
             {
-                throw new DivideByZeroException();
+                // HACK: where tf are infinities in integers >=[
+                return xl < 0 ? fint.MinValue : fint.MaxValue;
+                //throw new DivideByZeroException();
+                
             }
 
             var remainder = (ulong)(xl >= 0 ? xl : -xl);
