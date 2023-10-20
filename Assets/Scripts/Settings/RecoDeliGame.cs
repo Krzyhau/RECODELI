@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 namespace RecoDeli.Scripts.Settings
 {
-    public class RecoDeliGame
+    public static class RecoDeliGame
     {
         public static RecoDeliSettings Settings => RecoDeliSettings.Instance;
 

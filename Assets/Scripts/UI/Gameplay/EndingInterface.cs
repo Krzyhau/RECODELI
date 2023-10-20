@@ -1,8 +1,12 @@
 ﻿using RecoDeli.Scripts.Controllers;
+using RecoDeli.Scripts.Leaderboards;
+using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.SaveManagement;
 using System.Collections.Generic;
 using UnityEditor.Timeline;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
+using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
@@ -26,11 +30,7 @@ namespace RecoDeli.Scripts.UI
         private Label instructionsLabel;
         private Label attemptsLabel;
 
-        private VisualElement barsContainer;
-        private VisualElement graphIndicator;
-        private Label graphIndicatorLabel;
-        private VisualElement graphLabels;
-        private ScrollView scores;
+        private LeaderboardInterface leaderboard;
 
         private enum Tab { Times, Instructions }
         private Tab displayedTab;
@@ -43,11 +43,7 @@ namespace RecoDeli.Scripts.UI
             friendsStatsButton = endingDocument.rootVisualElement.Q<Button>("friends-stats-button");
             globalStatsButton = endingDocument.rootVisualElement.Q<Button>("global-stats-button");
 
-            barsContainer = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-chart-bars");
-            graphIndicator = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-chart-score");
-            graphIndicatorLabel = endingDocument.rootVisualElement.Q<Label>("leaderboards-chart-score-label");
-            graphLabels = endingDocument.rootVisualElement.Q<VisualElement>("leaderboards-chart-labels");
-            scores = endingDocument.rootVisualElement.Q<ScrollView>("leaderboards-scores");
+            leaderboard = endingDocument.rootVisualElement.Q<LeaderboardInterface>("leaderboards");
 
             timeLabel = endingDocument.rootVisualElement.Q<Label>("stat-time");
             instructionsLabel = endingDocument.rootVisualElement.Q<Label>("stat-instructions");
@@ -84,7 +80,11 @@ namespace RecoDeli.Scripts.UI
             }
             displayedTab = (Tab)index;
 
-            RefreshDataDisplay();
+            leaderboard.ShowData(displayedTab switch
+            {
+                Tab.Instructions => LeaderboardInterface.ShownDataType.InstructionCount,
+                Tab.Times or _ => LeaderboardInterface.ShownDataType.Time
+            });
         }
 
         private void SetFriendsOnly(bool state)
@@ -92,102 +92,11 @@ namespace RecoDeli.Scripts.UI
             onlyFriends = state;
             friendsStatsButton.SetEnabled(!state);
             globalStatsButton.SetEnabled(state);
-            RefreshDataDisplay();
+            leaderboard.SetFriendsOnly(state);
         }
 
 
-        private void SetGraphIndicator(float position, int topPercentage)
-        {
-            if(position >= 1.0f)
-            {
-                graphIndicator.style.display = DisplayStyle.None;
-                return;
-            }
-            
-            graphIndicator.style.display = DisplayStyle.Flex;
-            graphIndicator.style.left = Length.Percent(position * 100.0f);
-
-            graphIndicator.EnableInClassList("top50", position < 0.5f);
-            graphIndicatorLabel.text = $"YOU (TOP {topPercentage}%)";
-        }
-
-        private void SetGraphBars(List<float> values)
-        {
-            barsContainer.Clear();
-
-            foreach(var value in values)
-            {
-                var newBar = new VisualElement();
-                newBar.style.height = Length.Percent(value * 100.0f);
-                barsContainer.Add(newBar);
-            }
-        }
-
-        private void SetGraphLabels(List<string> labels)
-        {
-            graphLabels.Clear();
-
-            foreach (var labelText in labels)
-            {
-                var label = new Label(labelText);
-                graphLabels.Add(label);
-            }
-        }
-
-        private void SetScores(Dictionary<string, string> scoresData)
-        {
-            scores.Clear();
-
-            foreach(var score in scoresData)
-            {
-                var scoreTab = new VisualElement() { name = "score" };
-                scoreTab.Add(new Label(score.Key));
-                scoreTab.Add(new Label(score.Value));
-
-                // TODO: make a proper user recognition for highlight
-                if(score.Key == "YOU")
-                {
-                    scoreTab.AddToClassList("own");
-                }
-
-                scores.Add(scoreTab);
-            }
-        }
-
-        private void RefreshDataDisplay()
-        {
-            if(displayedTab == Tab.Times)
-            {
-                SetGraphIndicator(0.8f, 69);
-                SetGraphBars(new List<float> { 0.1f, 0.2f, 0.5f, 1.0f, 0.9f, 0.8f, 0.9f, 0.1f, 0.2f, 0.3f, 0.1f, 0.1f });
-                SetGraphLabels(new List<string> { "0.00", "20.00" });
-
-                SetScores(new Dictionary<string, string>
-                {
-                    {"THIS", "0.00"},
-                    {"YOU", $"{SaveManager.CurrentSave.GetCurrentLevelInfo()?.FastestTime:F2}"},
-                    {"LEADERBOARD", "0.00"},
-                    {"IS", "0.00"},
-                    {"FAKE", "0.00"}
-                });
-            }
-            else if(displayedTab == Tab.Instructions)
-            {
-                SetGraphIndicator(0.2f, 5);
-                SetGraphBars(new List<float> { 0.05f, 0.1f, 0.1f, 0.2f, 0.3f, 0.6f, 0.9f, 0.95f, 1.0f, 0.3f, 1.0f, 0.1f });
-                SetGraphLabels(new List<string> { "0", "20" });
-
-                SetScores(new Dictionary<string, string>
-                {
-                    {"THIS", "0"},
-                    {"LEADERBOARD", "0"},
-                    {"IS", "0"},
-                    {"YOU", $"{SaveManager.CurrentSave.GetCurrentLevelInfo()?.LowestInstructions}"},
-                    {"FAKE", "0"}
-                });
-            }
-        }
-
+        
         public void ShowInterface(bool show)
         {
             endingDocument.rootVisualElement.SetEnabled(show);
@@ -206,6 +115,7 @@ namespace RecoDeli.Scripts.UI
                 instructionsLabel.text = $"{instructions}";
                 attemptsLabel.text = $"{attempts}";
 
+                leaderboard.Initialize(LevelLoader.CurrentlyLoadedLevel, new TestLeaderboardProvider());
                 ShowTab(0);
             }
         }

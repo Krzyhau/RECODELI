@@ -8,6 +8,7 @@ namespace RecoDeli.Scripts.SaveManagement
     [Serializable]
     public class SaveData
     {
+        public string Name;
         public float PlayTime;
 
         public List<SaveLevelInfo> LevelInfos;

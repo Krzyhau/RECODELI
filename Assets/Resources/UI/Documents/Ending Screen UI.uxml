@@ -52,19 +52,7 @@
                             </ui:Button>
                         </ui:VisualElement>
                         <ui:VisualElement name="leaderboards-view" class="tab-view-views">
-                            <ui:VisualElement name="leaderboards" style="display: flex;">
-                                <ui:VisualElement name="leaderboards-chart">
-                                    <ui:VisualElement name="leaderboards-chart-main" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);">
-                                        <ui:VisualElement name="leaderboards-chart-score" class="top50">
-                                            <ui:Label tabindex="-1" text="UNDEFINED" display-tooltip-when-elided="true" enable-rich-text="true" name="leaderboards-chart-score-label" />
-                                            <ui:VisualElement name="leaderboards-chart-line" />
-                                        </ui:VisualElement>
-                                        <ui:VisualElement name="leaderboards-chart-bars" />
-                                    </ui:VisualElement>
-                                    <ui:VisualElement name="leaderboards-chart-labels" />
-                                </ui:VisualElement>
-                                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" name="leaderboards-scores" mouse-wheel-scroll-size="1000" />
-                            </ui:VisualElement>
+                            <RecoDeli.Scripts.UI.LeaderboardInterface name="leaderboards" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
