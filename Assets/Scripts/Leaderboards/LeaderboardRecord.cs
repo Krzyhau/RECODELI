@@ -2,11 +2,16 @@
 
 namespace RecoDeli.Scripts.Leaderboards
 {
+    public struct LeaderboardScore
+    {
+        public int Place;
+        public float Value;
+    }
     public struct LeaderboardRecord
     {
         public string DisplayName;
-        public float CompletionTime;
-        public int InstructionsCount;
-        public DateTime ScoreTime;
+        public LeaderboardScore CompletionTime;
+        public LeaderboardScore InstructionsCount;
+        public DateTime ScoreRecordedAt;
     }
-}
+} 

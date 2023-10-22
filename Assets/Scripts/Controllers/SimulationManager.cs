@@ -1,6 +1,8 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.Leaderboards;
+using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.UI;
 using System.Linq;
@@ -48,12 +50,17 @@ namespace RecoDeli.Scripts.Controllers
         public bool FinishedSimulation => finishedSimulation;
         public bool PausedSimulation => paused;
         public float SimulationTime => simulationInstance != null ? (float)simulationInstance.SimulationTime : 0.00f;
-        
+        public LeaderboardProvider LeaderboardProvider { get;private set; }
+
         public static SimulationManager Instance { get; private set; }
 
         private void Awake()
         {
             Instance = this;
+
+            LeaderboardProvider = new TestLeaderboardProvider(LevelLoader.CurrentlyLoadedLevel);
+            LeaderboardProvider.OnSubmit += LeaderboardProvider.RequestScores;
+
             if (simulationGroup && simulationGroup.gameObject.activeSelf)
             {
                 SetPhysicsSimulation(simulationGroup);
@@ -143,6 +150,8 @@ namespace RecoDeli.Scripts.Controllers
             LastCompletionTime = SimulationTime;
 
             SaveCompletionStats();
+
+            LeaderboardProvider.SubmitScore(SimulationTime, RobotController.CurrentInstructions);
 
             endingController.StartEnding();
 

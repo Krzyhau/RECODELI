@@ -1126,3 +1126,7 @@ Scroller #unity-tracker {
     padding-top: 5px;
     padding-bottom: 5px;
 }
+
+#ending-stats #stats-window {
+    flex-shrink: 0;
+}

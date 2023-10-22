@@ -33,25 +33,26 @@ namespace RecoDeli.Scripts.UI
         private ShownDataType shownData;
 
         private LeaderboardProvider provider;
-        private string levelName;
-        private bool triedLoading;
-        private bool hasLoaded;
-        private List<LeaderboardRecord> loadedRecords;
 
         public LeaderboardInterface()
         {
-            triedLoading = false;
-            hasLoaded = false;
-
             Construct();
         }
 
-        public void Initialize(string levelName, LeaderboardProvider provider)
+        public void Initialize(LeaderboardProvider provider)
         {
-            this.levelName = levelName;
-            this.provider = provider;
+            SetStatusText("Loading...");
 
-            RequestAndRefreshDataDisplay();
+            if(this.provider != provider)
+            {
+                this.provider = provider;
+                this.provider.OnLoaded += () => RefreshDataDisplay();
+
+                this.provider.OnFailed += (e) => SetStatusText("Connection failed");
+                this.provider.OnSubmitFailed += (e) => SetStatusText("Connection failed");
+            }
+
+            RefreshDataDisplay();
         }
 
         public void Construct()
@@ -101,7 +102,7 @@ namespace RecoDeli.Scripts.UI
         {
             friendsOnly = state;
 
-            RequestAndRefreshDataDisplay();
+            RefreshDataDisplay();
         }
 
         public void ShowData(ShownDataType type)
@@ -110,7 +111,7 @@ namespace RecoDeli.Scripts.UI
             shownData = type;
             if(oldData != shownData)
             {
-                RequestAndRefreshDataDisplay();
+                RefreshDataDisplay();
             }
         }
 
@@ -178,90 +179,59 @@ namespace RecoDeli.Scripts.UI
             statusLabel.text = status;
         }
 
-        private void RequestAndRefreshDataDisplay()
+        private void RefreshDataDisplay()
         {
-            SetStatusText("Loading...");
+            Debug.Log("BBBB");
+            if (provider == null || provider.Status != LeaderboardProvider.LoadingStatus.Loaded) return;
 
-            if (provider == null)
-            {
-                return;
-            }
-            if (hasLoaded && provider.HasScoresCached(levelName))
-            {
-                RefreshDataDisplay(provider.CachedRecords[levelName]);
-            }
-            else if(!triedLoading && !hasLoaded)
-            {
-
-                this.schedule.Execute(() =>
-                {
-                    if (loadedRecords == null) return;
-                    RefreshDataDisplay(loadedRecords);
-                }).Until(() => loadedRecords != null || hasLoaded);
-
-                triedLoading = true;
-                provider.RequestScores(
-                    levelName,
-                    list =>
-                    {
-                        hasLoaded = true;
-                        loadedRecords = list;
-                    },
-                    ex =>
-                    {
-                        hasLoaded = true;
-                        Debug.LogError(ex.Message);
-                        SetStatusText("Cannot fetch scores");
-                    }
-                );
-            }
-            else
-            {
-                return;
-            }
-        }
-
-        private void RefreshDataDisplay(List<LeaderboardRecord> records)
-        {
             SetStatusText(null);
 
             this.AddToClassList("leaderboards");
 
-            //var minimumValue = 0.0f;
-            //var maximumValue = 10.0f;
-            //var bar = new List<float>();
-            //var graphLabel = new List<string>();
-            //var scores = new Dictionary<string, string>();
+            var data = provider.CachedData;
 
-            if (shownData == ShownDataType.Time)
-            {
-                SetGraphIndicator(0.8f, 69);
-                SetGraphBars(new List<float> { 0.1f, 0.2f, 0.5f, 1.0f, 0.9f, 0.8f, 0.9f, 0.1f, 0.2f, 0.3f, 0.1f, 0.1f });
-                SetGraphLabels(new List<string> { "0.00", "20.00" });
-
-                SetScores(new Dictionary<string, string>
+            var recordsToShow = data.Records.ToDictionary(
+                r => r.DisplayName,
+                r => shownData switch
                 {
-                    {"THIS", "0.00"},
-                    {"YOU", $"{SaveManager.CurrentSave.GetCurrentLevelInfo()?.FastestTime:F2}"},
-                    {"LEADERBOARD", "0.00"},
-                    {"IS", "0.00"},
-                    {"FAKE", "0.00"}
-                });
-            }
-            else if (shownData == ShownDataType.InstructionCount)
-            {
-                SetGraphIndicator(0.2f, 5);
-                SetGraphBars(new List<float> { 0.05f, 0.1f, 0.1f, 0.2f, 0.3f, 0.6f, 0.9f, 0.95f, 1.0f, 0.3f, 1.0f, 0.1f });
-                SetGraphLabels(new List<string> { "0", "20" });
+                    ShownDataType.Time => r.CompletionTime,
+                    ShownDataType.InstructionCount or _ => r.InstructionsCount
+                }
+            ).OrderBy(r=> r.Value.Place);
 
-                SetScores(new Dictionary<string, string>
-                {
-                    {"THIS", "0"},
-                    {"LEADERBOARD", "0"},
-                    {"IS", "0"},
-                    {"YOU", $"{SaveManager.CurrentSave.GetCurrentLevelInfo()?.LowestInstructions}"},
-                    {"FAKE", "0"}
-                });
+            var valueFormat = shownData switch
+            {
+                ShownDataType.Time => "0.00",
+                ShownDataType.InstructionCount or _ => "0",
+            };
+
+            var stats = shownData switch
+            {
+                ShownDataType.Time => data.TimeStats,
+                ShownDataType.InstructionCount or _ => data.InstructionsStats,
+            };
+
+            SetGraphLabels(new List<string> { 
+                stats.BestRecord.ToString(valueFormat),
+                //((stats.BestRecord + stats.WorstRecord) / 2).ToString(valueFormat),
+                stats.WorstRecord.ToString(valueFormat),
+            });
+
+            SetGraphBars(stats.Averages);
+
+            SetScores(recordsToShow.ToDictionary(
+                r => $"{r.Value.Place}. {r.Key}",
+                r => r.Value.Value.ToString(valueFormat)
+            ));
+
+            var userName = SaveManager.CurrentSave.Name;
+            var ownRecordQuery = recordsToShow.Where(r => r.Key == userName);
+            if(ownRecordQuery.Any())
+            {
+                var ownRecord = ownRecordQuery.First().Value;
+                var position = ((ownRecord.Value - stats.BestRecord) / (stats.WorstRecord - stats.BestRecord));
+                var percentage = (ownRecord.Place / (float)stats.RecordCount) * 100.0f;
+                SetGraphIndicator(position, Mathf.Max((int)percentage, 1));
             }
         }
 

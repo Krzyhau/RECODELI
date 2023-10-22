@@ -115,7 +115,7 @@ namespace RecoDeli.Scripts.UI
                 instructionsLabel.text = $"{instructions}";
                 attemptsLabel.text = $"{attempts}";
 
-                leaderboard.Initialize(LevelLoader.CurrentlyLoadedLevel, new TestLeaderboardProvider());
+                leaderboard.Initialize(endingController.SimulationManager.LeaderboardProvider);
                 ShowTab(0);
             }
         }

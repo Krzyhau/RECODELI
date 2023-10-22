@@ -1,64 +1,90 @@
-﻿using RecoDeli.Scripts.SaveManagement;
+﻿using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.Utils;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace RecoDeli.Scripts.Leaderboards
 {
     public abstract class LeaderboardProvider
     {
-        public Dictionary<string, List<LeaderboardRecord>> CachedRecords = new();
-        private LeaderboardRecord ownCachedRecord;
-        private string ownCachedRecordLevelName;
-
-        public bool HasScoresCached(string levelName)
+        public enum LoadingStatus
         {
-            return CachedRecords.ContainsKey(levelName);
+            NotLoaded,
+            Loading,
+            Loaded,
+            Failed
         }
 
-        public void RequestScores(string levelName, Action<List<LeaderboardRecord>> onLoaded, Action<Exception> onFailed) {
-            if (HasScoresCached(levelName))
+        private LeaderboardRecord? ownCachedRecord;
+
+        public string LevelName { get; private set; }
+        public LeaderboardData CachedData { get; protected set; }
+        public LoadingStatus Status { get; private set; }
+
+
+        public Action OnLoaded;
+        public Action<Exception> OnFailed;
+        public Action OnSubmit;
+        public Action<Exception> OnSubmitFailed;
+
+        public LeaderboardProvider(string levelName)
+        {
+            CachedData = new();
+            LevelName = levelName;
+            Status = LoadingStatus.NotLoaded;
+        }
+
+        public void RequestScores() {
+            if (Status == LoadingStatus.Loading)
             {
-                onLoaded(CachedRecords[levelName]);
                 return;
             }
+            Status = LoadingStatus.Loading;
 
             Task.Run(async () =>
             {
                 try
                 {
-                    List<LeaderboardRecord> scores = await FetchScores();
-                    if(ownCachedRecordLevelName == levelName)
+                    var scores = await FetchData();
+
+                    if (ownCachedRecord.HasValue)
                     {
-                        scores.Add(ownCachedRecord);
+                        scores.Records.Add(ownCachedRecord.Value);
                     }
-                    CachedRecords[levelName] = scores;
-                    onLoaded(scores);
+
+                    CachedData = scores;
+                    Status = LoadingStatus.Loaded;
+                    MainThreadExecutor.Run(() => OnLoaded?.Invoke());
+                    Debug.Log("AAAA");
                 }
                 catch (Exception ex)
                 {
-                    onFailed(ex);
+                    Status = LoadingStatus.Failed;
+                    Debug.LogError($"Could not load leaderboards: {ex.Message}");
+                    MainThreadExecutor.Run(() => OnFailed?.Invoke(ex));
                 }
             });
         }
 
-        public void SubmitScore(string levelName, float time, int instructions)
+        public void SubmitScore(float time, RobotInstruction[] instructions)
         {
-            SendScore(levelName, time, instructions);
-            ownCachedRecord = new()
+            Task.Run(async () =>
             {
-                DisplayName = SaveManager.CurrentSave.Name,
-                CompletionTime = time,
-                InstructionsCount = instructions,
-                ScoreTime = DateTime.Now
-            };
-            ownCachedRecordLevelName = levelName;
+                try
+                {
+                    await SendScore(time, instructions);
+                    MainThreadExecutor.Run(() => OnSubmit?.Invoke());
+                }
+                catch (Exception ex)
+                {
+                    MainThreadExecutor.Run(() => OnSubmitFailed?.Invoke(ex));
+                    Debug.LogError($"Could not submit new score to leaderboard: {ex.Message}");
+                }
+            });
         }
 
-        protected abstract Task<List<LeaderboardRecord>> FetchScores();
-        protected abstract void SendScore(string levelName, float time, int instructions);
+        protected abstract Task<LeaderboardData> FetchData();
+        protected abstract Task SendScore(float time, RobotInstruction[] instructions);
     }
 }
