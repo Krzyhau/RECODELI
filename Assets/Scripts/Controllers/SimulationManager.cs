@@ -1,4 +1,5 @@
 using BEPUphysics.Unity;
+using RecoDeli.Scripts.Assets.Scripts.Leaderboards;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
@@ -58,7 +59,7 @@ namespace RecoDeli.Scripts.Controllers
         {
             Instance = this;
 
-            LeaderboardProvider = new TestLeaderboardProvider(LevelLoader.CurrentlyLoadedLevel);
+            LeaderboardProvider = new MyOwnShittyLeaderboardProvider(LevelLoader.CurrentlyLoadedLevel);
             LeaderboardProvider.OnSubmit += LeaderboardProvider.RequestScores;
 
             if (simulationGroup && simulationGroup.gameObject.activeSelf)

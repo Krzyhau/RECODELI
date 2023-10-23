@@ -58,8 +58,9 @@ namespace RecoDeli.Scripts.Leaderboards
                 catch (Exception ex)
                 {
                     Status = LoadingStatus.Failed;
-                    Debug.LogError($"Could not load leaderboards: {ex.Message}");
                     MainThreadExecutor.Run(() => OnFailed?.Invoke(ex));
+                    Debug.Log(ex.StackTrace);
+                    Debug.LogError($"Could not load leaderboards: {ex.Message}");
                 }
             });
         }

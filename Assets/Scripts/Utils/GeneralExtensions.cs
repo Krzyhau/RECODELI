@@ -1,4 +1,7 @@
+using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace RecoDeli.Scripts.Utils
 {
@@ -33,6 +36,16 @@ namespace RecoDeli.Scripts.Utils
             }
             return transform;
         }
+        #endregion
+
+        #region TaskAwaiter
+        public static TaskAwaiter GetAwaiter(this AsyncOperation asyncOp)
+        {
+            var tcs = new TaskCompletionSource<AsyncOperation>();
+            asyncOp.completed += operation => { tcs.SetResult(operation); };
+            return ((Task)tcs.Task).GetAwaiter();
+        }
+
         #endregion
     }
 }

@@ -153,18 +153,18 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        private void SetScores(Dictionary<string, string> scoresData, string nameToHighlight)
+        private void SetScores(List<LeaderboardRecord> records, string format, string nameToHighlight)
         {
             scores.Clear();
 
-            foreach (var score in scoresData)
+            foreach (var record in records)
             {
                 var scoreTab = new VisualElement() { name = "score" };
-                scoreTab.Add(new Label(score.Key));
-                scoreTab.Add(new Label(score.Value));
+                scoreTab.Add(new Label($"{record.Place}. {record.DisplayName}"));
+                scoreTab.Add(new Label(record.Score.ToString(format)));
 
                 // TODO: make a proper user recognition for highlight
-                if (score.Key == nameToHighlight)
+                if (record.DisplayName == nameToHighlight)
                 {
                     scoreTab.AddToClassList("own");
                 }
@@ -217,16 +217,14 @@ namespace RecoDeli.Scripts.UI
 
             var userName = SaveManager.CurrentSave.Name;
 
-            SetScores(recordsToShow.ToDictionary(
-                r => $"{r.Place}. {r.DisplayName}",
-                r => r.Score.ToString(valueFormat)
-            ), userName);
+            SetScores(recordsToShow, valueFormat, userName);
 
             var ownRecordQuery = recordsToShow.Where(r => r.DisplayName == userName);
             if(ownRecordQuery.Any())
             {
                 var ownRecord = ownRecordQuery.First();
                 var position = ((ownRecord.Score - stats.BestRecord) / (stats.WorstRecord - stats.BestRecord));
+                if (float.IsNaN(position)) position = 0.0f;
                 var percentage = (ownRecord.Place / (float)stats.RecordCount) * 100.0f;
                 SetGraphIndicator(position, Mathf.Max((int)percentage, 1));
             }
