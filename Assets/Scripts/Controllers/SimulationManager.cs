@@ -151,6 +151,7 @@ namespace RecoDeli.Scripts.Controllers
 
             SaveCompletionStats();
 
+            LeaderboardProvider.Reset();
             LeaderboardProvider.SubmitScore(SimulationTime, RobotController.CurrentInstructions);
 
             endingController.StartEnding();

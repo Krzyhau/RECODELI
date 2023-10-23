@@ -16,8 +16,6 @@ namespace RecoDeli.Scripts.Leaderboards
             Failed
         }
 
-        private LeaderboardRecord? ownCachedRecord;
-
         public string LevelName { get; private set; }
         public LeaderboardData CachedData { get; protected set; }
         public LoadingStatus Status { get; private set; }
@@ -30,8 +28,13 @@ namespace RecoDeli.Scripts.Leaderboards
 
         public LeaderboardProvider(string levelName)
         {
-            CachedData = new();
             LevelName = levelName;
+            Reset();
+        }
+
+        public void Reset()
+        {
+            CachedData = new();
             Status = LoadingStatus.NotLoaded;
         }
 
@@ -48,15 +51,9 @@ namespace RecoDeli.Scripts.Leaderboards
                 {
                     var scores = await FetchData();
 
-                    if (ownCachedRecord.HasValue)
-                    {
-                        scores.Records.Add(ownCachedRecord.Value);
-                    }
-
                     CachedData = scores;
                     Status = LoadingStatus.Loaded;
                     MainThreadExecutor.Run(() => OnLoaded?.Invoke());
-                    Debug.Log("AAAA");
                 }
                 catch (Exception ex)
                 {

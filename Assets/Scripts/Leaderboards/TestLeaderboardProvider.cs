@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnityEngine;
-
+using UnityEngine.SocialPlatforms.Impl;
 using Random = UnityEngine.Random;
 
 namespace RecoDeli.Scripts.Leaderboards
@@ -14,44 +14,39 @@ namespace RecoDeli.Scripts.Leaderboards
     public class TestLeaderboardProvider : LeaderboardProvider
     {
 
-        private List<LeaderboardRecord> fakeRecords;
+        private List<LeaderboardRecord> fakeTimeRecords;
+        private List<LeaderboardRecord> fakeInstructionRecords;
 
         private static readonly string[] names = { "Bob", "Gamer", "Deliver", "Inpost", "Xddd", "Szmati", "Box", "Las", "Fok", "John", "ScriptKiddie" };
         public TestLeaderboardProvider(string levelName) : base(levelName) {
 
-            fakeRecords = new();
+            fakeTimeRecords = new();
+            fakeInstructionRecords = new();
 
             for (var i=0; i < 20; i++)
             {
-                var record = new LeaderboardRecord();
-
-
-                record.DisplayName = names[Random.Range(0, names.Length)];
-                record.DisplayName = Random.Range(0, 4) switch
+                var fakeUserName = names[Random.Range(0, names.Length)];
+                fakeUserName = Random.Range(0, 4) switch
                 {
-                    0 => record.DisplayName.ToLower(),
-                    1 => record.DisplayName.ToUpper(),
-                    _ => record.DisplayName,
+                    0 => fakeUserName.ToLower(),
+                    1 => fakeUserName.ToUpper(),
+                    _ => fakeUserName,
                 };
 
-                record.DisplayName = Random.Range(0, 4) switch
+                fakeUserName = Random.Range(0, 4) switch
                 {
-                    0 => record.DisplayName + "XX",
-                    1 => record.DisplayName + Random.Range(0, 3000),
-                    _ => record.DisplayName,
+                    0 => fakeUserName + "XX",
+                    1 => fakeUserName + Random.Range(0, 3000),
+                    _ => fakeUserName,
                 };
 
-                while(fakeRecords.Where(r => r.DisplayName == record.DisplayName).Any())
+                while(fakeTimeRecords.Where(r => r.DisplayName == fakeUserName).Any())
                 {
-                    record.DisplayName += "_";
+                    fakeUserName += "_";
                 }
 
-                record.InstructionsCount = new() { Place = 0, Value = Random.Range(1, 20) };
-                record.CompletionTime = new() { Place = 0, Value = Random.Range(3.0f, 40.0f) };
-
-                record.ScoreRecordedAt = DateTime.Now;
-
-                fakeRecords.Add(record);
+                fakeTimeRecords.Add(new(){Score = Random.Range(3.0f, 40.0f), DisplayName = fakeUserName});
+                fakeInstructionRecords.Add(new(){Score = Random.Range(1, 20), DisplayName = fakeUserName});
             }
         }
 
@@ -85,23 +80,32 @@ namespace RecoDeli.Scripts.Leaderboards
             await Task.Delay(3000);
 
             var data = new LeaderboardData();
-            data.Records = new();
+            data.InstructionRecords = new();
+            data.TimeRecords = new();
 
             // update place indicators for records
-            var instructionPlaces = fakeRecords.Select(r => r.InstructionsCount.Value).OrderBy(i => i).ToList();
-            var timePlaces = fakeRecords.Select(r => r.CompletionTime.Value).OrderBy(i => i).ToList();
+            var instructionPlaces = fakeInstructionRecords.Select(r => r.Score).OrderBy(i => i).ToList();
+            var timePlaces = fakeTimeRecords.Select(r => r.Score).OrderBy(i => i).ToList();
 
-            for(int i=0;i<fakeRecords.Count;i++)
+            for(int i=0;i< timePlaces.Count;i++)
             {
-                var record = fakeRecords[i];
-                record.InstructionsCount.Place = instructionPlaces.IndexOf(record.InstructionsCount.Value) + 1;
-                record.CompletionTime.Place = timePlaces.IndexOf(record.CompletionTime.Value) + 1;
-
-                data.Records.Add(record);
+                var record = fakeInstructionRecords[i];
+                record.Place = instructionPlaces.IndexOf(record.Score) + 1;
+                data.InstructionRecords.Add(record);
             }
 
-            data.InstructionsStats = GenerateStats(data.Records.Select(r => r.InstructionsCount.Value).ToList(), 32);
-            data.TimeStats = GenerateStats(data.Records.Select(r => r.CompletionTime.Value).ToList(), 16);
+            for (int i = 0; i < instructionPlaces.Count; i++)
+            {
+                var record = fakeTimeRecords[i];
+                record.Place = timePlaces.IndexOf(record.Score) + 1;
+                data.TimeRecords.Add(record);
+            }
+
+            data.InstructionRecords = data.InstructionRecords.OrderBy(r => r.Place).ToList();
+            data.TimeRecords = data.TimeRecords.OrderBy(r => r.Place).ToList();
+
+            data.InstructionsStats = GenerateStats(data.InstructionRecords.Select(r => r.Score).ToList(), 32);
+            data.TimeStats = GenerateStats(data.TimeRecords.Select(r => r.Score).ToList(), 16);
 
             return data;
         }
@@ -112,25 +116,11 @@ namespace RecoDeli.Scripts.Leaderboards
 
             var name = SaveManager.CurrentSave.Name;
 
-            var record = new LeaderboardRecord()
-            {
-                DisplayName = SaveManager.CurrentSave.Name,
-                CompletionTime = {Value = time},
-                InstructionsCount = {Value = instructions.Length},
-            };
+            fakeTimeRecords.RemoveAll(x => x.DisplayName == name && x.Score >= time);
+            fakeInstructionRecords.RemoveAll(x => x.DisplayName == name && x.Score >= instructions.Length);
 
-            var ownScore = fakeRecords.Where(r => r.DisplayName == name);
-            if (ownScore.Any())
-            {
-                var ownRecord = ownScore.First();
-
-                record.CompletionTime.Value = Mathf.Min(record.CompletionTime.Value, ownRecord.CompletionTime.Value);
-                record.InstructionsCount.Value = Mathf.Min(record.InstructionsCount.Value, ownRecord.InstructionsCount.Value);
-
-                fakeRecords.Remove(ownScore.First());
-            }
-
-            fakeRecords.Add(record);
+            fakeTimeRecords.Add(new(){ DisplayName = name, Score = time });
+            fakeInstructionRecords.Add(new(){ DisplayName = name, Score = instructions.Length });
         }
     }
 }

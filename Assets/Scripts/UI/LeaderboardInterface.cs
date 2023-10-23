@@ -153,7 +153,7 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        private void SetScores(Dictionary<string, string> scoresData)
+        private void SetScores(Dictionary<string, string> scoresData, string nameToHighlight)
         {
             scores.Clear();
 
@@ -164,7 +164,7 @@ namespace RecoDeli.Scripts.UI
                 scoreTab.Add(new Label(score.Value));
 
                 // TODO: make a proper user recognition for highlight
-                if (score.Key == "YOU")
+                if (score.Key == nameToHighlight)
                 {
                     scoreTab.AddToClassList("own");
                 }
@@ -181,7 +181,6 @@ namespace RecoDeli.Scripts.UI
 
         private void RefreshDataDisplay()
         {
-            Debug.Log("BBBB");
             if (provider == null || provider.Status != LeaderboardProvider.LoadingStatus.Loaded) return;
 
             SetStatusText(null);
@@ -190,14 +189,11 @@ namespace RecoDeli.Scripts.UI
 
             var data = provider.CachedData;
 
-            var recordsToShow = data.Records.ToDictionary(
-                r => r.DisplayName,
-                r => shownData switch
-                {
-                    ShownDataType.Time => r.CompletionTime,
-                    ShownDataType.InstructionCount or _ => r.InstructionsCount
-                }
-            ).OrderBy(r=> r.Value.Place);
+            var recordsToShow = shownData switch
+            {
+                ShownDataType.Time => data.TimeRecords,
+                ShownDataType.InstructionCount or _ => data.InstructionRecords,
+            };
 
             var valueFormat = shownData switch
             {
@@ -219,17 +215,18 @@ namespace RecoDeli.Scripts.UI
 
             SetGraphBars(stats.Averages);
 
-            SetScores(recordsToShow.ToDictionary(
-                r => $"{r.Value.Place}. {r.Key}",
-                r => r.Value.Value.ToString(valueFormat)
-            ));
-
             var userName = SaveManager.CurrentSave.Name;
-            var ownRecordQuery = recordsToShow.Where(r => r.Key == userName);
+
+            SetScores(recordsToShow.ToDictionary(
+                r => $"{r.Place}. {r.DisplayName}",
+                r => r.Score.ToString(valueFormat)
+            ), userName);
+
+            var ownRecordQuery = recordsToShow.Where(r => r.DisplayName == userName);
             if(ownRecordQuery.Any())
             {
-                var ownRecord = ownRecordQuery.First().Value;
-                var position = ((ownRecord.Value - stats.BestRecord) / (stats.WorstRecord - stats.BestRecord));
+                var ownRecord = ownRecordQuery.First();
+                var position = ((ownRecord.Score - stats.BestRecord) / (stats.WorstRecord - stats.BestRecord));
                 var percentage = (ownRecord.Place / (float)stats.RecordCount) * 100.0f;
                 SetGraphIndicator(position, Mathf.Max((int)percentage, 1));
             }
