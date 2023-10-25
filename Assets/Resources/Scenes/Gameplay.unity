@@ -940,43 +940,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1368461460}
   m_CullTransparentMesh: 1
---- !u!84 &1488796537
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1462
-  m_Height: 715
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 4
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &1530948745
 GameObject:
   m_ObjectHideFlags: 0
@@ -988,6 +951,7 @@ GameObject:
   - component: {fileID: 1530948746}
   - component: {fileID: 1530948747}
   - component: {fileID: 1530948748}
+  - component: {fileID: 1530948749}
   m_Layer: 0
   m_Name: Save Management UI
   m_TagString: Untagged
@@ -1041,6 +1005,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windowDocument: {fileID: 1530948747}
   instructionEditor: {fileID: 1978553144}
+--- !u!114 &1530948749
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530948745}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 519f5e183fb219f4e9c38a6e9331c0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  className: game-modal
 --- !u!1 &1532536776
 GameObject:
   m_ObjectHideFlags: 0
@@ -1295,6 +1272,43 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 310563029}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &1662449530
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1457
+  m_Height: 667
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 4
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!4 &1665495789 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9195589695181121035, guid: 1b44246a72d96ae40991c6d12be7ecc9,
@@ -1381,7 +1395,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 1488796537}
+  m_Texture: {fileID: 1662449530}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1591,6 +1605,7 @@ GameObject:
   - component: {fileID: 2009380148}
   - component: {fileID: 2009380150}
   - component: {fileID: 2009380149}
+  - component: {fileID: 2009380151}
   m_Layer: 0
   m_Name: Settings UI
   m_TagString: Untagged
@@ -1643,6 +1658,19 @@ MonoBehaviour:
   sourceAsset: {fileID: 9197481963319205126, guid: 6f8aef13e3b36be4e8f0147ba93c2733,
     type: 3}
   m_SortingOrder: 2
+--- !u!114 &2009380151
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2009380147}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 519f5e183fb219f4e9c38a6e9331c0e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  className: game-modal
 --- !u!1 &2059473334
 GameObject:
   m_ObjectHideFlags: 0

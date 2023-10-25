@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UIElements;
 
-namespace RecoDeli.Scripts
+namespace RecoDeli.Scripts.UI
 {
     public class SimulationInterface : MonoBehaviour
     {
