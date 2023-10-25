@@ -28,6 +28,7 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private AudioSource playAmbient;
         [SerializeField] private AudioSource successSound;
         [SerializeField] private AudioSource restartSound;
+        [SerializeField] private float fadeTime;
 
         private bool paused = false;
         private bool playingSimulation = false;
@@ -39,6 +40,10 @@ namespace RecoDeli.Scripts.Controllers
 
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
+
+        private float initialIdleVolume;
+        private float initialPlayVolume;
+        private float ambientFaderValue;
 
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
@@ -66,6 +71,9 @@ namespace RecoDeli.Scripts.Controllers
             {
                 SetPhysicsSimulation(simulationGroup);
             }
+
+            initialIdleVolume = idleAmbient.volume;
+            initialPlayVolume = playAmbient.volume;
         }
         private void OnEnable()
         {
@@ -93,6 +101,12 @@ namespace RecoDeli.Scripts.Controllers
             {
                 didAtLeastOneLogicUpdateThisFrame = false;
             }
+
+            float targetFaderValue = (playingSimulation && !finishedSimulation) ? 1.0f : 0.0f;
+
+            ambientFaderValue = Mathf.MoveTowards(ambientFaderValue, targetFaderValue, (1.0f / fadeTime) * Time.unscaledDeltaTime);
+            idleAmbient.volume = Mathf.Lerp(0.0f, initialIdleVolume, 1.0f - ambientFaderValue);
+            playAmbient.volume = Mathf.Lerp(0.0f, initialPlayVolume, ambientFaderValue);
         }
 
         private void LogicUpdate()
@@ -160,8 +174,6 @@ namespace RecoDeli.Scripts.Controllers
             paused = false;
             Time.timeScale = 1.0f;
 
-            playAmbient.mute = true;
-            idleAmbient.mute = false;
             successSound.Play();
             finishedSimulation = true;
         }
@@ -213,9 +225,6 @@ namespace RecoDeli.Scripts.Controllers
             playingSimulation = true;
             lastInstruction = -1;
 
-            playAmbient.mute = false;
-            idleAmbient.mute = true;
-
             SaveManager.CurrentSave.GetCurrentLevelInfo().ExecutionCount++;
         }
 
@@ -242,9 +251,6 @@ namespace RecoDeli.Scripts.Controllers
 
             simulationInterface.InstructionEditor.SetPlaybackState(false);
             simulationInterface.InstructionEditor.HighlightInstruction(-1);
-
-            playAmbient.mute = true;
-            idleAmbient.mute = false;
 
             if (simulationInstance != null)
             {
