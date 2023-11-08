@@ -842,7 +842,7 @@ Slider:focus Label {
     transition-delay: 0s;
 }
 
-#leaderboards {
+.leaderboards {
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 5px;
@@ -850,7 +850,7 @@ Slider:focus Label {
     flex-grow: 1;
 }
 
-#leaderboards > * {
+.leaderboards > * {
     flex-grow: 1;
     border-left-color: rgb(255, 255, 255);
     border-right-color: rgb(255, 255, 255);
@@ -867,7 +867,7 @@ Slider:focus Label {
     height: 50%;
 }
 
-#leaderboards-chart {
+.leaderboards-chart {
     padding-left: 10px;
     padding-right: 10px;
     flex-grow: 1;
@@ -876,25 +876,25 @@ Slider:focus Label {
     flex-direction: column;
 }
 
-#leaderboards-chart-main {
+.leaderboards-chart-main {
     flex-grow: 1;
 }
 
-#leaderboards-chart-bars {
+.leaderboards-chart-bars {
     flex-grow: 1;
     flex-direction: row;
     align-items: flex-end;
     padding-top: 40px;
 }
 
-#leaderboards-chart-bars > VisualElement {
+.leaderboards-chart-bars > VisualElement {
     flex-grow: 1;
     background-color: rgb(255, 255, 255);
     margin-left: 2px;
     margin-right: 2px;
 }
 
-#leaderboards-chart-labels {
+.leaderboards-chart-labels {
     flex-direction: row;
     justify-content: space-between;
     margin-top: 5px;
@@ -902,7 +902,7 @@ Slider:focus Label {
     margin-right: 5px;
 }
 
-#leaderboards-chart-labels Label {
+.leaderboards-chart-labels Label {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
@@ -913,12 +913,12 @@ Slider:focus Label {
     padding-bottom: 0;
 }
 
-#leaderboards-scores {
+.leaderboards-scores {
     flex-grow: 1;
     flex-shrink: 1;
 }
 
-#leaderboards-chart-line {
+.leaderboards-chart-line {
     background-color: rgb(255, 255, 255);
     height: 100%;
     width: 2px;
@@ -929,13 +929,13 @@ Slider:focus Label {
     right: 0;
 }
 
-#leaderboards-chart-score {
+.leaderboards-chart-score {
     position: absolute;
     top: 10px;
     bottom: 0;
 }
 
-#leaderboards-chart-score Label {
+.leaderboards-chart-score Label {
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 0;
@@ -948,11 +948,11 @@ Slider:focus Label {
     right: 0;
 }
 
-#leaderboards-chart-score.top50 Label {
+.leaderboards-chart-score.top50 Label {
     right: auto;
 }
 
-#leaderboards-scores #score {
+.leaderboards-scores #score {
     flex-direction: row;
     justify-content: space-between;
     margin-left: 0;
@@ -965,11 +965,11 @@ Slider:focus Label {
     padding-bottom: 5px;
 }
 
-#leaderboards-scores #score.own {
+.leaderboards-scores #score.own {
     background-color: rgb(64, 64, 64);
 }
 
-#leaderboards-scores #score Label {
+.leaderboards-scores #score Label {
     margin-left: 0;
     margin-right: 0;
     margin-top: 0;
@@ -980,22 +980,22 @@ Slider:focus Label {
     padding-bottom: 0;
 }
 
-#leaderboards-scores #unity-content-container {
+.leaderboards-scores #unity-content-container {
     padding-top: 10px;
     padding-bottom: 10px;
     padding-right: 5px;
     padding-left: 5px;
 }
 
-#leaderboards.loading > * {
+.leaderboards.loading > * {
     display: none;
 }
 
-#leaderboards.loading > #leaderboards-status {
+.leaderboards.loading > #leaderboards-status {
     display: flex;
 }
 
-#leaderboards > #leaderboards-status {
+.leaderboards > #leaderboards-status {
     border-left-width: 0;
     border-right-width: 0;
     border-top-width: 0;
@@ -1311,4 +1311,143 @@ Scroller #unity-tracker {
 
 #main-menu-icons > .main-menu-button.unity-disabled {
     background-color: rgb(26, 26, 26);
+}
+
+#debug-levels-container {
+    width: 500px;
+    height: 500px;
+}
+
+#debug-levels-view {
+    width: 100%;
+    height: 100%;
+}
+
+#debug-levels-view #unity-content-container {
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#debug-levels-view Button {
+    margin-top: 0;
+    margin-bottom: 10px;
+}
+
+#debug-levels-view .levels-section-label {
+    -unity-text-align: upper-center;
+    margin-top: 10px;
+}
+
+.unity-disabled #main-menu-container {
+    display: none;
+}
+
+#tasks-container {
+    width: 1000px;
+    height: 500px;
+    flex-direction: row;
+}
+
+#tasks-list {
+    width: 300px;
+    border-right-width: 2px;
+    border-right-color: rgb(255, 255, 255);
+    flex-shrink: 0;
+}
+
+#tasks-list .unity-scroll-view__content-container {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#tasks-list Foldout {
+}
+
+#tasks-list Button {
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    -unity-text-align: upper-left;
+    justify-content: center;
+    align-items: center;
+    padding-left: 32px;
+    padding-right: 5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    height: 32px;
+}
+
+#task-details {
+    width: 100%;
+}
+
+#task-info {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#task-description {
+    flex-grow: 1;
+    border-left-color: rgb(255, 255, 255);
+    border-right-color: rgb(255, 255, 255);
+    border-top-color: rgb(255, 255, 255);
+    border-bottom-color: rgb(255, 255, 255);
+    border-top-width: 2px;
+    border-bottom-width: 2px;
+    border-right-width: 2px;
+    border-left-width: 2px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+#task-leaderboards {
+    width: 100%;
+    height: 200px;
+    flex-direction: row;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#task-info-line {
+    flex-direction: row;
+}
+
+#task-info-line .task-info-title {
+    width: 64px;
+    -unity-font-style: bold;
+}
+
+#task-info-line .task-info-mail {
+    color: rgb(191, 191, 191);
+}
+
+#task-info-line VisualElement {
+    flex-direction: row;
+}
+
+#task-description .unity-scroll-view__content-container {
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+#task-leaderboards #leaderboards {
+    flex-direction: row;
+}
+
+#task-leaderboards #leaderboards > * {
+    height: 95%;
+    flex-grow: 0;
+    width: 50%;
+    flex-shrink: 1;
 }
