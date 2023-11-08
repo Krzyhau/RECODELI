@@ -34,7 +34,7 @@ namespace RecoDeli.Scripts.Controllers
             {
                 gameRenderTargetTexture = new RenderTexture(Screen.width, Screen.height, 1);
                 gameRenderTargetTexture.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.R32G32B32A32_SFloat;
-                gameRenderTargetTexture.antiAliasing = 8;
+                // gameRenderTargetTexture.antiAliasing = 8;
             }
 
             if (gameRenderCamera.targetTexture != gameRenderTargetTexture)

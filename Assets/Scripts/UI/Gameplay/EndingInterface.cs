@@ -1,12 +1,6 @@
 ﻿using RecoDeli.Scripts.Controllers;
-using RecoDeli.Scripts.Leaderboards;
-using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.SaveManagement;
-using System.Collections.Generic;
-using UnityEditor.Timeline;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using UnityEngine.SocialPlatforms.Impl;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI

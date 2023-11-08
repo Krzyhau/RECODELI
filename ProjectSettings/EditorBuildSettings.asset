@@ -5,7 +5,7 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Resources/Scenes/DebugLevelSelection.unity
     guid: 04969ad9fd8b8f044a8e9d841a10bec2
   - enabled: 1
