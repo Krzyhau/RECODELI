@@ -1,9 +1,6 @@
-void GaussianBlur_float(UnityTexture2D Texture, float2 UV, float Blur, UnitySamplerState Sampler, out float4 Out)
+void GaussianBlur_float(UnityTexture2D Texture, float2 UV, float Blur, float Directions, float Quality, UnitySamplerState Sampler, out float4 Out)
 {
     const float TwoPi = 6.28318530718;
-
-    float Directions = 10.0;
-    float Quality = 3.0;
 
     float4 Color = Texture.Sample(Sampler, UV);
 

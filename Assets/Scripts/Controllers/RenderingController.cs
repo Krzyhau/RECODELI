@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.UIElements;
 
@@ -9,11 +10,25 @@ namespace RecoDeli.Scripts.Controllers
     {
         [SerializeField] private Camera gameRenderCamera;
         [SerializeField] private PanelSettings uiPanelSettings;
-
         [SerializeField] private RawImage imageTextureDisplayer;
 
+        [SerializeField] private Material downsampleMaterial;
+        [SerializeField] private int downsampleRatio;
+
         private RenderTexture gameRenderTargetTexture;
+        private RenderTexture gameRenderDownsampledTextureBuffer;
+        private RenderTexture gameRenderDownsampledTexture;
         private RenderTexture uiPanelTargetTexture;
+
+        public void OnEnable()
+        {
+            RenderPipelineManager.endCameraRendering += OnPostGameCameraRender;
+        }
+
+        public void OnDisable()
+        {
+            RenderPipelineManager.endCameraRendering -= OnPostGameCameraRender;
+        }
 
         public void Update()
         {
@@ -36,22 +51,46 @@ namespace RecoDeli.Scripts.Controllers
                 gameRenderTargetTexture.graphicsFormat = UnityEngine.Experimental.Rendering.GraphicsFormat.R32G32B32A32_SFloat;
                 // gameRenderTargetTexture.antiAliasing = 8;
             }
+            if(gameRenderDownsampledTexture == null)
+            {
+                gameRenderDownsampledTexture = new RenderTexture(Screen.width / downsampleRatio, Screen.height / downsampleRatio, 1);
+                gameRenderDownsampledTexture.graphicsFormat = gameRenderTargetTexture.graphicsFormat;
+            }
+            if(gameRenderDownsampledTextureBuffer == null)
+            {
+                gameRenderDownsampledTextureBuffer = new RenderTexture(Screen.width / downsampleRatio, Screen.height / downsampleRatio, 1);
+                gameRenderDownsampledTextureBuffer.graphicsFormat = gameRenderTargetTexture.graphicsFormat;
+            }
 
             if (gameRenderCamera.targetTexture != gameRenderTargetTexture)
             {
                 gameRenderCamera.targetTexture = gameRenderTargetTexture;
             }
+
             if (gameRenderCamera.targetTexture.width != Screen.width || gameRenderCamera.targetTexture.height != Screen.height)
             {
                 gameRenderTargetTexture.Release();
+                gameRenderDownsampledTexture.Release();
+                gameRenderDownsampledTextureBuffer.Release();
                 gameRenderTargetTexture.width = Screen.width;
                 gameRenderTargetTexture.height = Screen.height;
+                gameRenderDownsampledTexture.width = Screen.width / downsampleRatio;
+                gameRenderDownsampledTexture.height = Screen.height / downsampleRatio;
+                gameRenderDownsampledTextureBuffer.width = gameRenderDownsampledTexture.width;
+                gameRenderDownsampledTextureBuffer.height = gameRenderDownsampledTexture.width;
                 gameRenderCamera.ResetAspect();
             }
 
             if (gameRenderTargetTexture && imageTextureDisplayer.texture != gameRenderTargetTexture)
             {
                 imageTextureDisplayer.texture = gameRenderTargetTexture;
+                
+            }
+
+            if (gameRenderDownsampledTexture && imageTextureDisplayer.material != null && 
+                imageTextureDisplayer.material.GetTexture("_MainTexDownsampled") != gameRenderDownsampledTexture)
+            {
+                imageTextureDisplayer.material.SetTexture("_MainTexDownsampled", gameRenderDownsampledTexture);
             }
         }
 
@@ -82,6 +121,14 @@ namespace RecoDeli.Scripts.Controllers
             {
                 imageTextureDisplayer.material.SetTexture("_UITex", uiPanelTargetTexture);
             }
+        }
+
+        private void OnPostGameCameraRender(ScriptableRenderContext context, Camera cam)
+        {
+            if (cam != gameRenderCamera) return;
+            if (gameRenderDownsampledTexture == null || gameRenderTargetTexture == null || downsampleMaterial == null) return;
+            Graphics.Blit(gameRenderTargetTexture, gameRenderDownsampledTextureBuffer);
+            Graphics.Blit(gameRenderDownsampledTextureBuffer, gameRenderDownsampledTexture, downsampleMaterial);
         }
     }
 }

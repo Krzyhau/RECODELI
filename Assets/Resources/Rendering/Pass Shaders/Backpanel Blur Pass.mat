@@ -20,8 +20,8 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: CRTScreen
-  m_Shader: {fileID: -6465566751694194690, guid: 6f7b356ad000ddc46a7959420bb1d701,
+  m_Name: Backpanel Blur Pass
+  m_Shader: {fileID: -6465566751694194690, guid: deb9d3e04258a9b4fa34a0ae78178cad,
     type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -95,41 +95,45 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - Blur: 5
     - _AlphaClip: 0
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
-    - _Chromatic_Abbreviation: 0.001
+    - _Chromatic_Abbreviation: 0.002
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
-    - _CurveScale: 0
+    - _CurveScale: 0.04
     - _CurveShapeFactor: 0.5
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
     - _DetailNormalMapScale: 1
+    - _Directions: 10
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Intensity: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _Quality: 3
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Scanline_Factor: 0
-    - _Scanline_Negative_Factor: 0
-    - _Scanline_Positive_Factor: 0.001
-    - _Scanlines: 100
+    - _Scanline_Factor: -0.4
+    - _Scanlines: 628
+    - _Semi_Transparent_Chances: 0.5
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _Time_Step: 1
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
