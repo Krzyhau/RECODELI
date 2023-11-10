@@ -15,7 +15,10 @@ namespace RecoDeli.Scripts.Rendering
         {
             RefreshLayerTexture();
 
-            AssignToRenderer();
+            if(layer != null)
+            {
+                AssignToRenderer(); 
+            }
         }
 
         private void Update()
@@ -28,6 +31,8 @@ namespace RecoDeli.Scripts.Rendering
 
         protected void RefreshLayerTexture()
         {
+            if (Screen.width == 0 || Screen.height == 0) return;
+
             if (layer == null)
             {
                 layer = new RenderTexture(Screen.width, Screen.height, 1);
