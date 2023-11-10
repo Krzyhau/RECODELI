@@ -11,28 +11,46 @@ namespace RecoDeli.Scripts.Rendering
 
         public RenderTexture RenderLayer => layer;
 
+        private void OnEnable()
+        {
+            RefreshLayerTexture();
+
+            AssignToRenderer();
+        }
+
         private void Update()
+        {
+            RefreshLayerTexture();
+
+            AssignToRenderer();
+            
+        }
+
+        protected void RefreshLayerTexture()
         {
             if (layer == null)
             {
                 layer = new RenderTexture(Screen.width, Screen.height, 1);
             }
 
-            if(layer.graphicsFormat != format)
+            if (layer.graphicsFormat != format)
             {
-                layer.Release();
+                if (layer.IsCreated())
+                {
+                    layer.Release();
+                }
                 layer.graphicsFormat = format;
             }
 
             if (layer.width != Screen.width || layer.height != Screen.height)
             {
-                layer.Release();
+                if (layer.IsCreated())
+                {
+                    layer.Release();
+                }
                 layer.width = Screen.width;
                 layer.height = Screen.height;
             }
-
-            AssignToRenderer();
-            
         }
 
         protected virtual void AssignToRenderer() {

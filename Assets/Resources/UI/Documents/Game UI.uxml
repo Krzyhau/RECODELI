@@ -46,7 +46,7 @@
                         <ui:Label tabindex="-1" text="CANCEL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>
                 </ui:VisualElement>
-                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="200" focusable="true" style="background-color: rgba(0, 0, 0, 0.95);" />
+                <ui:ScrollView scroll-deceleration-rate="0" elasticity="100" name="instructions" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="AlwaysVisible" mouse-wheel-scroll-size="200" focusable="true" />
                 <ui:Label tabindex="-1" text="NO INSTRUCTIONS" display-tooltip-when-elided="true" name="no-instructions-label" />
                 <ui:VisualElement name="editor-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="add-button">
