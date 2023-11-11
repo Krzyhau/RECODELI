@@ -20,7 +20,7 @@ namespace RecoDeli.Scripts.Utils
                     path = pathAttribute.Path;
                 }
 
-                _instance = Resources.Load<T>(typeof(T).Name);
+                _instance = Resources.Load<T>(path);
 
                 if (_instance == null)
                 {
