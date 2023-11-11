@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace RecoDeli.Scripts.Utils
 {
@@ -12,6 +13,13 @@ namespace RecoDeli.Scripts.Utils
             {
                 if(_instance != null) return _instance;
 
+                var path = typeof(T).Name;
+                var pathAttribute = Attribute.GetCustomAttribute(typeof(T), typeof(ScriptableObjectSingletonPathAttribute)) as ScriptableObjectSingletonPathAttribute;
+                if(pathAttribute != null)
+                {
+                    path = pathAttribute.Path;
+                }
+
                 _instance = Resources.Load<T>(typeof(T).Name);
 
                 if (_instance == null)
@@ -21,6 +29,16 @@ namespace RecoDeli.Scripts.Utils
 
                 return _instance;
             }
+        }
+    }
+
+    sealed class ScriptableObjectSingletonPathAttribute : Attribute
+    {
+        public string Path { get; }
+
+        public ScriptableObjectSingletonPathAttribute(string path)
+        {
+            Path = path;
         }
     }
 }

@@ -5,6 +5,7 @@ using UnityEngine.Audio;
 namespace RecoDeli.Scripts.Settings
 {
     [CreateAssetMenu(fileName = "RECODELI Settings", menuName = "RECODELI/Settings", order = 1)]
+    [ScriptableObjectSingletonPath("Settings/RecoDeliSettings")]
     public class RecoDeliSettings : ScriptableObjectSingleton<RecoDeliSettings>
     {
         public const string LevelFormatExtension = ".rdlvl";
