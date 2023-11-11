@@ -39,20 +39,43 @@ namespace RecoDeli.Scripts.UI
             Construct();
         }
 
-        public void Initialize(LeaderboardProvider provider)
+        public void SetProvider(LeaderboardProvider provider)
         {
             SetStatusText("Loading...");
 
             if(this.provider != provider)
             {
-                this.provider = provider;
-                this.provider.OnLoaded += () => RefreshDataDisplay();
+                if(this.provider != null)
+                {
+                    this.provider.OnLoaded -= OnProviderLoaded;
 
-                this.provider.OnFailed += (e) => SetStatusText("Connection failed");
-                this.provider.OnSubmitFailed += (e) => SetStatusText("Connection failed");
+                    this.provider.OnFailed -= OnProviderFailed;
+                    this.provider.OnSubmitFailed -= OnProviderSubmissionFailed;
+                }
+
+                this.provider = provider;
+                this.provider.OnLoaded += OnProviderLoaded;
+
+                this.provider.OnFailed += OnProviderFailed;
+                this.provider.OnSubmitFailed += OnProviderSubmissionFailed;
             }
 
             RefreshDataDisplay();
+        }
+
+        private void OnProviderLoaded()
+        {
+            RefreshDataDisplay();
+        }
+
+        private void OnProviderFailed(Exception ex)
+        {
+            SetStatusText("Connection failed");
+        }
+
+        private void OnProviderSubmissionFailed(Exception ex)
+        {
+            SetStatusText("Connection failed");
         }
 
         public void Construct()

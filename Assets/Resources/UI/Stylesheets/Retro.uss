@@ -1081,8 +1081,8 @@ Scroller #unity-tracker {
 }
 
 .menu-modal .modal-container {
-    padding-bottom: 128px;
     background-color: rgba(0, 0, 0, 0);
+    padding-bottom: 128px;
 }
 
 .unity-disabled .modal-container {
@@ -1345,7 +1345,7 @@ Scroller #unity-tracker {
 }
 
 #tasks-container {
-    width: 1000px;
+    width: 1200px;
     height: 500px;
     flex-direction: row;
 }
@@ -1405,6 +1405,7 @@ Scroller #unity-tracker {
     margin-right: 10px;
     margin-top: 0;
     margin-bottom: 0;
+    background-color: rgba(0, 0, 0, 0.9);
 }
 
 #task-leaderboards {
@@ -1441,6 +1442,10 @@ Scroller #unity-tracker {
     padding-bottom: 10px;
 }
 
+#task-description Label {
+    white-space: normal;
+}
+
 #task-leaderboards #leaderboards {
     flex-direction: row;
 }
@@ -1450,4 +1455,48 @@ Scroller #unity-tracker {
     flex-grow: 0;
     width: 50%;
     flex-shrink: 1;
+}
+
+#task-leaderboards #leaderboards-status {
+    width: 100%;
+}
+
+#task-leaderboards #stats-container {
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0;
+    margin-bottom: 0;
+    border-left-width: 0;
+    border-right-width: 0;
+    border-top-width: 0;
+    border-bottom-width: 0;
+    width: 300px;
+    flex-grow: 0;
+}
+
+#task-details #start-task-button {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    width: 290px;
+}
+
+#task-details.taskless #task-leaderboards {
+    display: none;
+}
+
+#task-details.taskless {
+    padding-bottom: 65px;
+}
+
+#task-details.actionless {
+    padding-bottom: 10px;
+}
+
+#task-details.actionless #start-task-button {
+    display: none;
+}
+
+#task-details.actionless #task-leaderboards {
+    display: none;
 }

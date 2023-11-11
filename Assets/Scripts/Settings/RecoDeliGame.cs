@@ -27,6 +27,9 @@ namespace RecoDeli.Scripts.Settings
 
         }
 
+        // empty, but will call static constructor automatically when needed
+        public static void Initialize() { } 
+
         public static void OpenLevel(string levelName)
         {
             LevelLoader.LevelToLoad = levelName;

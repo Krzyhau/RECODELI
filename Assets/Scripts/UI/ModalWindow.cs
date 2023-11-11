@@ -11,7 +11,7 @@ namespace RecoDeli.Scripts.UI
 {
     public class ModalWindow : MonoBehaviour
     {
-        [SerializeField] private UIDocument windowDocument;
+        [SerializeField] protected UIDocument windowDocument;
 
         private Button closeButton;
 

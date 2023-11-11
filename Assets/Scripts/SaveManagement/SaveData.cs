@@ -20,13 +20,13 @@ namespace RecoDeli.Scripts.SaveManagement
 
         public SaveLevelInfo GetCurrentLevelInfo()
         {
-            return GetLevelInfo(LevelLoader.CurrentlyLoadedLevel);
+            return GetLevelInfoOrCreate(LevelLoader.CurrentlyLoadedLevel);
         }
 
-        public SaveLevelInfo GetLevelInfo(string levelName)
+        public SaveLevelInfo GetLevelInfoOrCreate(string levelName)
         {
-            var level = LevelInfos.Where(info => info.LevelName == levelName).FirstOrDefault();
-            if(level == null)
+            var level = GetLevelInfo(levelName);
+            if (level == null)
             {
                 level = new SaveLevelInfo();
                 level.LevelName = levelName;
@@ -37,6 +37,11 @@ namespace RecoDeli.Scripts.SaveManagement
                 }
             }
             return level;
+        }
+
+        public SaveLevelInfo GetLevelInfo(string levelName)
+        {
+            return LevelInfos.Where(info => info.LevelName == levelName).FirstOrDefault();
         }
 
         public bool IsLevelComplete(string levelName)

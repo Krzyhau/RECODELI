@@ -1,0 +1,147 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29ede242920ca564e837f0e1bc017ba8, type: 3}
+  m_Name: Game Tasks
+  m_EditorClassIdentifier: 
+  Collections:
+  - Name: Ludum Dare
+    Tasks:
+    - Title: First Task
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: 'Aight, first task for you. Pretty easy.
+
+        I mean, the
+        payload is literally in front of you.'
+      Action: 1
+      ActionParameter: Ludum Dare/First Task
+    - Title: Higher Control
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: This one is still easy. There's literally nothing between you
+        and the payload. Even my 3-year-old cat can do it.
+      Action: 1
+      ActionParameter: Ludum Dare/Higher Control
+    - Title: Maneuvering
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: Aight now there's something between the drone and the payload.
+        Do some epic milkshake maneuvering or something.
+      Action: 1
+      ActionParameter: Ludum Dare/Maneuvering
+    - Title: Box Digging
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: We don't need all of those extra boxes. They're filled with packing
+        peanuts anyway. We need the golden one.
+      Action: 1
+      ActionParameter: Ludum Dare/Box Digging
+    - Title: Box Pushing
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: 'No goddamn clue how the package got there, but you have to get
+        it out.
+
+
+        No, I don''t know why space garbage can form into a quite
+        suspicious shapes...'
+      Action: 1
+      ActionParameter: Ludum Dare/Box Pushing
+    - Title: Explosives!
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: Careful! The payload was transferred with explosive boxes. And
+        they're active!
+      Action: 1
+      ActionParameter: Ludum Dare/Explosive
+    - Title: Mine Field
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: Even more of these bloody explosive boxes! Why would they pack
+        an entire set of explosives with normal boxes? Good thing that they're all
+        explosion-resistant.
+      Action: 1
+      ActionParameter: Ludum Dare/Mine Field
+    - Title: Drone Dorifto?!
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: See that gap? You could fly around it. But you're no baby. You
+        can drift through that gap like a drift king!
+      Action: 1
+      ActionParameter: Ludum Dare/Drone Drifting
+    - Title: Garbage
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: This is an absolute garbage of a task. Nothing special about it.
+      Action: 1
+      ActionParameter: Ludum Dare/Garbage
+    - Title: Rocky Path
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: These rocks formed quite an obstacle path for your drone! Bet
+        you can't drift through it!
+      Action: 1
+      ActionParameter: Ludum Dare/Rocky Path
+    - Title: Firewall
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: I'm running out of ideas for these descriptions.
+      Action: 1
+      ActionParameter: Ludum Dare/Firewall
+    - Title: Lovely Challenge
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: What if we kissed around the heart-shaped garbage in space?!
+      Action: 1
+      ActionParameter: Ludum Dare/Lovely Challenge
+  - Name: Beta Tasks
+    Tasks:
+    - Title: Advanced Recovery
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 0
+      Description: Time for a true challenge! This map contains all of the major
+        tricks you've learned in the Ludum Dare map series! Can you complete it in
+        a record time?!
+      Action: 1
+      ActionParameter: Beta/Advanced Recovery
+    - Title: Howdy!
+      SenderName: Chris Hausky
+      SenderAddress: krzyhau@recodeli.com
+      AdditionalReceivers: 69
+      Description: Hi, this is a message I'm sending you you! Yes, YOU! No tasks,
+        no bullshittery, just words of encouragement!
+      Action: 0
+      ActionParameter: 
+    - Title: RECODELI HACK?!?!?
+      SenderName: Hackster
+      SenderAddress: xx_hacker_xx@recodeli.com
+      AdditionalReceivers: 0
+      Description: "Yes, me, the Hackster, HACKED the Tasks system. With my excellence
+        in hacking skills, I have managed to inject cusom payload into the task attachment,
+        which, through the power of arbitrary code execution, can create MIRACLES
+        on your operating system! \n\nGo ahead! Click the \"Start Task\" button and
+        see for yourself!!!!"
+      Action: 2
+      ActionParameter: RetroEasterEgg
