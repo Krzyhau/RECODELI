@@ -38,12 +38,14 @@ namespace RecoDeli.Scripts.Rendering
                     1
                 );
                 downscaled.graphicsFormat = layerToBlur.RenderLayer.graphicsFormat;
+                downscaled.wrapMode = TextureWrapMode.Clamp;
             }
 
             if(blurred == null)
             {
                 blurred = new RenderTexture(downscaled.width, downscaled.height, 1);
                 blurred.graphicsFormat = downscaled.graphicsFormat;
+                blurred.wrapMode = TextureWrapMode.Clamp;
             }
 
             if (

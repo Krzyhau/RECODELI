@@ -36,6 +36,7 @@ namespace RecoDeli.Scripts.Rendering
             if (layer == null)
             {
                 layer = new RenderTexture(Screen.width, Screen.height, 1);
+                layer.wrapMode = TextureWrapMode.Clamp;
             }
 
             if (layer.graphicsFormat != format)
