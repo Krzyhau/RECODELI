@@ -204,7 +204,17 @@ namespace RecoDeli.Scripts.UI
 
         private void RefreshDataDisplay()
         {
-            if (provider == null || provider.Status != LeaderboardProvider.LoadingStatus.Loaded) return;
+            if (provider == null) return;
+
+            if(provider.Status == LeaderboardProvider.LoadingStatus.Failed)
+            {
+                SetStatusText("Connection failed");
+            }
+
+            if(provider.Status != LeaderboardProvider.LoadingStatus.Loaded)
+            {
+                return;
+            }
 
             SetStatusText(null);
 

@@ -51,6 +51,12 @@ namespace RecoDeli.Scripts.UI.Menu
             Open();
         }
 
+        public override void Open()
+        {
+            base.Open();
+            providerCache.Clear();
+        }
+
         private void CreateTaskList()
         {
             taskList.Clear();

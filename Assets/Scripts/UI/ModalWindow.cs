@@ -33,7 +33,7 @@ namespace RecoDeli.Scripts.UI
             Close();
         }
 
-        public void Open()
+        public virtual void Open()
         {
             Opened = true;
 
@@ -45,7 +45,7 @@ namespace RecoDeli.Scripts.UI
             RootElement.Focus();
         }
 
-        public void Close()
+        public virtual void Close()
         {
             Opened = false;
             if (Current == this)
