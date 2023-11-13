@@ -23,6 +23,7 @@ namespace RecoDeli.Scripts.UI.Menu
         private ScrollView taskDescription;
         private Button startTaskButton;
 
+        private bool hasBeenOpenedBefore = false;
         private GameTask currentTask;
 
         private Dictionary<string, LeaderboardProvider> providerCache = new();
@@ -46,15 +47,24 @@ namespace RecoDeli.Scripts.UI.Menu
 
             CreateTaskList();
 
-            OpenTask(tasks.Collections[0].Tasks[0]);
-
-            Open();
+            //Open();
         }
 
         public override void Open()
         {
             base.Open();
             providerCache.Clear();
+
+            if (!hasBeenOpenedBefore)
+            {
+                OpenTask(tasks.Collections[0].Tasks[0]);
+            }
+            else
+            {
+                OpenTask(currentTask);
+            }
+
+            hasBeenOpenedBefore = true;
         }
 
         private void CreateTaskList()
@@ -116,7 +126,7 @@ namespace RecoDeli.Scripts.UI.Menu
             taskInfoFrom.Add(senderAddress);
 
             taskInfoTo.Add(new Label("You"));
-            var receiverAddress = new Label(userName + "@recodeli.com");
+            var receiverAddress = new Label(userName.ToLower() + "@recodeli.com");
             receiverAddress.AddToClassList("task-info-mail");
             taskInfoTo.Add(receiverAddress);
 

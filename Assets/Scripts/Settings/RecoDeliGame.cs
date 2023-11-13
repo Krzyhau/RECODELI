@@ -3,6 +3,7 @@ using RecoDeli.Scripts.Level.Format;
 using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Utils;
 using System.Globalization;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace RecoDeli.Scripts.Settings
@@ -39,6 +40,16 @@ namespace RecoDeli.Scripts.Settings
         public static void OpenSimpleLevelList()
         {
             SceneManager.LoadScene(Settings.SimpleMapListSceneName);
+        }
+
+        public static void QuitThisFuckingPieceOfShitImmediately()
+        {
+#if UNITY_STANDALONE
+            Application.Quit();
+#endif
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;
+#endif
         }
     }
 }

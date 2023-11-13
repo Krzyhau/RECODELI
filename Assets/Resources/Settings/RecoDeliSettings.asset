@@ -21,3 +21,4 @@ MonoBehaviour:
   MusicAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
   LevelFileThumbnail: {fileID: 2800000, guid: fbc1b6576392b82448eeb2b670d9a147, type: 3}
+  UserSaveCount: 3

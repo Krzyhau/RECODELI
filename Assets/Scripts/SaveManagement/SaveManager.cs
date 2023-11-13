@@ -11,12 +11,12 @@ namespace RecoDeli.Scripts.SaveManagement
     {
         private static bool loaded;
         private static SaveData save;
+        private static int currentSlot;
 
         private static float lastStorageTime;
 
         public static SaveData CurrentSave => save;
-
-        public static string UserSaveDataPath => Application.persistentDataPath + "/SaveData.xml";
+        public static int CurrentSlot => currentSlot;
 
         static SaveManager()
         {
@@ -29,38 +29,58 @@ namespace RecoDeli.Scripts.SaveManagement
             {
                 return;
             }
-            Load();
+            Load(0);
             Application.quitting += Save;
         }
 
-        public static void Load()
+        public static string GetSaveSlotPath(int slot)
         {
-            if (loaded) return;
+            return Application.persistentDataPath + "/SaveData" + slot + ".xml";
+        }
 
-            lastStorageTime = Time.realtimeSinceStartup;
+        public static bool TryLoadSlot(int slot, out SaveData data)
+        {
+            var path = GetSaveSlotPath(slot);
 
-            if(!File.Exists(UserSaveDataPath))
+            if (!File.Exists(path))
             {
-                save = new SaveData();
-                loaded = true;
-                Debug.Log("Created new empty save");
-                return;
+                data = null;
+                return false;
             }
 
             try
             {
                 var serializer = new XmlSerializer(typeof(SaveData));
-                using var fileStream = new FileStream(UserSaveDataPath, FileMode.Open);
-                
-                save = (SaveData)serializer.Deserialize(fileStream);
-                Debug.Log("Save data loaded successfully");
+                using var fileStream = new FileStream(path, FileMode.Open);
 
+                data = (SaveData)serializer.Deserialize(fileStream);
+                return true;
+            }
+            catch
+            {
+                data = null;
+                return false;
+            }
+        }
+
+        public static void Load(int slot, bool force = false)
+        {
+            if (loaded && !force) return;
+
+            lastStorageTime = Time.realtimeSinceStartup;
+
+            if(TryLoadSlot(slot, out var loadedSave))
+            {
+                save = loadedSave;
+                currentSlot = slot;
+                Debug.Log("Save data loaded successfully.");
                 loaded = true;
             }
-            catch (Exception ex)
+            else
             {
-                Debug.LogError($"Error while loading data: {ex.Message}. Using empty save file instead.");
+                Debug.LogError($"Error while loading data. Using empty save file instead.");
                 save = new SaveData();
+                currentSlot = slot;
                 loaded = true;
             }
         }
@@ -74,7 +94,7 @@ namespace RecoDeli.Scripts.SaveManagement
 
             try
             {
-                using var fileStream = new FileStream(UserSaveDataPath, FileMode.Create);
+                using var fileStream = new FileStream(GetSaveSlotPath(currentSlot), FileMode.Create);
 
                 XmlWriter xmlWriter = XmlWriter.Create(fileStream, new XmlWriterSettings()
                 {

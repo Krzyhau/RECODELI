@@ -226,6 +226,10 @@ Slider:focus Label {
     flex-grow: 1;
 }
 
+#title-bar-icons Button.unity-disabled {
+    display: none;
+}
+
 #drone-view {
     border-left-color: rgba(255, 255, 255, 0.5);
     border-right-color: rgba(255, 255, 255, 0.5);
@@ -1209,6 +1213,11 @@ Scroller #unity-tracker {
 }
 
 #user-creation-container #username-field > Label {
+    -unity-text-align: middle-left;
+    position: absolute;
+    justify-content: flex-start;
+    align-items: stretch;
+    color: rgba(255, 255, 255, 0.25);
     display: none;
 }
 
@@ -1218,6 +1227,7 @@ Scroller #unity-tracker {
     margin-right: 0;
     margin-top: 0;
     margin-bottom: 0;
+    -unity-text-align: upper-left;
 }
 
 .creating-user #user-creation-window {
@@ -1229,6 +1239,14 @@ Scroller #unity-tracker {
 }
 
 .creating-user #user-selection-window {
+    display: none;
+}
+
+.unity-disabled #user-creation-window {
+    display: none;
+}
+
+.unity-disabled #user-selection-window {
     display: none;
 }
 

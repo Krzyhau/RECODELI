@@ -20,5 +20,8 @@ namespace RecoDeli.Scripts.Settings
         public AudioMixerGroup MainAudioMixerGroup;
         public AudioMixerGroup MusicAudioMixerGroup;
         public Texture2D LevelFileThumbnail;
+
+        [Header("Game Settings")]
+        public int UserSaveCount;
     }
 }
