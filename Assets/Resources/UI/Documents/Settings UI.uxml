@@ -36,7 +36,7 @@
                             <ui:DropdownField label="LANGUAGE" index="-1" name="language-dropdown" choices="a,b,c" class="setting-field" />
                             <ui:DropdownField label="UI SKIN" index="-1" name="skin-dropdown" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-video-view" class="unity-disabled" style="display: none;">
+                        <ui:VisualElement name="settings-video-view" class="unity-disabled">
                             <ui:DropdownField label="DISPLAY MODE" index="-1" name="display-mode-dropdown" class="setting-field" />
                             <ui:DropdownField label="ASPECT RATIO" index="-1" name="aspect-ratio-dropdown" class="setting-field" />
                             <ui:DropdownField label="RESOLUTION" index="-1" name="resolution-dropdown" class="setting-field" />
@@ -44,13 +44,13 @@
                             <ui:DropdownField label="POST-PROCESSING" index="-1" name="post-processing-dropdown" class="setting-field" />
                             <ui:DropdownField label="UI SCALING" index="-1" name="ui-scaling-dropdown" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-audio-view" style="display: none;">
+                        <ui:VisualElement name="settings-audio-view">
                             <ui:Slider picking-mode="Ignore" label="MASTER VOLUME" value="1" high-value="1" name="master-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="MUSIC VOLUME" value="1" high-value="1" name="music-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="INTERFACE VOLUME" value="1" high-value="1" name="interface-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="ENVIRONMENT VOLUME" value="1" high-value="1" name="environment-volume-slider" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-controls-view" class="unity-disabled" style="display: none;">
+                        <ui:VisualElement name="settings-controls-view" class="unity-disabled">
                             <ui:Label tabindex="-1" text="no fucking clue how im going to do this one lmfao" display-tooltip-when-elided="true" />
                         </ui:VisualElement>
                     </ui:VisualElement>
