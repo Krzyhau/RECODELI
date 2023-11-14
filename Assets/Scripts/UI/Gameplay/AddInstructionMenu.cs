@@ -34,7 +34,7 @@ namespace RecoDeli.Scripts.UI
         private int replaceIndex;
         private RobotInstruction instructionToReplace;
 
-        public bool Replacing => instructionEditorContainer != null;
+        public bool Replacing => instructionToReplace != null;
 
         public void Initialize(InstructionEditor editor, UIDocument gameplayInterface)
         {
@@ -59,13 +59,13 @@ namespace RecoDeli.Scripts.UI
         {
             foreach (var actionName in validActionsList)
             {
-                var instruction = RobotAction.CreateInstruction(actionName);
-                var button = new Button(() => OnInstructionClicked(instruction));
+                var action = RobotAction.GetByName(actionName);
+                var button = new Button(() => OnActionClicked(action));
                 button.text = actionName;
                 button.AddToClassList("button");
                 addInstructionList.Add(button);
 
-                actionButtonsCache[instruction.Action] = button;
+                actionButtonsCache[action] = button;
             }
         }
 
@@ -74,8 +74,10 @@ namespace RecoDeli.Scripts.UI
             Opened = false;
         }
 
-        private void OnInstructionClicked(RobotInstruction instruction)
+        private void OnActionClicked(RobotAction action)
         {
+            var instruction = action.CreateInstruction();
+
             if (Replacing)
             {
                 instruction.TryTransferParametersFrom(instructionToReplace);
