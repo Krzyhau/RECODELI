@@ -9,6 +9,8 @@ using RecoDeli.Scripts.UI;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
 namespace RecoDeli.Scripts.Controllers
 {
@@ -29,6 +31,10 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private AudioSource successSound;
         [SerializeField] private AudioSource restartSound;
         [SerializeField] private float fadeTime;
+        [Header("Buttons")]
+        [SerializeField] private InputActionReference playButton;
+        [SerializeField] private InputActionReference restartButton;
+
 
         private bool paused = false;
         private bool playingSimulation = false;
@@ -77,7 +83,7 @@ namespace RecoDeli.Scripts.Controllers
         }
         private void OnEnable()
         {
-            
+            InitializeInputs();
         }
 
         private void OnDisable()
@@ -89,6 +95,12 @@ namespace RecoDeli.Scripts.Controllers
         private void Start()
         {
             RestartSimulation();
+        }
+
+        private void InitializeInputs()
+        {
+            playButton.action.performed += ctx => ToggleSimulation(false);
+            restartButton.action.performed += ctx => RestartSimulation();
         }
 
         private void LateUpdate()
@@ -282,6 +294,25 @@ namespace RecoDeli.Scripts.Controllers
             if (!playingSimulation)
             {
                 PlayInstructions();
+            }
+        }
+
+        public void ToggleSimulation(bool hard)
+        {
+            if (!playingSimulation || paused)
+            {
+                ResumeSimulation();
+            }
+            else
+            {
+                if (hard)
+                {
+                    RestartSimulation();
+                }
+                else
+                {
+                    PauseSimulation();
+                }
             }
         }
 

@@ -26,6 +26,8 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private InputActionReference manualControlInput;
         [SerializeField] private InputActionReference fasterInput;
         [SerializeField] private InputActionReference zoomInput;
+        [SerializeField] private InputActionReference followRobotInput;
+        [SerializeField] private InputActionReference followPackageInput;
 
         private Vector3 heldPlanePosition;
         private Vector3 preinterpolatedCameraPosition;
@@ -39,6 +41,8 @@ namespace RecoDeli.Scripts.Controllers
         private void Start()
         {
             preinterpolatedCameraPosition = controlledCamera.transform.position;
+            followRobotInput.action.performed += ctx => FollowRobot();
+            followPackageInput.action.performed += ctx => FollowPackage();
         }
 
         private void Update()

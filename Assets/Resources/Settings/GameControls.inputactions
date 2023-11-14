@@ -6,7 +6,7 @@
             "id": "db904a2f-2534-4617-b51d-d67d29af8233",
             "actions": [
                 {
-                    "name": "Play/Pause",
+                    "name": "Toggle Simulation",
                     "type": "Button",
                     "id": "c6fe3120-d92e-4cc7-adef-27f463c87125",
                     "expectedControlType": "Button",
@@ -15,7 +15,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Restart",
+                    "name": "Reset Simulation",
                     "type": "Button",
                     "id": "dab39314-f5ab-4620-b518-601895d11bc4",
                     "expectedControlType": "Button",
@@ -148,6 +148,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "Follow Drone",
+                    "type": "Button",
+                    "id": "f2a87e6c-a03e-47ef-9ff8-c66654a1df6e",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Follow Package",
+                    "type": "Button",
+                    "id": "5c5ab46b-0761-4908-a3cc-bc4998442e5f",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -158,7 +176,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Play/Pause",
+                    "action": "Toggle Simulation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -169,7 +187,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Restart",
+                    "action": "Reset Simulation",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -533,6 +551,28 @@
                     "processors": "",
                     "groups": "",
                     "action": "Drag Selection",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "40f21d4d-4b48-4b96-ac01-6d6b37b58888",
+                    "path": "<Keyboard>/f3",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Follow Drone",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "10832ffe-118b-45ab-9118-3eeb9437f043",
+                    "path": "<Keyboard>/f4",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Follow Package",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
