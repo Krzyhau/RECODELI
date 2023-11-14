@@ -1,6 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/Stylesheets/Retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#Retro" />
-    <ui:VisualElement name="settings-container" class="modal-container">
+    <ui:VisualElement name="settings-container" picking-mode="Ignore" class="modal-container">
         <ui:VisualElement name="settings-window" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
                 <ui:VisualElement name="leaderboards-window-icon" class="title-icon" />
@@ -34,10 +33,10 @@
                     </ui:VisualElement>
                     <ui:VisualElement name="settings-views" class="tab-view-views">
                         <ui:VisualElement name="settings-general-view" class="unity-disabled">
-                            <ui:DropdownField label="LANGUAGE" index="-1" name="language-dropdown" class="setting-field" />
+                            <ui:DropdownField label="LANGUAGE" index="-1" name="language-dropdown" choices="a,b,c" class="setting-field" />
                             <ui:DropdownField label="UI SKIN" index="-1" name="skin-dropdown" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-video-view" class="unity-disabled">
+                        <ui:VisualElement name="settings-video-view" class="unity-disabled" style="display: none;">
                             <ui:DropdownField label="DISPLAY MODE" index="-1" name="display-mode-dropdown" class="setting-field" />
                             <ui:DropdownField label="ASPECT RATIO" index="-1" name="aspect-ratio-dropdown" class="setting-field" />
                             <ui:DropdownField label="RESOLUTION" index="-1" name="resolution-dropdown" class="setting-field" />
@@ -45,13 +44,13 @@
                             <ui:DropdownField label="POST-PROCESSING" index="-1" name="post-processing-dropdown" class="setting-field" />
                             <ui:DropdownField label="UI SCALING" index="-1" name="ui-scaling-dropdown" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-audio-view">
+                        <ui:VisualElement name="settings-audio-view" style="display: none;">
                             <ui:Slider picking-mode="Ignore" label="MASTER VOLUME" value="1" high-value="1" name="master-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="MUSIC VOLUME" value="1" high-value="1" name="music-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="INTERFACE VOLUME" value="1" high-value="1" name="interface-volume-slider" class="setting-field" />
                             <ui:Slider picking-mode="Ignore" label="ENVIRONMENT VOLUME" value="1" high-value="1" name="environment-volume-slider" class="setting-field" />
                         </ui:VisualElement>
-                        <ui:VisualElement name="settings-controls-view" class="unity-disabled">
+                        <ui:VisualElement name="settings-controls-view" class="unity-disabled" style="display: none;">
                             <ui:Label tabindex="-1" text="no fucking clue how im going to do this one lmfao" display-tooltip-when-elided="true" />
                         </ui:VisualElement>
                     </ui:VisualElement>

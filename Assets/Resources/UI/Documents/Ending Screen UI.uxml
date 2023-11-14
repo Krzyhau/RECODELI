@@ -1,5 +1,4 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/Stylesheets/Retro.uss?fileID=7433441132597879392&amp;guid=a8ab97e675afb4d478811d40c5145396&amp;type=3#Retro" />
     <ui:VisualElement name="ending-container" class="main-container">
         <ui:Label tabindex="-1" text="ASSIGNMENT COMPLETED" display-tooltip-when-elided="true" name="ending-header" />
         <ui:VisualElement name="ending-stats">
