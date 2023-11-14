@@ -25,6 +25,17 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public abstract string GetInputParameterAsString(int parameterIndex);
         public abstract void SetInputParameterFromString(int parameterIndex, string paramString);
 
+        public bool TryTransferParametersFrom(RobotInstruction other)
+        {
+            if (this.Action.GetParameterType() != other.Action.GetParameterType()) return false;
+
+            for (int i = 0; i < other.Action.InputParametersCount; i++)
+            {
+                SetInputParameterFromString(i, other.GetInputParameterAsString(i));
+            }
+
+            return true;
+        }
 
         public void UpdateProgress(float progress)
         {

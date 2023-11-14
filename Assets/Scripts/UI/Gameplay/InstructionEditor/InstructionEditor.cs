@@ -629,7 +629,7 @@ namespace RecoDeli.Scripts.UI
             {
                 var bar = selectedBars.First();
                 var barIndex = instructionBars.IndexOf(bar);
-                addInstructionMenu.StartReplacingInstruction(barIndex, bar.Instruction.Action);
+                addInstructionMenu.StartReplacingInstruction(barIndex, bar.Instruction);
             }
         }
 
