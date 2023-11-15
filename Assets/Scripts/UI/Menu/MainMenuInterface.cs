@@ -1,10 +1,13 @@
 ﻿using RecoDeli.Scripts.Settings;
+using RecoDeli.Scripts.Tasks;
 using RecoDeli.Scripts.UI.Menu;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -12,6 +15,8 @@ namespace RecoDeli.Scripts.UI
 {
     public class MainMenuInterface : MonoBehaviour
     {
+        public static bool StartInTaskMenu;
+        
         [SerializeField] private UIDocument mainMenuDocument;
 
         [SerializeField] private TaskMenu taskMenu;
@@ -19,6 +24,9 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private SettingsMenu settingsMenu;
 
         private VisualElement menuRoot;
+        private VisualElement mainMenuContainer;
+        private VisualElement loadingScreen;
+        private Label loadingText;
 
         private bool loggingIn;
 
@@ -40,6 +48,11 @@ namespace RecoDeli.Scripts.UI
         {
             menuRoot = mainMenuDocument.rootVisualElement;
 
+            mainMenuContainer = menuRoot.Q<VisualElement>("main-menu-container");
+            loadingScreen = menuRoot.Q<VisualElement>("loading-screen");
+
+            loadingText = menuRoot.Q<Label>("loading-text");
+
             RecoDeliGame.Initialize();
             menuRoot.SetEnabled(false);
 
@@ -52,20 +65,20 @@ namespace RecoDeli.Scripts.UI
                 { MenuOption.Exit, (menuRoot.Q<Button>("exit-button"), null) },
             };
 
-            foreach((var option, (var button, var menu)) in MenuOptions)
+            foreach ((var option, (var button, var menu)) in MenuOptions)
             {
-                if(menu != null)
+                if (menu != null)
                 {
                     menu.gameObject.SetActive(true);
                 }
 
-                if(option == MenuOption.CustomTasks)
+                if (option == MenuOption.CustomTasks)
                 {
                     button.style.display = DisplayStyle.None;
                 }
-                else if(option == MenuOption.Exit)
+                else if (option == MenuOption.Exit)
                 {
-                    button.clicked += RecoDeliGame.QuitThisFuckingPieceOfShitImmediately;
+                    button.clicked += StartExitingGame;
                 }
                 else
                 {
@@ -76,22 +89,30 @@ namespace RecoDeli.Scripts.UI
 
         private void Start()
         {
-            userSelectionMenu.Open();
-            loggingIn = true;
+            if (StartInTaskMenu)
+            {
+                menuRoot.SetEnabled(true);
+                taskMenu.Open();
+            }
+            else
+            {
+                userSelectionMenu.Open();
+                loggingIn = true;
+            }
         }
 
         private void Update()
         {
-            if(loggingIn && !userSelectionMenu.Opened)
+            if (loggingIn && !userSelectionMenu.Opened)
             {
                 mainMenuDocument.rootVisualElement.SetEnabled(true);
                 loggingIn = false;
                 userSelectionMenu.SetSwitchingUser(true);
             }
 
-            if(!loggingIn && MenuOptions.TryGetValue(CurrentMenu, out var components))
+            if (!loggingIn && MenuOptions.TryGetValue(CurrentMenu, out var components))
             {
-                if(components.Window != null && !components.Window.Opened)
+                if (components.Window != null && !components.Window.Opened)
                 {
                     OpenMenu(MenuOption.None);
                 }
@@ -107,15 +128,55 @@ namespace RecoDeli.Scripts.UI
 
                 if (menu == null) continue;
 
-                if(menuOption == option && !menu.Opened)
+                if (menuOption == option && !menu.Opened)
                 {
                     menu.Open();
                 }
-                else if(menuOption != option && menu.Opened)
+                else if (menuOption != option && menu.Opened)
                 {
                     menu.Close();
                 }
             }
+        }
+
+        public void StartLoadingScreen(string loadingString, Action loadingAction)
+        {
+            loadingText.text = loadingString;
+            menuRoot.EnableInClassList("loading", true);
+            PrepareForLeavingMenu();
+            StartCoroutine(LoadingScreenCoroutine(loadingAction));
+        }
+
+        public void StartExitingGame()
+        {
+            menuRoot.EnableInClassList("exiting", true);
+            PrepareForLeavingMenu();
+            StartCoroutine(ExitCoroutine());
+        }
+
+        private void PrepareForLeavingMenu()
+        {
+            foreach ((var option, (var button, var menu)) in MenuOptions)
+            {
+                button.SetEnabled(false);
+
+                if (menu != null && menu.Opened)
+                {
+                    menu.Close();
+                }
+            }
+        }
+
+        private IEnumerator LoadingScreenCoroutine(Action action)
+        {
+            yield return new WaitUntil(() => loadingScreen.resolvedStyle.display != DisplayStyle.None);
+            action.Invoke();
+        }
+
+        private IEnumerator ExitCoroutine()
+        {
+            yield return new WaitUntil(() => mainMenuContainer.resolvedStyle.display == DisplayStyle.None);
+            RecoDeliGame.QuitThisFuckingPieceOfShitImmediately();
         }
     }
 }

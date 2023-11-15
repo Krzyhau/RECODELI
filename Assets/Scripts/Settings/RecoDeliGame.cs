@@ -1,6 +1,7 @@
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
 using RecoDeli.Scripts.SaveManagement;
+using RecoDeli.Scripts.UI;
 using RecoDeli.Scripts.Utils;
 using System.Globalization;
 using UnityEngine;
@@ -37,9 +38,10 @@ namespace RecoDeli.Scripts.Settings
             SceneManager.LoadScene(Settings.GameplaySceneName);
         }
 
-        public static void OpenSimpleLevelList()
+        public static void OpenMainMenuFromGameplay()
         {
-            SceneManager.LoadScene(Settings.SimpleMapListSceneName);
+            MainMenuInterface.StartInTaskMenu = true;
+            SceneManager.LoadScene(Settings.MainMenuSceneName);
         }
 
         public static void QuitThisFuckingPieceOfShitImmediately()

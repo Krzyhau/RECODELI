@@ -14,6 +14,7 @@ namespace RecoDeli.Scripts.UI.Menu
     {
         [SerializeField] private StatsDisplayer statsDisplayer;
         [SerializeField] private GameTaskDictionary tasks;
+        [SerializeField] private MainMenuInterface mainMenu;
 
         private ScrollView taskList;
         private VisualElement taskContainer;
@@ -23,11 +24,13 @@ namespace RecoDeli.Scripts.UI.Menu
         private ScrollView taskDescription;
         private Button startTaskButton;
 
-        private bool hasBeenOpenedBefore = false;
-        private GameTask currentTask;
+        private static bool hasBeenOpenedBefore = false;
+        private static GameTask currentTask;
 
         private Dictionary<string, LeaderboardProvider> providerCache = new();
         private Dictionary<GameTask, Button> taskButtonCache = new();
+
+        
 
         protected override void Awake()
         {
@@ -41,7 +44,7 @@ namespace RecoDeli.Scripts.UI.Menu
             taskDescription = RootElement.Q<ScrollView>("task-description");
             startTaskButton = RootElement.Q<Button>("start-task-button");
 
-            startTaskButton.clicked += ExecuteCurrentTask;
+            startTaskButton.clicked += LoadIntoCurrentTask;
 
             statsDisplayer.Initialize(windowDocument);
 
@@ -165,12 +168,16 @@ namespace RecoDeli.Scripts.UI.Menu
             }
         }
 
-        private void ExecuteCurrentTask()
+        private void LoadIntoCurrentTask()
         {
-            if(currentTask.Action == GameTask.ActionType.Task)
+            if (currentTask.Action == GameTask.ActionType.Task)
             {
                 var levelName = currentTask.ActionParameter;
-                RecoDeliGame.OpenLevel(levelName);
+                var loadingText = $"Loading \"{currentTask.ActionParameter}\"...";
+                mainMenu.StartLoadingScreen(loadingText, () =>
+                {
+                    RecoDeliGame.OpenLevel(levelName);
+                });
             }
         }
     }

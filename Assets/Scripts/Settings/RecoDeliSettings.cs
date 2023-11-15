@@ -11,8 +11,8 @@ namespace RecoDeli.Scripts.Settings
         public const string LevelFormatExtension = ".rdlvl";
 
         [Header("Paths")]
+        public string MainMenuSceneName;
         public string GameplaySceneName;
-        public string SimpleMapListSceneName;
         public string LevelObjectPrefabsPath;
         public string LevelsDirectoryPath;
 

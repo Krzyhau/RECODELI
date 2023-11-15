@@ -1353,6 +1353,31 @@ Scroller.unity-scroller #unity-tracker {
     background-color: rgb(26, 26, 26);
 }
 
+#loading-screen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+
+    justify-content: center;
+    align-items: center;
+
+    display:none;
+}
+
+.loading #loading-screen{
+    display:flex;
+}
+
+.loading #main-menu-container{
+    display:none;
+}
+
+.exiting #main-menu-container{
+    display:none;
+}
+
 #debug-levels-container {
     width: 500px;
     height: 500px;

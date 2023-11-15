@@ -1,4 +1,5 @@
 using RecoDeli.Scripts.Controllers;
+using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.UI;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -91,7 +92,7 @@ namespace RecoDeli.Scripts.UI
 
             saveButton.clicked += () => saveManagementWindow.Open();
             settingsButton.clicked += () => settingsMenu.Open();
-            // menuButton.clicked += 
+            exitButton.clicked += () => RecoDeliGame.OpenMainMenuFromGameplay();
         }
 
         private void Update()

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac4bb8fe7d648fe428875bb79d1bdfa5, type: 3}
   m_Name: RecoDeliSettings
   m_EditorClassIdentifier: 
+  MainMenuSceneName: MainMenu
   GameplaySceneName: Gameplay
-  SimpleMapListSceneName: DebugLevelSelection
   LevelObjectPrefabsPath: Prefabs/Level Objects/
   LevelsDirectoryPath: Levels/
   MainAudioMixerGroup: {fileID: 24300002, guid: 96a2894bd3e352d45bf249f654af22ec,
