@@ -29,6 +29,11 @@ namespace RecoDeli.Scripts.Gameplay
             Rigidbody = GetComponent<BepuRigidbody>();
         }
 
+        private void Start()
+        {
+            indicationCycle = Random.Range(0.0f, 1.0f);
+        }
+
         public void Update()
         {
             UpdateIndicator();
