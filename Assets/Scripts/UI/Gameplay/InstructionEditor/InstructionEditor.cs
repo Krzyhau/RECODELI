@@ -63,6 +63,7 @@ namespace RecoDeli.Scripts.UI
         private float lastClickedInstructionBarTime;
         private bool playingInstructions;
         private float prePlayScrollPosition;
+        private bool focusingOutOfEditor;
 
         private float mouseListBasedPosition;
         private float mouseListRealPosition;
@@ -115,6 +116,7 @@ namespace RecoDeli.Scripts.UI
             instructionsContainer.RegisterCallback<FocusEvent>((e) => OnWindowFocused(e), TrickleDown.TrickleDown);
             instructionsContainer.RegisterCallback<FocusInEvent>((e) => OnInEditorFocused(e));
 
+            gameDocument.rootVisualElement.RegisterCallback<FocusEvent>((e) => OnGlobalFocused(e), TrickleDown.TrickleDown);
             gameDocument.rootVisualElement.RegisterCallback<NavigationMoveEvent>((e) => OnGlobalNavigationMove(e), TrickleDown.TrickleDown);
             gameDocument.rootVisualElement.RegisterCallback<PointerCaptureOutEvent>((e) => OnPointerReleasedWithGrabbedBar(e));
 
@@ -127,16 +129,23 @@ namespace RecoDeli.Scripts.UI
         private void InitializeInputs()
         {
             addInput.action.performed += ctx => addInstructionMenu.StartAddingInstruction();
-            deleteInput.action.performed += ctx => DeleteSelected();
+            deleteInput.action.performed += ctx => PerformEditorInput(DeleteSelected);
             undoInput.action.performed += ctx => commandStateController.Undo();
             redoInput.action.performed += ctx => commandStateController.Redo();
-            copyInput.action.performed += ctx => CopySelected();
-            pasteInput.action.performed += ctx => Paste();
+            copyInput.action.performed += ctx => PerformEditorInput(CopySelected);
+            pasteInput.action.performed += ctx => PerformEditorInput(Paste);
             replaceInput.action.performed += ctx => TryStartReplacingSelectedInstruction();
+            selectAllInput.action.performed += ctx => PerformEditorInput(() => SetAllBarsSelected(true));
+        }
 
+        private void PerformEditorInput(Action input)
+        {
+            if (instructionsContainer.focusController.focusedElement is TextField)
+            {
+                return;
+            }
 
-
-            selectAllInput.action.performed += ctx => SetAllBarsSelected(true);
+            input.Invoke();
         }
 
         private void Update()
@@ -305,6 +314,11 @@ namespace RecoDeli.Scripts.UI
         // attempt to move navigation into the list when navigating up or down when outside of editor
         private void OnGlobalNavigationMove(NavigationMoveEvent evt)
         {
+            if (addInstructionMenu.Opened)
+            {
+                return;
+            }
+
             if (instructionsContainer.ContainsElement(evt.target as VisualElement))
             {
                 return;
@@ -329,6 +343,11 @@ namespace RecoDeli.Scripts.UI
         // navigating within the instruction editor
         private void OnNavigationMove(NavigationMoveEvent evt)
         {
+            if (addInstructionMenu.Opened)
+            {
+                return;
+            }
+
             // whatever happens, a key has been pressed - cancel grabbing right now!
             grabbing = false;
 
@@ -356,6 +375,7 @@ namespace RecoDeli.Scripts.UI
             {
                 evt.PreventDefault();
                 var nextFocus = instructionsContainer.focusController.GetNextFocusable(instructionsContainer, leaveDirection);
+                focusingOutOfEditor = true;
                 nextFocus.Focus();
                 return;
             }
@@ -395,6 +415,25 @@ namespace RecoDeli.Scripts.UI
             // default navigation behaviour - just focus the bar we're navigating to.
             evt.PreventDefault();
             instructionBars[nextFocusIndex].Focus();
+        }
+
+        // whenever we first focused something globally
+        private void OnGlobalFocused(FocusEvent evt)
+        {
+            if (addInstructionMenu.Opened)
+            {
+                return;
+            }
+
+            // if navigating with arrow keys, make sure to always focus within instruction list
+            var navDir = evt.direction.GetValue();
+            var tabNavigation = navDir == 1 || navDir == 2 || navDir == 5 || navDir == 6;
+            if(!focusingOutOfEditor && !tabNavigation && !instructionsContainer.ContainsElement(evt.target as VisualElement))
+            {
+                instructionsContainer.Focus();
+            }
+
+            focusingOutOfEditor = false;
         }
 
         // whenever anything clicks or navigates to the editor itself rather than the instruction bar
@@ -833,6 +872,16 @@ namespace RecoDeli.Scripts.UI
                 }
             }
             instructionsContainer.scrollOffset = Vector2.up * targetYScroll;
+        }
+
+        public void FocusOnSelected()
+        {
+            var selectedInstructions = instructionBars.Where(bar => bar.Selected);
+            if (!selectedInstructions.Any()) return;
+
+            var elementToFocus = selectedInstructions.ElementAt(selectedInstructions.Count() / 2);
+            elementToFocus.Focus();
+            ScrollToInstruction(instructionBars.IndexOf(elementToFocus), false);
         }
 
         public void HighlightInstruction(int instructionIndex)

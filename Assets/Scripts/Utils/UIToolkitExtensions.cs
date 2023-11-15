@@ -1,6 +1,8 @@
 ﻿
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.Utils
@@ -70,6 +72,11 @@ namespace RecoDeli.Scripts.Utils
                 6 => NavigationMoveEvent.Direction.Previous,
                 _ => NavigationMoveEvent.Direction.None
             };
+        }
+
+        public static InputSystemUIInputModule GetCurrentUIInputModule(this EventSystem eventSystem)
+        {
+            return eventSystem.currentInputModule as InputSystemUIInputModule;
         }
     }
 }

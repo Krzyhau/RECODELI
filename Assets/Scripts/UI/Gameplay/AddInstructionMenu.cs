@@ -1,6 +1,11 @@
 ﻿using RecoDeli.Scripts.Gameplay.Robot;
+using RecoDeli.Scripts.Utils;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.UI;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
@@ -19,15 +24,27 @@ namespace RecoDeli.Scripts.UI
 
         private Dictionary<RobotAction, Button> actionButtonsCache = new();
 
+        private VisualElement lastFocusedElementInMenu;
+
         private bool opened = false;
         public bool Opened
         {
             get => opened;
             set
             {
+                if (value == opened) return;
                 opened = value;
                 instructionEditorContainer.EnableInClassList("adding-instruction", opened);
-                if (opened) addInstructionMenu.Focus();
+
+                var cancelAction = EventSystem.current.GetCurrentUIInputModule().cancel.action;
+                if (opened)
+                {
+                    cancelAction.performed += OnNavigationCancelButton;
+                }
+                else
+                {
+                    cancelAction.performed -= OnNavigationCancelButton;
+                }
             }
         }
 
@@ -48,9 +65,9 @@ namespace RecoDeli.Scripts.UI
 
             titleLabel = addInstructionMenu.Q<Label>("add-instruction-label");
 
-            closeButton.clicked += () => { Opened = false; };
+            closeButton.clicked += CancelAddingInstruction;
 
-            addInstructionMenu.RegisterCallback<NavigationCancelEvent>(OnNavigationCancel);
+            gameplayInterface.rootVisualElement.RegisterCallback<FocusInEvent>(OnFocusIn);
 
             CreateMenu();
         }
@@ -69,9 +86,35 @@ namespace RecoDeli.Scripts.UI
             }
         }
 
-        private void OnNavigationCancel(NavigationCancelEvent evt)
+        private void OnFocusIn(FocusInEvent evt)
+        {
+            if (!Opened) return;
+
+            if(!addInstructionMenu.ContainsElement(evt.target as VisualElement))
+            {
+                if (lastFocusedElementInMenu == null || !lastFocusedElementInMenu.enabledSelf)
+                {
+                    lastFocusedElementInMenu = actionButtonsCache.Where(a => a.Value.enabledSelf).First().Value;
+                }
+                addInstructionMenu.schedule.Execute(() => lastFocusedElementInMenu.Focus());
+            }
+            else
+            {
+                lastFocusedElementInMenu = evt.target as VisualElement;
+            }
+        }
+
+        private void OnNavigationCancelButton(InputAction.CallbackContext ctx)
+        {
+            CancelAddingInstruction();
+            ctx.action.Reset();
+        }
+
+        private void CancelAddingInstruction()
         {
             Opened = false;
+            instructionEditor.FocusOnSelected();
+            //addInstructionMenu.schedule.Execute(() => instructionEditor.ListDocument.Focus());
         }
 
         private void OnActionClicked(RobotAction action)
@@ -89,6 +132,7 @@ namespace RecoDeli.Scripts.UI
             }
 
             Opened = false;
+            instructionEditor.FocusOnSelected();
         }
 
         public void StartAddingInstruction()

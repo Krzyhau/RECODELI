@@ -418,7 +418,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 1980976101}
+  m_Texture: {fileID: 599103027}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -613,6 +613,80 @@ MonoBehaviour:
   saveManagementWindow: {fileID: 1530948748}
   settingsMenu: {fileID: 2009380149}
   timerFormat: 0.00
+--- !u!84 &575329664
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1533
+  m_Height: 730
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 52
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
+--- !u!84 &599103027
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1533
+  m_Height: 730
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 52
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!1 &742003997
 GameObject:
   m_ObjectHideFlags: 0
@@ -778,7 +852,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 921096524}
+  m_Texture: {fileID: 575329664}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -894,43 +968,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c54bc94c8a144ec4c9506f65a1912711, type: 3}
---- !u!84 &921096524
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1533
-  m_Height: 760
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 52
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!4 &1077073501 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3166591421440040544, guid: d20c9a7278725884ebdf600ecd89a2cc,
@@ -1807,43 +1844,6 @@ MonoBehaviour:
   - SPIN LEFT
   - SPIN RIGHT
   - WAIT
---- !u!84 &1980976101
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1533
-  m_Height: 760
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 52
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &2009380147
 GameObject:
   m_ObjectHideFlags: 0
@@ -3002,7 +3002,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 23
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 921096524}
+  m_TargetTexture: {fileID: 575329664}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1
@@ -3298,7 +3298,111 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c6fe3120-d92e-4cc7-adef-27f463c87125
+    m_ActionName: Editor/Toggle Simulation[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dab39314-f5ab-4620-b518-601895d11bc4
+    m_ActionName: Editor/Reset Simulation[/Keyboard/backspace]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bf6ce430-68a6-4c56-b998-cd45a1ba4e5a
+    m_ActionName: Editor/Add Instruction[/Keyboard/insert]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e4a221fa-c8a7-4dd5-99a9-ffcf9cfdef4f
+    m_ActionName: Editor/Replace Instruction[/Keyboard/r]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: eb3cd512-1507-4606-b7da-2bc745a6f38e
+    m_ActionName: Editor/Delete[/Keyboard/delete]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3c0f9d3f-1571-4d05-bbcd-4bb42d470186
+    m_ActionName: Editor/Copy[/Keyboard/ctrl,/Keyboard/c]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 3e036663-5aa8-46f3-b309-3362fafda878
+    m_ActionName: Editor/Paste[/Keyboard/ctrl,/Keyboard/v]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7248ed30-240c-42c0-b5f5-216b113dc124
+    m_ActionName: Editor/Undo[/Keyboard/ctrl,/Keyboard/z]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 7223a0b9-5bd3-459f-b52b-a752f5eed59a
+    m_ActionName: Editor/Redo[/Keyboard/ctrl,/Keyboard/y]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 44e1d187-3d10-4914-8a97-f888e2459933
+    m_ActionName: Editor/Select All[/Keyboard/ctrl,/Keyboard/a]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 24550aca-9ce8-484e-8d58-18c619c8d614
+    m_ActionName: Editor/Multi Selection[/Keyboard/ctrl]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0e013213-259f-4999-a700-dd0785a60cd8
+    m_ActionName: Editor/Range Selection[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 94a515e0-7406-48ba-aa0a-9e7da90b7c59
+    m_ActionName: Editor/Drag Selection[/Keyboard/ctrl]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6e995605-66e9-435a-85d9-1878eff7f9d7
+    m_ActionName: Editor/Drone Camera Control[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ad5cbccf-6688-4d00-b5fe-c1372b707547
+    m_ActionName: Editor/Drone Camera Speed Up[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 6d8008d9-7abd-43be-b744-e005bb4d706e
+    m_ActionName: Editor/Drone Camera Zoom[/Mouse/scroll/y]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f2a87e6c-a03e-47ef-9ff8-c66654a1df6e
+    m_ActionName: Editor/Follow Drone[/Keyboard/f3]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 5c5ab46b-0761-4908-a3cc-bc4998442e5f
+    m_ActionName: Editor/Follow Package[/Keyboard/f4]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 308c8540-e2a4-47ed-bcd4-e7fcdbbdce04
+    m_ActionName: Navigation/Navigate[/Keyboard/upArrow,/Keyboard/downArrow,/Keyboard/leftArrow,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ff330ba7-2181-43d1-8dc6-297e8ef5c4cd
+    m_ActionName: Navigation/Submit[/Keyboard/enter]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: de165211-b002-4f3d-847a-54f52af494c1
+    m_ActionName: Navigation/Cancel[/Keyboard/escape]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 03ca4fbf-2206-4805-9bdb-f84872e4a6bd
+    m_ActionName: Navigation/Point[/Mouse/position]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bc1fd9bd-cdc2-40c5-9a67-e8f99e41329d
+    m_ActionName: Navigation/Click[/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c97233d9-b7f8-4470-a0e5-f31a051fa2f1
+    m_ActionName: Navigation/ScrollWheel[/Mouse/scroll]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e3ec2719-2529-41b3-ab78-6465639fe4c0
+    m_ActionName: Navigation/MiddleClick[/Mouse/middleButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 860594e4-7594-4ad6-bce8-0324434bc0c2
+    m_ActionName: Navigation/RightClick[/Mouse/rightButton]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Editor
