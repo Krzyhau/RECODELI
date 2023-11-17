@@ -6,23 +6,23 @@
             <ui:Label tabindex="-1" text="OS 1.0" display-tooltip-when-elided="true" name="logo-sub-text" />
         </ui:VisualElement>
         <ui:VisualElement name="main-menu-icons">
-            <ui:Button display-tooltip-when-elided="true" name="tasks-button" class="main-menu-button">
+            <ui:Button display-tooltip-when-elided="true" name="tasks-button" class="main-menu-button sound-select">
                 <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon" class="icon-label" />
                 <ui:Label tabindex="-1" text="TASKS" display-tooltip-when-elided="true" name="label" />
             </ui:Button>
-            <ui:Button display-tooltip-when-elided="true" name="custom-tasks-button" class="main-menu-button unity-disabled">
+            <ui:Button display-tooltip-when-elided="true" name="custom-tasks-button" class="main-menu-button unity-disabled sound-select">
                 <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon" class="icon-label" />
                 <ui:Label tabindex="-1" text="KIWI_TASKS.EXE" display-tooltip-when-elided="true" name="label" />
             </ui:Button>
-            <ui:Button display-tooltip-when-elided="true" name="settings-button" class="main-menu-button">
+            <ui:Button display-tooltip-when-elided="true" name="settings-button" class="main-menu-button sound-select">
                 <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon" class="icon-label" />
                 <ui:Label tabindex="-1" text="SETTINGS" display-tooltip-when-elided="true" name="label" />
             </ui:Button>
-            <ui:Button display-tooltip-when-elided="true" name="switch-user-button" class="main-menu-button">
+            <ui:Button display-tooltip-when-elided="true" name="switch-user-button" class="main-menu-button sound-select">
                 <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon" class="icon-label" />
                 <ui:Label tabindex="-1" text="SWITCH USER" display-tooltip-when-elided="true" name="label" />
             </ui:Button>
-            <ui:Button display-tooltip-when-elided="true" name="exit-button" class="main-menu-button">
+            <ui:Button display-tooltip-when-elided="true" name="exit-button" class="main-menu-button sound-deny">
                 <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon" class="icon-label" />
                 <ui:Label tabindex="-1" text="SHUT DOWN" display-tooltip-when-elided="true" name="label" />
             </ui:Button>

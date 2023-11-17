@@ -1,4 +1,5 @@
 using BEPUphysics.Unity;
+using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.UI;
 using UnityEngine;
 
@@ -131,6 +132,7 @@ namespace RecoDeli.Scripts.Controllers
             //finalizing = true;
 
             // TODO: robot animation and back to map list
+            RecoDeliGame.OpenMainMenuFromGameplay();
         }
     }
 }
