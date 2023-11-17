@@ -15,7 +15,6 @@ namespace RecoDeli.Scripts
         private enum SoundType 
         { 
             Press,
-            Release,
             Hover
         }
 
@@ -31,6 +30,8 @@ namespace RecoDeli.Scripts
 
         private HashSet<VisualElement> visualTreesToMonitor = new();
 
+        private bool pressedOnActiveElement = false;
+
         private void Start()
         {
             // isolate individual trees from assigned UI documents
@@ -42,6 +43,10 @@ namespace RecoDeli.Scripts
             foreach(var tree in visualTreesToMonitor)
             {
                 tree.RegisterCallback<ClickEvent>(OnElementClick, TrickleDown.TrickleDown);
+                tree.RegisterCallback<MouseEnterEvent>(OnElementHover, TrickleDown.TrickleDown);
+                tree.RegisterCallback<NavigationMoveEvent>(OnElementNavigation, TrickleDown.TrickleDown);
+                tree.RegisterCallback<NavigationSubmitEvent>(OnElementNavigationEnter, TrickleDown.TrickleDown);
+                tree.RegisterCallback<PointerDownEvent>(OnElementPressed, TrickleDown.TrickleDown);
             }
         }
 
@@ -50,22 +55,53 @@ namespace RecoDeli.Scripts
             foreach (var tree in visualTreesToMonitor)
             {
                 tree.UnregisterCallback<ClickEvent>(OnElementClick, TrickleDown.TrickleDown);
+                tree.UnregisterCallback<MouseEnterEvent>(OnElementHover, TrickleDown.TrickleDown);
+                tree.UnregisterCallback<NavigationMoveEvent>(OnElementNavigation, TrickleDown.TrickleDown);
+                tree.UnregisterCallback<PointerDownEvent>(OnElementPressed, TrickleDown.TrickleDown);
+                tree.UnregisterCallback<NavigationSubmitEvent>(OnElementNavigationEnter, TrickleDown.TrickleDown);
+            }
+        }
+
+        private void OnElementPressed(PointerDownEvent evt)
+        {
+            pressedOnActiveElement = false;
+            if(evt.target is VisualElement element && element.enabledSelf)
+            {
+                pressedOnActiveElement = true;
             }
         }
 
         private void OnElementClick(ClickEvent evt)
         {
-            var element = evt.target as VisualElement;
+            TryPlaySound(evt.target as VisualElement, SoundType.Press);
+        }
+
+        private void OnElementHover(MouseEnterEvent evt)
+        {
+            TryPlaySound(evt.target as VisualElement, SoundType.Hover);
+        }
+
+        private void OnElementNavigation(NavigationMoveEvent evt)
+        {
+            TryPlaySound(evt.target as VisualElement, SoundType.Hover);
+        }
+
+        private void OnElementNavigationEnter(NavigationSubmitEvent evt)
+        {
+            TryPlaySound(evt.target as VisualElement, SoundType.Press);
+        }
+
+        private void TryPlaySound(VisualElement element, SoundType type)
+        {
+            if (element == null || !pressedOnActiveElement) return;
 
             var soundsToPlay = soundAssignments.Where(
-                s => s.Type == SoundType.Press && element.ClassListContains(s.Classname)
+                s => s.Type == type && element.ClassListContains(s.Classname)
             );
 
-            foreach (var sound in soundsToPlay)
+            if (soundsToPlay.Any())
             {
-                Debug.Log($"{uiAudioSource}, {sound.Clip}, {sound.Classname}");
-                if (sound.Clip == null) continue;
-                uiAudioSource.PlayOneShot(sound.Clip);
+                uiAudioSource.PlayOneShot(soundsToPlay.FirstOrDefault().Clip);
             }
         }
     }

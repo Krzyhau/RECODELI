@@ -61,7 +61,7 @@
                     <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                     <ui:Label tabindex="-1" text="RESTART" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
                 </ui:Button>
-                <ui:Button display-tooltip-when-elided="true" name="continue-button">
+                <ui:Button display-tooltip-when-elided="true" name="continue-button" class="accept-button">
                     <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                     <ui:Label tabindex="-1" text="CONTINUE" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
                 </ui:Button>

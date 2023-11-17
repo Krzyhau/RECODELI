@@ -5,7 +5,7 @@
                 <ui:VisualElement name="assignments-window-icon" class="title-icon" />
                 <ui:Label tabindex="-1" text="TASKS" display-tooltip-when-elided="true" name="assignments-window-label" class="title text" />
                 <ui:VisualElement name="title-bar-icons" class="title-control-buttons">
-                    <ui:Button display-tooltip-when-elided="true" name="close-button" class="sound-deny">
+                    <ui:Button display-tooltip-when-elided="true" name="close-button" class="close-button">
                         <ui:Label tabindex="-1" text="X" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
                         <ui:Label tabindex="-1" text="FOCUS ON GOAL" display-tooltip-when-elided="true" name="full-text-label" class="full-text-label" />
                     </ui:Button>
@@ -60,7 +60,7 @@
                             </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
-                    <ui:Button text="START TASK" display-tooltip-when-elided="true" name="start-task-button" class="sound-accept" />
+                    <ui:Button text="START TASK" display-tooltip-when-elided="true" name="start-task-button" class="accept-button" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

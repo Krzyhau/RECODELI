@@ -92,7 +92,7 @@ namespace RecoDeli.Scripts.UI
             if (StartInTaskMenu)
             {
                 menuRoot.SetEnabled(true);
-                taskMenu.Open();
+                OpenMenu(MenuOption.Tasks);
             }
             else
             {
