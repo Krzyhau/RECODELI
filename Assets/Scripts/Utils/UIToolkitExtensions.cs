@@ -78,5 +78,11 @@ namespace RecoDeli.Scripts.Utils
         {
             return eventSystem.currentInputModule as InputSystemUIInputModule;
         }
+
+        public static void Click(this Button button)
+        {
+            using var evt = new NavigationSubmitEvent() { target = button };
+            button.SendEvent(evt);
+        }
     }
 }

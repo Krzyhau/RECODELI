@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -128,19 +129,25 @@ namespace RecoDeli.Scripts.UI
 
         private void InitializeInputs()
         {
-            addInput.action.performed += ctx => addInstructionMenu.StartAddingInstruction();
-            deleteInput.action.performed += ctx => PerformEditorInput(DeleteSelected);
-            undoInput.action.performed += ctx => commandStateController.Undo();
-            redoInput.action.performed += ctx => commandStateController.Redo();
-            copyInput.action.performed += ctx => PerformEditorInput(CopySelected);
-            pasteInput.action.performed += ctx => PerformEditorInput(Paste);
+            // some user inputs are directed through UI button events because
+            // I'm too lazy to redo the sound system for both lmao
+
+            addInput.action.performed += ctx => addButton.Click();
+            deleteInput.action.performed += ctx => PerformEditorInput(deleteButton.Click);
+            undoInput.action.performed += ctx => undoButton.Click();
+            redoInput.action.performed += ctx => redoButton.Click();
+            copyInput.action.performed += ctx => PerformEditorInput(copyButton.Click);
+            pasteInput.action.performed += ctx => PerformEditorInput(pasteButton.Click);
             replaceInput.action.performed += ctx => TryStartReplacingSelectedInstruction();
             selectAllInput.action.performed += ctx => PerformEditorInput(() => SetAllBarsSelected(true));
         }
 
         private void PerformEditorInput(Action input)
         {
-            if (instructionsContainer.focusController.focusedElement is TextField)
+            if (
+                instructionsContainer.focusController != null &&
+                instructionsContainer.focusController.focusedElement != null &&
+                instructionsContainer.focusController.focusedElement is TextField)
             {
                 return;
             }

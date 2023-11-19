@@ -82,6 +82,7 @@ namespace RecoDeli.Scripts.UI
 
             grabbingHandle = new VisualElement();
             grabbingHandle.name = "grabbing-handle";
+            grabbingHandle.AddToClassList("instruction-bar-handle");
             grabbingHandle.RegisterCallback<MouseEnterEvent>(e => { hoveringOverHandle = true;});
             grabbingHandle.RegisterCallback<MouseLeaveEvent>(e => { hoveringOverHandle = false;});
             this.Add(grabbingHandle);

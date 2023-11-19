@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 namespace RecoDeli.Scripts.UI
 {
@@ -113,8 +114,13 @@ namespace RecoDeli.Scripts.UI
 
             slot.Undos.RemoveAt(slot.Undos.Count - 1);
 
-            editor.ScrollToInstruction(focusPos, true);
-            editor.InstructionBars[focusPos].Focus();
+            if(editor.InstructionBars.Count > 0)
+            {
+                focusPos = Mathf.Clamp(focusPos, 0, editor.InstructionBars.Count - 1);
+
+                editor.ScrollToInstruction(focusPos, true);
+                editor.InstructionBars[focusPos].Focus();
+            }
 
             editor.InstructionsListModified();
         }
@@ -157,8 +163,13 @@ namespace RecoDeli.Scripts.UI
 
             slot.Redos.RemoveAt(slot.Redos.Count - 1);
 
-            editor.ScrollToInstruction(focusPos, true);
-            editor.InstructionBars[focusPos].Focus();
+            if (editor.InstructionBars.Count > 0)
+            {
+                focusPos = Mathf.Clamp(focusPos, 0, editor.InstructionBars.Count - 1);
+
+                editor.ScrollToInstruction(focusPos, true);
+                editor.InstructionBars[focusPos].Focus();
+            }
 
             editor.InstructionsListModified();
         }

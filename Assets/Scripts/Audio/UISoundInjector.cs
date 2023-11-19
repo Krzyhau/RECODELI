@@ -26,6 +26,8 @@ namespace RecoDeli.Scripts
             public AudioClip Clip;
         }
 
+        [SerializeField] private AudioClip errorClip;
+
         [SerializeField] private List<SoundAssignment> soundAssignments;
 
         private HashSet<VisualElement> visualTreesToMonitor = new();
@@ -65,7 +67,7 @@ namespace RecoDeli.Scripts
         private void OnElementPressed(PointerDownEvent evt)
         {
             pressedOnActiveElement = false;
-            if(evt.target is VisualElement element && element.enabledSelf)
+            if(evt.target is VisualElement element && element.enabledInHierarchy)
             {
                 pressedOnActiveElement = true;
             }
@@ -88,12 +90,26 @@ namespace RecoDeli.Scripts
 
         private void OnElementNavigationEnter(NavigationSubmitEvent evt)
         {
-            TryPlaySound(evt.target as VisualElement, SoundType.Press);
+            var element = evt.target as VisualElement;
+
+            pressedOnActiveElement = element.enabledInHierarchy;
+
+            TryPlaySound(element, SoundType.Press);
         }
 
         private void TryPlaySound(VisualElement element, SoundType type)
         {
-            if (element == null || !pressedOnActiveElement) return;
+            if (element == null) return;
+
+            if (type == SoundType.Press && !pressedOnActiveElement)
+            {
+                if (!element.enabledSelf && element.parent.enabledInHierarchy)
+                {
+                    uiAudioSource.PlayOneShot(errorClip);
+                }
+                return;
+            }
+            if (type == SoundType.Hover && !element.enabledInHierarchy) return;
 
             var soundsToPlay = soundAssignments.Where(
                 s => s.Type == type && element.ClassListContains(s.Classname)

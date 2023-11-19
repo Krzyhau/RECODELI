@@ -80,6 +80,7 @@ namespace RecoDeli.Scripts.UI
                 var button = new Button(() => OnActionClicked(action));
                 button.text = actionName;
                 button.AddToClassList("button");
+                button.AddToClassList("add-instruction-button");
                 addInstructionList.Add(button);
 
                 actionButtonsCache[action] = button;
@@ -106,7 +107,7 @@ namespace RecoDeli.Scripts.UI
 
         private void OnNavigationCancelButton(InputAction.CallbackContext ctx)
         {
-            CancelAddingInstruction();
+            closeButton.Click();
             ctx.action.Reset();
         }
 

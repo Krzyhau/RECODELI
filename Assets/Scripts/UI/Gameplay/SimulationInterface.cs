@@ -1,8 +1,10 @@
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.UI;
+using RecoDeli.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.UI
@@ -19,6 +21,10 @@ namespace RecoDeli.Scripts.UI
 
         [Header("Settings")]
         [SerializeField] private string timerFormat = "0.000";
+
+        [Header("Buttons")]
+        [SerializeField] private InputActionReference playInput;
+        [SerializeField] private InputActionReference restartInput;
 
         private VisualElement instructionEditorContainer;
 
@@ -76,6 +82,8 @@ namespace RecoDeli.Scripts.UI
             SetupMiscellaneousButtons();
 
             ShowEndingInterface(false);
+
+            InitializeInputs();
         }
 
         private void SetupPlaybackButtons()
@@ -93,6 +101,29 @@ namespace RecoDeli.Scripts.UI
             saveButton.clicked += () => saveManagementWindow.Open();
             settingsButton.clicked += () => settingsMenu.Open();
             exitButton.clicked += () => RecoDeliGame.OpenMainMenuFromGameplay();
+        }
+
+        private void InitializeInputs()
+        {
+            playInput.action.performed += ctx => PressPlayButton();
+            restartInput.action.performed += ctx => PressRestartButton();
+        }
+
+        private void PressPlayButton()
+        {
+            if (simulationManager.PausedSimulation || !simulationManager.PlayingSimulation)
+            {
+                playButton.Click();
+            }
+            else
+            {
+                pauseButton.Click();
+            }
+        }
+
+        private void PressRestartButton()
+        {
+            restartButton.Click();
         }
 
         private void Update()
@@ -147,6 +178,10 @@ namespace RecoDeli.Scripts.UI
             rootElement.EnableInClassList("playing", simulationManager.PlayingSimulation);
             rootElement.EnableInClassList("paused", simulationManager.PausedSimulation);
             rootElement.EnableInClassList("finished", simulationManager.FinishedSimulation);
+
+            playButton.SetEnabled((!simulationManager.PlayingSimulation || simulationManager.PausedSimulation) && !simulationManager.FinishedSimulation);
+            pauseButton.SetEnabled(simulationManager.PlayingSimulation && !simulationManager.PausedSimulation && !simulationManager.FinishedSimulation);
+            restartButton.SetEnabled(simulationManager.PlayingSimulation && !simulationManager.FinishedSimulation);
         }
 
         private float CalculateInstructionEditorWidth()
