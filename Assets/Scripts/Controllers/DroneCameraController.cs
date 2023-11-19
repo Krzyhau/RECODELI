@@ -102,6 +102,11 @@ namespace RecoDeli.Scripts.Controllers
             manualControl *= fasterInput.action.IsPressed() ? manualPanningFasterSpeed : manualPanningSpeed;
 
             preinterpolatedCameraPosition += manualControl;
+
+            if(manualControl.magnitude > 0 && followedObject != null)
+            {
+                FollowObject(null);
+            }
         }
 
         private void Zooming()
