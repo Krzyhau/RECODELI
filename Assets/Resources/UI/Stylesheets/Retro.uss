@@ -681,6 +681,15 @@ Slider.unity-slider #unity-dragger {
     transition-delay: 0.2s, 0.5s;
 }
 
+.quitting #gameplay-container, .quitting-long #gameplay-container {
+    opacity: 0.5;
+    display: none;
+    transition-property: opacity, display;
+    transition-duration: 0s, 0s;
+    transition-timing-function: linear, linear;
+    transition-delay: 0.2s, 0.5s;
+}
+
 .hidden #ending-container {
     display: none;
     transition-property: display;
@@ -688,7 +697,23 @@ Slider.unity-slider #unity-dragger {
     transition-delay: 0s;
 }
 
-.ending{
+.ending {
+    background-color: rgb(0,0,0);
+    transition-property: background-color;
+    transition-timing-function: linear;
+    transition-delay: 2s;
+    transition-duration: 0.5s;
+}
+
+.quitting {
+    background-color: rgb(0,0,0);
+    transition-property: background-color;
+    transition-timing-function: linear;
+    transition-delay: 1.5s;
+    transition-duration: 0.5s;
+}
+
+.quitting-long {
     background-color: rgb(0,0,0);
     transition-property: background-color;
     transition-timing-function: linear;
@@ -969,6 +994,7 @@ Scroller.unity-scroller #unity-tracker {
     height: 300px;
     flex-direction: column;
     justify-content: space-between;
+    background-color: rgba(0,0,0, 0.99);
 }
 
 #user-slots-container #user-slot {

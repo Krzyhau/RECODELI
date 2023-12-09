@@ -22,7 +22,7 @@ namespace RecoDeli.Scripts.UI
             continueButton = endingDocument.rootVisualElement.Q<Button>("continue-button");
 
             restartButton.clicked += endingController.SimulationManager.RestartSimulation;
-            continueButton.clicked += endingController.FinalizeEnding;
+            continueButton.clicked += () => endingController.FinalizeEnding(false);
 
             statsDisplayer.Initialize(endingDocument);
         }

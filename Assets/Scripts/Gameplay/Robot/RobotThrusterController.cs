@@ -3,12 +3,14 @@ using BEPUphysics.Unity;
 using BEPUutilities.FixedMath;
 using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
     public class RobotThrusterController : MonoBehaviour
     {
+        [SerializeField] private RobotController controller;
         [SerializeField] private ParticleSystem frontLeftThruster;
         [SerializeField] private ParticleSystem frontRightThruster;
         [SerializeField] private ParticleSystem backLeftThruster;
@@ -24,6 +26,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         [Flags]
         public enum ThrusterFlag
         {
+            None = 0,
             FrontLeft = 0x1,
             FrontRight = 0x2,
             BackLeft = 0x4,
@@ -33,9 +36,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             All = Front | Back,
         }
 
-        [SerializeField] private ThrusterFlag overrideThrustersState;
+        private ThrusterFlag overrideThrustersState;
 
-        public void UpdateThrusters(RobotController controller)
+        public ThrusterFlag GetState()
         {
             fint forwardMovement = BEPUutilities.Vector3.Dot(controller.LinearAcceleration, controller.Rigidbody.Entity.OrientationMatrix.Forward);
             fint yawRotation = controller.AngularAcceleration.Y;
@@ -47,31 +50,44 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             bool backLeftState = forwardMovement > (fint)linearThreshold || (noMovement && yawRotation > (fint)angularThreshold);
             bool backRightState = forwardMovement > (fint)linearThreshold || (noMovement && yawRotation < -(fint)angularThreshold);
 
-            frontLeftState = frontLeftState || (overrideThrustersState & ThrusterFlag.FrontLeft) > 0;
-            frontRightState = frontRightState || (overrideThrustersState & ThrusterFlag.FrontRight) > 0;
-            backLeftState = backLeftState || (overrideThrustersState & ThrusterFlag.BackLeft) > 0;
-            backRightState = backRightState || (overrideThrustersState & ThrusterFlag.BackRight) > 0;
+            ThrusterFlag state =
+                (frontLeftState ? ThrusterFlag.FrontLeft : ThrusterFlag.None) |
+                (frontRightState ? ThrusterFlag.FrontRight : ThrusterFlag.None) |
+                (backLeftState ? ThrusterFlag.BackLeft : ThrusterFlag.None) |
+                (backRightState ? ThrusterFlag.BackRight : ThrusterFlag.None);
 
-            bool any = frontLeftState || frontRightState || backLeftState || backRightState;
+            return state | overrideThrustersState;
+        }
 
-            SwitchParticleSystem(frontLeftThruster, frontLeftState);
-            SwitchParticleSystem(frontRightThruster, frontRightState);
-            SwitchParticleSystem(backLeftThruster, backLeftState);
-            SwitchParticleSystem(backRightThruster, backRightState);
+        public void UpdateThrustersVisuals()
+        {
+            var state = GetState();
 
-            if(any && !thrusterAudio.isPlaying)
+            SwitchParticleSystem(frontLeftThruster, (state & ThrusterFlag.FrontLeft) > 0);
+            SwitchParticleSystem(frontRightThruster, (state & ThrusterFlag.FrontRight) > 0);
+            SwitchParticleSystem(backLeftThruster, (state & ThrusterFlag.BackLeft) > 0);
+            SwitchParticleSystem(backRightThruster, (state & ThrusterFlag.BackRight) > 0);
+
+            var any = state != ThrusterFlag.None;
+
+            if (any && !thrusterAudio.isPlaying)
             {
                 thrusterAudio.Play();
             }
-            else if(!any && thrusterAudio.isPlaying)
+            else if (!any && thrusterAudio.isPlaying)
             {
                 thrusterAudio.Stop();
             }
+        }
 
-            if (frontLeftState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)(-1), (fint)0, (fint)1));
-            if (frontRightState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)1, (fint)0, (fint)1));
-            if (backLeftState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)(-1), (fint)0, (fint)(-1)));
-            if (backRightState) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)1, (fint)0, (fint)(-1)));
+        public void UpdateThrustersPhysics()
+        {
+            var state = GetState();
+
+            if ((state & ThrusterFlag.FrontLeft) > 0) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)(-1), (fint)0, (fint)1));
+            if ((state & ThrusterFlag.FrontRight) > 0) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)1, (fint)0, (fint)1));
+            if ((state & ThrusterFlag.BackLeft) > 0) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)(-1), (fint)0, (fint)(-1)));
+            if ((state & ThrusterFlag.BackRight) > 0) HandleThrusterRepulsion(controller, new BEPUutilities.Vector3((fint)1, (fint)0, (fint)(-1)));
         }
 
         private void SwitchParticleSystem(ParticleSystem particles, bool newState)

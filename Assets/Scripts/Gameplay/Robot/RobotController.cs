@@ -54,6 +54,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
         private void Update()
         {
+            thrusterController.UpdateThrustersVisuals();
             //Debug.Log(Rigidbody.Entity.Orientation.EulerAngles * (sfloat)Mathf.Rad2Deg); 
         }
 
@@ -96,7 +97,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             LinearAcceleration = Rigidbody.Entity.LinearVelocity - linearVelociotyPreInstruction;
             AngularAcceleration = Rigidbody.Entity.AngularVelocity - angularVelociotyPreInstruction;
 
-            thrusterController.UpdateThrusters(this);
+            thrusterController.UpdateThrustersPhysics();
         }
 
         private void HandleInstructionExecution()

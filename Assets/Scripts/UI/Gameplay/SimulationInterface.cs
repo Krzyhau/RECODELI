@@ -42,6 +42,7 @@ namespace RecoDeli.Scripts.UI
         private Button exitButton;
 
         private float cachedInstructionEditorWidth;
+        private bool quitting;
 
         public float InstructionEditorWidth => CalculateInstructionEditorWidth();
 
@@ -101,7 +102,7 @@ namespace RecoDeli.Scripts.UI
 
             saveButton.clicked += () => saveManagementWindow.Open();
             settingsButton.clicked += () => settingsMenu.Open();
-            exitButton.clicked += () => RecoDeliGame.OpenMainMenuFromGameplay();
+            exitButton.clicked += () => StartQuittingGame();
         }
 
         private void InitializeInputs()
@@ -137,7 +138,7 @@ namespace RecoDeli.Scripts.UI
             settingsButton.SetEnabled(!simulationManager.PlayingSimulation);
 
             Document.rootVisualElement.SetEnabled(
-                !ModalWindow.AnyOpened && !endingInterface.IsInterfaceShown()
+                !ModalWindow.AnyOpened && !endingInterface.IsInterfaceShown() && !quitting
             );
         }
 
@@ -204,6 +205,17 @@ namespace RecoDeli.Scripts.UI
         public void ShowEndingInterface(bool show)
         {
             endingInterface.ShowInterface(show);
+        }
+
+        public void StartQuittingGame()
+        {
+            quitting = true;
+
+            bool runningSimulation = simulationManager.PlayingSimulation;
+            interfaceDocument.rootVisualElement.EnableInClassList("quitting", !runningSimulation);
+            interfaceDocument.rootVisualElement.EnableInClassList("quitting-long", runningSimulation);
+            simulationManager.RestartSimulation();
+            simulationManager.EndingController.FinalizeEnding(!runningSimulation);
         }
     }
 }

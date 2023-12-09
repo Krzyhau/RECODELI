@@ -128,17 +128,23 @@ namespace RecoDeli.Scripts.Controllers
             animationFirstPhaseState = 0.0f;
         }
 
-        public void FinalizeEnding()
+        public void FinalizeEnding(bool quick)
         {
-            StartCoroutine(FinalizeEndingCoroutine());
+            StartCoroutine(FinalizeEndingCoroutine(quick));
         }
 
-        private IEnumerator FinalizeEndingCoroutine()
+        private IEnumerator FinalizeEndingCoroutine(bool quick)
         {
             var robot = simulationManager.RobotController;
+
+            robot.StopExecution();
+            robot.Rigidbody.Kinematic = true;
+            robot.Rigidbody.Entity.LinearVelocity = BEPUutilities.Vector3.Zero;
+            robot.Rigidbody.Entity.AngularVelocity = BEPUutilities.Vector3.Zero;
+
             var endingInterface = simulationManager.Interface.EndingInterface;
             endingInterface.FinalizeEndingInterface();
-            yield return new WaitForSeconds(0.5f);
+            if(!quick) yield return new WaitForSeconds(0.5f);
             robot.ModelAnimator.SetTrigger("Launching");
             yield return new WaitForSeconds(2.5f);
             RecoDeliGame.OpenMainMenuFromGameplay();
