@@ -49,6 +49,7 @@ namespace RecoDeli.Scripts.UI
         public InstructionEditor InstructionEditor => instructionEditor;
         public TimescaleBar TimescaleBar => timescaleBar;
         public SimulationManager SimulationManager => simulationManager;
+        public EndingInterface EndingInterface => endingInterface;
 
 
         private void OnEnable()

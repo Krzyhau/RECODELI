@@ -14,6 +14,8 @@ namespace RecoDeli.Scripts.UI
         private Button restartButton;
         private Button continueButton;
 
+        private bool shown;
+
         private void Awake()
         {
             restartButton = endingDocument.rootVisualElement.Q<Button>("restart-button");
@@ -28,6 +30,7 @@ namespace RecoDeli.Scripts.UI
         public void ShowInterface(bool show)
         {
             endingDocument.rootVisualElement.SetEnabled(show);
+            endingDocument.rootVisualElement.EnableInClassList("hidden", !show);
 
             if (show)
             {
@@ -38,11 +41,19 @@ namespace RecoDeli.Scripts.UI
                 statsDisplayer.SetStats(levelInfo.Completed, time, instructions, levelInfo.ExecutionCount);
                 statsDisplayer.SetProvider(endingController.SimulationManager.LeaderboardProvider);
             }
+
+            shown = show;
+        }
+
+        public void FinalizeEndingInterface()
+        {
+            endingDocument.rootVisualElement.SetEnabled(false);
+            endingDocument.rootVisualElement.EnableInClassList("ending", true);
         }
 
         public bool IsInterfaceShown()
         {
-            return endingDocument.rootVisualElement.enabledSelf;
+            return shown;
         }
     }
 }

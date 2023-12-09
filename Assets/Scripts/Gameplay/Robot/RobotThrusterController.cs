@@ -1,6 +1,7 @@
 using BEPUphysics.BroadPhaseEntries.MobileCollidables;
 using BEPUphysics.Unity;
 using BEPUutilities.FixedMath;
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -19,6 +20,21 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         [SerializeField] private float angularThreshold;
         [SerializeField] private Vector3 thrusterAbsoluteOffset;
 
+        [System.Serializable]
+        [Flags]
+        public enum ThrusterFlag
+        {
+            FrontLeft = 0x1,
+            FrontRight = 0x2,
+            BackLeft = 0x4,
+            BackRight = 0x8,
+            Front = FrontLeft | FrontRight,
+            Back = BackLeft | BackRight,
+            All = Front | Back,
+        }
+
+        [SerializeField] private ThrusterFlag overrideThrustersState;
+
         public void UpdateThrusters(RobotController controller)
         {
             fint forwardMovement = BEPUutilities.Vector3.Dot(controller.LinearAcceleration, controller.Rigidbody.Entity.OrientationMatrix.Forward);
@@ -30,6 +46,11 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             bool frontRightState = forwardMovement < -(fint)linearThreshold || (noMovement && yawRotation > (fint)angularThreshold);
             bool backLeftState = forwardMovement > (fint)linearThreshold || (noMovement && yawRotation > (fint)angularThreshold);
             bool backRightState = forwardMovement > (fint)linearThreshold || (noMovement && yawRotation < -(fint)angularThreshold);
+
+            frontLeftState = frontLeftState || (overrideThrustersState & ThrusterFlag.FrontLeft) > 0;
+            frontRightState = frontRightState || (overrideThrustersState & ThrusterFlag.FrontRight) > 0;
+            backLeftState = backLeftState || (overrideThrustersState & ThrusterFlag.BackLeft) > 0;
+            backRightState = backRightState || (overrideThrustersState & ThrusterFlag.BackRight) > 0;
 
             bool any = frontLeftState || frontRightState || backLeftState || backRightState;
 
@@ -91,6 +112,16 @@ namespace RecoDeli.Scripts.Gameplay.Robot
 
                 entityCollision.Entity.ApplyImpulse(hit.HitData.Location, pushVelocity);
             }
+        }
+
+        public void ForceStartThruster(ThrusterFlag flag)
+        {
+            overrideThrustersState |= flag;
+        }
+
+        public void ResetForcedThruster(ThrusterFlag flag)
+        {
+            overrideThrustersState &= ~flag;
         }
     }
 }

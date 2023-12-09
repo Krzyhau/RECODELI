@@ -1,6 +1,7 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.UI;
+using System.Collections;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Controllers
@@ -99,7 +100,7 @@ namespace RecoDeli.Scripts.Controllers
 
             simulationManager.DroneCamera.enabled = false;
 
-            robot.enabled = false;
+            //robot.enabled = false;
             robot.ModelAnimator.SetTrigger("Celebrate");
 
             simulationManager.Interface.ShowEndingInterface(true);
@@ -129,9 +130,17 @@ namespace RecoDeli.Scripts.Controllers
 
         public void FinalizeEnding()
         {
-            //finalizing = true;
+            StartCoroutine(FinalizeEndingCoroutine());
+        }
 
-            // TODO: robot animation and back to map list
+        private IEnumerator FinalizeEndingCoroutine()
+        {
+            var robot = simulationManager.RobotController;
+            var endingInterface = simulationManager.Interface.EndingInterface;
+            endingInterface.FinalizeEndingInterface();
+            yield return new WaitForSeconds(0.5f);
+            robot.ModelAnimator.SetTrigger("Launching");
+            yield return new WaitForSeconds(2.5f);
             RecoDeliGame.OpenMainMenuFromGameplay();
         }
     }

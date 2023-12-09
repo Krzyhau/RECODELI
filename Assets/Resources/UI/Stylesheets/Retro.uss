@@ -106,7 +106,7 @@ Button.unity-button:focus {
     border-color: rgb(255, 255, 255);
 }
 
-Button.unity-button.unity-disabled {
+Button.unity-button:disabled {
     border-left-color: rgb(128, 128, 128);
     border-right-color: rgb(128, 128, 128);
     border-top-color: rgb(128, 128, 128);
@@ -854,11 +854,28 @@ Slider.unity-slider #unity-dragger {
     transition-delay: 0.2s, 0.5s;
 }
 
-.unity-disabled #ending-container {
+.hidden #ending-container {
     display: none;
     transition-property: display;
     transition-timing-function: linear;
     transition-delay: 0s;
+}
+
+.ending{
+    background-color: rgb(0,0,0);
+    transition-property: background-color;
+    transition-timing-function: linear;
+    transition-delay: 2s;
+    transition-duration: 0.5s;
+}
+
+.ending #ending-container{
+    opacity: 0.5;
+    display: none;
+    transition-property: opacity, display;
+    transition-duration: 0s, 0s;
+    transition-timing-function: linear, linear;
+    transition-delay: 0.1s, 0.4s;
 }
 
 .leaderboards {
