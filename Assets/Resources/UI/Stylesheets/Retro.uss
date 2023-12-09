@@ -14,10 +14,7 @@
 }
 
 .main-container {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
+    margin: 10px;
     flex-direction: row;
     flex-grow: 1;
     position: absolute;
@@ -33,18 +30,9 @@
 
 .unity-text-field__input {
     background-color: rgba(0, 0, 0, 0);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
+    margin: 0;
     padding-left: 10px;
     padding-right: 0;
     padding-top: 0;
@@ -74,18 +62,9 @@ Label {
 Button.unity-button {
     color: rgb(255, 255, 255);
     background-color: rgba(0, 0, 0, 0.95);
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
+    margin: 0;
     height: 40px;
     flex-direction: row;
     justify-content: center;
@@ -107,10 +86,7 @@ Button.unity-button:focus {
 }
 
 Button.unity-button:disabled {
-    border-left-color: rgb(128, 128, 128);
-    border-right-color: rgb(128, 128, 128);
-    border-top-color: rgb(128, 128, 128);
-    border-bottom-color: rgb(128, 128, 128);
+    border-color: rgb(128, 128, 128);
     color: rgb(128, 128, 128);
     background-color: rgba(0, 0, 0, 0.7);
 }
@@ -131,14 +107,8 @@ Button.unity-button:disabled {
 }
 
 Slider.unity-slider #unity-tracker {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
     position: relative;
     height: 100%;
     top: 0;
@@ -154,15 +124,9 @@ Slider.unity-slider #unity-dragger {
     background-color: rgb(255, 255, 255);
     position: absolute;
     height: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     top: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
 }
 
 .unity-base-field:focus Label.unity-base-field__label {
@@ -185,23 +149,14 @@ Slider.unity-slider #unity-dragger {
 }
 
 .window .title {
-    border-left-color: rgb(128, 128, 128);
-    border-right-color: rgb(128, 128, 128);
-    border-top-color: rgb(128, 128, 128);
-    border-bottom-color: rgb(128, 128, 128);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(128, 128, 128);
+    border-width: 2px;
     background-color: rgba(0, 0, 0, 0.95);
     height: 40px;
     -unity-text-align: middle-center;
     padding-left: 20px;
     padding-right: 20px;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 .window .title-control-buttons {
@@ -214,14 +169,8 @@ Slider.unity-slider #unity-dragger {
     -unity-text-align: middle-center;
     width: 100%;
     height: 100%;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .window .title-control-buttons > * > #full-text-label {
@@ -230,14 +179,8 @@ Slider.unity-slider #unity-dragger {
 
 .window .window-inner {
     background-color: rgba(0, 0, 0, 0.95);
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     flex-grow: 1;
 }
 
@@ -246,14 +189,8 @@ Slider.unity-slider #unity-dragger {
 }
 
 #drone-view {
-    border-left-color: rgba(255, 255, 255, 0.5);
-    border-right-color: rgba(255, 255, 255, 0.5);
-    border-top-color: rgba(255, 255, 255, 0.5);
-    border-bottom-color: rgba(255, 255, 255, 0.5);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgba(255, 255, 255, 0.5);
+    border-width: 2px;
     flex-grow: 1;
     background-color: rgba(0, 0, 0, 0);
 }
@@ -268,21 +205,12 @@ Slider.unity-slider #unity-dragger {
 #instruction-editor {
     flex-grow: 1;
     background-color: rgba(0, 0, 0, 0);
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
 }
 
 #instructions {
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     background-color: rgba(0, 0, 0, 0.9);
     flex-grow: 1;
 }
@@ -309,10 +237,7 @@ Slider.unity-slider #unity-dragger {
 }
 
 #instructions #unity-content-container {
-    padding-left: 15px;
-    padding-right: 15px;
-    padding-top: 15px;
-    padding-bottom: 15px;
+    padding: 15px;
     min-height: 100%;
     transition-property: translate;
     transition-timing-function: linear;
@@ -321,18 +246,9 @@ Slider.unity-slider #unity-dragger {
 
 #add-instruction-menu {
     background-color: rgba(0, 0, 0, 0.95);
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
+    padding: 10px;
     flex-shrink: 1;
     flex-grow: 1;
     display: none;
@@ -403,14 +319,8 @@ Slider.unity-slider #unity-dragger {
     height: 45px;
     -unity-font-definition: initial;
     -unity-font: resource('Fonts/SpaceGrotesk/SpaceGrotesk-Medium');
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(255, 255, 255);
     margin-bottom: 5px;
@@ -427,43 +337,22 @@ Slider.unity-slider #unity-dragger {
     top: 0;
     right: 0;
     bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .instruction-bar > #progress > #unity-progress-bar {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
     min-height: 100%;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     overflow: hidden;
 }
 
 .instruction-bar > #progress > #unity-progress-bar > VisualElement {
     background-color: rgba(0, 0, 0, 0);
-    border-left-color: rgba(0, 0, 0, 0);
-    border-right-color: rgba(0, 0, 0, 0);
-    border-top-color: rgba(0, 0, 0, 0);
-    border-bottom-color: rgba(0, 0, 0, 0);
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-color: rgba(0, 0, 0, 0);
+    border-width: 0;
     position: absolute;
     left: -3px;
     top: -3px;
@@ -472,10 +361,7 @@ Slider.unity-slider #unity-dragger {
 }
 
 .instruction-bar > #progress .unity-progress-bar__progress {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     background-color: rgba(255, 255, 255, 0.2);
 }
 
@@ -514,10 +400,7 @@ Slider.unity-slider #unity-dragger {
     margin-right: 5px;
     margin-top: 0;
     margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0;
     -unity-text-align: middle-left;
     font-size: 32px;
 }
@@ -528,14 +411,8 @@ Slider.unity-slider #unity-dragger {
 
 .instruction-bar > #parameters > * {
     border-left-width: 2px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    border-color: rgb(255, 255, 255);
+    margin: 0;
     height: 100%;
 }
 
@@ -544,14 +421,8 @@ Slider.unity-slider #unity-dragger {
 }
 
 .instruction-bar #unity-text-input {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    margin: 0;
+    border-width: 0;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -605,14 +476,8 @@ Slider.unity-slider #unity-dragger {
     -unity-text-align: upper-center;
     flex-direction: row;
     justify-content: center;
-    border-left-color: rgb(128, 128, 128);
-    border-right-color: rgb(128, 128, 128);
-    border-top-color: rgb(128, 128, 128);
-    border-bottom-color: rgb(128, 128, 128);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(128, 128, 128);
+    border-width: 2px;
     height: 100%;
     display: none;
 }
@@ -665,38 +530,20 @@ Slider.unity-slider #unity-dragger {
 }
 
 #timescale-slider {
-    border-left-color: rgb(128, 128, 128);
-    border-right-color: rgb(128, 128, 128);
-    border-top-color: rgb(128, 128, 128);
-    border-bottom-color: rgb(128, 128, 128);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(128, 128, 128);
+    border-width: 2px;
     background-color: rgba(0, 0, 0, 0.9);
     height: 40px;
     flex-direction: row;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 #timescale-slider > Label {
     -unity-text-align: middle-center;
     position: relative;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
     width: 100px;
     min-width: 0;
 }
@@ -729,36 +576,28 @@ Slider.unity-slider #unity-dragger {
     font-size: 40px;
     -unity-font-style: bold;
     background-color: rgba(0, 0, 0, 0.95);
-    border-left-color: rgb(128, 128, 128);
-    border-right-color: rgb(128, 128, 128);
-    border-top-color: rgb(128, 128, 128);
-    border-bottom-color: rgb(128, 128, 128);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(128, 128, 128);
+    border-width: 2px;
     width: auto;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: auto;
+    margin-top: 0;
     padding-left: 60px;
     padding-right: 60px;
     padding-top: 10px;
     padding-bottom: 10px;
-    margin-top: 0;
 }
 
 #ending-stats {
     max-width: 400px;
     flex-grow: 1;
     min-width: 400px;
-    margin-top: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 #ending-stats .window {
+
 }
 
 #leaderboards-window {
@@ -766,10 +605,7 @@ Slider.unity-slider #unity-dragger {
 }
 
 #leaderboards-window .window-inner {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     background-color: rgba(0, 0, 0, 0);
 }
 
@@ -779,10 +615,7 @@ Slider.unity-slider #unity-dragger {
 
 .tab-view .tab-view-tabs Button.unity-disabled {
     border-bottom-width: 0;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
     background-color: rgba(0, 0, 0, 0.95);
 }
 
@@ -797,10 +630,7 @@ Slider.unity-slider #unity-dragger {
 .tab-view .tab-view-views {
     background-color: rgba(0, 0, 0, 0.95);
     flex-grow: 1;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
+    border-color: rgb(255, 255, 255);
     border-left-width: 2px;
     border-right-width: 2px;
     border-top-width: 0;
@@ -827,10 +657,7 @@ Slider.unity-slider #unity-dragger {
 }
 
 #stats-container {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     margin-bottom: 20px;
 }
 
@@ -888,18 +715,9 @@ Slider.unity-slider #unity-dragger {
 
 .leaderboards > * {
     flex-grow: 1;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
+    margin: 5px;
     height: 50%;
 }
 
@@ -939,14 +757,8 @@ Slider.unity-slider #unity-dragger {
 }
 
 .leaderboards-chart-labels Label {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .leaderboards-scores {
@@ -976,10 +788,7 @@ Slider.unity-slider #unity-dragger {
     padding-right: 5px;
     padding-top: 0;
     padding-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     position: absolute;
     right: 0;
 }
@@ -991,10 +800,7 @@ Slider.unity-slider #unity-dragger {
 .leaderboards-scores #score {
     flex-direction: row;
     justify-content: space-between;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     padding-left: 15px;
     padding-right: 15px;
     padding-top: 5px;
@@ -1006,14 +812,8 @@ Slider.unity-slider #unity-dragger {
 }
 
 .leaderboards-scores #score Label {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .leaderboards-scores #unity-content-container {
@@ -1032,19 +832,13 @@ Slider.unity-slider #unity-dragger {
 }
 
 .leaderboards > #leaderboards-status {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     -unity-text-align: middle-center;
     display: none;
 }
 
 Scroller.unity-scroller {
-    margin-left: 4px;
-    margin-right: 4px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin: 4px;
     width: 10px;
 }
 
@@ -1057,10 +851,7 @@ Scroller.unity-scroller #unity-high-button {
 }
 
 Scroller.unity-scroller #unity-slider {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 Scroller.unity-scroller #unity-drag-container {
@@ -1072,19 +863,10 @@ Scroller.unity-scroller #unity-drag-container {
 }
 
 Scroller.unity-scroller #unity-dragger {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     background-color: rgb(255, 255, 255);
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    padding: 0;
+    margin: 0;
     width: 100%;
     max-width: 100%;
     left: 0;
@@ -1093,10 +875,7 @@ Scroller.unity-scroller #unity-dragger {
 
 Scroller.unity-scroller #unity-tracker {
     background-color: rgb(128, 128, 128);
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
 }
 
 .modal-container {
@@ -1130,10 +909,7 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #saves-container {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     width: 500px;
     height: 300px;
     flex-direction: column;
@@ -1141,18 +917,9 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #saves-container #save-button {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    margin: 10px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     flex-grow: 1;
 }
 
@@ -1167,19 +934,13 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #settings-window-inner {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
 }
 
 #settings-views > * {
     height: 100%;
     width: 100%;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 20px;
-    padding-bottom: 20px;
+    padding: 20px;
 }
 
 #settings-views .setting-field Label {
@@ -1188,15 +949,9 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #settings-views .setting-field {
-    margin-left: 5px;
-    margin-right: 5px;
-    margin-top: 5px;
-    margin-bottom: 5px;
+    margin: 5px;
     height: 40px;
-    padding-left: 5px;
-    padding-right: 5px;
-    padding-top: 5px;
-    padding-bottom: 5px;
+    padding: 5px;
 }
 
 #ending-stats #stats-window {
@@ -1209,10 +964,7 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #user-slots-container {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
     width: 500px;
     height: 300px;
     flex-direction: column;
@@ -1220,18 +972,9 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #user-slots-container #user-slot {
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    margin: 10px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     flex-grow: 1;
 }
 
@@ -1241,10 +984,7 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #user-creation-container {
-    padding-left: 32px;
-    padding-right: 32px;
-    padding-top: 32px;
-    padding-bottom: 32px;
+    padding: 32px;
     width: 500px;
     height: 200px;
     flex-direction: column;
@@ -1262,10 +1002,7 @@ Scroller.unity-scroller #unity-tracker {
 
 #user-creation-container #username-field {
     font-size: 36px;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
     -unity-text-align: upper-left;
 }
 
@@ -1302,10 +1039,7 @@ Scroller.unity-scroller #unity-tracker {
     width: 760px;
     height: 220px;
     justify-content: flex-end;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: auto;
-    margin-bottom: auto;
+    margin: auto;
 }
 
 #logo #logo-icon {
@@ -1323,14 +1057,8 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #logo Label {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 0;
+    padding: 0;
     width: 470px;
     -unity-text-align: upper-right;
 }
@@ -1346,20 +1074,11 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #main-menu-icons > .main-menu-button {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     flex-direction: column;
     height: auto;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-left: 0;
-    padding-right: 0;
-    padding-top: 0;
-    padding-bottom: 0;
+    margin: 10px;
+    padding: 0;
 }
 
 #main-menu-icons > .main-menu-button > #icon {
@@ -1406,10 +1125,7 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #debug-levels-view #unity-content-container {
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
 }
 
 #debug-levels-view Button {
@@ -1448,10 +1164,7 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #tasks-list Button {
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    border-width: 0;
     -unity-text-align: upper-left;
     justify-content: center;
     align-items: center;
@@ -1475,14 +1188,8 @@ Scroller.unity-scroller #unity-tracker {
 
 #task-description {
     flex-grow: 1;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-right-width: 2px;
-    border-left-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     margin-left: 10px;
     margin-right: 10px;
     margin-top: 0;
@@ -1494,10 +1201,7 @@ Scroller.unity-scroller #unity-tracker {
     width: 100%;
     height: 200px;
     flex-direction: row;
-    padding-left: 10px;
-    padding-right: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
+    padding: 10px;
 }
 
 #task-info-line {
@@ -1544,14 +1248,8 @@ Scroller.unity-scroller #unity-tracker {
 }
 
 #task-leaderboards #stats-container {
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
-    border-left-width: 0;
-    border-right-width: 0;
-    border-top-width: 0;
-    border-bottom-width: 0;
+    margin: 0;
+    border-width: 0;
     width: 300px;
     flex-grow: 0;
 }
@@ -1585,22 +1283,13 @@ Scroller.unity-scroller #unity-tracker {
 
 DropdownField.unity-popup-field > VisualElement {
     background-color: rgba(0, 0, 0, 0.8);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
+    border-width: 2px;
+    border-color: rgb(255, 255, 255);
     padding-left: 10px;
     padding-right: 10px;
     padding-top: 0;
     padding-bottom: 0;
-    margin-left: 0;
-    margin-right: 0;
-    margin-top: 0;
-    margin-bottom: 0;
+    margin: 0;
 }
 
 DropdownField.unity-popup-field .unity-base-popup-field__arrow {
@@ -1609,14 +1298,8 @@ DropdownField.unity-popup-field .unity-base-popup-field__arrow {
 }
 
 .unity-base-dropdown__container-outer {
-    border-left-color: rgb(255, 255, 255);
-    border-right-color: rgb(255, 255, 255);
-    border-top-color: rgb(255, 255, 255);
-    border-bottom-color: rgb(255, 255, 255);
-    border-left-width: 2px;
-    border-right-width: 2px;
-    border-top-width: 2px;
-    border-bottom-width: 2px;
+    border-color: rgb(255, 255, 255);
+    border-width: 2px;
     background-color: rgba(0, 0, 0, 0.8);
     color: rgb(255, 255, 255);
 }
