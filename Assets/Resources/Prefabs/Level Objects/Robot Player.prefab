@@ -795,6 +795,7 @@ GameObject:
   - component: {fileID: 8759999767785800866}
   - component: {fileID: 6306232798108932430}
   - component: {fileID: 6934998258920710811}
+  - component: {fileID: 3639384134807569987}
   m_Layer: 0
   m_Name: Eyes
   m_TagString: Untagged
@@ -867,6 +868,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &3639384134807569987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5806496165617019562}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863273d0281e43c4699fbbd5840d1018, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1193227764216509081}
+  eyesRenderer: {fileID: 6934998258920710811}
 --- !u!1 &7043584514945849257
 GameObject:
   m_ObjectHideFlags: 0

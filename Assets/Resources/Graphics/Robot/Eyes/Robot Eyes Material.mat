@@ -52,6 +52,14 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _Eye_Map:
+        m_Texture: {fileID: 2800000, guid: e58e6ca6567d0984497e854bd0238ba4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Eye_Texture:
+        m_Texture: {fileID: 2800000, guid: e58e6ca6567d0984497e854bd0238ba4, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -100,10 +108,16 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _Eye_Hue: 0.625
+    - _Eye_Hue_Offset: 0
+    - _Eye_Size: 0.38
+    - _Eyelids_Feather: 5.11
+    - _Eyelids_Sharpness: 10
     - _Eyes_Emission: 4
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _Looking_Offset_Scale: 0.1
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -121,9 +135,17 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
+    - LeftEyelids: {r: 0, g: 1, b: -0.1, a: 0.3}
+    - LookingDirection: {r: 0, g: 0, b: 0, a: 0}
+    - RightEyelids: {r: 0, g: 1, b: -0.1, a: 0.3}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Eye_Tint: {r: 0, g: 0.43529412, b: 0.87058824, a: 1}
+    - _Eyes_Looking_Skew: {r: 1, g: 1, b: 0, a: 0}
+    - _Left_Eyelids_Data: {r: 0, g: 1, b: -0.1, a: 0.3}
+    - _Looking_Direction: {r: 0, g: 0, b: 0, a: 0}
+    - _Right_Eyelids_Data: {r: 0, g: 1, b: -0.1, a: 0.3}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
   m_BuildTextureStacks: []
 --- !u!114 &948927009436758525
