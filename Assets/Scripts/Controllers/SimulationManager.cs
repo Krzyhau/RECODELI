@@ -49,6 +49,7 @@ namespace RecoDeli.Scripts.Controllers
         private float initialIdleVolume;
         private float initialPlayVolume;
         private float ambientFaderValue;
+        private float quittingVolumeDiff;
 
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
@@ -79,6 +80,7 @@ namespace RecoDeli.Scripts.Controllers
 
             initialIdleVolume = idleAmbient.volume;
             initialPlayVolume = playAmbient.volume;
+            quittingVolumeDiff = 0.0f;
         }
 
         private void OnDisable()
@@ -105,9 +107,11 @@ namespace RecoDeli.Scripts.Controllers
 
             float targetFaderValue = (playingSimulation && !finishedSimulation) ? 1.0f : 0.0f;
 
+            if (endingController.Quitting) quittingVolumeDiff += Time.unscaledDeltaTime * 0.5f;
+            var musicVolumeScale = Mathf.Clamp(1.0f - quittingVolumeDiff, 0.0f, 1.0f);
             ambientFaderValue = Mathf.MoveTowards(ambientFaderValue, targetFaderValue, (1.0f / fadeTime) * Time.unscaledDeltaTime);
-            idleAmbient.volume = Mathf.Lerp(0.0f, initialIdleVolume, 1.0f - ambientFaderValue);
-            playAmbient.volume = Mathf.Lerp(0.0f, initialPlayVolume, ambientFaderValue);
+            idleAmbient.volume = Mathf.Lerp(0.0f, initialIdleVolume, 1.0f - ambientFaderValue) * musicVolumeScale;
+            playAmbient.volume = Mathf.Lerp(0.0f, initialPlayVolume, ambientFaderValue) * musicVolumeScale;
         }
 
         private void LogicUpdate()

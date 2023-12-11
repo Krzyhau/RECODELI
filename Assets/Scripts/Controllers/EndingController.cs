@@ -31,10 +31,12 @@ namespace RecoDeli.Scripts.Controllers
         private Quaternion cameraTargetRotation;
 
         private bool started = false;
+        private bool quitting = false;
         //private bool finalizing = false;
         private float animationFirstPhaseState = 0.0f;
 
         public bool EndingInProgress => started;
+        public bool Quitting => quitting;
         public bool IsAnimating => EndingInProgress && animationFirstPhaseState < 1.0f;
 
         public SimulationManager SimulationManager => simulationManager;
@@ -135,6 +137,8 @@ namespace RecoDeli.Scripts.Controllers
 
         private IEnumerator FinalizeEndingCoroutine(bool quick)
         {
+            quitting = true;
+
             var robot = simulationManager.RobotController;
 
             robot.StopExecution();

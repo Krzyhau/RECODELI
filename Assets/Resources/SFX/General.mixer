@@ -65,6 +65,8 @@ AudioMixerController:
   m_ExposedParameters:
   - guid: 6da7525491ea37d4fa5a6b73fb1d7c76
     name: Environment Volume
+  - guid: c088e9d3ddeccf743ab31838758cb28a
+    name: Environment Pitch
   - guid: 37ab44656e546a441a76d5ba69f021a1
     name: Interface Volume
   - guid: 7eb75096bc5c65e48916dbee90288692
