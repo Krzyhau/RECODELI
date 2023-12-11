@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using RecoDeli.Scripts.Utils;
+using System.Collections;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Settings
@@ -53,7 +54,7 @@ namespace RecoDeli.Scripts.Settings
         {
             Language = Language;
             ApplyAudioSettings();
-            AudioSettings.OnAudioConfigurationChanged += (b) => ApplyAudioSettings();
+            MainThreadExecutor.Run(ApplyAudioSettings);
         }
 
         private static void ApplyAudioSettings()
