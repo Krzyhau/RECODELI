@@ -5,10 +5,12 @@ using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.SaveManagement;
+using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.UI;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Assertions;
+using UnityEngine.Audio;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -120,6 +122,8 @@ namespace RecoDeli.Scripts.Controllers
             {
                 Time.timeScale = paused ? 0.0f : 1.0f;
             }
+
+            RecoDeliGame.Settings.MainAudioMixerGroup.audioMixer.SetFloat("Environment Pitch", Time.timeScale);
 
             UpdateGlitching();
 
