@@ -1,3 +1,6 @@
+using BEPUphysics.BroadPhaseEntries;
+using BEPUphysics.BroadPhaseEntries.MobileCollidables;
+using BEPUphysics.NarrowPhaseSystems.Pairs;
 using BEPUutilities.FixedMath;
 using System;
 using System.Collections.Generic;
@@ -25,6 +28,11 @@ namespace BEPUphysics.Unity
         public Action OnPhysicsUpdate;
         public Action OnPostPhysicsUpdate;
 
+        public delegate void CollisionCallback(EntityCollidable collider, Collidable other, CollidablePairHandler pairHandler);
+        public CollisionCallback OnGlobalCollisionEnter;
+        public CollisionCallback OnGlobalCollisionStay;
+        public CollisionCallback OnGlobalCollisionExit;
+
         public bool Active { get; set; }
         public Space PhysicsSpace => space;
         public float InterpolationTime => timeSinceLastStep / timeStep;
@@ -44,6 +52,8 @@ namespace BEPUphysics.Unity
             space = new Space();
 
             space.Solver.IterationLimit = solverIterationLimit;
+
+            
 
             space.TimeStepSettings = new TimeStepSettings()
             {

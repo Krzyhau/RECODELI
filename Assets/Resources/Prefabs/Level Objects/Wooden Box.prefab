@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 579164158148602411}
   - component: {fileID: -7752146500316048264}
+  - component: {fileID: 8317984481870463620}
   - component: {fileID: 6184875400669459711}
   - component: {fileID: 5197620349902121401}
   - component: {fileID: 8238815954974463489}
@@ -34,7 +35,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: -89.98, y: 0, z: 0}
 --- !u!114 &-7752146500316048264
 MonoBehaviour:
@@ -50,6 +51,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Wooden Box
   LimitRotation: 0
+--- !u!114 &8317984481870463620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 116299969606427933}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741d436bf12b11249b237b1d058be6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 1
+  flammable: 1
 --- !u!33 &6184875400669459711
 MeshFilter:
   m_ObjectHideFlags: 0

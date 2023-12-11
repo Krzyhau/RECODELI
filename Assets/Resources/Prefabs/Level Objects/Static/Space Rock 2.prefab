@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6497930304839895288}
   - component: {fileID: -615416326260954343}
+  - component: {fileID: -5851956717672078932}
   - component: {fileID: 6730362524002062820}
   - component: {fileID: 2720860300888416087}
   - component: {fileID: 1731676471809089217}
@@ -51,6 +52,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Space Rock 2
   LimitRotation: 0
+--- !u!114 &-5851956717672078932
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1988193785846949339}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741d436bf12b11249b237b1d058be6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 0
+  flammable: 0
 --- !u!33 &6730362524002062820
 MeshFilter:
   m_ObjectHideFlags: 0

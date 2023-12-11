@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 519786236758336911}
   - component: {fileID: 7021048655534242419}
+  - component: {fileID: 4127679239136052636}
   - component: {fileID: 5023953628830990498}
   - component: {fileID: 6239294664892411025}
   - component: {fileID: 4174755479117888081}
@@ -50,6 +51,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Carboard Box Wide
   LimitRotation: 0
+--- !u!114 &4127679239136052636
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1934411282559861723}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741d436bf12b11249b237b1d058be6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 0
+  flammable: 1
 --- !u!33 &5023953628830990498
 MeshFilter:
   m_ObjectHideFlags: 0

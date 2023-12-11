@@ -129,6 +129,7 @@ namespace BEPUphysics.Unity
         {
             if (Initialized)
             {
+                DeregisterEvents();
                 Simulation.RemoveEntity(this);
                 physicsEntity = null;
                 simulation = null;
@@ -192,19 +193,31 @@ namespace BEPUphysics.Unity
             listeners = GetComponents<IBepuEntityListener>();
         }
 
+        private void DeregisterEvents()
+        {
+            if (physicsEntity == null) return;
+
+            physicsEntity.CollisionInformation.Events.InitialCollisionDetected -= OnBepuCollisionEnter;
+            physicsEntity.CollisionInformation.Events.PairTouched -= OnBepuCollisionStay;
+            physicsEntity.CollisionInformation.Events.CollisionEnded -= OnBepuCollisionExit;
+        }
+
         private void OnBepuCollisionEnter(EntityCollidable self, Collidable other, CollidablePairHandler pair)
         {
             foreach (var listener in listeners) listener.OnBepuCollisionEnter(other, pair);
+            simulation?.OnGlobalCollisionEnter?.Invoke(self, other, pair);
         }
 
         private void OnBepuCollisionStay(EntityCollidable self, Collidable other, CollidablePairHandler pair)
         {
             foreach (var listener in listeners) listener.OnBepuCollisionStay(other, pair);
+            simulation?.OnGlobalCollisionStay?.Invoke(self, other, pair);
         }
 
         private void OnBepuCollisionExit(EntityCollidable self, Collidable other, CollidablePairHandler pair)
         {
             foreach (var listener in listeners) listener.OnBepuCollisionExit(other, pair);
+            simulation?.OnGlobalCollisionExit?.Invoke(self, other, pair);
         }
 
         // destroys the game object, but ensures physics object is removed immediately

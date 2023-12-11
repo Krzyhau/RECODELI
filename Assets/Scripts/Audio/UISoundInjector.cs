@@ -4,7 +4,7 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace RecoDeli.Scripts
+namespace RecoDeli.Scripts.Audio
 {
     public class UISoundInjector : MonoBehaviour
     {

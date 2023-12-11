@@ -330,43 +330,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   timerFormat: 0.000
---- !u!84 &278075208
-RenderTexture:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: 
-  m_ImageContentsHash:
-    serializedVersion: 2
-    Hash: 00000000000000000000000000000000
-  m_ForcedFallbackFormat: 4
-  m_DownscaleFallback: 0
-  m_IsAlphaChannelOptional: 0
-  serializedVersion: 5
-  m_Width: 1645
-  m_Height: 668
-  m_AntiAliasing: 1
-  m_MipCount: -1
-  m_DepthStencilFormat: 90
-  m_ColorFormat: 52
-  m_MipMap: 0
-  m_GenerateMips: 1
-  m_SRGB: 1
-  m_UseDynamicScale: 0
-  m_BindMS: 0
-  m_EnableCompatibleFormat: 1
-  m_TextureSettings:
-    serializedVersion: 2
-    m_FilterMode: 1
-    m_Aniso: 1
-    m_MipBias: 0
-    m_WrapU: 1
-    m_WrapV: 1
-    m_WrapW: 1
-  m_Dimension: 2
-  m_VolumeDepth: 1
-  m_ShadowSamplingMode: 2
 --- !u!1 &280991591
 GameObject:
   m_ObjectHideFlags: 0
@@ -456,7 +419,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 1988439235}
+  m_Texture: {fileID: 1907939321}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -665,6 +628,7 @@ GameObject:
   m_Component:
   - component: {fileID: 742003998}
   - component: {fileID: 742003999}
+  - component: {fileID: 742004000}
   m_Layer: 0
   m_Name: Game Simulation
   m_TagString: Untagged
@@ -711,6 +675,50 @@ MonoBehaviour:
   solverIterationLimit: 6
   activateOnAwake: 0
   gravity: {x: 0, y: 0, z: 0}
+--- !u!114 &742004000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742003997}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9be752b62051d641a41d54bc3b5d6c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  physicsSimulation: {fileID: 742003999}
+  audioSourcePrefab: {fileID: 6735688540451876610, guid: 1f3fc1e9d16b2914098070caef359e6a,
+    type: 3}
+  smallHitThreshold: 0.1
+  mediumHitThreshold: 1
+  largeHitThreshold: 4
+  materialSounds:
+  - Type: 0
+    SmallHitSound: {fileID: 8300000, guid: a8222a3546eb77548adee48baecdadb4, type: 3}
+    MediumHitSound: {fileID: 8300000, guid: a75f8e2fd87b60b43b9eda590260f2b6, type: 3}
+    LargeHitSound: {fileID: 8300000, guid: da833fb915acfd04c9b494a9f6ef83b3, type: 3}
+    FrictionSound: {fileID: 8300000, guid: 0ce4bb5c39ee3364bbaca47191557704, type: 3}
+  - Type: 1
+    SmallHitSound: {fileID: 8300000, guid: 099b5ca56f77bfc44bf4515145434b93, type: 3}
+    MediumHitSound: {fileID: 8300000, guid: a8dc5f748d21b0a4089fd0c7a843091b, type: 3}
+    LargeHitSound: {fileID: 8300000, guid: 151dec77be4c89e439345fd347ed37b2, type: 3}
+    FrictionSound: {fileID: 8300000, guid: ff9c9e924b1b6df4a8b65971a11cdbed, type: 3}
+  - Type: 2
+    SmallHitSound: {fileID: 8300000, guid: 77caa6f8288ebbf46ada3de4e167b945, type: 3}
+    MediumHitSound: {fileID: 8300000, guid: bb2ed24ee18de6f458f54fd788d901b3, type: 3}
+    LargeHitSound: {fileID: 8300000, guid: 38bb60fc5bb069b45aeac2bc024b4256, type: 3}
+    FrictionSound: {fileID: 8300000, guid: a4b9d8fbc1109c349b4ee1624d0f87bd, type: 3}
+  - Type: 3
+    SmallHitSound: {fileID: 8300000, guid: a8caa2503cfc5d4429f502b87faf579a, type: 3}
+    MediumHitSound: {fileID: 8300000, guid: d687b357e17afba4da4151b8d39971f2, type: 3}
+    LargeHitSound: {fileID: 8300000, guid: 2096a64aebe84db42b58e691db3c706f, type: 3}
+    FrictionSound: {fileID: 8300000, guid: 7525aeec09e6a7049b10ddadf6cceba2, type: 3}
+  - Type: 4
+    SmallHitSound: {fileID: 8300000, guid: a8222a3546eb77548adee48baecdadb4, type: 3}
+    MediumHitSound: {fileID: 8300000, guid: a75f8e2fd87b60b43b9eda590260f2b6, type: 3}
+    LargeHitSound: {fileID: 8300000, guid: da833fb915acfd04c9b494a9f6ef83b3, type: 3}
+    FrictionSound: {fileID: 8300000, guid: 0ce4bb5c39ee3364bbaca47191557704, type: 3}
 --- !u!1 &786949733
 GameObject:
   m_ObjectHideFlags: 0
@@ -820,7 +828,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 278075208}
+  m_Texture: {fileID: 2005398488}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1846,6 +1854,43 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 1246773745}
   m_PrefabAsset: {fileID: 0}
+--- !u!84 &1907939321
+RenderTexture:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: 
+  m_ImageContentsHash:
+    serializedVersion: 2
+    Hash: 00000000000000000000000000000000
+  m_ForcedFallbackFormat: 4
+  m_DownscaleFallback: 0
+  m_IsAlphaChannelOptional: 0
+  serializedVersion: 5
+  m_Width: 1644
+  m_Height: 787
+  m_AntiAliasing: 1
+  m_MipCount: -1
+  m_DepthStencilFormat: 90
+  m_ColorFormat: 52
+  m_MipMap: 0
+  m_GenerateMips: 1
+  m_SRGB: 1
+  m_UseDynamicScale: 0
+  m_BindMS: 0
+  m_EnableCompatibleFormat: 1
+  m_TextureSettings:
+    serializedVersion: 2
+    m_FilterMode: 1
+    m_Aniso: 1
+    m_MipBias: 0
+    m_WrapU: 1
+    m_WrapV: 1
+    m_WrapW: 1
+  m_Dimension: 2
+  m_VolumeDepth: 1
+  m_ShadowSamplingMode: 2
 --- !u!4 &1924446979 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6497930304839895288, guid: c54bc94c8a144ec4c9506f65a1912711,
@@ -1989,7 +2034,7 @@ MonoBehaviour:
   - SPIN LEFT
   - SPIN RIGHT
   - WAIT
---- !u!84 &1988439235
+--- !u!84 &2005398488
 RenderTexture:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2003,8 +2048,8 @@ RenderTexture:
   m_DownscaleFallback: 0
   m_IsAlphaChannelOptional: 0
   serializedVersion: 5
-  m_Width: 1645
-  m_Height: 668
+  m_Width: 1644
+  m_Height: 787
   m_AntiAliasing: 1
   m_MipCount: -1
   m_DepthStencilFormat: 90
@@ -3124,7 +3169,7 @@ Camera:
     serializedVersion: 2
     m_Bits: 23
   m_RenderingPath: -1
-  m_TargetTexture: {fileID: 278075208}
+  m_TargetTexture: {fileID: 2005398488}
   m_TargetDisplay: 0
   m_TargetEye: 3
   m_HDR: 1

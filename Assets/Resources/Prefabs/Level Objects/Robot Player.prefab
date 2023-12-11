@@ -130,6 +130,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3840430530390865490}
   - component: {fileID: -1318549932277984436}
+  - component: {fileID: -4654316014903852520}
   - component: {fileID: 1300663991107002564}
   - component: {fileID: 9055473269963545}
   - component: {fileID: 1193227764216509081}
@@ -170,6 +171,20 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: Recovery Robot
   LimitRotation: 0
+--- !u!114 &-4654316014903852520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1170812366097013797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 741d436bf12b11249b237b1d058be6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  material: 2
+  flammable: 0
 --- !u!65 &1300663991107002564
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -957,7 +972,7 @@ AudioSource:
   m_GameObject: {fileID: 8749971096430353786}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 24300002, guid: 96a2894bd3e352d45bf249f654af22ec,
+  OutputAudioMixerGroup: {fileID: 5750826853443447988, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
   m_audioClip: {fileID: 8300000, guid: 94a5378024d237e458f6d0e8dc261226, type: 3}
   m_PlayOnAwake: 0
