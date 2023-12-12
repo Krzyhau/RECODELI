@@ -14,18 +14,35 @@ namespace RecoDeli.Scripts.Level
     [ExecuteAlways]
     public class EditorLevelLoader : LevelLoader
     {
+        private bool cleaningScene;
+        private int preSceneCleaningUndoGroupIndex;
+
         private void OnEnable()
         {
             EditorSceneManager.sceneSaving += OnSceneSaving;
+            EditorSceneManager.sceneSaved += OnSceneSaved;
         }
 
         private void OnDisable()
         {
             EditorSceneManager.sceneSaving -= OnSceneSaving;
+            EditorSceneManager.sceneSaved -= OnSceneSaved;
         }
         private void OnSceneSaving(Scene scene, string path)
         {
             SaveCurrentLevel();
+
+            // temporarily unload currently loaded level
+            cleaningScene = true;
+            MakeEmptyLevel();
+        }
+        private void OnSceneSaved(Scene scene)
+        {
+            if (cleaningScene)
+            {
+                Undo.RevertAllDownToGroup(preSceneCleaningUndoGroupIndex);
+                cleaningScene = false;
+            }
         }
 
         public override void SaveCurrentLevel()
@@ -57,6 +74,7 @@ namespace RecoDeli.Scripts.Level
             base.MakeEmptyLevel();
 
             Undo.SetCurrentGroupName($"Create empty level");
+            preSceneCleaningUndoGroupIndex = Undo.GetCurrentGroup();
             Undo.IncrementCurrentGroup();
         }
 
