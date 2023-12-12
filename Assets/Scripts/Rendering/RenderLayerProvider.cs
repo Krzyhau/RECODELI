@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.Experimental.Rendering;
+using UnityEditor;
 
 namespace RecoDeli.Scripts.Rendering
 {
@@ -7,7 +9,7 @@ namespace RecoDeli.Scripts.Rendering
     {
         protected RenderTexture layer;
 
-        [SerializeField] private UnityEngine.Experimental.Rendering.GraphicsFormat format;
+        [SerializeField] private GraphicsFormat format;
 
         public RenderTexture RenderLayer => layer;
 
@@ -19,6 +21,13 @@ namespace RecoDeli.Scripts.Rendering
             {
                 AssignToRenderer(); 
             }
+
+            RegisterEditorEvents();
+        }
+
+        private void OnDisable()
+        {
+            UnregisterEditorEvents();
         }
 
         private void Update()
@@ -59,8 +68,29 @@ namespace RecoDeli.Scripts.Rendering
             }
         }
 
-        protected virtual void AssignToRenderer() {
+        protected virtual void AssignToRenderer() {}
 
+#if UNITY_EDITOR
+        private void RegisterEditorEvents()
+        {
+            UnityEditor.SceneManagement.EditorSceneManager.sceneSaving += OnSceneSaving;
         }
+
+        private void UnregisterEditorEvents()
+        {
+            UnityEditor.SceneManagement.EditorSceneManager.sceneSaving -= OnSceneSaving;
+        }
+        private void OnSceneSaving(UnityEngine.SceneManagement.Scene scene, string path)
+        {
+            // remove render texture when saving to prevent it from being stored in the scene file
+            // it will be dynamically regenerated when used again
+            if (layer == null) return;
+            layer.Release();
+            layer.DiscardContents();
+        }
+#else
+        private void RegisterEditorEvents() { }
+        private void UnregisterEditorEvents() { }
+#endif
     }
 }
