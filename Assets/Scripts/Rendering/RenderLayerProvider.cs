@@ -70,6 +70,8 @@ namespace RecoDeli.Scripts.Rendering
 
         protected virtual void AssignToRenderer() {}
 
+        protected virtual void ClearRenderer() {}
+
 #if UNITY_EDITOR
         private void RegisterEditorEvents()
         {
@@ -87,6 +89,7 @@ namespace RecoDeli.Scripts.Rendering
             if (layer == null) return;
             layer.Release();
             layer.DiscardContents();
+            ClearRenderer();
         }
 #else
         private void RegisterEditorEvents() { }

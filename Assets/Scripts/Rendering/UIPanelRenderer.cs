@@ -20,5 +20,14 @@ namespace RecoDeli.Scripts.Rendering
                 assignedPanel.targetTexture = layer;
             }
         }
+
+        protected override void ClearRenderer()
+        {
+            base.ClearRenderer();
+
+            if (assignedPanel == null) return;
+
+            assignedPanel.targetTexture = null;
+        }
     }
 }

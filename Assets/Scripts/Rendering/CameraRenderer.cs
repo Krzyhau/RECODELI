@@ -20,5 +20,14 @@ namespace RecoDeli.Scripts.Rendering
                 assignedCamera.ResetAspect();
             }
         }
+
+        protected override void ClearRenderer()
+        {
+            base.ClearRenderer();
+
+            if (assignedCamera == null) return;
+
+            assignedCamera.targetTexture = null;
+        }
     }
 }
