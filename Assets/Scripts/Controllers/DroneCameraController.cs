@@ -36,7 +36,9 @@ namespace RecoDeli.Scripts.Controllers
         private Transform followedObject;
         private bool followRobot = false;
         private bool followPackage = false;
-        private RectTransform instructionsEditorRect;
+
+        public bool FollowingRobot => followRobot;
+        public bool FollowingPackage => followPackage;
 
         private void Start()
         {

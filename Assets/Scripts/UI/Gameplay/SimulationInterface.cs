@@ -184,6 +184,9 @@ namespace RecoDeli.Scripts.UI
             playButton.SetEnabled((!simulationManager.PlayingSimulation || simulationManager.PausedSimulation) && !simulationManager.FinishedSimulation);
             pauseButton.SetEnabled(simulationManager.PlayingSimulation && !simulationManager.PausedSimulation && !simulationManager.FinishedSimulation);
             restartButton.SetEnabled(simulationManager.PlayingSimulation && !simulationManager.FinishedSimulation);
+
+            focusOnDroneButton.SetEnabled(!simulationManager.DroneCamera.FollowingRobot);
+            focusOnGoalButton.SetEnabled(!simulationManager.DroneCamera.FollowingPackage);
         }
 
         private float CalculateInstructionEditorWidth()
