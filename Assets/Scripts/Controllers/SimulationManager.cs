@@ -1,5 +1,6 @@
 using BEPUphysics.Unity;
 using RecoDeli.Scripts.Assets.Scripts.Leaderboards;
+using RecoDeli.Scripts.Audio;
 using RecoDeli.Scripts.Gameplay;
 using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
@@ -23,17 +24,14 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private SimulationInterface simulationInterface;
         [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
+        [SerializeField] private MusicHandler musicHandler;
         [Header("Glitching")]
         [SerializeField] private Material glitchingMaterial;
         [SerializeField] private float glitchingFadeoutSpeed;
         [SerializeField] private float glitchingForce;
         [Header("SFX")]
-        [SerializeField] private AudioSource idleAmbient;
-        [SerializeField] private AudioSource playAmbient;
         [SerializeField] private AudioSource successSound;
         [SerializeField] private AudioSource restartSound;
-        [SerializeField] private float fadeTime;
-
 
         private bool paused = false;
         private bool playingSimulation = false;
@@ -46,11 +44,6 @@ namespace RecoDeli.Scripts.Controllers
         private float currentGlitchingForce = 0.0f;
         private int lastInstruction;
 
-        private float initialIdleVolume;
-        private float initialPlayVolume;
-        private float ambientFaderValue;
-        private float quittingVolumeDiff;
-
         public RobotController RobotController { get; private set; }
         public GoalBox GoalBox { get; private set; }
         public float LastCompletionTime { get; private set; }
@@ -58,6 +51,7 @@ namespace RecoDeli.Scripts.Controllers
         public DroneCameraController DroneCamera => droneCamera;
         public BepuSimulation PhysicsSimulationInstance => simulationInstance;
         public EndingController EndingController => endingController;
+        public MusicHandler MusicHandler => musicHandler;
         public bool PlayingSimulation => playingSimulation;
         public bool FinishedSimulation => finishedSimulation;
         public bool PausedSimulation => paused;
@@ -77,10 +71,6 @@ namespace RecoDeli.Scripts.Controllers
             {
                 SetPhysicsSimulation(simulationGroup);
             }
-
-            initialIdleVolume = idleAmbient.volume;
-            initialPlayVolume = playAmbient.volume;
-            quittingVolumeDiff = 0.0f;
         }
 
         private void OnDisable()
@@ -104,14 +94,6 @@ namespace RecoDeli.Scripts.Controllers
             {
                 didAtLeastOneLogicUpdateThisFrame = false;
             }
-
-            float targetFaderValue = (playingSimulation && !finishedSimulation) ? 1.0f : 0.0f;
-
-            if (endingController.Quitting) quittingVolumeDiff += Time.unscaledDeltaTime * 0.5f;
-            var musicVolumeScale = Mathf.Clamp(1.0f - quittingVolumeDiff, 0.0f, 1.0f);
-            ambientFaderValue = Mathf.MoveTowards(ambientFaderValue, targetFaderValue, (1.0f / fadeTime) * Time.unscaledDeltaTime);
-            idleAmbient.volume = Mathf.Lerp(0.0f, initialIdleVolume, 1.0f - ambientFaderValue) * musicVolumeScale;
-            playAmbient.volume = Mathf.Lerp(0.0f, initialPlayVolume, ambientFaderValue) * musicVolumeScale;
         }
 
         private void LogicUpdate()

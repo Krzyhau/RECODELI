@@ -250,6 +250,46 @@
     <Object>
       <PrefabName>Space Rock 1</PrefabName>
       <Position>
+        <x>-38.3</x>
+        <y>0</y>
+        <z>-19.2</z>
+      </Position>
+      <Rotation>
+        <x>-0.277943373</x>
+        <y>-0.704475164</y>
+        <z>0.6501903</z>
+        <w>-0.0609495379</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Space Rock 2</PrefabName>
+      <Position>
+        <x>-37.6</x>
+        <y>0</y>
+        <z>25.5</z>
+      </Position>
+      <Rotation>
+        <x>0.1012469</x>
+        <y>-0.706124067</y>
+        <z>0.6998204</z>
+        <w>0.0372737572</w>
+      </Rotation>
+      <Scale>
+        <x>4</x>
+        <y>4</y>
+        <z>4</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Space Rock 1</PrefabName>
+      <Position>
         <x>-48.7</x>
         <y>0</y>
         <z>-2.53954124</z>
@@ -524,46 +564,6 @@
         <x>4</x>
         <y>4</y>
         <z>4</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Space Rock 2</PrefabName>
-      <Position>
-        <x>-37.6</x>
-        <y>0</y>
-        <z>25.5</z>
-      </Position>
-      <Rotation>
-        <x>0.1012469</x>
-        <y>-0.706124067</y>
-        <z>0.6998204</z>
-        <w>0.0372737572</w>
-      </Rotation>
-      <Scale>
-        <x>4</x>
-        <y>4</y>
-        <z>4</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Space Rock 1</PrefabName>
-      <Position>
-        <x>-38.3</x>
-        <y>0</y>
-        <z>-19.2</z>
-      </Position>
-      <Rotation>
-        <x>-0.277943373</x>
-        <y>-0.704475164</y>
-        <z>0.6501903</z>
-        <w>-0.0609495379</w>
-      </Rotation>
-      <Scale>
-        <x>3</x>
-        <y>3</y>
-        <z>3</z>
       </Scale>
       <AdditionalData />
     </Object>

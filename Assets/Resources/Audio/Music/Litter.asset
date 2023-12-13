@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e4d7b5c821f136e42bd500130c8f7855, type: 3}
+  m_Name: Litter
+  m_EditorClassIdentifier: 
+  editorTrack: {fileID: 8300000, guid: ee6a1ed2549661242afdb2a8a9f6ca54, type: 3}
+  editorTrackVolume: 1
+  simulationTrack: {fileID: 8300000, guid: 6f744b0427811a7468e8c7f7387bdc53, type: 3}
+  simulationTrackVolume: 1
+  dynamicFade: 1
+  fadeTime: 0
+  loopStart: 0
+  loopEnd: 0

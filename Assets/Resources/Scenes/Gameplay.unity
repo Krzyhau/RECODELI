@@ -237,9 +237,8 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 998137060}
   - {fileID: 1224029654}
-  - {fileID: 6911263315998909083}
-  - {fileID: 84008170827792388}
   - {fileID: 7873173226594264152}
   - {fileID: 3135305507041558020}
   m_Father: {fileID: 0}
@@ -785,6 +784,57 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   format: 52
   assignedCamera: {fileID: 5291261694449160794}
+--- !u!1 &998137059
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 998137060}
+  - component: {fileID: 998137061}
+  m_Layer: 0
+  m_Name: Music
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &998137060
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998137059}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6911263315998909083}
+  - {fileID: 84008170827792388}
+  m_Father: {fileID: 153509266}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &998137061
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 998137059}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3dbc74b7cc979584ca4297a32efe5c09, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationManager: {fileID: 752645987935888002}
+  editorTrackPlayer: {fileID: 1102445274376262464}
+  simulationTrackPlayer: {fileID: 2188918746061447375}
+  endingFadeoutLength: 2
+  music: {fileID: 11400000, guid: d063d7a0bf481084492fe5500a836cd4, type: 2}
 --- !u!1 &1224029653
 GameObject:
   m_ObjectHideFlags: 0
@@ -1760,7 +1810,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 153509266}
+  m_Father: {fileID: 998137060}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &537980252038157213
@@ -1797,14 +1847,12 @@ MonoBehaviour:
   simulationInterface: {fileID: 451629159}
   trailRecorder: {fileID: 6684904707416058545}
   endingController: {fileID: 8318599416524442210}
+  musicHandler: {fileID: 998137061}
   glitchingMaterial: {fileID: 2100000, guid: 83d9a3514b05dde44970f4dcaa2c4208, type: 2}
   glitchingFadeoutSpeed: 2
   glitchingForce: 0.5
-  idleAmbient: {fileID: 1102445274376262464}
-  playAmbient: {fileID: 2188918746061447375}
   successSound: {fileID: 2540929739579876764}
   restartSound: {fileID: 8453331775096432246}
-  fadeTime: 0.2
 --- !u!1 &1083854492186346415
 GameObject:
   m_ObjectHideFlags: 0
@@ -1837,9 +1885,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 62889e3642b63014fb11b2c81b6a71aa, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -1985,9 +2033,9 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 7e98f0227fc29464583291bad1c1aece, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 1
   m_Pitch: 1
   Loop: 1
   Mute: 0
@@ -2274,7 +2322,7 @@ GameObject:
   - component: {fileID: 84008170827792388}
   - component: {fileID: 2188918746061447375}
   m_Layer: 0
-  m_Name: Deep Space Simulation
+  m_Name: Simulation Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2538,7 +2586,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083854492186346415}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: -10.1, y: 28.9, z: -15.8}
+  m_LocalPosition: {x: -42.1, y: 61.5, z: -31.9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2639,7 +2687,7 @@ GameObject:
   - component: {fileID: 6911263315998909083}
   - component: {fileID: 1102445274376262464}
   m_Layer: 0
-  m_Name: Deep Space Idle
+  m_Name: Editor Source
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2670,7 +2718,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 153509266}
+  m_Father: {fileID: 998137060}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!108 &7065762739473380343
