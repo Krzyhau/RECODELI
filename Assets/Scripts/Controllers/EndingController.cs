@@ -80,7 +80,7 @@ namespace RecoDeli.Scripts.Controllers
             goalBoxStartLocalPosition = goalBox.transform.localPosition;
             goalBoxStartLocalRotation = goalBox.transform.localRotation;
 
-            robotTargetPosition = goalBox.transform.position - packageOffset;
+            robotTargetPosition = robot.transform.position - packageOffset;
             robotTargetRotation = Quaternion.Euler(0, 180, 0);
             goalBoxTargetLocalPosition = packageOffset;
             goalBoxTargetLocalRotation = Quaternion.identity;
