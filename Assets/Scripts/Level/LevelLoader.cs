@@ -1,5 +1,6 @@
 using BEPUphysics.Paths;
 using BEPUphysics.Unity;
+using RecoDeli.Scripts.Audio;
 using RecoDeli.Scripts.Controllers;
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
@@ -68,6 +69,7 @@ namespace RecoDeli.Scripts.Level
             var levelData = new LevelData();
             levelData.Info = new LevelInfo();
             levelData.Info.CameraPosition = simulationManager.DroneCamera.transform.position;
+            levelData.Info.MusicTrackName = simulationManager.MusicHandler.Music?.name;
 
             foreach (Transform child in levelContainer.transform)
             {
@@ -147,6 +149,7 @@ namespace RecoDeli.Scripts.Level
             ClearLevelObjects();
 
             simulationManager.DroneCamera.transform.position = levelData.Info.CameraPosition;
+            simulationManager.MusicHandler.Music = MusicTrack.FindByName(levelData.Info.MusicTrackName);
 
             foreach(var objectData in levelData.Objects)
             {
@@ -163,6 +166,9 @@ namespace RecoDeli.Scripts.Level
 
             LevelToLoad = "";
             levelPath = "";
+
+            simulationManager.DroneCamera.transform.position = new(0, 30, -15);
+            simulationManager.MusicHandler.Music = null;
 
             ClearLevelObjects();
         }

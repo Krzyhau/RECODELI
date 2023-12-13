@@ -15,6 +15,7 @@ MonoBehaviour:
   MainMenuSceneName: MainMenu
   GameplaySceneName: Gameplay
   LevelObjectPrefabsPath: Prefabs/Level Objects/
+  MusicTrackPath: Audio/Music/
   LevelsDirectoryPath: Levels/
   MainAudioMixerGroup: {fileID: 24300002, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}

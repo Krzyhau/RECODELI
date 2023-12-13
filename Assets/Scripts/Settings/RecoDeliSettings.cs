@@ -14,6 +14,7 @@ namespace RecoDeli.Scripts.Settings
         public string MainMenuSceneName;
         public string GameplaySceneName;
         public string LevelObjectPrefabsPath;
+        public string MusicTrackPath;
         public string LevelsDirectoryPath;
 
         [Header("Assets")]

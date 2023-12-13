@@ -8,5 +8,6 @@ namespace RecoDeli.Scripts.Level.Format
     {
         public string Name;
         public Vector3 CameraPosition;
+        public string MusicTrackName;
     }
 }

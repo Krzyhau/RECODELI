@@ -5,6 +5,7 @@
       <y>29.3</y>
       <z>-15.5</z>
     </CameraPosition>
+    <MusicTrackName>Trash</MusicTrackName>
   </Info>
   <Objects>
     <Object>
@@ -55,10 +56,10 @@
         <z>-4.56</z>
       </Position>
       <Rotation>
-        <x>-0.6442871</x>
-        <y>0.291365921</y>
-        <z>0.291365921</z>
-        <w>0.6442871</w>
+        <x>-0.644287169</x>
+        <y>0.291365951</y>
+        <z>0.291365951</z>
+        <w>0.644287169</w>
       </Rotation>
       <Scale>
         <x>1</x>

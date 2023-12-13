@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RecoDeli.Scripts.Settings;
+using System;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Audio
@@ -19,5 +20,12 @@ namespace RecoDeli.Scripts.Audio
         [Header("Looping")]
         public float loopStart;
         public float loopEnd;
+
+        public static MusicTrack FindByName(string name)
+        {
+            string path = RecoDeliGame.Settings.MusicTrackPath + name;
+            var track = Resources.Load<MusicTrack>(path);
+            return track;
+        }
     }
 }

@@ -834,7 +834,7 @@ MonoBehaviour:
   editorTrackPlayer: {fileID: 1102445274376262464}
   simulationTrackPlayer: {fileID: 2188918746061447375}
   endingFadeoutLength: 2
-  music: {fileID: 11400000, guid: d063d7a0bf481084492fe5500a836cd4, type: 2}
+  music: {fileID: 0}
 --- !u!1 &1224029653
 GameObject:
   m_ObjectHideFlags: 0
@@ -1885,7 +1885,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 36e2b666a2a6f104ea06d548f51c9acb, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2033,7 +2033,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 41ff6cff9baeaec489cc8615cda139e1, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2586,7 +2586,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1083854492186346415}
   m_LocalRotation: {x: 0.5, y: -0, z: -0, w: 0.8660254}
-  m_LocalPosition: {x: -42.1, y: 61.5, z: -31.9}
+  m_LocalPosition: {x: 0, y: 30, z: -15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

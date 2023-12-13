@@ -81,13 +81,26 @@ namespace RecoDeli.Scripts.Audio
         private void SetTrack(MusicTrack track)
         {
             music = track;
-            editorTrackPlayer.clip = music.editorTrack;
-            editorTrackPlayer.volume = music.editorTrackVolume;
-            simulationTrackPlayer.clip = music.simulationTrack;
-            simulationTrackPlayer.volume = music.simulationTrackVolume;
 
-            editorTrackPlayer.Play();
-            simulationTrackPlayer.Play();
+            if (Application.isPlaying)
+            {
+                editorTrackPlayer.Stop();
+                simulationTrackPlayer.Stop();
+            }
+
+            if (music != null)
+            {
+                editorTrackPlayer.clip = music.editorTrack;
+                editorTrackPlayer.volume = music.editorTrackVolume;
+                simulationTrackPlayer.clip = music.simulationTrack;
+                simulationTrackPlayer.volume = music.simulationTrackVolume;
+
+                if (Application.isPlaying)
+                {
+                    editorTrackPlayer.Play();
+                    simulationTrackPlayer.Play();
+                }
+            }
         }
     }
 }
