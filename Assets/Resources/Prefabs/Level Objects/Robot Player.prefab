@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 1300663991107002564}
   - component: {fileID: 9055473269963545}
   - component: {fileID: 1193227764216509081}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Robot Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
