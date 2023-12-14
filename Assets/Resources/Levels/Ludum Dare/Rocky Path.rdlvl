@@ -5,6 +5,14 @@
       <y>61.5</y>
       <z>-31.9</z>
     </CameraPosition>
+    <CameraBoundsOffset>
+      <x>-40.63</x>
+      <y>-1.92</y>
+    </CameraBoundsOffset>
+    <CameraBoundsSize>
+      <x>94.3</x>
+      <y>39.3</y>
+    </CameraBoundsSize>
     <MusicTrackName>Iterations</MusicTrackName>
   </Info>
   <Objects>
@@ -265,6 +273,26 @@
         <x>3</x>
         <y>3</y>
         <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Space Rock 2</PrefabName>
+      <Position>
+        <x>-25.7946358</x>
+        <y>0</y>
+        <z>12.922863</z>
+      </Position>
+      <Rotation>
+        <x>0.032141462</x>
+        <y>-0.706376</y>
+        <z>0.7063759</z>
+        <w>-0.0321415141</w>
+      </Rotation>
+      <Scale>
+        <x>4</x>
+        <y>4</y>
+        <z>4</z>
       </Scale>
       <AdditionalData />
     </Object>
@@ -540,26 +568,6 @@
         <y>-0.568536758</y>
         <z>0.604369462</z>
         <w>-0.4204355</w>
-      </Rotation>
-      <Scale>
-        <x>4</x>
-        <y>4</y>
-        <z>4</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Space Rock 2</PrefabName>
-      <Position>
-        <x>-25.7946358</x>
-        <y>0</y>
-        <z>12.922863</z>
-      </Position>
-      <Rotation>
-        <x>0.032141462</x>
-        <y>-0.706376</y>
-        <z>0.7063759</z>
-        <w>-0.0321415141</w>
       </Rotation>
       <Scale>
         <x>4</x>

@@ -1,6 +1,5 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -20,6 +19,9 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private float manualPanningFasterSpeed;
         [SerializeField] private float cameraInterpolationFactor;
 
+        public Vector2 BoundariesOffset;
+        public Vector2 BoundariesSize;
+
         [Header("Inputs")]
         [SerializeField] private InputActionReference pointerInput;
         [SerializeField] private InputActionReference heldInput;
@@ -36,7 +38,6 @@ namespace RecoDeli.Scripts.Controllers
         private Transform followedObject;
         private bool followRobot = false;
         private bool followPackage = false;
-
         public bool FollowingRobot => followRobot;
         public bool FollowingPackage => followPackage;
 
@@ -65,6 +66,8 @@ namespace RecoDeli.Scripts.Controllers
                 preinterpolatedCameraPosition -= displacementDelta;
                 preinterpolatedCameraPosition.y = currentY;
             }
+
+            Clamping();
 
             controlledCamera.transform.position = Vector3.Lerp(
                 controlledCamera.transform.position,
@@ -141,14 +144,31 @@ namespace RecoDeli.Scripts.Controllers
             preinterpolatedCameraPosition += difference;
         }
 
+        private void Clamping()
+        {
+            var lookPos = GetScreenPosOnXZPlane(new Vector2((Screen.width - simulationManager.Interface.InstructionEditorWidth) / 2, Screen.height / 2));
+            var offset = lookPos - preinterpolatedCameraPosition;
+            var offset2d = new Vector2(offset.x, offset.z);
+            var minBounds = BoundariesOffset - BoundariesSize - offset2d;
+            var maxBounds = BoundariesOffset + BoundariesSize - offset2d;
+
+            preinterpolatedCameraPosition.x = Mathf.Clamp(preinterpolatedCameraPosition.x, minBounds.x, maxBounds.x);
+            preinterpolatedCameraPosition.z = Mathf.Clamp(preinterpolatedCameraPosition.z, minBounds.y, maxBounds.y);
+        }
+
         private Vector3 GetMousePosOnXZPlane()
         {
-            var mouseScreenPosition = (Vector3)pointerInput.action.ReadValue<Vector2>() + Vector3.forward;
+            return GetScreenPosOnXZPlane(pointerInput.action.ReadValue<Vector2>());
+        }
+
+        private Vector3 GetScreenPosOnXZPlane(Vector2 position)
+        {
+            var screenPosition = (Vector3)position + Vector3.forward;
 
             var cameraPosition = controlledCamera.transform.position;
-            var mouseWorldDirection = controlledCamera.ScreenToWorldPoint(mouseScreenPosition) - cameraPosition;
-            var mouseWorldPosition = preinterpolatedCameraPosition + mouseWorldDirection * (preinterpolatedCameraPosition.y / -mouseWorldDirection.y);
-            return mouseWorldPosition;
+            var worldDirection = controlledCamera.ScreenToWorldPoint(screenPosition) - cameraPosition;
+            var worldPosition = preinterpolatedCameraPosition + worldDirection * (preinterpolatedCameraPosition.y / -worldDirection.y);
+            return worldPosition;
         }
 
         public void FollowRobot()
@@ -168,6 +188,18 @@ namespace RecoDeli.Scripts.Controllers
             followRobot = false;
             followPackage = false;
             followedObject = go != null ? go.transform : null;
+        }
+
+        private void OnDrawGizmos()
+        {
+            Gizmos.color = Color.red;
+            var points = new List<Vector3>();
+            for(int x = -1; x <= 1; x += 2) for(int y = -1; y <= 1; y += 2)
+            {
+                points.Add(new(BoundariesOffset.x + BoundariesSize.x * x, 0, BoundariesOffset.y + BoundariesSize.y * y * x));
+            }
+
+            Gizmos.DrawLineStrip(points.ToArray(), true);
         }
     }
 }

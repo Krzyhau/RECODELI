@@ -70,7 +70,8 @@ namespace RecoDeli.Scripts.Level
             if (IsEmptyLevel) return;
 
             Undo.RecordObjects(new Object[]{ 
-                this, 
+                this,
+                simulationManager.DroneCamera,
                 simulationManager.DroneCamera.transform,
                 simulationManager.MusicHandler
             }, "Level Loader");

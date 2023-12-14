@@ -5,6 +5,14 @@
       <y>41.4</y>
       <z>-18.3</z>
     </CameraPosition>
+    <CameraBoundsOffset>
+      <x>0</x>
+      <y>8</y>
+    </CameraBoundsOffset>
+    <CameraBoundsSize>
+      <x>40</x>
+      <y>40</y>
+    </CameraBoundsSize>
     <MusicTrackName>Trash</MusicTrackName>
   </Info>
   <Objects>

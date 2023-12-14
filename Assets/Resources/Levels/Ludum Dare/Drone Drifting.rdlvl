@@ -5,6 +5,14 @@
       <y>31.7</y>
       <z>-18.5</z>
     </CameraPosition>
+    <CameraBoundsOffset>
+      <x>-5</x>
+      <y>10</y>
+    </CameraBoundsOffset>
+    <CameraBoundsSize>
+      <x>50</x>
+      <y>50</y>
+    </CameraBoundsSize>
     <MusicTrackName>Litter</MusicTrackName>
   </Info>
   <Objects>

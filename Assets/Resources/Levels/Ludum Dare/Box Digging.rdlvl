@@ -5,9 +5,77 @@
       <y>29.3</y>
       <z>-15.5</z>
     </CameraPosition>
+    <CameraBoundsOffset>
+      <x>-10</x>
+      <y>0</y>
+    </CameraBoundsOffset>
+    <CameraBoundsSize>
+      <x>50</x>
+      <y>50</y>
+    </CameraBoundsSize>
     <MusicTrackName>Trash</MusicTrackName>
   </Info>
   <Objects>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>17.8</x>
+        <y>0</y>
+        <z>34</z>
+      </Position>
+      <Rotation>
+        <x>-0.27587676</x>
+        <y>-0.5687311</y>
+        <z>-0.340238154</z>
+        <w>0.696186</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-37.2</x>
+        <y>0</y>
+        <z>-6.8</z>
+      </Position>
+      <Rotation>
+        <x>0.368962079</x>
+        <y>0.22015056</y>
+        <z>0.290156</z>
+        <w>0.8551084</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
+    <Object>
+      <PrefabName>Wooden Box</PrefabName>
+      <Position>
+        <x>-39.4</x>
+        <y>0</y>
+        <z>15.3</z>
+      </Position>
+      <Rotation>
+        <x>-0.549879849</x>
+        <y>-0.814053059</y>
+        <z>0.0243208688</z>
+        <w>0.185360014</w>
+      </Rotation>
+      <Scale>
+        <x>3</x>
+        <y>3</y>
+        <z>3</z>
+      </Scale>
+      <AdditionalData />
+    </Object>
     <Object>
       <PrefabName>Recovery Robot</PrefabName>
       <Position>
@@ -56,10 +124,10 @@
         <z>-4.56</z>
       </Position>
       <Rotation>
-        <x>-0.644287169</x>
-        <y>0.291365951</y>
-        <z>0.291365951</z>
-        <w>0.644287169</w>
+        <x>-0.6442871</x>
+        <y>0.291365921</y>
+        <z>0.291365921</z>
+        <w>0.6442871</w>
       </Rotation>
       <Scale>
         <x>1</x>
@@ -220,66 +288,6 @@
         <y>0.5454032</y>
         <z>0.389289021</z>
         <w>0.6881509</w>
-      </Rotation>
-      <Scale>
-        <x>3</x>
-        <y>3</y>
-        <z>3</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Wooden Box</PrefabName>
-      <Position>
-        <x>17.8</x>
-        <y>0</y>
-        <z>34</z>
-      </Position>
-      <Rotation>
-        <x>-0.27587676</x>
-        <y>-0.5687311</y>
-        <z>-0.340238154</z>
-        <w>0.696186</w>
-      </Rotation>
-      <Scale>
-        <x>3</x>
-        <y>3</y>
-        <z>3</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Wooden Box</PrefabName>
-      <Position>
-        <x>-37.2</x>
-        <y>0</y>
-        <z>-6.8</z>
-      </Position>
-      <Rotation>
-        <x>0.368962079</x>
-        <y>0.22015056</y>
-        <z>0.290156</z>
-        <w>0.8551084</w>
-      </Rotation>
-      <Scale>
-        <x>3</x>
-        <y>3</y>
-        <z>3</z>
-      </Scale>
-      <AdditionalData />
-    </Object>
-    <Object>
-      <PrefabName>Wooden Box</PrefabName>
-      <Position>
-        <x>-39.4</x>
-        <y>0</y>
-        <z>15.3</z>
-      </Position>
-      <Rotation>
-        <x>-0.549879849</x>
-        <y>-0.814053059</y>
-        <z>0.0243208688</z>
-        <w>0.185360014</w>
       </Rotation>
       <Scale>
         <x>3</x>

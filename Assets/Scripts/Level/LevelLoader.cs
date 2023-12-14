@@ -69,6 +69,8 @@ namespace RecoDeli.Scripts.Level
             var levelData = new LevelData();
             levelData.Info = new LevelInfo();
             levelData.Info.CameraPosition = simulationManager.DroneCamera.transform.position;
+            levelData.Info.CameraBoundsOffset = simulationManager.DroneCamera.BoundariesOffset;
+            levelData.Info.CameraBoundsSize = simulationManager.DroneCamera.BoundariesSize;
             levelData.Info.MusicTrackName = simulationManager.MusicHandler.Music?.name;
 
             foreach (Transform child in levelContainer.transform)
@@ -149,6 +151,8 @@ namespace RecoDeli.Scripts.Level
             ClearLevelObjects();
 
             simulationManager.DroneCamera.transform.position = levelData.Info.CameraPosition;
+            simulationManager.DroneCamera.BoundariesOffset = levelData.Info.CameraBoundsOffset;
+            simulationManager.DroneCamera.BoundariesSize = levelData.Info.CameraBoundsSize;
             simulationManager.MusicHandler.Music = MusicTrack.FindByName(levelData.Info.MusicTrackName);
 
             foreach(var objectData in levelData.Objects)
@@ -168,6 +172,8 @@ namespace RecoDeli.Scripts.Level
             levelPath = "";
 
             simulationManager.DroneCamera.transform.position = new(0, 30, -15);
+            simulationManager.DroneCamera.BoundariesOffset = new(0, 0);
+            simulationManager.DroneCamera.BoundariesSize = new(50, 50);
             simulationManager.MusicHandler.Music = null;
 
             ClearLevelObjects();

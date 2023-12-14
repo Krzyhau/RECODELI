@@ -1885,7 +1885,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 36e2b666a2a6f104ea06d548f51c9acb, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ee6a1ed2549661242afdb2a8a9f6ca54, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -2033,7 +2033,7 @@ AudioSource:
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
-  m_audioClip: {fileID: 8300000, guid: 41ff6cff9baeaec489cc8615cda139e1, type: 3}
+  m_audioClip: {fileID: 8300000, guid: 6f744b0427811a7468e8c7f7387bdc53, type: 3}
   m_PlayOnAwake: 1
   m_Volume: 1
   m_Pitch: 1
@@ -3056,6 +3056,8 @@ MonoBehaviour:
   manualPanningSpeed: 0.3
   manualPanningFasterSpeed: 1
   cameraInterpolationFactor: 10
+  BoundariesOffset: {x: 0, y: 0}
+  BoundariesSize: {x: 50, y: 50}
   pointerInput: {fileID: 7639111666235927887, guid: 54ea778ed777dda4fb76ef8b1c024d5a,
     type: 3}
   heldInput: {fileID: 2785547378044505691, guid: 54ea778ed777dda4fb76ef8b1c024d5a,
