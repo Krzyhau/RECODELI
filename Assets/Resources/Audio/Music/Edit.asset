@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Edit
   m_EditorClassIdentifier: 
   editorTrack: {fileID: 8300000, guid: 62889e3642b63014fb11b2c81b6a71aa, type: 3}
-  editorTrackVolume: 1
+  editorTrackVolume: 0.7
   simulationTrack: {fileID: 8300000, guid: 7e98f0227fc29464583291bad1c1aece, type: 3}
-  simulationTrackVolume: 1
+  simulationTrackVolume: 0.7
   dynamicFade: 1
   fadeTime: 0.2
   loopStart: 0

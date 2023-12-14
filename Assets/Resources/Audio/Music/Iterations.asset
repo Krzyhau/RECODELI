@@ -13,10 +13,10 @@ MonoBehaviour:
   m_Name: Iterations
   m_EditorClassIdentifier: 
   editorTrack: {fileID: 8300000, guid: 3311bb1b81f088644b4044c06e40405d, type: 3}
-  editorTrackVolume: 1
+  editorTrackVolume: 0.7
   simulationTrack: {fileID: 8300000, guid: 8af5bfe7af4f38745a1288a118f0dc1c, type: 3}
-  simulationTrackVolume: 1
+  simulationTrackVolume: 0.7
   dynamicFade: 1
   fadeTime: 0.5
   loopStart: 0
-  loopEnd: 0
+  loopEnd: 308.87
