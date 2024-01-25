@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: Game Tasks
   m_EditorClassIdentifier: 
   Collections:
-  - Name: Ludum Dare
+  - Name: Incoming Tasks
     Tasks:
     - Title: First Task
+      RequiredCompletedLevels: 0
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -26,6 +27,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/First Task
     - Title: Higher Control
+      RequiredCompletedLevels: 1
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -34,6 +36,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Higher Control
     - Title: Maneuvering
+      RequiredCompletedLevels: 2
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -42,6 +45,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Maneuvering
     - Title: Box Digging
+      RequiredCompletedLevels: 2
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -50,6 +54,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Box Digging
     - Title: Box Pushing
+      RequiredCompletedLevels: 2
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -62,6 +67,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Box Pushing
     - Title: Explosives!
+      RequiredCompletedLevels: 5
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -70,6 +76,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Explosive
     - Title: Mine Field
+      RequiredCompletedLevels: 5
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -79,6 +86,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Mine Field
     - Title: Drone Dorifto?!
+      RequiredCompletedLevels: 7
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -87,6 +95,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Drone Drifting
     - Title: Garbage
+      RequiredCompletedLevels: 7
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -94,6 +103,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Garbage
     - Title: Rocky Path
+      RequiredCompletedLevels: 7
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -102,6 +112,7 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Rocky Path
     - Title: Firewall
+      RequiredCompletedLevels: 7
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -109,15 +120,15 @@ MonoBehaviour:
       Action: 1
       ActionParameter: Ludum Dare/Firewall
     - Title: Lovely Challenge
+      RequiredCompletedLevels: 7
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
       Description: What if we kissed around the heart-shaped garbage in space?!
       Action: 1
       ActionParameter: Ludum Dare/Lovely Challenge
-  - Name: Beta Tasks
-    Tasks:
     - Title: Advanced Recovery
+      RequiredCompletedLevels: 12
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
       AdditionalReceivers: 0
@@ -126,22 +137,25 @@ MonoBehaviour:
         a record time?!
       Action: 1
       ActionParameter: Beta/Advanced Recovery
-    - Title: Howdy!
+    - Title: Congratulations!
+      RequiredCompletedLevels: 13
       SenderName: Chris Hausky
       SenderAddress: krzyhau@recodeli.com
-      AdditionalReceivers: 69
-      Description: Hi, this is a message I'm sending you you! Yes, YOU! No tasks,
-        no bullshittery, just words of encouragement!
+      AdditionalReceivers: 0
+      Description: 'You''ve completed all of the challenges I could offer.
+
+
+        RecoDeli
+        Initiative was meant to be much more than that, but apparently there isn''t
+        much demand for recovering packages in space so we went bankrupt! :)
+
+
+        If
+        you want additional challenge, I have now unlocked my personal records for
+        every task! Try to beat them!!
+
+
+        I guess that''s it from me. Thanks
+        for playing and see ya in the next one!'
       Action: 0
       ActionParameter: 
-    - Title: RECODELI HACK?!?!?
-      SenderName: Hackster
-      SenderAddress: xx_hacker_xx@recodeli.com
-      AdditionalReceivers: 0
-      Description: "Yes, me, the Hackster, HACKED the Tasks system. With my excellence
-        in hacking skills, I have managed to inject cusom payload into the task attachment,
-        which, through the power of arbitrary code execution, can create MIRACLES
-        on your operating system! \n\nGo ahead! Click the \"Start Task\" button and
-        see for yourself!!!!"
-      Action: 2
-      ActionParameter: RetroEasterEgg

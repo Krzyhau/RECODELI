@@ -58,6 +58,8 @@ namespace RecoDeli.Scripts.UI.Menu
             base.Open();
             providerCache.Clear();
 
+            CreateTaskList();
+
             if (!hasBeenOpenedBefore)
             {
                 OpenTask(tasks.Collections[0].Tasks[0]);
@@ -75,6 +77,8 @@ namespace RecoDeli.Scripts.UI.Menu
             taskList.Clear();
             taskButtonCache.Clear();
 
+            var completedLevels = SaveManager.CurrentSave.CompletedLevelsCount;
+
             foreach (var taskCollection in tasks.Collections)
             {
                 var collectionFoldout = new Foldout();
@@ -83,6 +87,8 @@ namespace RecoDeli.Scripts.UI.Menu
 
                 foreach(var task in taskCollection.Tasks)
                 {
+                    if (task.RequiredCompletedLevels > completedLevels) continue;
+
                     var taskButton = new Button();
                     taskButton.text = task.Title;
                     taskButton.clicked += () => OpenTask(task);

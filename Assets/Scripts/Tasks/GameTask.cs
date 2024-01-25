@@ -15,6 +15,7 @@ namespace RecoDeli.Scripts.Tasks
         }
 
         public string Title;
+        public int RequiredCompletedLevels;
 
         public string SenderName;
         public string SenderAddress;

@@ -13,6 +13,8 @@ namespace RecoDeli.Scripts.SaveManagement
 
         public List<SaveLevelInfo> LevelInfos;
 
+        public int CompletedLevelsCount => LevelInfos.Where(level => level.Completed).Count();
+
         public SaveData() 
         {
             LevelInfos = new();
