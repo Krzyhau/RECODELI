@@ -1,6 +1,9 @@
 ﻿using RecoDeli.Scripts.Utils;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
+using UnityEngine.UIElements;
 
 namespace RecoDeli.Scripts.Settings
 {
@@ -20,6 +23,11 @@ namespace RecoDeli.Scripts.Settings
         [Header("Assets")]
         public AudioMixerGroup MainAudioMixerGroup;
         public AudioMixerGroup MusicAudioMixerGroup;
+        public ScriptableRendererFeature CRTPassRenderFeature;
+        public VolumeProfile GameVolume;
+        public VolumeProfile ScreenRenderingVolume;
+        public PanelSettings MainLayerUIPanel;
+        public PanelSettings AdditionalLayerUIPanel;
         public Texture2D LevelFileThumbnail;
 
         [Header("Game Settings")]

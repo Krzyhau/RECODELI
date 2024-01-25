@@ -21,5 +21,13 @@ MonoBehaviour:
     type: 2}
   MusicAudioMixerGroup: {fileID: -2596627318576868764, guid: 96a2894bd3e352d45bf249f654af22ec,
     type: 2}
+  CRTPassRenderFeature: {fileID: -437189996055627012, guid: 2e992997aadd81f4fb1823174b651dec,
+    type: 2}
+  GameVolume: {fileID: 11400000, guid: 4c40d5da2b6199540a59bc5c8d642132, type: 2}
+  ScreenRenderingVolume: {fileID: 11400000, guid: a6560a915ef98420e9faacc1c7438823,
+    type: 2}
+  MainLayerUIPanel: {fileID: 11400000, guid: a7b5b3bafb6e6ba438951fa0c7ee07fc, type: 2}
+  AdditionalLayerUIPanel: {fileID: 11400000, guid: a6b171b6e4d118549bf5a5cef8979784,
+    type: 2}
   LevelFileThumbnail: {fileID: 2800000, guid: fbc1b6576392b82448eeb2b670d9a147, type: 3}
   UserSaveCount: 3

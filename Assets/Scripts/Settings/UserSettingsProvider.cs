@@ -1,10 +1,15 @@
-﻿using RecoDeli.Scripts.Utils;
+﻿using RecoDeli.Scripts.Assets.Scripts.UI;
+using RecoDeli.Scripts.Utils;
 using System.Collections;
+using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 
 namespace RecoDeli.Scripts.Settings
 {
-    public class SettingsProvider
+    public class UserSettingsProvider
     {
         public static float MasterVolume
         {
@@ -50,10 +55,31 @@ namespace RecoDeli.Scripts.Settings
             set => PlayerPrefs.SetString("Language", value);
         }
 
+        public static bool PostProcessing
+        {
+            get => PlayerPrefs.GetInt("PostProcessing", 1) > 0;
+            set 
+            {
+                PlayerPrefs.SetInt("PostProcessing", value ? 1 : 0);
+                EnablePostProcessing(value);
+            }
+        }
+
+        public static InterfaceScaleSetter.Scale UIScale
+        {
+            get => (InterfaceScaleSetter.Scale)PlayerPrefs.GetInt("UIScale", (int)InterfaceScaleSetter.Scale.Medium);
+            set
+            {
+                PlayerPrefs.SetInt("UIScale", (int)value);
+                InterfaceScaleSetter.Set(value);
+            }
+        }
+
         public static void ApplySettings()
         {
             Language = Language;
             ApplyAudioSettings();
+            ApplyVideoSettings();
             MainThreadExecutor.Run(ApplyAudioSettings);
         }
 
@@ -66,12 +92,32 @@ namespace RecoDeli.Scripts.Settings
             InterfaceVolume = InterfaceVolume;
         }
 
-
+        private static void ApplyVideoSettings()
+        {
+            PostProcessing = PostProcessing;
+            UIScale = UIScale;
+        }
 
         private static void SetAudioLevels(string name, float value)
         {
             var volumeValue = value == 0 ? -80.0f : Mathf.Log10(value) * 20.0f;
             RecoDeliGame.Settings.MusicAudioMixerGroup.audioMixer.SetFloat(name, volumeValue);
+        }
+
+        private static void EnablePostProcessing(bool status)
+        {
+            RecoDeliGame.Settings.CRTPassRenderFeature.SetActive(status);
+
+            var volumeProfiles = new List<VolumeProfile>
+            {
+                RecoDeliGame.Settings.ScreenRenderingVolume,
+                RecoDeliGame.Settings.GameVolume
+            };
+
+            foreach(var profile in volumeProfiles)
+            {
+                if(profile.TryGet(out Bloom bloom)) bloom.active = status;
+            }
         }
     }
 }

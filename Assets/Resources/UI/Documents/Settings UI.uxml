@@ -31,16 +31,16 @@
                             <ui:Label tabindex="-1" text="CONTROLS" display-tooltip-when-elided="true" name="full-text-label" enable-rich-text="true" class="full-text-label" />
                         </ui:Button>
                     </ui:VisualElement>
-                    <ui:VisualElement name="settings-views" class="tab-view-views">
+                    <ui:VisualElement name="settings-views" class="tab-view-views" style="display: flex;">
                         <ui:VisualElement name="settings-general-view" class="unity-disabled">
                             <ui:DropdownField label="LANGUAGE" index="-1" name="language-dropdown" choices="a,b,c" class="setting-field" />
-                            <ui:DropdownField label="UI SKIN" index="-1" name="skin-dropdown" class="setting-field" />
+                            <ui:DropdownField label="UI SKIN" index="-1" name="skin-dropdown" class="setting-field" style="display: none;" />
                         </ui:VisualElement>
                         <ui:VisualElement name="settings-video-view" class="unity-disabled">
-                            <ui:DropdownField label="DISPLAY MODE" index="-1" name="display-mode-dropdown" class="setting-field" />
-                            <ui:DropdownField label="ASPECT RATIO" index="-1" name="aspect-ratio-dropdown" class="setting-field" />
-                            <ui:DropdownField label="RESOLUTION" index="-1" name="resolution-dropdown" class="setting-field" />
-                            <ui:DropdownField label="QUALITY" index="-1" name="quality-dropdown" class="setting-field" />
+                            <ui:DropdownField label="DISPLAY MODE" index="-1" name="display-mode-dropdown" class="setting-field" style="display: none;" />
+                            <ui:DropdownField label="ASPECT RATIO" index="-1" name="aspect-ratio-dropdown" class="setting-field" style="display: none;" />
+                            <ui:DropdownField label="RESOLUTION" index="-1" name="resolution-dropdown" class="setting-field" style="display: none;" />
+                            <ui:DropdownField label="QUALITY" index="-1" name="quality-dropdown" class="setting-field" style="display: none;" />
                             <ui:DropdownField label="POST-PROCESSING" index="-1" name="post-processing-dropdown" class="setting-field" />
                             <ui:DropdownField label="UI SCALING" index="-1" name="ui-scaling-dropdown" class="setting-field" />
                         </ui:VisualElement>
@@ -51,7 +51,7 @@
                             <ui:Slider picking-mode="Ignore" label="ENVIRONMENT VOLUME" value="1" high-value="1" name="environment-volume-slider" class="setting-field" />
                         </ui:VisualElement>
                         <ui:VisualElement name="settings-controls-view" class="unity-disabled">
-                            <ui:Label tabindex="-1" text="no fucking clue how im going to do this one lmfao" display-tooltip-when-elided="true" />
+                            <ui:Label tabindex="-1" text="no fucking clue how im going to do this one lmfao" display-tooltip-when-elided="true" name="placeholder-controls-label" />
                         </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>

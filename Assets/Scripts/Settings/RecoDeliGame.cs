@@ -17,7 +17,7 @@ namespace RecoDeli.Scripts.Settings
         {
             MainThreadExecutor.Initialize(System.Threading.SynchronizationContext.Current);
 
-            SettingsProvider.ApplySettings();
+            UserSettingsProvider.ApplySettings();
 
             // this is needed to prevent comma from being used as decimal indicator in some countries.
             System.Threading.Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
