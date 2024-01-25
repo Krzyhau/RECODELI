@@ -3,7 +3,7 @@
         <ui:VisualElement name="logo">
             <ui:VisualElement name="logo-icon" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0);" />
             <ui:Label tabindex="-1" text="&lt;size=125%&gt;R&lt;/size&gt;ECO&lt;size=125%&gt;D&lt;/size&gt;ELI" display-tooltip-when-elided="true" name="logo-main-text" />
-            <ui:Label tabindex="-1" text="OS 1.0" display-tooltip-when-elided="true" name="logo-sub-text" />
+            <ui:Label tabindex="-1" text="OS 1.1" display-tooltip-when-elided="true" name="logo-sub-text" />
         </ui:VisualElement>
         <ui:VisualElement name="main-menu-icons">
             <ui:Button display-tooltip-when-elided="true" name="tasks-button" class="main-menu-button">
