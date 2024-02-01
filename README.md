@@ -10,4 +10,5 @@ For discussions about this project, join RECODELI Community Discord server: http
 - DevDeVice for co-creating the initial prototype during Ludum Dare
 - crunher for occasional UX tips
 - Creators of [BepuPhysics](https://www.bepuentertainment.com/), a physics engine used for this project
+- akazeppy and BalancingElectrons, each for creating **a** music track for this game
 - Members of RECODELI Community for playtesting the game
