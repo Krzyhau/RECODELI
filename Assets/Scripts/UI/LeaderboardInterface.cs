@@ -252,6 +252,12 @@ namespace RecoDeli.Scripts.UI
                 ShownDataType.InstructionCount or _ => data.InstructionsStats,
             };
 
+            if(recordsToShow.Count == 0)
+            {
+                SetStatusText("No data available");
+                return;
+            }
+
             SetGraphLabels(new List<string> { 
                 stats.BestRecord.ToString(valueFormat),
                 //((stats.BestRecord + stats.WorstRecord) / 2).ToString(valueFormat),
