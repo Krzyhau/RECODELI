@@ -64,7 +64,7 @@ namespace RecoDeli.Scripts.Controllers
         {
             Instance = this;
 
-            LeaderboardProvider = new MyOwnShittyLeaderboardProvider(LevelLoader.CurrentlyLoadedLevel);
+            LeaderboardProvider = RecoDeliGame.CreateNewLeaderboardProvider(LevelLoader.CurrentlyLoadedLevel);
             LeaderboardProvider.OnSubmit += LeaderboardProvider.RequestScores;
 
             if (simulationGroup && simulationGroup.gameObject.activeSelf)

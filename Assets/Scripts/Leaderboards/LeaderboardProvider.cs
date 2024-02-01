@@ -53,12 +53,12 @@ namespace RecoDeli.Scripts.Leaderboards
 
                     CachedData = scores;
                     Status = LoadingStatus.Loaded;
-                    MainThreadExecutor.Run(() => OnLoaded?.Invoke());
+                    await MainThreadExecutor.Run(() => OnLoaded?.Invoke());
                 }
                 catch (Exception ex)
                 {
                     Status = LoadingStatus.Failed;
-                    MainThreadExecutor.Run(() => OnFailed?.Invoke(ex));
+                    await MainThreadExecutor.Run(() => OnFailed?.Invoke(ex));
                     Debug.LogError($"Could not load leaderboards: {ex.Message}");
                 }
             });
@@ -71,11 +71,11 @@ namespace RecoDeli.Scripts.Leaderboards
                 try
                 {
                     await SendScore(time, instructions);
-                    MainThreadExecutor.Run(() => OnSubmit?.Invoke());
+                    await MainThreadExecutor.Run(() => OnSubmit?.Invoke());
                 }
                 catch (Exception ex)
                 {
-                    MainThreadExecutor.Run(() => OnSubmitFailed?.Invoke(ex));
+                    await MainThreadExecutor.Run(() => OnSubmitFailed?.Invoke(ex));
                     Debug.LogError($"Could not submit new score to leaderboard: {ex.Message}");
                 }
             });

@@ -156,7 +156,7 @@ namespace RecoDeli.Scripts.UI.Menu
                 var levelName = currentTask.ActionParameter;
                 if (!providerCache.ContainsKey(levelName))
                 {
-                    var provider = new MyOwnShittyLeaderboardProvider(levelName);
+                    var provider = RecoDeliGame.CreateNewLeaderboardProvider(levelName);
                     providerCache[levelName] = provider;
                     provider.RequestScores();
                 }

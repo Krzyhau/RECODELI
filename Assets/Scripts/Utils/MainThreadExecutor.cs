@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace RecoDeli.Scripts.Utils
 {
@@ -11,9 +12,24 @@ namespace RecoDeli.Scripts.Utils
             ctx = context;
         }
 
-        public static void Run(Action action)
+        public static Task Run(Action action)
         {
-            ctx.Post(_ => action(), null);
+            var completion = new TaskCompletionSource<bool>();
+
+            ctx.Post(_ =>
+            {
+                try
+                {
+                    action();
+                    completion.SetResult(true);
+                }
+                catch (Exception e)
+                {
+                    completion.SetException(e);
+                }
+            }, null);
+
+            return completion.Task;
         }
     }
 }

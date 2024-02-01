@@ -1,3 +1,5 @@
+using RecoDeli.Scripts.Assets.Scripts.Leaderboards;
+using RecoDeli.Scripts.Leaderboards;
 using RecoDeli.Scripts.Level;
 using RecoDeli.Scripts.Level.Format;
 using RecoDeli.Scripts.SaveManagement;
@@ -42,6 +44,11 @@ namespace RecoDeli.Scripts.Settings
         {
             MainMenuInterface.StartInTaskMenu = true;
             SceneManager.LoadScene(Settings.MainMenuSceneName);
+        }
+
+        public static LeaderboardProvider CreateNewLeaderboardProvider(string levelName)
+        {
+            return new SaveBasedLeaderboardProvider(levelName);
         }
 
         public static void QuitThisFuckingPieceOfShitImmediately()
