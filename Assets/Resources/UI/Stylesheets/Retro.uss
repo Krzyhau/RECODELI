@@ -759,21 +759,21 @@ Slider.unity-slider #unity-dragger {
     flex-grow: 1;
 }
 
-.leaderboards-chart-bars {
+#leaderboards-chart-bars {
     flex-grow: 1;
     flex-direction: row;
     align-items: flex-end;
     padding-top: 40px;
 }
 
-.leaderboards-chart-bars > VisualElement {
+#leaderboards-chart-bars > VisualElement {
     flex-grow: 1;
     background-color: rgb(255, 255, 255);
     margin-left: 2px;
     margin-right: 2px;
 }
 
-.leaderboards-chart-labels {
+#leaderboards-chart-labels {
     flex-direction: row;
     justify-content: space-between;
     margin-top: 5px;
@@ -781,7 +781,7 @@ Slider.unity-slider #unity-dragger {
     margin-right: 5px;
 }
 
-.leaderboards-chart-labels Label {
+#leaderboards-chart-labels Label {
     margin: 0;
     padding: 0;
 }
@@ -791,7 +791,7 @@ Slider.unity-slider #unity-dragger {
     flex-shrink: 1;
 }
 
-.leaderboards-chart-line {
+#leaderboards-chart-line {
     background-color: rgb(255, 255, 255);
     height: 100%;
     width: 2px;
@@ -802,13 +802,13 @@ Slider.unity-slider #unity-dragger {
     right: 0;
 }
 
-.leaderboards-chart-score {
+#leaderboards-chart-score {
     position: absolute;
     top: 10px;
     bottom: 0;
 }
 
-.leaderboards-chart-score Label {
+#leaderboards-chart-score Label {
     padding-left: 5px;
     padding-right: 5px;
     padding-top: 0;
@@ -818,11 +818,11 @@ Slider.unity-slider #unity-dragger {
     right: 0;
 }
 
-.leaderboards-chart-score.top50 Label {
+#leaderboards-chart-score.top50 Label {
     right: auto;
 }
 
-.leaderboards-scores #score {
+#leaderboards-scores #score {
     flex-direction: row;
     justify-content: space-between;
     margin: 0;
@@ -832,16 +832,17 @@ Slider.unity-slider #unity-dragger {
     padding-bottom: 5px;
 }
 
-.leaderboards-scores #score.own {
+#leaderboards-scores #score.own {
     background-color: rgb(64, 64, 64);
 }
 
-.leaderboards-scores #score Label {
+#leaderboards-scores #score Label {
+    width:auto;
     margin: 0;
     padding: 0;
 }
 
-.leaderboards-scores #unity-content-container {
+#leaderboards-scores #unity-content-container {
     padding-top: 10px;
     padding-bottom: 10px;
     padding-right: 5px;
@@ -1186,7 +1187,8 @@ Scroller.unity-scroller #unity-tracker {
     padding-bottom: 10px;
 }
 
-#tasks-list Foldout {
+#tasks-list Foldout Toggle Label{
+    color:white;
 }
 
 #tasks-list Button {
