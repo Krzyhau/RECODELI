@@ -22,6 +22,7 @@ namespace RecoDeli.Scripts.UI
         public new class UxmlFactory : UxmlFactory<LeaderboardInterface, UxmlTraits> { }
         public new class UxmlTraits : VisualElement.UxmlTraits { }
 
+        private VisualElement chartContainer;
         private VisualElement barsContainer;
         private VisualElement graphIndicator;
         private Label graphIndicatorLabel;
@@ -58,6 +59,11 @@ namespace RecoDeli.Scripts.UI
 
                 this.provider.OnFailed += OnProviderFailed;
                 this.provider.OnSubmitFailed += OnProviderSubmissionFailed;
+
+                if (this.provider.Simplified)
+                {
+                    TransformIntoSimplified();
+                }
             }
 
             RefreshDataDisplay();
@@ -83,7 +89,7 @@ namespace RecoDeli.Scripts.UI
             this.name = "leaderboards";
             this.AddToClassList("leaderboards");
 
-            var chartContainer = new VisualElement();
+            chartContainer = new VisualElement();
             chartContainer.name = "leaderboards-chart";
             this.Add(chartContainer);
 
@@ -119,6 +125,12 @@ namespace RecoDeli.Scripts.UI
             statusLabel = new Label("LOADING...");
             statusLabel.name = "leaderboards-status";
             this.Add(statusLabel);
+        }
+
+        public void TransformIntoSimplified()
+        {
+            chartContainer.style.display = DisplayStyle.None;
+
         }
 
         public void SetFriendsOnly(bool state)

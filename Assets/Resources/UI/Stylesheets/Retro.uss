@@ -1266,8 +1266,7 @@ Scroller.unity-scroller #unity-tracker {
 
 #task-leaderboards #leaderboards > * {
     height: 95%;
-    flex-grow: 0;
-    width: 50%;
+    flex-grow: 1;
     flex-shrink: 1;
 }
 

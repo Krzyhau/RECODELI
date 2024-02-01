@@ -106,6 +106,12 @@ namespace RecoDeli.Scripts.UI
         {
             leaderboard.SetProvider(provider);
             ShowTab(0);
+
+            if (provider.Simplified)
+            {
+                if (friendsStatsButton != null) friendsStatsButton.style.display = DisplayStyle.None;
+                if (globalStatsButton != null) globalStatsButton.style.display = DisplayStyle.None;
+            }
         }
     }
 }

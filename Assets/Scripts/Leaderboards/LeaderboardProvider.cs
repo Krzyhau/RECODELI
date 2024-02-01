@@ -16,6 +16,7 @@ namespace RecoDeli.Scripts.Leaderboards
             Failed
         }
 
+        public virtual bool Simplified => false;
         public string LevelName { get; private set; }
         public LeaderboardData CachedData { get; protected set; }
         public LoadingStatus Status { get; private set; }

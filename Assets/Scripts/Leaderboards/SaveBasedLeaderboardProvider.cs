@@ -11,6 +11,8 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
 {
     internal class SaveBasedLeaderboardProvider : LeaderboardProvider
     {
+        public override bool Simplified => true;
+
         public SaveBasedLeaderboardProvider(string levelName) : base(levelName)
         {
 
