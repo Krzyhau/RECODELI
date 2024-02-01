@@ -29,7 +29,13 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             var saveCount = RecoDeliGame.Settings.UserSaveCount;
             for (int userSlot = 0; userSlot < saveCount; userSlot++)
             {
-                if (!SaveManager.TryLoadSlot(userSlot, out var slot))
+                SaveData slot = null;
+
+                if(userSlot == SaveManager.CurrentSlot)
+                {
+                    slot = SaveManager.CurrentSave;
+                }
+                else if (!SaveManager.TryLoadSlot(userSlot, out slot))
                 {
                     continue;
                 }
