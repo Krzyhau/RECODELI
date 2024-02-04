@@ -1359,8 +1359,8 @@ Camera:
   m_GameObject: {fileID: 1532536776}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 4
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -3096,6 +3096,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6395306980344744120}
   - component: {fileID: 752645987935888002}
+  - component: {fileID: 8318599416524442211}
   - component: {fileID: 8318599416524442210}
   m_Layer: 0
   m_Name: Simulation Manager
@@ -3145,6 +3146,20 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &8318599416524442211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8318599416524442209}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 57417a87010f7c74e8224dc2bee960c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  simulationManager: {fileID: 752645987935888002}
+  renderCanvas: {fileID: 61196810}
 --- !u!4 &8393835291309812392
 Transform:
   m_ObjectHideFlags: 0

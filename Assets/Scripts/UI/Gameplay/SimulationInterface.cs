@@ -214,11 +214,24 @@ namespace RecoDeli.Scripts.UI
         {
             quitting = true;
 
+            interfaceDocument.rootVisualElement.RemoveFromClassList("beginning-reveal");
+
             bool runningSimulation = simulationManager.PlayingSimulation;
             interfaceDocument.rootVisualElement.EnableInClassList("quitting", !runningSimulation);
             interfaceDocument.rootVisualElement.EnableInClassList("quitting-long", runningSimulation);
             simulationManager.RestartSimulation();
             simulationManager.EndingController.FinalizeEnding(!runningSimulation);
+        }
+
+        public void PrepareForInterfaceReveal()
+        {
+            interfaceDocument.rootVisualElement.AddToClassList("beginning-hidden");
+        }
+
+        public void RevealInterface(bool fast)
+        {
+            interfaceDocument.rootVisualElement.RemoveFromClassList("beginning-hidden");
+            interfaceDocument.rootVisualElement.EnableInClassList("beginning-reveal", !fast);
         }
     }
 }

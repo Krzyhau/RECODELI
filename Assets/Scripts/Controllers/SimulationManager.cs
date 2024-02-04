@@ -244,10 +244,10 @@ namespace RecoDeli.Scripts.Controllers
             if (simulationInstance != null)
             {
                 Destroy(simulationInstance.gameObject);
-            }
 
-            currentGlitchingForce = glitchingForce;
-            restartSound.Play();
+                currentGlitchingForce = glitchingForce;
+                restartSound.Play();
+            }
 
             simulationInstance = Instantiate(simulationGroup);
             simulationInstance.transform.name = simulationGroupName + " (Instance)";
