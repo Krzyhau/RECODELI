@@ -208,6 +208,7 @@ namespace RecoDeli.Scripts.UI
         public void ShowEndingInterface(bool show)
         {
             endingInterface.ShowInterface(show);
+            interfaceDocument.rootVisualElement.RemoveFromClassList("beginning-reveal");
         }
 
         public void StartQuittingGame()
