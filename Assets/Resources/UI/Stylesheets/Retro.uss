@@ -1015,6 +1015,14 @@ Scroller.unity-scroller #unity-tracker {
     align-items: center;
 }
 
+#save-reset-button{
+    margin-top: 10px;
+}
+
+#save-reset-button.unity-disabled{
+    display:none;
+}
+
 #user-slots-container {
     padding: 10px;
     width: 500px;

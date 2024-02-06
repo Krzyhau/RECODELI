@@ -79,10 +79,15 @@ namespace RecoDeli.Scripts.SaveManagement
             else
             {
                 Debug.LogError($"Error while loading data. Using empty save file instead.");
-                save = new SaveData();
-                currentSlot = slot;
-                loaded = true;
+                ForceLoadNewSave(slot);
             }
+        }
+
+        public static void ForceLoadNewSave(int slot)
+        {
+            save = new SaveData();
+            currentSlot = slot;
+            loaded = true;
         }
 
         public static void Save()

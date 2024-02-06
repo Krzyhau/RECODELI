@@ -13,8 +13,11 @@ namespace RecoDeli.Scripts.UI.Menu
         private Button closeButton;
         private Button backButton;
         private VisualElement userSlotsContainer;
+        private Button resetButton;
+        private Label creatingUserLabel;
 
         private bool switchingUser;
+        private bool resettingUser;
         private int creatingUserSlot;
 
         protected override void Awake()
@@ -26,8 +29,11 @@ namespace RecoDeli.Scripts.UI.Menu
             closeButton = RootElement.Q<Button>("close-button");
             backButton = RootElement.Q<Button>("back-button");
             userSlotsContainer = RootElement.Q<VisualElement>("user-slots-container");
+            resetButton = RootElement.Q<Button>("save-reset-button");
+            creatingUserLabel = RootElement.Q<Label>("user-creation-window-label");
 
             createUserButton.clicked += OnCreateUser;
+            resetButton.clicked += () => StartUserCreation(SaveManager.CurrentSlot);
             backButton.clicked += () => ToggleUserCreation(false);
             usernameField.RegisterValueChangedCallback((v) => createUserButton.SetEnabled(v.newValue.Length > 0));
 
@@ -38,6 +44,8 @@ namespace RecoDeli.Scripts.UI.Menu
         {
             base.Open();
             UpdateSlotsButtons();
+
+            resetButton.SetEnabled(switchingUser);
         }
 
         private void UpdateSlotsButtons()
@@ -78,17 +86,30 @@ namespace RecoDeli.Scripts.UI.Menu
         {
             Debug.Log($"Started user creation {i}");
             creatingUserSlot = i;
+
+            resettingUser = SaveManager.TryLoadSlot(i, out var data);
+            Debug.Log($"{i}, {resettingUser}");
+
             ToggleUserCreation(true);
         }
 
         private void ToggleUserCreation(bool state)
         {
             RootElement.EnableInClassList("creating-user", state);
+            if (state)
+            {
+                var label = resettingUser ? "OVERRIDING USER" : "CREATING NEW USER";
+                creatingUserLabel.text = label;
+
+                var actionLabel = resettingUser ? "OVERRIDE" : "CREATE";
+                createUserButton.text = actionLabel;
+            }
+            usernameField.value = "";
         }
 
         private void OnCreateUser()
         {
-            SaveManager.Load(creatingUserSlot, force: true);
+            SaveManager.ForceLoadNewSave(creatingUserSlot);
             SaveManager.CurrentSave.Name = usernameField.value;
             SaveManager.Save();
 

@@ -22,11 +22,12 @@
                     <ui:Label tabindex="-1" text="SLOT 3" display-tooltip-when-elided="true" />
                 </ui:Button>
             </ui:VisualElement>
+            <ui:Button text="RESET CURRENT SAVE" display-tooltip-when-elided="true" name="save-reset-button" />
         </ui:VisualElement>
         <ui:VisualElement name="user-creation-window" class="window">
             <ui:VisualElement name="title-bar" class="title-bar">
-                <ui:VisualElement name="user-selection-window-icon" class="title-icon" />
-                <ui:Label tabindex="-1" text="CREATING NEW USER" display-tooltip-when-elided="true" name="user-selection-window-label" class="title text" />
+                <ui:VisualElement name="user-creation-window-icon" class="title-icon" />
+                <ui:Label tabindex="-1" text="CREATING NEW USER" display-tooltip-when-elided="true" name="user-creation-window-label" class="title text" />
                 <ui:VisualElement name="title-bar-icons" class="title-control-buttons">
                     <ui:Button display-tooltip-when-elided="true" name="back-button">
                         <ui:Label tabindex="-1" text="" display-tooltip-when-elided="true" name="icon-label" class="icon-label" />
