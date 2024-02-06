@@ -99,12 +99,15 @@ namespace RecoDeli.Scripts.UI.Menu
                         {
                             taskButton.AddToClassList("task-button-complete");
 
-                            var levelInfo = SaveManager.CurrentSave.GetLevelInfo(levelName);
-                            var authorTime = AuthorRecords.Instance.Records.Where(r => r.MapName == levelName).First();
-
-                            if(levelInfo.FastestTime <= authorTime.Time && levelInfo.LowestInstructions <= authorTime.Instructions)
+                            if (SaveManager.CurrentSave.AreAllLevelsCompleted())
                             {
-                                taskButton.AddToClassList("task-button-golden");
+                                var levelInfo = SaveManager.CurrentSave.GetLevelInfo(levelName);
+                                var authorTime = AuthorRecords.Instance.Records.Where(r => r.MapName == levelName).First();
+
+                                if (levelInfo.FastestTime <= authorTime.Time && levelInfo.LowestInstructions <= authorTime.Instructions)
+                                {
+                                    taskButton.AddToClassList("task-button-golden");
+                                }
                             }
                         }
                     }
