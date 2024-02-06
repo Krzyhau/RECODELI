@@ -1229,6 +1229,18 @@ Scroller.unity-scroller #unity-tracker {
     height: 32px;
 }
 
+#tasks-list Button.unity-disabled{
+	background-color: rgb(26, 26, 26);
+}
+
+#tasks-list .task-button-complete{
+	color: rgb(100,255,100);
+}
+
+#tasks-list .task-button-golden{
+	color: rgb(255,255,100);
+}
+
 #task-details {
     width: 100%;
 }

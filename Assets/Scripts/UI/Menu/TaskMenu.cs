@@ -5,6 +5,7 @@ using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.Tasks;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -90,6 +91,25 @@ namespace RecoDeli.Scripts.UI.Menu
 
                     var taskButton = new Button();
                     taskButton.text = task.Title;
+
+                    if(task.Action == GameTask.ActionType.Task)
+                    {
+                        var levelName = task.ActionParameter;
+                        if (SaveManager.CurrentSave.IsLevelComplete(levelName))
+                        {
+                            taskButton.AddToClassList("task-button-complete");
+
+                            var levelInfo = SaveManager.CurrentSave.GetLevelInfo(levelName);
+                            var authorTime = AuthorRecords.Instance.Records.Where(r => r.MapName == levelName).First();
+
+                            if(levelInfo.FastestTime <= authorTime.Time && levelInfo.LowestInstructions <= authorTime.Instructions)
+                            {
+                                taskButton.AddToClassList("task-button-golden");
+                            }
+                        }
+                    }
+
+
                     taskButton.clicked += () => OpenTask(task);
                     collectionFoldout.Add(taskButton);
 
