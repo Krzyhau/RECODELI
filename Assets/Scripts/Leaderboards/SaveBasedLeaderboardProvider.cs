@@ -71,6 +71,8 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
 
         private void InjectAuthorTime(ref LeaderboardData data)
         {
+            if (!SaveManager.CurrentSave.AreAllLevelsCompleted()) return;
+
             var authorRecordQuery = AuthorRecords.Instance.Records.Where(r => r.MapName == LevelName);
             if (authorRecordQuery.Any())
             {
