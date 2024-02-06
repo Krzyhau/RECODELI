@@ -22,6 +22,7 @@ namespace RecoDeli.Scripts.UI
         [SerializeField] private TaskMenu taskMenu;
         [SerializeField] private UserSelectionMenu userSelectionMenu;
         [SerializeField] private SettingsMenu settingsMenu;
+        [SerializeField] private AudioSource bootupSoundPlayer;
 
         private VisualElement menuRoot;
         private VisualElement mainMenuContainer;
@@ -105,9 +106,11 @@ namespace RecoDeli.Scripts.UI
         {
             if (loggingIn && !userSelectionMenu.Opened)
             {
-                mainMenuDocument.rootVisualElement.SetEnabled(true);
+                menuRoot.AddToClassList("menu-bootup");
+                menuRoot.SetEnabled(true);
                 loggingIn = false;
                 userSelectionMenu.SetSwitchingUser(true);
+                bootupSoundPlayer.PlayDelayed(0.2f);
             }
 
             if (!loggingIn && MenuOptions.TryGetValue(CurrentMenu, out var components))
@@ -142,6 +145,7 @@ namespace RecoDeli.Scripts.UI
         public void StartLoadingScreen(string loadingString, Action loadingAction)
         {
             loadingText.text = loadingString;
+            menuRoot.RemoveFromClassList("menu-bootup");
             menuRoot.EnableInClassList("loading", true);
             PrepareForLeavingMenu();
             StartCoroutine(LoadingScreenCoroutine(loadingAction));
@@ -149,6 +153,7 @@ namespace RecoDeli.Scripts.UI
 
         public void StartExitingGame()
         {
+            menuRoot.RemoveFromClassList("menu-bootup");
             menuRoot.EnableInClassList("exiting", true);
             PrepareForLeavingMenu();
             StartCoroutine(ExitCoroutine());

@@ -1380,3 +1380,34 @@ DropdownField.unity-popup-field .unity-base-popup-field__arrow {
 .unity-base-dropdown__container-inner {
     background-color: rgba(0, 0, 0, 1);
 }
+
+.unity-disabled #logo-main-text,
+.unity-disabled #logo-sub-text,
+.unity-disabled #logo-icon,
+.unity-disabled #main-menu-icons
+{
+    opacity: 0;
+}
+
+.menu-bootup #logo-main-text,
+.menu-bootup #logo-sub-text,
+.menu-bootup #logo-icon,
+.menu-bootup #main-menu-icons
+{
+    opacity: 1;
+    transition-property: opacity;
+    transition-timing-function: linear;
+    transition-duration: 0.0s;
+}
+.menu-bootup #logo-main-text {
+    transition-delay: 0.3s;
+}
+.menu-bootup #logo-sub-text {
+    transition-delay: 0.5s;
+}
+.menu-bootup #logo-icon {
+    transition-delay: 1.0s;
+}
+.menu-bootup #main-menu-icons {
+    transition-delay: 1.2s;
+}
