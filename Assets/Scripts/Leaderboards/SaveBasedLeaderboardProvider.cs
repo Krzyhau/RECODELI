@@ -1,5 +1,6 @@
 ﻿using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
+using RecoDeli.Scripts.Level.Format;
 using RecoDeli.Scripts.SaveManagement;
 using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.Utils;
@@ -26,12 +27,21 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             data.TimeStats.Averages = new();
             data.InstructionsStats.Averages = new();
 
+            LoadSaveScores(ref data);
+            InjectAuthorTime(ref data);
+            SortScores(ref data);
+
+            return data;
+        }
+
+        private void LoadSaveScores(ref LeaderboardData data)
+        {
             var saveCount = RecoDeliGame.Settings.UserSaveCount;
             for (int userSlot = 0; userSlot < saveCount; userSlot++)
             {
                 SaveData slot = null;
 
-                if(userSlot == SaveManager.CurrentSlot)
+                if (userSlot == SaveManager.CurrentSlot)
                 {
                     slot = SaveManager.CurrentSave;
                 }
@@ -57,7 +67,29 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
                     Score = levelInfo.FastestTime,
                 });
             }
+        }
 
+        private void InjectAuthorTime(ref LeaderboardData data)
+        {
+            var authorRecordQuery = AuthorRecords.Instance.Records.Where(r => r.MapName == LevelName);
+            if (authorRecordQuery.Any())
+            {
+                var record = authorRecordQuery.First();
+                data.InstructionRecords.Add(new()
+                {
+                    DisplayName = AuthorRecords.Instance.AuthorName,
+                    Score = record.Instructions,
+                });
+                data.TimeRecords.Add(new()
+                {
+                    DisplayName = AuthorRecords.Instance.AuthorName,
+                    Score = record.Time,
+                });
+            }
+        }
+
+        private void SortScores(ref LeaderboardData data)
+        {
             data.InstructionRecords = data.InstructionRecords
                 .OrderBy(record => record.Score)
                 .Select((record, index) => new LeaderboardRecord()
@@ -75,8 +107,6 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
                     Score = record.Score,
                     Place = index + 1
                 }).ToList();
-
-            return data;
         }
 
         protected async override Task<LeaderboardData> FetchData()

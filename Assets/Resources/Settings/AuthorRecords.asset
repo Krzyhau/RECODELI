@@ -1,0 +1,55 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8cde16932ff74a4da51a7bf21c718bf, type: 3}
+  m_Name: AuthorRecords
+  m_EditorClassIdentifier: 
+  AuthorName: Chris Hausky
+  Records:
+  - MapName: Ludum Dare/First Task
+    Time: 2.3
+    Instructions: 1
+  - MapName: Ludum Dare/Higher Control
+    Time: 3.16
+    Instructions: 2
+  - MapName: Ludum Dare/Maneuvering
+    Time: 3.6
+    Instructions: 2
+  - MapName: Ludum Dare/Box Digging
+    Time: 3.34
+    Instructions: 1
+  - MapName: Ludum Dare/Box Pushing
+    Time: 4.26
+    Instructions: 2
+  - MapName: Ludum Dare/Explosive
+    Time: 5.16
+    Instructions: 2
+  - MapName: Ludum Dare/Mine Field
+    Time: 4.88
+    Instructions: 3
+  - MapName: Ludum Dare/Drone Drifting
+    Time: 4.16
+    Instructions: 2
+  - MapName: Ludum Dare/Garbage
+    Time: 6.48
+    Instructions: 2
+  - MapName: Ludum Dare/Rocky Path
+    Time: 8.38
+    Instructions: 2
+  - MapName: Ludum Dare/Firewall
+    Time: 9.36
+    Instructions: 4
+  - MapName: Ludum Dare/Lovely Challenge
+    Time: 7.16
+    Instructions: 5
+  - MapName: Beta/Advanced Recovery
+    Time: 15.54
+    Instructions: 12

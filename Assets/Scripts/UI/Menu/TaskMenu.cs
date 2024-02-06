@@ -13,7 +13,6 @@ namespace RecoDeli.Scripts.UI.Menu
     public class TaskMenu : ModalWindow
     {
         [SerializeField] private StatsDisplayer statsDisplayer;
-        [SerializeField] private GameTaskDictionary tasks;
         [SerializeField] private MainMenuInterface mainMenu;
 
         private ScrollView taskList;
@@ -62,7 +61,7 @@ namespace RecoDeli.Scripts.UI.Menu
 
             if (!hasBeenOpenedBefore)
             {
-                OpenTask(tasks.Collections[0].Tasks[0]);
+                OpenTask(GameTaskDictionary.Instance.Collections[0].Tasks[0]);
             }
             else
             {
@@ -79,7 +78,7 @@ namespace RecoDeli.Scripts.UI.Menu
 
             var completedLevels = SaveManager.CurrentSave.CompletedLevelsCount;
 
-            foreach (var taskCollection in tasks.Collections)
+            foreach (var taskCollection in GameTaskDictionary.Instance.Collections)
             {
                 var collectionFoldout = new Foldout();
                 collectionFoldout.text = taskCollection.Name;

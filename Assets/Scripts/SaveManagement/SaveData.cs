@@ -1,4 +1,5 @@
 using RecoDeli.Scripts.Level;
+using RecoDeli.Scripts.Tasks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -51,6 +52,16 @@ namespace RecoDeli.Scripts.SaveManagement
             var level = GetLevelInfo(levelName);
             
             return level != null ? level.Completed : false;
+        }
+
+        public bool AreAllLevelsCompleted()
+        {
+            var allPlayableTasksList = GameTaskDictionary.Instance.Collections
+                .SelectMany(collection => collection.Tasks, (collection, task) => task)
+                .Where(task => task.Action == GameTask.ActionType.Task)
+                .Count();
+
+            return CompletedLevelsCount >= allPlayableTasksList;
         }
     }
 }

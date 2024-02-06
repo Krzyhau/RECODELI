@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using RecoDeli.Scripts.Utils;
+using System;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Tasks
@@ -17,7 +14,8 @@ namespace RecoDeli.Scripts.Tasks
 
     [Serializable]
     [CreateAssetMenu(fileName = "Game Tasks", menuName = "RECODELI/Game Task Dictionary")]
-    public class GameTaskDictionary : ScriptableObject
+    [ScriptableObjectSingletonPath("Settings/Game Tasks")]
+    public class GameTaskDictionary : ScriptableObjectSingleton<GameTaskDictionary>
     {
         public GameTaskCollectionRecord[] Collections;
     }
