@@ -13,10 +13,13 @@ MonoBehaviour:
   m_Name: Glitch Pass
   m_EditorClassIdentifier: 
   m_Active: 1
-  passMaterial: {fileID: 2100000, guid: 83d9a3514b05dde44970f4dcaa2c4208, type: 2}
   injectionPoint: 600
-  requirements: 4
+  fetchColorBuffer: 1
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 83d9a3514b05dde44970f4dcaa2c4208, type: 2}
   passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &-437189996055627012
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -30,10 +33,13 @@ MonoBehaviour:
   m_Name: CRT Pass
   m_EditorClassIdentifier: 
   m_Active: 1
-  passMaterial: {fileID: 2100000, guid: 739c319acfdaaf941b71f83e6b1daba0, type: 2}
   injectionPoint: 600
-  requirements: 4
+  fetchColorBuffer: 1
+  requirements: 0
+  passMaterial: {fileID: 2100000, guid: 739c319acfdaaf941b71f83e6b1daba0, type: 2}
   passIndex: 0
+  bindDepthStencilAttachment: 0
+  m_Version: 1
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
