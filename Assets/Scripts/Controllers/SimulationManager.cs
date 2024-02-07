@@ -147,6 +147,7 @@ namespace RecoDeli.Scripts.Controllers
                 levelInfo.FastestTime = Mathf.Min(levelInfo.FastestTime, LastCompletionTime);
                 levelInfo.LowestInstructions = Mathf.Min(levelInfo.LowestInstructions, RobotController.CurrentInstructions.Length);
             }
+            SaveManager.Save();
         }
 
         private void SimulationSuccessful()
@@ -215,6 +216,7 @@ namespace RecoDeli.Scripts.Controllers
             lastInstruction = -1;
 
             SaveManager.CurrentSave.GetCurrentLevelInfo().ExecutionCount++;
+            SaveManager.Save();
         }
 
         public void RestartSimulation()
