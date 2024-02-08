@@ -33,7 +33,7 @@ namespace RecoDeli.Scripts.UI.Menu
             creatingUserLabel = RootElement.Q<Label>("user-creation-window-label");
 
             createUserButton.clicked += OnCreateUser;
-            resetButton.clicked += () => StartUserCreation(SaveManager.CurrentSlot);
+            resetButton.clicked += StartCurrentUserReset;
             backButton.clicked += () => ToggleUserCreation(false);
             usernameField.RegisterValueChangedCallback((v) => createUserButton.SetEnabled(v.newValue.Length > 0));
 
@@ -84,13 +84,14 @@ namespace RecoDeli.Scripts.UI.Menu
 
         private void StartUserCreation(int i)
         {
-            Debug.Log($"Started user creation {i}");
             creatingUserSlot = i;
-
-            resettingUser = SaveManager.TryLoadSlot(i, out var data);
-            Debug.Log($"{i}, {resettingUser}");
-
             ToggleUserCreation(true);
+        }
+
+        private void StartCurrentUserReset()
+        {
+            resettingUser = true;
+            StartUserCreation(SaveManager.CurrentSlot);
         }
 
         private void ToggleUserCreation(bool state)
