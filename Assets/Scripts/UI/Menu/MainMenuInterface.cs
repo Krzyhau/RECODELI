@@ -91,7 +91,7 @@ namespace RecoDeli.Scripts.UI
         {
             if (StartInTaskMenu)
             {
-                menuRoot.SetEnabled(true);
+                ShowMainMenu(quick: true);
                 OpenMenu(MenuOption.Tasks);
             }
             else
@@ -105,11 +105,7 @@ namespace RecoDeli.Scripts.UI
         {
             if (loggingIn && !userSelectionMenu.Opened)
             {
-                menuRoot.AddToClassList("menu-bootup");
-                menuRoot.SetEnabled(true);
-                loggingIn = false;
-                userSelectionMenu.SetSwitchingUser(true);
-                bootupSoundPlayer.PlayDelayed(0.2f);
+                ShowMainMenu(quick: false);
             }
 
             if (!loggingIn && MenuOptions.TryGetValue(CurrentMenu, out var components))
@@ -139,6 +135,19 @@ namespace RecoDeli.Scripts.UI
                     menu.Close();
                 }
             }
+        }
+
+        private void ShowMainMenu(bool quick)
+        {
+            if (!quick)
+            {
+                menuRoot.AddToClassList("menu-bootup");
+                bootupSoundPlayer.PlayDelayed(0.2f);
+            }
+
+            menuRoot.SetEnabled(true);
+            loggingIn = false;
+            userSelectionMenu.SetSwitchingUser(true);
         }
 
         public void StartLoadingScreen(string loadingString, Action loadingAction)
