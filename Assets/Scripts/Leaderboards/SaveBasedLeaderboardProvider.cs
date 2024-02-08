@@ -113,11 +113,13 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
 
         protected async override UniTask<LeaderboardData> FetchData()
         {
+            await UniTask.SwitchToMainThread();
             return GetDataFromSaves();
         }
 
         protected override async UniTask SendScore(float time, RobotInstruction[] instructions)
         {
+            await UniTask.SwitchToMainThread();
             // nothing to do here, scores are saved into the save file already
         }
     }
