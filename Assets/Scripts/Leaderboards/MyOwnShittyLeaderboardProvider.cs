@@ -1,7 +1,6 @@
 ﻿using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
 using RecoDeli.Scripts.SaveManagement;
-using RecoDeli.Scripts.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +8,8 @@ using System.Net.Http.Headers;
 using System.Net.Http;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
 {
@@ -64,7 +63,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             return SaveManager.CurrentSave.Name;
         }
 
-        private async Task<UserStats> GetUserStats(string username)
+        private async UniTask<UserStats> GetUserStats(string username)
         {
             var query = $"?levelname={this.LevelName}&username={GetUserIdentifier()}";
             var userInfoRequest = await RequestResource("/userscore" + query);
@@ -77,7 +76,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             return JsonUtility.FromJson<UserStats>(userInfoRequest.text);
         }
 
-        private async Task<LeaderboardStats> GetLevelStats(string type, int maxBars)
+        private async UniTask<LeaderboardStats> GetLevelStats(string type, int maxBars)
         {
             var stats = new LeaderboardStats();
 
@@ -98,7 +97,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             return stats;
         }
 
-        private async Task<List<LeaderboardRecord>> GetLevelRecords(string type, int limit, int offset)
+        private async UniTask<List<LeaderboardRecord>> GetLevelRecords(string type, int limit, int offset)
         {
             var stats = new List<LeaderboardRecord>();
 
@@ -124,7 +123,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             return stats;
         }
 
-        protected async override Task<LeaderboardData> FetchData()
+        protected async override UniTask<LeaderboardData> FetchData()
         {
             // we first want to figure out which scores we want to see based on own score
             var userStats = await GetUserStats(GetUserIdentifier());
@@ -142,7 +141,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             var timeScoresTask = GetLevelRecords("times", usingTwoTimesRanges ? (timeRank + range / 2) : range, 0);
             var instructionScoresTask = GetLevelRecords("instructions", usingTwoInstructionsRanges ? (instructionsRank + range / 2) : range, 0);
 
-            var boardTasks = new List<Task>()
+            var boardTasks = new List<UniTask>()
             {
                 timeStatsTask,
                 instructionsStatsTask,
@@ -150,33 +149,33 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
                 instructionScoresTask
             };
 
-            Task<List<LeaderboardRecord>> secondTimeScoresTask;
+            UniTask<List<LeaderboardRecord>> secondTimeScoresTask;
             if (usingTwoTimesRanges)
             {
                 secondTimeScoresTask = GetLevelRecords("times", range, timeRank - range / 2);
                 boardTasks.Add(secondTimeScoresTask);
             }
 
-            Task<List<LeaderboardRecord>> secondInstructionScoresTask;
+            UniTask<List<LeaderboardRecord>> secondInstructionScoresTask;
             if (usingTwoInstructionsRanges)
             {
                 secondInstructionScoresTask = GetLevelRecords("instructions", range, instructionsRank - range / 2);
                 boardTasks.Add(secondInstructionScoresTask);
             }
 
-            await Task.WhenAll(boardTasks);
+            await UniTask.WhenAll(boardTasks);
 
             // task completed! return the data
             return new()
             {
-                TimeStats = timeStatsTask.Result,
-                InstructionsStats = instructionsStatsTask.Result,
-                TimeRecords = timeScoresTask.Result,
-                InstructionRecords = instructionScoresTask.Result,
+                TimeStats = timeStatsTask.GetAwaiter().GetResult(),
+                InstructionsStats = instructionsStatsTask.GetAwaiter().GetResult(),
+                TimeRecords = timeScoresTask.GetAwaiter().GetResult(),
+                InstructionRecords = instructionScoresTask.GetAwaiter().GetResult()
             };
         }
 
-        protected async override Task SendScore(float time, RobotInstruction[] instructions)
+        protected async override UniTask SendScore(float time, RobotInstruction[] instructions)
         {
             var instructionsString = RobotInstruction.ListToString(instructions.ToList()).Replace("\n", "\\n");
 
@@ -196,7 +195,7 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
             }
         }
 
-        public async Task<(string text, HttpStatusCode status)> RequestResource(string endpoint, string postData = null)
+        public async UniTask<(string text, HttpStatusCode status)> RequestResource(string endpoint, string postData = null)
         {
             using var httpClient = new HttpClient();
             

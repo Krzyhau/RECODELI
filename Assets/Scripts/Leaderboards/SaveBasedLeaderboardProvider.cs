@@ -1,4 +1,5 @@
-﻿using RecoDeli.Scripts.Gameplay.Robot;
+﻿using Cysharp.Threading.Tasks;
+using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Leaderboards;
 using RecoDeli.Scripts.Level.Format;
 using RecoDeli.Scripts.SaveManagement;
@@ -6,7 +7,6 @@ using RecoDeli.Scripts.Settings;
 using RecoDeli.Scripts.Utils;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
 {
@@ -111,18 +111,14 @@ namespace RecoDeli.Scripts.Assets.Scripts.Leaderboards
                 }).ToList();
         }
 
-        protected async override Task<LeaderboardData> FetchData()
+        protected async override UniTask<LeaderboardData> FetchData()
         {
-            var dataSource = new TaskCompletionSource<LeaderboardData>();
-            await MainThreadExecutor.Run(() => dataSource.SetResult(GetDataFromSaves()));
-
-            return dataSource.Task.Result;
+            return GetDataFromSaves();
         }
 
-        protected override async Task SendScore(float time, RobotInstruction[] instructions)
+        protected override async UniTask SendScore(float time, RobotInstruction[] instructions)
         {
             // nothing to do here, scores are saved into the save file already
-            await Task.Delay(0);
         }
     }
 }

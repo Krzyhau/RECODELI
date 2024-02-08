@@ -80,8 +80,9 @@ namespace RecoDeli.Scripts.Settings
             Language = Language;
             ApplyAudioSettings();
             ApplyVideoSettings();
-            MainThreadExecutor.Run(ApplyAudioSettings);
+            System.Threading.SynchronizationContext.Current.Post(_ => ApplyAudioSettings(), null);
         }
+
 
         private static void ApplyAudioSettings()
         {

@@ -1,10 +1,10 @@
-﻿using RecoDeli.Scripts.Gameplay.Robot;
+﻿using Cysharp.Threading.Tasks;
+using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.SaveManagement;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
 using Random = UnityEngine.Random;
@@ -75,9 +75,9 @@ namespace RecoDeli.Scripts.Leaderboards
             return stats;
         }
 
-        protected async override Task<LeaderboardData> FetchData()
+        protected async override UniTask<LeaderboardData> FetchData()
         {
-            await Task.Delay(3000);
+            await UniTask.Delay(3000);
 
             var data = new LeaderboardData();
             data.InstructionRecords = new();
@@ -110,9 +110,9 @@ namespace RecoDeli.Scripts.Leaderboards
             return data;
         }
 
-        protected async override Task SendScore(float time, RobotInstruction[] instructions)
+        protected async override UniTask SendScore(float time, RobotInstruction[] instructions)
         {
-            await Task.Delay(100);
+            await UniTask.Delay(100);
 
             var name = SaveManager.CurrentSave.Name;
 

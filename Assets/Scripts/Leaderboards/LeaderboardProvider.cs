@@ -1,7 +1,7 @@
-﻿using RecoDeli.Scripts.Gameplay.Robot;
+﻿using Cysharp.Threading.Tasks;
+using RecoDeli.Scripts.Gameplay.Robot;
 using RecoDeli.Scripts.Utils;
 using System;
-using System.Threading.Tasks;
 using UnityEngine;
 
 namespace RecoDeli.Scripts.Leaderboards
@@ -46,7 +46,7 @@ namespace RecoDeli.Scripts.Leaderboards
             }
             Status = LoadingStatus.Loading;
 
-            Task.Run(async () =>
+            UniTask.Void(async () =>
             {
                 try
                 {
@@ -54,12 +54,12 @@ namespace RecoDeli.Scripts.Leaderboards
 
                     CachedData = scores;
                     Status = LoadingStatus.Loaded;
-                    await MainThreadExecutor.Run(() => OnLoaded?.Invoke());
+                    OnLoaded?.Invoke();
                 }
                 catch (Exception ex)
                 {
                     Status = LoadingStatus.Failed;
-                    await MainThreadExecutor.Run(() => OnFailed?.Invoke(ex));
+                    OnFailed?.Invoke(ex);
                     Debug.LogError($"Could not load leaderboards: {ex.Message}");
                 }
             });
@@ -67,22 +67,22 @@ namespace RecoDeli.Scripts.Leaderboards
 
         public void SubmitScore(float time, RobotInstruction[] instructions)
         {
-            Task.Run(async () =>
+            UniTask.Void(async () =>
             {
                 try
                 {
                     await SendScore(time, instructions);
-                    await MainThreadExecutor.Run(() => OnSubmit?.Invoke());
+                    OnSubmit?.Invoke();
                 }
                 catch (Exception ex)
                 {
-                    await MainThreadExecutor.Run(() => OnSubmitFailed?.Invoke(ex));
+                    OnSubmitFailed?.Invoke(ex);
                     Debug.LogError($"Could not submit new score to leaderboard: {ex.Message}");
                 }
             });
         }
 
-        protected abstract Task<LeaderboardData> FetchData();
-        protected abstract Task SendScore(float time, RobotInstruction[] instructions);
+        protected abstract UniTask<LeaderboardData> FetchData();
+        protected abstract UniTask SendScore(float time, RobotInstruction[] instructions);
     }
 }

@@ -17,8 +17,6 @@ namespace RecoDeli.Scripts.Settings
 
         static RecoDeliGame()
         {
-            MainThreadExecutor.Initialize(System.Threading.SynchronizationContext.Current);
-
             UserSettingsProvider.ApplySettings();
 
             // this is needed to prevent comma from being used as decimal indicator in some countries.
