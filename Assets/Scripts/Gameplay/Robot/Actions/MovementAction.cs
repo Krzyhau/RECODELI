@@ -41,5 +41,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 instruction.UpdateProgress((float)(t / absParameter));
             }
         }
+
+        public override string GetParameterInputSuffix(int parameterIndex) => "sec";
     }
 }

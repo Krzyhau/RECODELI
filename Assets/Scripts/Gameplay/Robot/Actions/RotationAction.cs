@@ -45,5 +45,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 t += deltaTime;
             }
         }
+
+        public override string GetParameterInputSuffix(int parameterIndex) => "rot";
     }
 }

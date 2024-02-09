@@ -416,8 +416,12 @@ Slider.unity-slider #unity-dragger {
     height: 100%;
 }
 
-.instruction-bar > #parameters Label {
-    display: none;
+.instruction-bar > #parameters #unit-label {
+    color: rgb(255,255,255);
+    opacity: 0.5;
+    height:100%;
+    margin:0;
+    padding:0;
 }
 
 .instruction-bar #unity-text-input {

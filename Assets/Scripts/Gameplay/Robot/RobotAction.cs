@@ -12,6 +12,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public abstract string Name { get; }
         public abstract Type GetParameterType();
         public abstract Type GetParameterInputType(int parameterIndex);
+        public abstract string GetParameterInputSuffix(int parameterIndex);
         public abstract int InputParametersCount { get; }
 
         public static readonly List<RobotAction> List;

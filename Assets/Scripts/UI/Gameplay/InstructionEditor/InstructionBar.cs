@@ -1,5 +1,6 @@
 using RecoDeli.Scripts.Gameplay.Robot;
 using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -112,6 +113,13 @@ namespace RecoDeli.Scripts.UI
                 field.value = Instruction.GetInputParameterAsString(i);
                 field.RegisterValueChangedCallback(evt => OnInputFieldChanged(field, paramIndex, evt));
                 textFieldsContainer.Add(field);
+
+                var unitLabel = new Label();
+                unitLabel.name = "unit-label";
+                unitLabel.text = Instruction.Action.GetParameterInputSuffix(i);
+                field.Children().First().Children().First().Add(unitLabel);
+
+                UpdateUnitTextPosition(field);
             }
         }
 
@@ -143,6 +151,8 @@ namespace RecoDeli.Scripts.UI
                 Instruction.SetInputParameterFromString(parameterIndex, field.value.ToString());
                 changed?.Invoke();
             }
+
+            UpdateUnitTextPosition(field);
         }
 
         private void OnNavigationEnter(NavigationSubmitEvent evt)
@@ -188,6 +198,27 @@ namespace RecoDeli.Scripts.UI
             this.style.top = currentAbsolutePosition;
             this.style.left = containerStyle.paddingLeft + ownStyle.marginLeft;
             this.style.right = containerStyle.paddingRight + ownStyle.marginRight;
+
+            foreach(var element in textFieldsContainer.Children())
+            {
+                if(element is TextField field)
+                {
+                    UpdateUnitTextPosition(field);
+                }
+            }
+        }
+
+        private void UpdateUnitTextPosition(TextField field)
+        {
+            var unitLabel = field.Q<Label>("unit-label");
+
+            var size = unitLabel.MeasureTextSize(
+                field.value + "-",
+                field.resolvedStyle.width, MeasureMode.Undefined,
+                field.resolvedStyle.height, MeasureMode.Undefined
+            );
+
+            unitLabel.style.left = new StyleLength(size.x);
         }
 
         public void UpdateProgressBar()
