@@ -33,7 +33,18 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public override bool IsParameterInputValid(int parameterIndex, string input)
         {
             string validNumberPattern = @"^[+-]?\d*\.?\d*$";
-            return Regex.IsMatch(input, validNumberPattern);
+            if(!Regex.IsMatch(input, validNumberPattern))
+            {
+                return false;
+            }
+
+            var numberCount = input.Replace(".", "").Length;
+            if(numberCount > 6)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         public override float GetDefaultParameter() => 1.0f;
