@@ -394,6 +394,10 @@ Slider.unity-slider #unity-dragger {
     background-color: rgba(255, 255, 255, 0.18);
 }
 
+.instruction-bar.selected > #parameters{
+    background-color: rgba(255,255,255, 0.02);
+}
+
 .instruction-bar #handle-character {
     height: 100%;
     margin-left: 5px;
