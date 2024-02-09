@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 
 namespace RecoDeli.Scripts.Gameplay.Robot
 {
@@ -27,6 +28,12 @@ namespace RecoDeli.Scripts.Gameplay.Robot
                 return typeof(float);
             }
             else return null;
+        }
+
+        public override bool IsParameterInputValid(int parameterIndex, string input)
+        {
+            string validNumberPattern = @"^[+-]?\d*\.?\d*$";
+            return Regex.IsMatch(input, validNumberPattern);
         }
     }
 }

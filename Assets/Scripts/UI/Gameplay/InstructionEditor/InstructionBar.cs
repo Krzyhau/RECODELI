@@ -127,18 +127,9 @@ namespace RecoDeli.Scripts.UI
         {
             var type = Instruction.Action.GetParameterInputType(parameterIndex);
 
-            bool preventChange = false;
+            bool isValid = Instruction.Action.IsParameterInputValid(parameterIndex, evt.newValue);
 
-            if(type == typeof(float))
-            {
-                string validNumberPattern = @"^[+-]?\d*\.?\d*$";
-                if(!Regex.IsMatch(evt.newValue, validNumberPattern))
-                {
-                    preventChange = true;
-                }
-            }
-
-            if (preventChange)
+            if (!isValid)
             {
                 field.SetValueWithoutNotify(evt.previousValue);
                 // prevents the cursor from shifting right when typing illegal characters 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -13,6 +14,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         public abstract Type GetParameterType();
         public abstract Type GetParameterInputType(int parameterIndex);
         public abstract string GetParameterInputSuffix(int parameterIndex);
+        public abstract bool IsParameterInputValid(int parameterIndex, string input);
         public abstract int InputParametersCount { get; }
 
         public static readonly List<RobotAction> List;
