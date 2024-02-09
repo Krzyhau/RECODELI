@@ -35,5 +35,7 @@ namespace RecoDeli.Scripts.Gameplay.Robot
             string validNumberPattern = @"^[+-]?\d*\.?\d*$";
             return Regex.IsMatch(input, validNumberPattern);
         }
+
+        public override float GetDefaultParameter() => 1.0f;
     }
 }

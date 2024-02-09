@@ -65,8 +65,9 @@ namespace RecoDeli.Scripts.Gameplay.Robot
         }
         public override RobotInstruction CreateInstruction()
         {
-            return new RobotInstruction<T>(this);
+            return new RobotInstruction<T>(this, GetDefaultParameter());
         }
+        public abstract T GetDefaultParameter();
     }
 }
 
