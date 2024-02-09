@@ -5,19 +5,20 @@ using UnityEngine;
 
 namespace RecoDeli.Scripts.Gameplay
 {
-    public class RobotTrailRecorder : MonoBehaviour
+    public class ObjectTrailRecorder : MonoBehaviour
     {
         [SerializeField] private float distanceThreshold;
 
         private bool recording;
         private Vector3 lastPosition = Vector3.zero;
-        private RobotController controller;
-
-        public bool Recording => recording;
-
+        private Transform recordedObject;
         private List<Vector3> tracePoints = new List<Vector3>();
         private LineRenderer lineRenderer;
 
+        public bool Recording => recording;
+        public Transform RecordedObject => recordedObject;
+
+        
         private void Start()
         {
             lineRenderer = GetComponent<LineRenderer>();
@@ -26,10 +27,10 @@ namespace RecoDeli.Scripts.Gameplay
 
         private void FixedUpdate()
         {
-            if (!recording || controller==null) return;
+            if (!recording || recordedObject == null) return;
             
 
-            var currentPoint = controller.transform.position;
+            var currentPoint = recordedObject.position;
             if ((currentPoint - lastPosition).magnitude > distanceThreshold)
             {
                 AddPoint(currentPoint);
@@ -53,14 +54,14 @@ namespace RecoDeli.Scripts.Gameplay
         public void StopRecording()
         {
             recording = false;
-            controller = null;
+            recordedObject = null;
         }
 
-        public void StartRecording(RobotController controller)
+        public void StartRecording(Transform objectToRecord)
         {
-            this.controller = controller;
+            recordedObject = objectToRecord;
             tracePoints.Clear();
-            AddPoint(controller.transform.position);
+            AddPoint(recordedObject.position);
             recording = true;
         }
     }

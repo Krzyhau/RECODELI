@@ -22,7 +22,6 @@ namespace RecoDeli.Scripts.Controllers
         [SerializeField] private DroneCameraController droneCamera;
         [SerializeField] private BepuSimulation simulationGroup;
         [SerializeField] private SimulationInterface simulationInterface;
-        [SerializeField] private RobotTrailRecorder trailRecorder;
         [SerializeField] private EndingController endingController;
         [SerializeField] private MusicHandler musicHandler;
         [Header("Glitching")]
@@ -32,6 +31,9 @@ namespace RecoDeli.Scripts.Controllers
         [Header("SFX")]
         [SerializeField] private AudioSource successSound;
         [SerializeField] private AudioSource restartSound;
+        [Header("Trails")]
+        [SerializeField] private ObjectTrailRecorder robotTrailRecorder;
+        [SerializeField] private ObjectTrailRecorder packageTrailRecorder;
 
         private bool paused = false;
         private bool playingSimulation = false;
@@ -211,7 +213,8 @@ namespace RecoDeli.Scripts.Controllers
             simulationInterface.InstructionEditor.HighlightInstruction(0);
             var instructionSet = simulationInterface.InstructionEditor.GetRobotInstructionsList();
             RobotController.ExecuteCommands(instructionSet.ToArray());
-            trailRecorder.StartRecording(RobotController);
+            robotTrailRecorder.StartRecording(RobotController.transform);
+            packageTrailRecorder.StartRecording(GoalBox.transform);
             playingSimulation = true;
             lastInstruction = -1;
 
@@ -256,6 +259,9 @@ namespace RecoDeli.Scripts.Controllers
             simulationInstance.gameObject.SetActive(true);
             simulationInstance.Initialize();
             simulationInstance.OnPostPhysicsUpdate += BepuUpdate;
+
+            robotTrailRecorder.StopRecording();
+            packageTrailRecorder.StopRecording();
 
             RobotController = simulationInstance.GetComponentInChildren<RobotController>();
             Assert.IsNotNull(RobotController, "No Robot Controller in simulation group!!!");
